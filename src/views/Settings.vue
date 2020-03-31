@@ -9,9 +9,9 @@
         <span>
            Choose your in-game player color:
         </span>
-        <el-color-picker v-model="color" />
+        <ColorPicker :initialColor="profile.color" @update="color = $event" />
       </div>
-      <Button color="primary" :onClick="submit">
+      <Button :onClick="submit">
         Save
       </Button>
     </div>
@@ -21,11 +21,13 @@
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
+  import ColorPicker from '@/components/ColorPicker';
   import Button from '@/components/Button';
 
   export default {
     name: 'Settings',
     components: {
+      ColorPicker,
       Button
     },
     data: function() {
@@ -55,7 +57,6 @@
     }
   }
 </script>
-
 
 <style scoped lang="scss">
   @import '@/styles/partials';

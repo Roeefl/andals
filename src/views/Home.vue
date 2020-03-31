@@ -1,6 +1,6 @@
 <template>
   <main class="home">
-    <Button color="primary" rounded :onClick="createRoom">
+    <Button :onClick="createRoom">
       Create Room
     </Button>
     <div class="rooms-list">

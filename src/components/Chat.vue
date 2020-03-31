@@ -5,7 +5,7 @@
     </h2>
     <form class="form">
       <input v-model="newMessage" placeholder="Say hello..." />
-      <Button color="primary" :onClick="sendMessage" :disabled="!newMessage.length">
+      <Button :onClick="sendMessage" :disabled="!newMessage.length">
         Send
       </Button>
     </form>

@@ -10,7 +10,6 @@ const initialColor = '#2c3e50';
 
 export default new Vuex.Store({
   state: {
-    isDisplayModal: false,
     profile: {
       nickname: `${initialNickname} ${randomInt}`,
       color: initialColor
@@ -23,12 +22,6 @@ export default new Vuex.Store({
     gameLog: []
   },
   mutations: {
-    toggleModal(state) {
-      state.isDisplayModal = !state.isDisplayModal;
-    },
-    closeModal(state) {
-      state.isDisplayModal = false
-    },
     updateProfile(state, profile) {
       state.profile = profile
     },

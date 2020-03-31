@@ -5,6 +5,7 @@
     :rounded="rounded"
     :icon="icon"
     @click="onClick"
+    v-on="on"
   >
     <slot></slot>
   </v-btn>
@@ -30,7 +31,11 @@
         type: Boolean,
         default: false
       },
-      onClick: Function
+      onClick: {
+        type: Function,
+        default: () => {}
+      },
+      on: Object
     }
   }
 </script>

@@ -1,15 +1,17 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
-      <router-link to="/room">Game Room</router-link>
-      <router-link to="/settings">Settings</router-link>
+  <v-app>
+    <div id="app">
+      <div id="nav">
+        <router-link to="/">Home</router-link>
+        <router-link to="/about">About</router-link>
+        <router-link to="/room">Game Room</router-link>
+        <router-link to="/settings">Settings</router-link>
+      </div>
+      <div id="page">
+        <router-view />
+      </div>
     </div>
-    <div id="page">
-      <router-view />
-    </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
