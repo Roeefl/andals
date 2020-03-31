@@ -42,9 +42,7 @@
       'profile'
     ]),
     methods: {
-      submit: function(e) {
-        console.log(e);
-        e.preventDefault();
+      submit: function() {
         if (!this.nickname || !this.nickname.length) return;
 
         const updatedProfile = {
@@ -68,12 +66,3 @@
     // justify-content: center;
   }
 </style>
-
-Four sets of wooden player pieces in four different colors each containing five settlements, four cities, and 15 roads.
-25 development cards consisting of 14 knight/soldier cards, 6 progress cards, and 5 victory points.
-Resource cards of each terrain hex except for the desert.
-Four building costs cards, one for each player.
-"Longest Road" and "Largest Army" award cards.
-Two dice, one red, one yellow.
-Extra harbor pieces for placement of random harbors (optional).
-

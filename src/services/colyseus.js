@@ -30,9 +30,16 @@ class ColyseusService {
     return this._.room;
   }
 
-  async createRoom() {
-    await this.client.create(ROOM_TYPE_GAME);
-    // return reservation;
+  async createRoom(options) {
+    const reservation = await this.client.create(ROOM_TYPE_GAME, options);
+    return reservation;
+  }
+
+  async joinById(roomId, options) {
+    if (!roomId) return this.createRoom(options);
+
+    const room = await this.client.joinById(roomId, options);
+    return room;
   }
 
   async listRooms() {

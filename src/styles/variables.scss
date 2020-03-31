@@ -1,4 +1,7 @@
-$base-font-size: 12px;
+$base-font-size: 14px;
+$font-size-xs: $base-font-size * 0.7;
+$font-size-sm: $base-font-size * 1;
+$font-size-md: $base-font-size * 1.5;
 $font-size-lg: $base-font-size * 2;
 $font-size-xl: $base-font-size * 3;
 
@@ -7,15 +10,14 @@ $spacer: 12px;
 $primary: #2c3e50;
 $highlighted: #42b983;
 
-$tile-size: 75px;
-// $tile-size: 120px;
-$tile-value-size: 45px;
+$tile-size: 55px;
+$tile-value-size: $tile-size * 0.75;
+$zindex-tile-value: 10;
 
+$tile-water: #2d9cd9;
 $tile-brick: #a0350e;
 $tile-lumber: #214013;
 $tile-desert: #e2aa3a;
 $tile-ore: #7a768c;
 $tile-wheat: #fabc0c;
 $tile-sheep: #7dbe3c;
-
-$zindex-tile-value: 10;

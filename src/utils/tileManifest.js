@@ -1,8 +1,10 @@
-export const resourceTypes  = ['resource', 'water', 'harbor', 'spacer'];
+const serverResourceTypes = ['lumber', 'brick', 'sheep', 'wheat', 'ore', 'desert', 'water', 'harborGeneric'];
+export const [LUMBER, BRICK, SHEEP, WHEAT, ORE, DESERT, WATER, HARBOR_GENERIC] = serverResourceTypes;
+
+const resourceTypes  = ['resource', 'water', 'spacer'];
 export const [
   TILE_RESOURCE,
   TILE_WATER,
-  TILE_HARBOR,
   TILE_SPACER
 ] = resourceTypes;
 
@@ -10,6 +12,7 @@ const rowTypes = ['even', 'odd'];
 const [ROW_EVEN, ROW_ODD] = rowTypes;
 
 export const totalResourceTiles = 19;
+export const totalWaterTiles = 18;
 
 export const tileRows = [
   {
@@ -83,3 +86,13 @@ export const tileRows = [
     ]
   }
 ]
+
+export const harborManifest = {
+  water: null,
+  harborGeneric: '3:1',
+  lumber: '2:1',
+  brick: '2:1',
+  sheep: '2:1',
+  wheat: '2:1',
+  ore: '2:1'
+};

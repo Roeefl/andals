@@ -1,27 +1,35 @@
 <template>
-  <el-button
-    :type="color"
-    :plain="plain"
-    :round="round"
-    :circle="circle"
-    :icon="`el-icon-${icon}`"
+  <v-btn
+    :color="color"
+    :disabled="disabled"
+    :rounded="rounded"
+    :icon="icon"
     @click="onClick"
   >
     <slot></slot>
-  </el-button>
+  </v-btn>
 </template>
 
 <script>
-  const colors = ['primary', 'success', 'info', 'warning', 'danger'];
-
   export default {
     name: 'Button',
     props: {
-      color: String,
-      icon: String,
-      plain: Boolean,
-      round: Boolean,
-      circle: Boolean,
+      color: {
+        type: String,
+        default: 'primary'
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
+      rounded: {
+        type: Boolean,
+        default: false
+      },
+      icon: {
+        type: Boolean,
+        default: false
+      },
       onClick: Function
     }
   }

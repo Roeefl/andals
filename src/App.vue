@@ -30,13 +30,15 @@
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     color: $primary;
-    width: 100vw;
-    height: 100vh;
+    // width: 100vw;
+    // height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   #nav {
     padding: $spacer * 2;
-    width: 100%;
+    // width: 100%;
     display: flex;
     justify-content: center;
 
@@ -52,8 +54,6 @@
   }
 
   #page {
-    width: 100%;
-    height: 100%;
-    padding: $spacer;
+    flex: 1;
   }
 </style>

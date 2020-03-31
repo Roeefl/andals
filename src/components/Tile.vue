@@ -1,24 +1,41 @@
 <template>
   <div class="tile" :class="[type, resourceData.resource]">
-    <span class="value" v-if="resourceData.value">
+    <span class="inner value" v-if="resourceData.value">
       {{ resourceData.value }}
+    </span>
+    <span class="inner harbor" v-if="harborData.type" :class="harborData.type">
+      {{ harborTypes[harborData.type] }}
+      <Icon name="box" v-if="harborData.type !== TILE_WATER">
+        <IconBox />
+      </Icon>
     </span>
   </div>
 </template>
 
 <script>
   import {
+    harborManifest,
     TILE_RESOURCE,
     TILE_WATER,
-    TILE_HARBOR,
     TILE_SPACER
   } from '@/utils/tileManifest';
+  import Icon from '@/components/Icon';
+  import IconBox from '@/components/Icons/IconBox';
 
   export default {
     name: 'Tile',
+    components: {
+      Icon,
+      IconBox
+    },
     props: {
       type: String,
-      resourceData: Object // with resource and value
+      resourceData: Object, // with resource and value,
+      harborData: Object // with type
+    },
+    computed: {
+      harborTypes: () => harborManifest,
+      TILE_WATER: () => TILE_WATER
     }
   }
 </script>
@@ -61,7 +78,7 @@
     }
 
     &.water {
-      background: aqua;
+      background: $tile-water;
     }
 
     &.resource {
@@ -74,7 +91,7 @@
     }
   }
 
-  .value {
+  .inner {
     transform: rotate(90deg);
 
     width: $tile-value-size;
@@ -84,14 +101,28 @@
     top: $tile-size / 2;
     left: $tile-size / 4;
 
-    font-size: $font-size-xl;
-    background: white;
     border-radius: 999px;
-    border: 2px solid black;
     z-index: $zindex-tile-value;
 
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .value {
+    font-size: $font-size-lg;
+    border: 2px solid black;
+    background: white;
+  }
+
+  .harbor {
+    font-size: $font-size-sm;
+
+    &.harborGeneric { background: white; }
+    &.brick   {   background: $tile-brick;    }
+    &.lumber  {   background: $tile-lumber;   }
+    &.ore     {   background: $tile-ore;      }
+    &.wheat   {   background: $tile-wheat;    }
+    &.sheep   {   background: $tile-sheep;    }
   }
 </style>

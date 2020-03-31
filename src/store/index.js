@@ -6,21 +6,34 @@ Vue.use(Vuex);
 const initialNickname = 'Jhon Doe';
 const randomInt = Math.floor(Math.random() * 9999);
 
-const initialColor = '#409EFF';
+const initialColor = '#2c3e50';
 
 export default new Vuex.Store({
   state: {
+    isDisplayModal: false,
     profile: {
       nickname: `${initialNickname} ${randomInt}`,
       color: initialColor
     },
+    isSelfReady: false,
     rooms: [],
     reservations: [],
-    currentRoomState: {}
+    roomState: {},
+    players: [],
+    gameLog: []
   },
   mutations: {
+    toggleModal(state) {
+      state.isDisplayModal = !state.isDisplayModal;
+    },
+    closeModal(state) {
+      state.isDisplayModal = false
+    },
     updateProfile(state, profile) {
       state.profile = profile
+    },
+    toggleSelfReady(state) {
+      state.isSelfReady = !state.isSelfReady;
     },
     setRooms(state, rooms) {
       state.rooms = rooms || [];
@@ -37,7 +50,19 @@ export default new Vuex.Store({
     },
     updateRoomState(state, roomState) {
       console.info("updateRoomState -> updated roomState: ", roomState)
-      state.currentRoomState = roomState;
+      state.roomState = roomState;
+
+      const { players = {} } = roomState;
+
+      state.players = Object
+        .entries(players || {})
+        .map(([id, playerInfo]) => playerInfo);
+    },
+    addGameLog(state, log) {
+      state.gameLog = [
+        ...state.gameLog,
+        log
+      ];
     }
   },
   actions: {

@@ -1,6 +1,6 @@
 <template>
   <main class="home">
-    <Button color="primary" round :onClick="createRoom">
+    <Button color="primary" rounded :onClick="createRoom">
       Create Room
     </Button>
     <div class="rooms-list">
@@ -21,9 +21,9 @@
           <span>
             Max Players: {{ room.maxClients }}
           </span>
-          <button @click="joinRoom(room.roomId)" :disabled="room.locked">
+          <Button :onClick="() => joinRoom(room.roomId)" :disabled="room.locked">
             Join Room
-          </button>
+          </Button>
         </li>
       </ul>
     </div>
@@ -47,7 +47,6 @@
     },
     computed: mapState([
       'rooms',
-      'reservations',
       'profile'
     ]),
     methods: {
@@ -56,32 +55,16 @@
         this.$store.commit('setRooms', rooms);
       },
       createRoom: async function() {
-        try {
-          const seatReservation = await colyseusService.createRoom();
-          // this.$store.commit('addReservation', seatReservation);
-
-          this.fetchRooms();
-        } catch (err) {
-          console.error(err);
-        }
+       return this.joinRoom(null);
       },
       joinRoom: async function (roomId) {
         try {
-          // const availableReservation = this.reservations.find(res => res.id === roomId);
-          // let room = null;
-
-          // if (availableReservation) {
-            // room = await colyseusService.client.consumeSeatReservation(availableReservation)
-            // this.$store.commit('removeReservation', roomId);
-          // } else {
-          // }
           const options = {
             nickname: this.profile.nickname,
             color: this.profile.color
           };
 
-          const room = await colyseusService.client.joinById(roomId, options);
-          console.info("joinById returned: ", room)
+          const room = await colyseusService.joinById(roomId, options);
 
           colyseusService.setRoom(room);
           router.push('/room');
