@@ -1,8 +1,5 @@
 <template>
   <div class="building-costs">
-    <h2>
-      Building Costs
-    </h2>
     <section class="section" v-for="section in sections" :key="section.type">
       <div class="info">
         <h3>

@@ -1,14 +1,18 @@
 <template>
-  <div class="tile" :class="[type, resourceData.resource]">
-    <span class="inner value" v-if="resourceData.value">
-      {{ resourceData.value }}
+  <div class="tile" :class="[type, tile.resource]">
+    <span class="inner value" v-if="tile.value">
+      {{ tile.value }}
     </span>
-    <span class="inner harbor" v-if="harborData.type" :class="harborData.type">
-      {{ harborTypes[harborData.type] }}
-      <Icon name="box" v-if="harborData.type !== TILE_WATER">
-        <IconBox />
-      </Icon>
+    <span class="inner harbor" v-if="tile.type === TILE_WATER && !!tile.resource" :class="tile.resource">
+      {{ harborTypes[tile.resource] }}
+      <Icon
+        v-if="tile.resource && !tile.resource === HARBOR_GENERIC"
+        :name="resouceCardNameToIcon[tile.resource]"
+        color="white"
+        size="large"
+      />
     </span>
+    <slot />
   </div>
 </template>
 
@@ -17,25 +21,36 @@
     harborManifest,
     TILE_RESOURCE,
     TILE_WATER,
-    TILE_SPACER
+    TILE_SPACER,
+    HARBOR_GENERIC,
+    resouceCardNameToIcon,
+    resourceCardColors 
   } from '@/utils/tileManifest';
+  
   import Icon from '@/components/Icon';
-  import IconBox from '@/components/Icons/IconBox';
 
   export default {
     name: 'Tile',
     components: {
       Icon,
-      IconBox
     },
     props: {
       type: String,
-      resourceData: Object, // with resource and value,
-      harborData: Object // with type
+      tile: {
+        type: Object,
+        default: {
+          type: TILE_WATER,
+          resource: null,
+          value: 0
+        }
+      }
     },
     computed: {
       harborTypes: () => harborManifest,
-      TILE_WATER: () => TILE_WATER
+      TILE_WATER: () => TILE_WATER,
+      HARBOR_GENERIC: () => HARBOR_GENERIC,
+      resourceCardColors: () => resourceCardColors,
+      resouceCardNameToIcon: () => resouceCardNameToIcon
     }
   }
 </script>
@@ -75,6 +90,7 @@
 
     &.spacer {
       opacity: 0;
+      opacity: 0.4;
     }
 
     &.water {

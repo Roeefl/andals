@@ -5,20 +5,21 @@
         You are in a game room | ID: {{ room.id }} | Name: {{ room.name }} | SessionID: {{ room.sessionId }}
       </h2>
       <div class="control">
-        <Button color="primary" :onClick="toggleModal">
-          Building Costs
-        </Button>
-        <div class="dice">
-          <Button color="success" :onClick="rollDice">
-            Roll
+        <Dialog iconName="wrench" buttonText="Building Costs" title="Building Costs">
+          <BuildingCosts />
+        </Dialog>
+        <div class="dice" v-if="roomState.isGameReady">
+          <Button color="success" :onClick="rollDice" :disabled="roomState.currentTurn !== myPlayerIndex">
+            Roll Dice
           </Button>
-          <div v-for="(diceValue, i) in roomState.dice" :key="i" class="cube">
-            {{ diceValue }}
+          <Dice v-if="isDisplayDice" @finished="sendDice($event)"/>
+          <div v-for="(diceValue, i) in roomState.dice" :key="i" class="cube" :class="`cube-${i}`">
+            <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
           </div>
         </div>
         <Button
-          v-if="!roomState.isGameStarted"
-          :color="isSelfReady ? 'danger' : 'success'"
+          v-if="!roomState.isGameReady"
+          :color="isSelfReady ? 'red' : 'green'"
           :onClick="toggleReady"
           class="ready"
         >
@@ -31,24 +32,28 @@
         </Button>
       </div>
       <div class="board-area">
-        <ul class="players">
-          <li v-for="player in players" :key="`player-${player.playerSessionId}-${player.isReady}`" class="player-wrapper" :style="{ background: player.color }">
-            <Player :data="player" :isGameStarted="roomState.isGameStarted" />
-          </li>
-        </ul>
+        <div class="players-wrapper">
+          <ul class="players">
+            <li
+              v-for="(player, index) in players"
+              :key="`player-${player.playerSessionId}-${player.isReady}`"
+              class="player-wrapper"
+              :class="{ 'current-turn': roomState.currentTurn === index }"
+            >
+              <Player :data="player" :isStarted="roomState.isGameReady" />
+            </li>
+          </ul>
+        </div>
         <Board
           :board="roomState.board"
-          :harbors="roomState.harbors"
-          :isGameStarted="roomState.isGameStarted"
+          :ready="roomState.isGameReady"
         />
         <aside class="sidebar">
           <GameLog />
           <Chat :messages="chatMessages" />
         </aside>
       </div>
-      <Modal :isOpen="isDisplayModal">
-        <BuildingCosts />
-      </Modal>
+      <Alert v-for="(log, i) in gameLog" :key="i" :text="log" />
     </div>
     <div v-else>
       Not currently connected to any game room.
@@ -62,11 +67,14 @@
   import Board from '@/components/Board';
   import GameLog from '@/components/GameLog';
   import Chat from '@/components/Chat';
+  import Dice from '@/components/Dice';
   import Player from '@/components/Player';
   import Button from '@/components/Button';
-  import Modal from '@/components/Modal';
+  import Icon from '@/components/Icon';
+  import Dialog from '@/components/Dialog';
+  import Alert from '@/components/Alert';
   import BuildingCosts from '@/components/BuildingCosts';
-  import { MESSAGE_CHAT, MESSAGE_GAME_LOG, MESSAGE_READY } from '@/store/constants';
+  import { MESSAGE_CHAT, MESSAGE_GAME_LOG, MESSAGE_READY, MESSAGE_ROLL_DICE, MESSAGE_FINISH_TURN } from '@/store/constants';
 
   export default {
     name: 'GameRoom',
@@ -74,13 +82,17 @@
       Board,
       Chat,
       GameLog,
+      Icon,
       Player,
+      Dice,
       Button,
-      Modal,
+      Dialog,
+      Alert,
       BuildingCosts
     },
     data: () => ({
-      chatMessages: []
+      chatMessages: [],
+      isDisplayDice: false
     }),
     created() {
       if (!this.room) return;
@@ -94,16 +106,19 @@
       this.room.onError(this.onRoomError);
       this.room.onLeave(this.onRoomLeave);
     },
-    updated() {
-      console.log(this.players[0].isReady);
+    destroyed() {
+      this.$store.commit('destroyRoomState');
     },
     computed: {
       room: () => colyseusService.room,
+      myPlayerIndex: function() {
+        return this.players.findIndex(p => p.playerSessionId === colyseusService.room.sessionId);
+      },
       ...mapState([
         'isSelfReady',
-        'isDisplayModal',
         'roomState',
-        'players'
+        'players',
+        'gameLog'
       ])
     },
     methods: {
@@ -138,9 +153,6 @@
       onRoomleave: function() {
         console.info(`${colyseusService.client.id} has left ${this.room.id}`);
       },
-      toggleModal: function() {
-        this.$store.commit('toggleModal');
-      },
       toggleReady: function() {
         this.$store.commit('toggleSelfReady');
 
@@ -152,7 +164,20 @@
         });
       },
       rollDice: function() {
-        console.log('rolled');
+        this.isDisplayDice = true;
+        setTimeout(() => (this.isDisplayDice = false), 3000);
+      },
+      sendDice: function(dice) {
+        colyseusService.room.send({
+          type: MESSAGE_ROLL_DICE,
+          dice
+        });
+
+        // if (this.roomState.isTurnOrderPhase) {
+          colyseusService.room.send({
+            type: MESSAGE_FINISH_TURN
+          });
+        // }
       }
     }
   }
@@ -179,13 +204,20 @@
           display: flex;
 
           .cube {
-            width: 32px;
-            height: 32px;
-            background: yellow;
+            width: 64px;
+            height: 64px;
             border: 1px solid black;
             display: flex;
             justify-content: center;
             align-items: center;
+
+            &.cube-0 {
+              background: rgba(yellow, 0.5);
+            }
+
+            &.cube-1 {
+              background: rgba(red, 0.5);
+            }
           }
         }
       }
@@ -193,7 +225,7 @@
   }
 
   .board-area {
-    background: $tile-water / 2;
+    background: $board-background;
     display: grid;
     grid-template-columns: 20% 60% 20%;
 
@@ -210,14 +242,31 @@
     }
   }
 
-  .players {
+  .players-wrapper {
     height: 100%;
-    display: flex;
-    flex-direction: column;
+    padding-left: $spacer / 2;
+    
+    .players {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  }
 
-    .player-wrapper {
-      // flex: 1;
-      height: 25%;
+  .player-wrapper {
+    // flex: 1;
+    overflow-y: hidden;
+    height: 24%;
+    border-radius: 20px;
+    margin-top: $spacer / 2;
+    background: #B0BEC5;
+
+    &.current-turn {
+      background: red;
+    }
+
+    & + & {
+      border-top: 1px solid gray;
     }
   }
 </style>

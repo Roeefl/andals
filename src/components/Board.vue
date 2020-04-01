@@ -1,14 +1,21 @@
 <template>
-  <div v-if="board" class="board" :class="{ started: isGameStarted }">
+  <div v-if="board" class="board" :class="{ ready }">
     <div class="tiles">
-      <div v-for="(row, i) in tileRows" :key="`row-${i}`" class="row" :class="[row.type]">
+      <div v-for="(row, i) in tileRows" :key="`row-${i}`" class="tile-row" :class="[row.type]">
         <Tile
           v-for="(tile, j) in row.tiles"
           :key="`tile-${i}-${j}`"
           :type="tile"
-          :resourceData="getTileResourceData(tile)"
-          :harborData="getTileHarborData(tile)"
-        />
+          :tile="board[i * 7 + j]"
+        >
+          <Road v-if="roadTiles[i * 2][j * 2]" :placement="roadTileIndexToPlacement[roadTiles[i * 2][j * 2]]"/>
+          <Road v-if="roadTiles[i * 2][j * 2 + 1]" :placement="roadTileIndexToPlacement[roadTiles[i * 2][j * 2 + 1]]"/>
+          <Road v-if="roadTiles[i * 2 + 1][j * 2]" :placement="roadTileIndexToPlacement[roadTiles[i * 2 + 1][j * 2]]"/>
+          <Road v-if="roadTiles[i * 2 + 1][j * 2 + 1]" :placement="roadTileIndexToPlacement[roadTiles[i * 2 + 1][j * 2 + 1]]"/>
+
+          <Structure v-if="structureTiles[i][j * 2]" :placement="structureTileIndexToPlacement[structureTiles[i][j * 2]]" />
+          <Structure v-if="structureTiles[i][j * 2 + 1]" :placement="structureTileIndexToPlacement[structureTiles[i][j * 2 + 1]]" />
+        </Tile>
       </div>
     </div>
   </div>
@@ -19,46 +26,44 @@
 
 <script>
   import Tile from '@/components/Tile';
+  import Road from '@/components/Road';
+  import Structure from '@/components/Structure';
 
   import {
     tileRows,
-    totalResourceTiles, totalWaterTiles,
-    TILE_SPACER, TILE_WATER, TILE_RESOURCE
+    totalResourceTiles,
+    TILE_SPACER, TILE_WATER, TILE_RESOURCE,
+    roadTiles, roadTileIndexToPlacement,
+    structureTiles, structureTileIndexToPlacement
   } from '@/utils/tileManifest';
-  
-  let tileRenderingCounter = -1;
-  let harborRenderingCounter = -1;
 
   export default {
     name: 'Board',
+    components: {
+      Tile,
+      Road,
+      Structure
+    },
     props: {
-      isGameStarted: {
+      ready: {
         type: Boolean,
         default: false
       },
-      board: Array,
-      harbors: Array
+      board: Array
     },
-    components: {
-      Tile
-    },
-    data: () => ({
-      tileRows
-    }),
-    methods: {
-      getTileResourceData: function(tileType) {
-        if (tileType !== TILE_RESOURCE) return {};
+    computed: {
+      TILE_RESOURCE: () => TILE_RESOURCE,
+      tileRows: () => tileRows,
+      roadTiles: () => roadTiles,
+      roadTileIndexToPlacement: () => roadTileIndexToPlacement,
+      structureTiles: () => structureTiles,
+      structureTileIndexToPlacement: () => structureTileIndexToPlacement
+      // tilesMap: function() {
+      //   return this.tileRows.map(row => {
 
-        tileRenderingCounter++;
-        return this.board[(tileRenderingCounter % totalResourceTiles)];
-      },
-      getTileHarborData: function(tileType) {
-        if (tileType !== TILE_WATER) return {};
-
-        harborRenderingCounter++;
-        return this.harbors[(harborRenderingCounter % totalWaterTiles)];
-      }
-    } 
+      //   });
+      // }
+    }
   }
 </script>
 
@@ -66,9 +71,9 @@
   @import '@/styles/partials';
 
   .board {
-    opacity: 0.25;
+    // opacity: 0.4;
 
-    &.started {
+    &.ready {
       opacity: 1;
     }
 
@@ -78,7 +83,7 @@
     }
   }
 
-  .row {
+  .tile-row {
     position: relative;
     
     &.even {

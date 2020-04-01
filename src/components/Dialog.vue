@@ -1,7 +1,14 @@
 <template>
   <v-dialog v-model="isOpen" :width="width">
     <template v-slot:activator="{ on }">
-      <Button :on="on" color="red lightn-2" dark>
+      <Button :on="on" color="purple">
+        <Icon
+          size="x-large"
+          color="white"
+          :name="iconName"
+          v-if="iconName"
+          class="test"
+        />
         {{ buttonText }}
       </Button>
     </template>
@@ -26,16 +33,22 @@
 
 <script>
   import Button from '@/components/Button';
+  import Icon from '@/components/Icon';
 
   export default {
     name: 'Modal',
     components: {
-      Button
+      Button,
+      Icon
     },
     props: {
       buttonText: {
         type: String,
-        default: 'Open'
+        default: ''
+      },
+      iconName: {
+        type: String,
+        default: null
       },
       title: {
         type: String,
@@ -51,3 +64,11 @@
     })
   };
 </script>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  .test {
+    margin-right: $spacer;
+  }
+</style>

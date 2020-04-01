@@ -16,7 +16,7 @@ export default new Vuex.Store({
     },
     isSelfReady: false,
     rooms: [],
-    reservations: [],
+    // reservations: [],
     roomState: {},
     players: [],
     gameLog: []
@@ -31,16 +31,16 @@ export default new Vuex.Store({
     setRooms(state, rooms) {
       state.rooms = rooms || [];
     },
-    addReservation(state, reservation) {
-      state.reservations = [
-        ...state.reservations,
-        reservation
-      ];
-    },
-    removeReservation(state, reservationId) {
-      state.reservations = state.reservations
-        .filter(res => res.id !== reservationId);
-    },
+    // addReservation(state, reservation) {
+    //   state.reservations = [
+    //     ...state.reservations,
+    //     reservation
+    //   ];
+    // },
+    // removeReservation(state, reservationId) {
+    //   state.reservations = state.reservations
+    //     .filter(res => res.id !== reservationId);
+    // },
     updateRoomState(state, roomState) {
       console.info("updateRoomState -> updated roomState: ", roomState)
       state.roomState = roomState;
@@ -50,6 +50,11 @@ export default new Vuex.Store({
       state.players = Object
         .entries(players || {})
         .map(([id, playerInfo]) => playerInfo);
+    },
+    destroyRoomState(state, payload) {
+      state.isSelfReady = false;
+      state.players = [];
+      state.gameLog = [];
     },
     addGameLog(state, log) {
       state.gameLog = [

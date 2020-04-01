@@ -1,39 +1,35 @@
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 32 32"
-    role="presentation"
-    :width="width"
-    :height="height"
-    :aria-labelledby="name"
+  <v-icon
+    :size="size"
+    :color="color"
+    :dark="dark"
   >
-    <title lang="en">
-      {{ name }} icon
-    </title>
-    <g :fill="iconColor">
-      <slot />
-    </g>
-  </svg>
+    {{ `mdi-${name}` }}
+  </v-icon>
 </template>
 
 <script>
+  const sizes = ['x-small', 'small', 'medium', 'large', 'x-large'];
+  const [XS, SM, MD, LG, XL] = sizes;
+
   export default {
+    name: 'Icon',
     props: {
+      size: {
+        type: String,
+        default: MD
+      },
       name: {
         type: String,
-        default: 'none'
+        default: 'account'
       },
-      width: {
-        type: [Number, String],
-        default: 32
+      dark: {
+        type: Boolean,
+        default: false
       },
-      height: {
-        type: [Number, String],
-        default: 32
-      },
-      iconColor: {
+      color: {
         type: String,
-        default: 'currentColor'
+        default: 'blue'
       }
     }
   }

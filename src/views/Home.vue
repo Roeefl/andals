@@ -18,9 +18,6 @@
           <span>
             Players: {{ room.clients }}
           </span>
-          <span>
-            Max Players: {{ room.maxClients }}
-          </span>
           <Button :onClick="() => joinRoom(room.roomId)" :disabled="room.locked">
             Join Room
           </Button>

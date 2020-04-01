@@ -4,47 +4,75 @@
       {{ data.nickname }}
     </div>
     <div class="resources">
-      <div v-for="resourceName in ['settlements', 'cities', 'roads', 'resourceCards']" :key="resourceName" class="resource">
-        <h3 class="name">
-          {{ resourceName }}:
-        </h3>
-        <div class="value">
-          {{ data[resourceName] }}
-          <!-- <Icon name="box" v-for="(resource, i) in Array(data[resourceName])" :key="i">
-            <IconBox />
-          </Icon> -->
-        </div>
+      <div v-for="resourceName in ['settlements', 'cities', 'roads']" :key="resourceName" class="resource">
+        <Button icon>
+          <Icon
+            size="x-large"
+            :color="nameColor"
+            :name="resourceNameToIcon[resourceName]"
+          />
+          <Badge color="purple" :content="data[resourceName]" />
+        </Button>
       </div>
     </div>
-    <div class="ready" v-if="!isGameStarted">
-      <i class="el-icon-circle-check" v-if="data.isReady" />
+    <div class="resources cards">
+      <Button icon v-for="(resource, i) in resourceCardTypes" :key="i" class="resource-card">
+        <Icon
+          size="x-large"
+          :color="resourceCardColors[resource]"
+          :name="resouceCardNameToIcon[resource]"
+        />
+        <Badge :color="resourceCardColors[resource]" content="0" />
+        <!-- resourceCardsCounts[resource] -->
+      </Button>
+    </div>
+    <div class="ready" v-if="!isStarted">
+      <Icon color="green" name="checkbox-marked-circle-outline" v-if="data.isReady" />
     </div>
   </div>
 </template>
 
 <script>
   import invert from 'invert-color';
+  import Button from '@/components/Button';
   import Icon from '@/components/Icon';
-  import IconBox from '@/components/Icons/IconBox';
+  import Badge from '@/components/Badge';
+  import { resourceCardTypes, resourceNameToIcon, resouceCardNameToIcon, resourceCardColors } from '@/utils/tileManifest';
+  import { PLAYER_BG } from '@/utils/colors';
 
   export default {
     name: 'Player',
     components: {
+      Button,
       Icon,
-      IconBox
+      Badge
     },
     props: {
       data: Object,
-      isGameStarted: {
+      isStarted: {
         type: Boolean,
         default: false
       },
     },
     data: () => ({
-      nameColor: ''
+      nameColor: '',
+      resourceCardsCounts: {}
     }),
+    computed: {
+      resourceNameToIcon: () => resourceNameToIcon,
+      resourceCardTypes: () => resourceCardTypes,
+      resourceCardColors: () => resourceCardColors,
+      resouceCardNameToIcon: () => resouceCardNameToIcon
+    },
     created: function() {
-      this.nameColor = invert(this.data.color);
+      this.nameColor = invert(PLAYER_BG);
+
+      this.resourceCardsCounts = this.data.resourceCards
+        .reduce((acc, { type }) => {
+          if (!acc[type]) acc[type] = 0;
+          acc[type]++
+          return acc;
+        }, {});
     }
   }
 </script>
@@ -55,6 +83,7 @@
   .player {
     position: relative;
     padding: $spacer;
+    overflow-y: hidden;
 
     .nickname {
       font-weight: 700;
@@ -64,26 +93,30 @@
       position: absolute;
       top: $spacer;
       right: $spacer;
-      color: white;
-      background: green;
     }
 
     .resources {
       display: flex;
-      flex-direction: column;
 
       .resource {
-        margin-top: $spacer ;
         display: flex;
 
         .name {
           margin-bottom: $spacer;
         }
-
-        .value {
-          color: white;
-        }
       }
+    }
+  }
+
+  .resource {
+    & + & {
+      margin-left: $spacer * 2;
+    }
+  }
+
+  .resource-card {
+    & + & {
+      margin-left: $spacer;
     }
   }
 </style>

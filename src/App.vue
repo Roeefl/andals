@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <div id="app">
+    <div id="app" class="app-wrapper">
       <div id="nav">
         <router-link to="/">Home</router-link>
         <router-link to="/about">About</router-link>
@@ -36,6 +36,10 @@
     // height: 100vh;
     display: flex;
     flex-direction: column;
+
+    ul {
+      padding-left: 0;
+    }
   }
 
   #nav {

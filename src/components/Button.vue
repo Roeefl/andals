@@ -1,5 +1,6 @@
 <template>
   <v-btn
+    :type="type"
     :color="color"
     :disabled="disabled"
     :rounded="rounded"
@@ -15,6 +16,10 @@
   export default {
     name: 'Button',
     props: {
+      type: {
+        type: String,
+        default: 'button'
+      },
       color: {
         type: String,
         default: 'primary'

@@ -10,10 +10,11 @@ $spacer: 12px;
 $primary: #2c3e50;
 $highlighted: #42b983;
 
-$tile-size: 55px;
+$tile-size: 60px;
 $tile-value-size: $tile-size * 0.75;
 $zindex-tile-value: 10;
 
+$board-background: #01579B;
 $tile-water: #2d9cd9;
 $tile-brick: #a0350e;
 $tile-lumber: #214013;
@@ -21,3 +22,6 @@ $tile-desert: #e2aa3a;
 $tile-ore: #7a768c;
 $tile-wheat: #fabc0c;
 $tile-sheep: #7dbe3c;
+$ground: #8D6E63;
+
+$btn-text-transform: uppercase; // Vuetify default
