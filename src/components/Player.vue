@@ -4,14 +4,14 @@
       {{ data.nickname }}
     </div>
     <div class="resources">
-      <div v-for="resourceName in ['settlements', 'cities', 'roads']" :key="resourceName" class="resource">
+      <div v-for="resourceName in ['settlements', 'cities', 'roads', 'gameCards']" :key="resourceName" class="resource">
         <Button icon>
           <Icon
             size="x-large"
             :color="nameColor"
             :name="resourceNameToIcon[resourceName]"
           />
-          <Badge color="purple" :content="data[resourceName]" />
+          <Badge color="purple" :content="resourceName === 'gameCards' ? (data[resourceName].length || '0') : data[resourceName]" />
         </Button>
       </div>
     </div>
