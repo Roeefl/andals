@@ -19,7 +19,6 @@
 <script>
   import {
     harborManifest,
-    TILE_RESOURCE,
     TILE_WATER,
     TILE_SPACER,
     HARBOR_GENERIC,

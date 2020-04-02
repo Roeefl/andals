@@ -1,20 +1,20 @@
 <template>
   <div v-if="board" class="board" :class="{ ready }">
     <div class="tiles">
-      <div v-for="(row, i) in tileRows" :key="`row-${i}`" class="tile-row" :class="[row.type]">
+      <div v-for="(row, i) in hexTileMap" :key="`row-${i}`" class="tile-row" :class="[row.type]">
         <Tile
           v-for="(tile, j) in row.tiles"
           :key="`tile-${i}-${j}`"
           :type="tile"
           :tile="board[i * 7 + j]"
         >
-          <Road v-if="roadTiles[i * 2][j * 2]" :placement="roadTileIndexToPlacement[roadTiles[i * 2][j * 2]]"/>
-          <Road v-if="roadTiles[i * 2][j * 2 + 1]" :placement="roadTileIndexToPlacement[roadTiles[i * 2][j * 2 + 1]]"/>
-          <Road v-if="roadTiles[i * 2 + 1][j * 2]" :placement="roadTileIndexToPlacement[roadTiles[i * 2 + 1][j * 2]]"/>
-          <Road v-if="roadTiles[i * 2 + 1][j * 2 + 1]" :placement="roadTileIndexToPlacement[roadTiles[i * 2 + 1][j * 2 + 1]]"/>
-
-          <Structure v-if="structureTiles[i][j * 2]" :placement="structureTileIndexToPlacement[structureTiles[i][j * 2]]" />
-          <Structure v-if="structureTiles[i][j * 2 + 1]" :placement="structureTileIndexToPlacement[structureTiles[i][j * 2 + 1]]" />
+          <Road v-if="roadTileMap[i * 2][j * 2]" :placement="roadTileTypes[roadTileMap[i * 2][j * 2]]"/>
+          <Road v-if="roadTileMap[i * 2][j * 2 + 1]" :placement="roadTileTypes[roadTileMap[i * 2][j * 2 + 1]]"/>
+          <Road v-if="roadTileMap[i * 2 + 1][j * 2]" :placement="roadTileTypes[roadTileMap[i * 2 + 1][j * 2]]"/>
+          <Road v-if="roadTileMap[i * 2 + 1][j * 2 + 1]" :placement="roadTileTypes[roadTileMap[i * 2 + 1][j * 2 + 1]]"/>
+          
+          <Structure v-if="structureTileMap[i][j * 2]" :placement="structureTileTypes[structureTileMap[i][j * 2]]" />
+          <Structure v-if="structureTileMap[i][j * 2 + 1]" :placement="structureTileTypes[structureTileMap[i][j * 2 + 1]]" />
         </Tile>
       </div>
     </div>
@@ -28,14 +28,9 @@
   import Tile from '@/components/Tile';
   import Road from '@/components/Road';
   import Structure from '@/components/Structure';
-
-  import {
-    tileRows,
-    totalResourceTiles,
-    TILE_SPACER, TILE_WATER, TILE_RESOURCE,
-    roadTiles, roadTileIndexToPlacement,
-    structureTiles, structureTileIndexToPlacement
-  } from '@/utils/tileManifest';
+  import hexTileMap from '@/tilemaps/hexes';
+  import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';
+  import structureTileMap, { types as structureTileTypes } from '@/tilemaps/structures';
 
   export default {
     name: 'Board',
@@ -52,17 +47,11 @@
       board: Array
     },
     computed: {
-      TILE_RESOURCE: () => TILE_RESOURCE,
-      tileRows: () => tileRows,
-      roadTiles: () => roadTiles,
-      roadTileIndexToPlacement: () => roadTileIndexToPlacement,
-      structureTiles: () => structureTiles,
-      structureTileIndexToPlacement: () => structureTileIndexToPlacement
-      // tilesMap: function() {
-      //   return this.tileRows.map(row => {
-
-      //   });
-      // }
+      hexTileMap: () => hexTileMap,
+      roadTileMap: () => roadTileMap,
+      roadTileTypes: () => roadTileTypes,
+      structureTileMap: () => structureTileMap,
+      structureTileTypes: () => structureTileTypes
     }
   }
 </script>
