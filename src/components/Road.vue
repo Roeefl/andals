@@ -1,15 +1,26 @@
 <template>
-  <span class="road" :class="placement" />
+  <Button icon :disabled="!enabled" :onClick="() => $emit('clicked')" class="road" :class="placement" :style="{ background: activeData.color }">
+  </Button>
 </template>
 
 <script>
+  import Button from '@/components/Button';
+
   export default {
     name: 'Road',
+    components: {
+      Button
+    },
     props: {
       placement: {
         type: String,
         default: 'left'
-      }
+      },
+      enabled: {
+        type: Boolean,
+        default: true
+      },
+      activeData: Object
     } 
   }
 </script>
@@ -21,9 +32,9 @@
     z-index: 20;
     position: absolute;
     border-radius: 3px;
-    background-color: $ground;
     height: $tile-size;
     width: 8px;
+    background: $ground;
 
     &.target {
       background-color: transparent;

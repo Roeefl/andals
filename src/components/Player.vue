@@ -1,7 +1,7 @@
 <template>
   <div class="player" :style="{ color: nameColor }">
     <div class="nickname">
-      {{ data.nickname }}
+      {{ player.nickname }}
     </div>
     <div class="resources">
       <div v-for="resourceName in ['settlements', 'cities', 'roads', 'gameCards']" :key="resourceName" class="resource">
@@ -11,7 +11,7 @@
             :color="nameColor"
             :name="resourceNameToIcon[resourceName]"
           />
-          <Badge color="purple" :content="resourceName === 'gameCards' ? (data[resourceName].length || '0') : data[resourceName]" />
+          <Badge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length || '0') : player[resourceName]" />
         </Button>
       </div>
     </div>
@@ -22,12 +22,11 @@
           :color="resourceCardColors[resource]"
           :name="resouceCardNameToIcon[resource]"
         />
-        <Badge :color="resourceCardColors[resource]" content="0" />
-        <!-- resourceCardsCounts[resource] -->
+        <Badge :color="resourceCardColors[resource]" :content="resourceCounts[resource] || '0'" />
       </Button>
     </div>
     <div class="ready" v-if="!isStarted">
-      <Icon color="green" name="checkbox-marked-circle-outline" v-if="data.isReady" />
+      <Icon color="green" name="checkbox-marked-circle-outline" v-if="player.isReady" />
     </div>
   </div>
 </template>
@@ -48,31 +47,22 @@
       Badge
     },
     props: {
-      data: Object,
+      player: Object,
+      resourceCounts: Object,
       isStarted: {
         type: Boolean,
         default: false
       },
     },
     data: () => ({
-      nameColor: '',
-      resourceCardsCounts: {}
+      nameColor: ''
     }),
-    computed: {
-      resourceNameToIcon: () => resourceNameToIcon,
-      resourceCardTypes: () => resourceCardTypes,
-      resourceCardColors: () => resourceCardColors,
-      resouceCardNameToIcon: () => resouceCardNameToIcon
-    },
     created: function() {
       this.nameColor = invert(PLAYER_BG);
-
-      this.resourceCardsCounts = this.data.resourceCards
-        .reduce((acc, { type }) => {
-          if (!acc[type]) acc[type] = 0;
-          acc[type]++
-          return acc;
-        }, {});
+      this.resourceNameToIcon = resourceNameToIcon;
+      this.resourceCardTypes = resourceCardTypes;
+      this.resourceCardColors = resourceCardColors;
+      this.resouceCardNameToIcon = resouceCardNameToIcon;
     }
   }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="building-costs">
-    <section class="section" v-for="section in sections" :key="section.type">
-      <div class="info">
+    <section class="resource-type" v-for="section in buildingCosts" :key="section.type">
+      <div class="description">
         <h3>
           {{ section.type }}
         </h3>
@@ -10,14 +10,22 @@
         </span>
       </div>
       <div class="cost">
-
+        <span v-for="resource in resourceCardTypes" :key="resource">
+          <Icon
+            v-for="(icon, i) in Array(section[resource] || 0).fill(resource)"
+            :key="i"
+            size="x-large"
+            :name="resouceCardNameToIcon[resource]"
+            :color="resourceCardColors[resource]"
+          />
+        </span>
       </div>
     </section>
     <footer>
-      <h5>
+      <h5 class="paragraph">
         A city replaces an already-built settlement.
       </h5>
-      <h5>
+      <h5 class="paragraph">
         Usually, you only play 1 Development Card per turn, and you cannot play a Development Card on the same turn you fetched it.
       </h5>
     </footer>
@@ -25,41 +33,22 @@
 </template>
 
 <script>
+  import Icon from '@/components/Icon';
+  import { resourceCardTypes, resourceNameToIcon, resouceCardNameToIcon, resourceCardColors } from '@/utils/tileManifest';
+  import buildingCosts from '@/utils/buildingCosts';
+
   export default {
     name: 'BuildingCosts',
-    // components: {
-    // },
-    data: () => ({
-      sections: [
-        {
-          type: 'road',
-          vp: 0,
-          lumber: 1,
-          brick: 1
-        },
-        {
-          type: 'settlement',
-          vp: 1,
-          lumber: 1,
-          brick: 1,
-          wheat: 1,
-          sheep: 1
-        },
-        {
-          type: 'city',
-          vp: 2,
-          wheat: 2,
-          ore: 3
-        },
-        {
-          type: 'card',
-          vp: 0,
-          sheep: 1,
-          wheat: 1,
-          ore: 1
-        }
-      ]
-    })
+    components: {
+      Icon
+    },
+    created() {
+      this.buildingCosts = buildingCosts;
+      this.resourceNameToIcon = resourceNameToIcon;
+      this.resourceCardTypes = resourceCardTypes;
+      this.resourceCardColors = resourceCardColors;
+      this.resouceCardNameToIcon = resouceCardNameToIcon;
+    }
   }
 </script>
 
@@ -69,17 +58,27 @@
   .building-costs {
     padding: $spacer / 2;
 
-    .section {
-      display: flex;
+    .resource-type {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
 
-      .info {
+      border-bottom: 1px solid gray;
+      margin: $spacer / 2 0;
+      padding: $spacer / 2 0;
+
+      .description {
         display: flex;
         flex-direction: column;
 
         .vp {
-          font-size: $font-size-xs;
+          font-size: $font-size-sm;
         }
       }
     }
+  }
+
+  .paragraph {
+    margin: $spacer / 3 0;
+    padding: $spacer / 3 0;
   }
 </style>

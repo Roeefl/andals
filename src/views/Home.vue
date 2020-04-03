@@ -3,48 +3,29 @@
     <Button :onClick="createRoom">
       Create Room
     </Button>
-    <div class="rooms-list">
-      <h2 class="header">
-        Room List
-      </h2>
-      <ul>
-        <li v-for="room in this.rooms" :key="room.roomId" class="room">
-          <span>
-            Room ID: {{ room.roomId }}
-          </span>
-          <span>
-            Room Name: {{ room.name }}
-          </span>
-          <span>
-            Players: {{ room.clients }}
-          </span>
-          <Button :onClick="() => joinRoom(room.roomId)" :disabled="room.locked">
-            Join Room
-          </Button>
-        </li>
-      </ul>
-    </div>
+    <RoomsList :rooms="rooms" @join="joinRoom($event)" />
   </main>
 </template>
 
 <script>
   import { mapState } from 'vuex'
-  import axios from 'axios';
   import router from '@/router';
   import colyseusService from '@/services/colyseus';
+  import RoomsList from '@/components/RoomsList';
   import Button from '@/components/Button';
 
   export default {
     name: 'Home',
     components: {
+      RoomsList,
       Button
     },
     async created() {
       this.fetchRooms();
     },
     computed: mapState([
-      'rooms',
-      'profile'
+      'profile',
+      'rooms'
     ]),
     methods: {
       fetchRooms: async function() {

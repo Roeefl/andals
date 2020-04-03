@@ -4,6 +4,7 @@
     :color="color"
     :disabled="disabled"
     :rounded="rounded"
+    :outlined="outlined"
     :icon="icon"
     @click="onClick"
     v-on="on"
@@ -29,6 +30,10 @@
         default: false
       },
       rounded: {
+        type: Boolean,
+        default: false
+      },
+      outlined: {
         type: Boolean,
         default: false
       },

@@ -1,24 +1,36 @@
 <template>
   <v-app>
     <div id="app" class="app-wrapper">
-      <div id="nav">
-        <router-link to="/">Home</router-link>
-        <router-link to="/about">About</router-link>
-        <router-link to="/room">Game Room</router-link>
-        <router-link to="/settings">Settings</router-link>
-      </div>
+      <header id="header">
+        <router-link to="/">firstmen.io</router-link>
+        <div id="nav">
+          <router-link to="/rooms">Rooms</router-link>
+          <router-link to="/room">Game Room</router-link>
+          <router-link to="/settings">Settings</router-link>
+          <router-link to="/about">About</router-link>
+        </div>
+      </header>
       <div id="page">
         <router-view />
       </div>
+      <Alert v-for="(alert, i) in alerts" :key="i" :text="alert" />
     </div>
   </v-app>
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
+  import Alert from '@/components/Alert';
   
   export default {
     name: 'App',
+    components: {
+      Alert
+    },
+    computed: mapState([
+      'alerts'
+    ]),
     async beforeCreate() {
       await colyseusService.init();
     }
@@ -42,11 +54,13 @@
     }
   }
 
-  #nav {
+  #header {
     padding: $spacer * 2;
-    // width: 100%;
     display: flex;
-    justify-content: center;
+
+    #nav {
+      margin-left: $spacer * 4;
+    }
 
     a {
       font-weight: bold;

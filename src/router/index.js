@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '@/views/Home.vue';
+import Home from '@/views/Home';
 import GameRoom from '@/views/GameRoom';
 import Settings from '@/views/Settings';
 
@@ -10,6 +10,11 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    component: Home
+  },
+  {
+    path: '/rooms',
+    name: 'Rooms',
     component: Home
   },
   {

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="isOpen"
+    :value="true"
     hide-overlay
     persistent
     width="300"
@@ -22,7 +22,6 @@
       Icon
     },
     data: () => ({
-      isOpen: true,
       dice: [4, 3]
     }),
     mounted: function() {

@@ -9,7 +9,7 @@
           <BuildingCosts />
         </Dialog>
         <div class="dice" v-if="roomState.isGameReady">
-          <Button color="success" :onClick="rollDice" :disabled="roomState.currentTurn !== myPlayerIndex">
+          <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn">
             Roll Dice
           </Button>
           <Dice v-if="isDisplayDice" @finished="sendDice($event)"/>
@@ -17,6 +17,9 @@
             <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
           </div>
         </div>
+        <Button color="red" :onClick="finishTurn" :disabled="!isMyTurn">
+          End Turn
+        </Button>
         <Button
           v-if="!roomState.isGameReady"
           :color="isSelfReady ? 'red' : 'green'"
@@ -40,20 +43,28 @@
               class="player-wrapper"
               :class="{ 'current-turn': roomState.currentTurn === index }"
             >
-              <Player :data="player" :isStarted="roomState.isGameReady" />
+              <Player :player="player" :resourceCounts="player.resourceCounts" :isStarted="roomState.isGameReady" />
             </li>
           </ul>
         </div>
         <Board
           :board="roomState.board"
           :ready="roomState.isGameReady"
+          :started="roomState.isGameStarted"
+          :isMyTurn="isMyTurn"
+          @tile-clicked="onTileClick($event)"
         />
         <aside class="sidebar">
           <GameLog />
           <Chat :messages="chatMessages" />
         </aside>
       </div>
-      <Alert v-for="(log, i) in gameLog" :key="i" :text="log" />
+      <ConfirmMove
+        :type="activeTile.type"
+        :isOpen="isDisplayConfirmMove"
+        @yes="onTileBuild(true)"
+        @no="onTileBuild(false)"
+      />
     </div>
     <div v-else>
       Not currently connected to any game room.
@@ -72,9 +83,20 @@
   import Button from '@/components/Button';
   import Icon from '@/components/Icon';
   import Dialog from '@/components/Dialog';
-  import Alert from '@/components/Alert';
   import BuildingCosts from '@/components/BuildingCosts';
-  import { MESSAGE_CHAT, MESSAGE_GAME_LOG, MESSAGE_READY, MESSAGE_ROLL_DICE, MESSAGE_FINISH_TURN } from '@/store/constants';
+  import ConfirmMove from '@/components/ConfirmMove';
+
+  import {
+    MESSAGE_CHAT,
+    MESSAGE_GAME_LOG,
+    MESSAGE_READY,
+    MESSAGE_ROLL_DICE,
+    MESSAGE_FINISH_TURN,
+    MESSAGE_PLACE_STRUCTURE,
+    MESSAGE_PLACE_ROAD,
+    CHAT_LOG_SIMPLE,
+    CHAT_LOG_DICE 
+  } from '@/store/constants';
 
   export default {
     name: 'GameRoom',
@@ -87,12 +109,16 @@
       Dice,
       Button,
       Dialog,
-      Alert,
-      BuildingCosts
+      BuildingCosts,
+      ConfirmMove
     },
     data: () => ({
       chatMessages: [],
-      isDisplayDice: false
+      isDisplayDice: false,
+      isDisplayConfirmMove: false,
+      activeTile: {
+        type: 'road'
+      }
     }),
     created() {
       if (!this.room) return;
@@ -111,14 +137,16 @@
     },
     computed: {
       room: () => colyseusService.room,
-      myPlayerIndex: function() {
-        return this.players.findIndex(p => p.playerSessionId === colyseusService.room.sessionId);
+      isMyTurn: function() {
+        const myPlayerIndex = this.players
+          .findIndex(p => p.playerSessionId === colyseusService.room.sessionId);
+
+        return this.roomState.currentTurn === myPlayerIndex
       },
       ...mapState([
         'isSelfReady',
         'roomState',
-        'players',
-        'gameLog'
+        'players'
       ])
     },
     methods: {
@@ -139,8 +167,14 @@
             ];
             break;
 
+          case MESSAGE_ROLL_DICE:
+            const { playerName, dice } = broadcast;
+            this.$store.commit('addGameLog', { type: CHAT_LOG_DICE, playerName, dice });
+            break;
+
           case MESSAGE_GAME_LOG:
-            this.$store.commit('addGameLog', message);
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+            this.$store.commit('addAlert', message);
             break;
             
           default:
@@ -155,8 +189,6 @@
       },
       toggleReady: function() {
         this.$store.commit('toggleSelfReady');
-
-        console.log('sending ready');
         
         colyseusService.room.send({
           type: MESSAGE_READY,
@@ -173,11 +205,32 @@
           dice
         });
 
-        // if (this.roomState.isTurnOrderPhase) {
+        if (this.roomState.isTurnOrderPhase) {
           colyseusService.room.send({
             type: MESSAGE_FINISH_TURN
           });
-        // }
+        }
+      },
+      onTileClick: function(tile) {
+        this.activeTile = tile;
+        this.isDisplayConfirmMove = true;
+      },
+      onTileBuild: function(approved) {
+        this.isDisplayConfirmMove = false;
+        if (!approved) return;
+
+        const { type, row, col } = this.activeTile;
+        
+        colyseusService.room.send({
+          type: type === 'road' ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
+          row,
+          col
+        })
+      },
+      finishTurn: function() {
+        colyseusService.room.send({
+          type: MESSAGE_FINISH_TURN
+        });
       }
     }
   }

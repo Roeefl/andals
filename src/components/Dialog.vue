@@ -12,32 +12,21 @@
         {{ buttonText }}
       </Button>
     </template>
-    <v-card>
-      <v-card-title
-        class="headline grey lighten-2"
-        primary-title
-      >
-        {{ title }}
-      </v-card-title>
+    <Card :title="title" :onAction="() => isOpen = false" :onCancel="() => isOpen = false">
       <slot />
-      <v-divider />
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <Button text :onClick="() => isOpen = false">
-          Okey
-        </Button>
-      </v-card-actions>
-    </v-card>
+    </Card>
   </v-dialog>
 </template>
 
 <script>
+  import Card from '@/components/Card';
   import Button from '@/components/Button';
   import Icon from '@/components/Icon';
 
   export default {
     name: 'Modal',
     components: {
+      Card,
       Button,
       Icon
     },
@@ -56,7 +45,7 @@
       },
       width: {
         type: Number,
-        default: 500
+        default: 400
       }
     },
     data: () => ({

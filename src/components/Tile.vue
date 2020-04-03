@@ -44,12 +44,12 @@
         }
       }
     },
-    computed: {
-      harborTypes: () => harborManifest,
-      TILE_WATER: () => TILE_WATER,
-      HARBOR_GENERIC: () => HARBOR_GENERIC,
-      resourceCardColors: () => resourceCardColors,
-      resouceCardNameToIcon: () => resouceCardNameToIcon
+    created() {
+      this.harborTypes = harborManifest;
+      this.TILE_WATER = TILE_WATER;
+      this.HARBOR_GENERIC = HARBOR_GENERIC;
+      this.resourceCardColors = resourceCardColors;
+      this.resouceCardNameToIcon = resouceCardNameToIcon;
     }
   }
 </script>
@@ -89,7 +89,7 @@
 
     &.spacer {
       opacity: 0;
-      opacity: 0.4;
+      // opacity: 0.4;
     }
 
     &.water {
