@@ -6,14 +6,13 @@
         <div id="nav">
           <router-link to="/rooms">Rooms</router-link>
           <router-link to="/room">Game Room</router-link>
-          <router-link to="/settings">Settings</router-link>
           <router-link to="/about">About</router-link>
         </div>
       </header>
       <div id="page">
         <router-view />
       </div>
-      <Alert v-for="(alert, i) in alerts" :key="i" :text="alert" />
+      <GameAlert v-for="(alert, i) in alerts" :key="i" :text="alert" />
     </div>
   </v-app>
 </template>
@@ -21,12 +20,12 @@
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
-  import Alert from '@/components/Alert';
+  import GameAlert from '@/components/GameAlert';
   
   export default {
     name: 'App',
     components: {
-      Alert
+      GameAlert
     },
     computed: mapState([
       'alerts'
@@ -44,8 +43,6 @@
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     color: $primary;
-    // width: 100vw;
-    // height: 100vh;
     display: flex;
     flex-direction: column;
 

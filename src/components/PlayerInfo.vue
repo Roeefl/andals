@@ -11,19 +11,12 @@
             :color="nameColor"
             :name="resourceNameToIcon[resourceName]"
           />
-          <Badge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length || '0') : player[resourceName]" />
+          <NumberBadge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length || '0') : player[resourceName]" />
         </Button>
       </div>
     </div>
     <div class="resources cards">
-      <Button icon v-for="(resource, i) in resourceCardTypes" :key="i" class="resource-card">
-        <Icon
-          size="x-large"
-          :color="resourceCardColors[resource]"
-          :name="resouceCardNameToIcon[resource]"
-        />
-        <Badge :color="resourceCardColors[resource]" :content="resourceCounts[resource] || '0'" />
-      </Button>
+      <ResourceCard v-for="(resource, i) in resourceCardTypes" :key="i" :resource="resource" :count="resourceCounts[resource] || '0'" class="resource-card" />
     </div>
     <div class="ready" v-if="!isStarted">
       <Icon color="green" name="checkbox-marked-circle-outline" v-if="player.isReady" />
@@ -33,22 +26,34 @@
 
 <script>
   import invert from 'invert-color';
+  
+  import { resourceCardTypes, resourceNameToIcon } from '@/utils/tileManifest';
+  import { PLAYER_BG } from '@/utils/colors';
+  
   import Button from '@/components/Button';
   import Icon from '@/components/Icon';
-  import Badge from '@/components/Badge';
-  import { resourceCardTypes, resourceNameToIcon, resouceCardNameToIcon, resourceCardColors } from '@/utils/tileManifest';
-  import { PLAYER_BG } from '@/utils/colors';
+  import ResourceCard from '@/components/ResourceCard';
+  import NumberBadge from '@/components/NumberBadge';
 
   export default {
-    name: 'Player',
+    name: 'PlayerInfo.vue',
     components: {
       Button,
       Icon,
-      Badge
+      ResourceCard,
+      NumberBadge
     },
     props: {
-      player: Object,
-      resourceCounts: Object,
+      player: {
+        type: Object,
+        required: true
+      },
+      resourceCounts: {
+        type: Object,
+        default: function() {
+          return {};
+        }
+      },
       isStarted: {
         type: Boolean,
         default: false
@@ -61,8 +66,6 @@
       this.nameColor = invert(PLAYER_BG);
       this.resourceNameToIcon = resourceNameToIcon;
       this.resourceCardTypes = resourceCardTypes;
-      this.resourceCardColors = resourceCardColors;
-      this.resouceCardNameToIcon = resouceCardNameToIcon;
     }
   }
 </script>

@@ -1,38 +1,44 @@
 <template>
-  <div class="messages">
-    <h2>
-      Chat Messages
-    </h2>
-    <form class="form" @submit="sendMessage">
-      <input v-model="newMessage" placeholder="Say hello..." />
-      <Button type="submit" :disabled="!newMessage.length">
-        Send
-      </Button>
-    </form>
-    <ul>
+  <div class="wrapper">
+    <MessageList title="Chat Messages" :messages="messages" class="messages">
       <li v-for="(msg, i) in messages" :key="i">
-        <div class="message">
+        <div>
           {{ msg.sender }}: {{ msg.message }}
         </div>
       </li>
-    </ul>
+    </MessageList>
+    <form @submit="sendMessage" class="new-message">
+      <TextField dark :value="newMessage" @input="newMessage = $event" label="Say hi..." />
+      <Button type="submit" color="success" :disabled="!newMessage.length">
+        Send
+      </Button>
+    </form>
   </div>
 </template>
 
 <script>
   import colyseusService from '@/services/colyseus';
   import { MESSAGE_CHAT } from '@/store/constants';
+
+  import MessageList from '@/components/MessageList';
   import Button from '@/components/Button';
+  import TextField from '@/components/TextField';
 
   export default {
-    name: 'Chat',
+    name: 'GameChat',
     components: {
-      Button
+      MessageList,
+      Button,
+      TextField
     },
     props: {
       messages: {
         type: Array,
         default: []
+      },
+      myPlayerSessionId: {
+        type: String,
+        required: true
       }
     },
     data: () => ({
@@ -46,22 +52,30 @@
           type: MESSAGE_CHAT,
           message: this.newMessage
         });
+
         this.newMessage = '';
-      },
+      }
     }
   }
 </script>
 
 <style scoped lang="scss">
-  .messages { 
+  .wraper {
     display: flex;
     flex-direction: column;
-    color: white;
-    max-height: 320px;
-    overflow-y: auto;
+    
+    .messages {
+      flex: 3;
+    }
 
-    .form {
+    .new-message {
+      flex: 1;
       display: flex;
+      align-items: center;
+
+      & > * {
+        margin: 0 $spacer;
+      }
     }
   }
 </style>

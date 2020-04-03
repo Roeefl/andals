@@ -4,7 +4,7 @@
     persistent
     width="400"
   >
-   <Card :title="`Confirm: ${type}`" :onAction="() => $emit('yes')" :onCancel="() => $emit('no')">
+   <ActionCard :title="`Confirm: ${type}`" @cancel="$emit('no')" @approve="$emit('yes')">
     Build {{ type }} for:
     <div class="cost">
       <span v-for="resource in resourceCardTypes" :key="resource">
@@ -17,20 +17,20 @@
         />
       </span>
     </div>
-  </Card>
+  </ActionCard>
   </v-dialog>
 </template>
 
 <script>
-  import Card from '@/components/Card';
-  import Icon from '@/components/Icon';
   import buildingCosts from '@/utils/buildingCosts';
   import { resourceCardTypes, resourceNameToIcon, resouceCardNameToIcon, resourceCardColors } from '@/utils/tileManifest';
+  import ActionCard from '@/components/ActionCard';
+  import Icon from '@/components/Icon';
 
   export default {
     name: 'ConfirmMove',
     components: {
-      Card,
+      ActionCard,
       Icon
     },
     props: {
@@ -40,7 +40,7 @@
       },
       type: {
         type: String,
-        default: 'settlement'
+        required: true
       }
     },
     created() {

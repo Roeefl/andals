@@ -9,31 +9,31 @@
           v-if="iconName"
           class="test"
         />
-        {{ buttonText }}
+        {{ buttonText || title }}
       </Button>
     </template>
-    <Card :title="title" :onAction="() => isOpen = false" :onCancel="() => isOpen = false">
+    <ActionCard :title="title" @cancel="onCancel" @approve="onApprove">
       <slot />
-    </Card>
+    </ActionCard>
   </v-dialog>
 </template>
 
 <script>
-  import Card from '@/components/Card';
+  import ActionCard from '@/components/ActionCard';
   import Button from '@/components/Button';
   import Icon from '@/components/Icon';
 
   export default {
-    name: 'Modal',
+    name: 'ChoiceDialog',
     components: {
-      Card,
+      ActionCard,
       Button,
       Icon
     },
     props: {
       buttonText: {
         type: String,
-        default: ''
+        default: null
       },
       iconName: {
         type: String,
@@ -50,7 +50,17 @@
     },
     data: () => ({
       isOpen: false
-    })
+    }),
+    methods: {
+      onCancel: function() {
+        this.isOpen = false;
+        this.$emit('cancel');
+      },
+      onApprove: function() {
+        this.isOpen = false;
+        this.$emit('approve');
+      }
+    }
   };
 </script>
 

@@ -11,14 +11,14 @@
   import Button from '@/components/Button';
 
   export default {
-    name: 'Alert',
+    name: 'GameAlert',
     components: {
       Button
     },
     props: {
       text: {
         type: String,
-        default: 'Alert'
+        requireD: true
       },
       timeout: {
         type: Number,

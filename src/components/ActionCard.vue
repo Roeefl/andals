@@ -1,19 +1,19 @@
 <template>
   <v-card>
     <v-card-title
-      class="headline grey lighten-2"
       primary-title
+      class="headline grey lighten-2"
     >
       {{ title }}
     </v-card-title>
     <slot />
     <v-divider />
     <v-card-actions>
-      <Button text :onClick="onCancel">
+      <Button text :onClick="() => $emit('cancel')">
         Cancel
       </Button>
       <v-spacer />
-      <Button text :onClick="onAction">
+      <Button text :onClick="() => $emit('approve')">
         Okey
       </Button>
     </v-card-actions>
@@ -24,7 +24,7 @@
   import Button from '@/components/Button';
 
   export default {
-    name: 'Card',
+    name: 'ActionCard',
     components: {
       Button
     },
@@ -32,14 +32,6 @@
       title: {
         type: String,
         default: 'Card Title'
-      },
-      onAction: {
-        type: Function,
-        default: () => {}
-      },
-      onCancel: {
-        type: Function,
-        default: () => {}
       }
     } 
   }

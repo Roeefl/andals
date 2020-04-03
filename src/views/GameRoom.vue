@@ -2,52 +2,21 @@
   <div class="room">
     <div v-if="this.room" class="inner">
       <h2 class="header">
-        You are in a game room | ID: {{ room.id }} | Name: {{ room.name }} | SessionID: {{ room.sessionId }}
+        You are in room {{ room.id }} | Your PlayerSessionID is: {{ room.sessionId }}
       </h2>
-      <div class="control">
-        <Dialog iconName="wrench" buttonText="Building Costs" title="Building Costs">
-          <BuildingCosts />
-        </Dialog>
-        <div class="dice" v-if="roomState.isGameReady">
-          <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn">
-            Roll Dice
-          </Button>
-          <Dice v-if="isDisplayDice" @finished="sendDice($event)"/>
-          <div v-for="(diceValue, i) in roomState.dice" :key="i" class="cube" :class="`cube-${i}`">
-            <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
-          </div>
-        </div>
-        <Button color="red" :onClick="finishTurn" :disabled="!isMyTurn">
-          End Turn
-        </Button>
-        <Button
-          v-if="!roomState.isGameReady"
-          :color="isSelfReady ? 'red' : 'green'"
-          :onClick="toggleReady"
-          class="ready"
-        >
-          <span v-if="isSelfReady">
-            Not Ready
-          </span>
-          <span v-else>
-            Ready!
-          </span>
-        </Button>
-      </div>
+      <ControlPanel
+        :isMyTurn="isMyTurn"
+        @toggle-ready="toggleReady"
+        @dice-finished="sendDice($event)"
+        @end-turn="finishTurn"
+      />
       <div class="board-area">
-        <div class="players-wrapper">
-          <ul class="players">
-            <li
-              v-for="(player, index) in players"
-              :key="`player-${player.playerSessionId}-${player.isReady}`"
-              class="player-wrapper"
-              :class="{ 'current-turn': roomState.currentTurn === index }"
-            >
-              <Player :player="player" :resourceCounts="player.resourceCounts" :isStarted="roomState.isGameReady" />
-            </li>
-          </ul>
-        </div>
-        <Board
+        <PlayersList
+          :players="players"
+          :isGameReady="roomState.isGameReady"
+          :currentTurn="roomState.currentTurn"
+        />
+        <GameBoard
           :board="roomState.board"
           :ready="roomState.isGameReady"
           :started="roomState.isGameStarted"
@@ -56,7 +25,7 @@
         />
         <aside class="sidebar">
           <GameLog />
-          <Chat :messages="chatMessages" />
+          <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
         </aside>
       </div>
       <ConfirmMove
@@ -75,15 +44,13 @@
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
-  import Board from '@/components/Board';
-  import GameLog from '@/components/GameLog';
-  import Chat from '@/components/Chat';
-  import Dice from '@/components/Dice';
-  import Player from '@/components/Player';
-  import Button from '@/components/Button';
-  import Icon from '@/components/Icon';
-  import Dialog from '@/components/Dialog';
-  import BuildingCosts from '@/components/BuildingCosts';
+
+  import ControlPanel from '@/containers/ControlPanel';
+  import GameBoard from '@/containers/GameBoard';
+  import GameChat from '@/containers/GameChat';
+  import GameLog from '@/containers/GameLog';
+  
+  import PlayersList from '@/components/PlayersList';
   import ConfirmMove from '@/components/ConfirmMove';
 
   import {
@@ -101,20 +68,15 @@
   export default {
     name: 'GameRoom',
     components: {
-      Board,
-      Chat,
+      ControlPanel,
+      GameBoard,
+      GameChat,
       GameLog,
-      Icon,
-      Player,
-      Dice,
-      Button,
-      Dialog,
-      BuildingCosts,
+      PlayersList,
       ConfirmMove
     },
     data: () => ({
       chatMessages: [],
-      isDisplayDice: false,
       isDisplayConfirmMove: false,
       activeTile: {
         type: 'road'
@@ -145,6 +107,7 @@
       },
       ...mapState([
         'isSelfReady',
+        'myPlayer',
         'roomState',
         'players'
       ])
@@ -157,13 +120,18 @@
         this.$store.commit('updateRoomState', updatedRoomState);
       },
       onBroadcastReceived: function(broadcast) {
-        const { type, sender, message } = broadcast;
+        const {
+          type,
+          sender,
+          senderSessionId,
+          message
+        } = broadcast;
 
         switch (type) {
           case MESSAGE_CHAT:
             this.chatMessages = [
               ...this.chatMessages,
-              { sender, message }
+              broadcast
             ];
             break;
 
@@ -194,10 +162,6 @@
           type: MESSAGE_READY,
           message: true
         });
-      },
-      rollDice: function() {
-        this.isDisplayDice = true;
-        setTimeout(() => (this.isDisplayDice = false), 3000);
       },
       sendDice: function(dice) {
         colyseusService.room.send({
@@ -248,32 +212,6 @@
       .header {
         margin-bottom: $spacer * 2;
       }
-
-      .control {
-        display: flex;
-        justify-content: space-evenly;
-
-        .dice {
-          display: flex;
-
-          .cube {
-            width: 64px;
-            height: 64px;
-            border: 1px solid black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            &.cube-0 {
-              background: rgba(yellow, 0.5);
-            }
-
-            &.cube-1 {
-              background: rgba(red, 0.5);
-            }
-          }
-        }
-      }
     }
   }
 
@@ -283,6 +221,7 @@
     grid-template-columns: 20% 60% 20%;
 
     .sidebar {
+      background: #5E35B1;
       border-left: 1px solid gray;
       padding-left: $spacer / 2;
       height: 100%;
@@ -291,35 +230,12 @@
 
       & > * {
         flex: 1;
+        max-height: 35vh; // @FIXME: not like this
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        color: white;
       }
-    }
-  }
-
-  .players-wrapper {
-    height: 100%;
-    padding-left: $spacer / 2;
-    
-    .players {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-  }
-
-  .player-wrapper {
-    // flex: 1;
-    overflow-y: hidden;
-    height: 24%;
-    border-radius: 20px;
-    margin-top: $spacer / 2;
-    background: #B0BEC5;
-
-    &.current-turn {
-      background: red;
-    }
-
-    & + & {
-      border-top: 1px solid gray;
     }
   }
 </style>

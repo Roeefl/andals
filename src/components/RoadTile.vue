@@ -7,20 +7,25 @@
   import Button from '@/components/Button';
 
   export default {
-    name: 'Road',
+    name: 'RoadTile',
     components: {
       Button
     },
     props: {
       placement: {
         type: String,
-        default: 'left'
+        required: true
       },
       enabled: {
         type: Boolean,
         default: true
       },
-      activeData: Object
+      activeData: {
+        type: Object,
+        default: function() {
+          return {};
+        }
+      }
     } 
   }
 </script>

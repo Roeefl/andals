@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: 'Badge',
+    name: 'NumberBadge',
     props: {
       color: {
         type: String,

@@ -31,21 +31,44 @@ export default new Vuex.Store({
   },
   mutations: {
     updateProfile(state, profile) {
-      state.profile = profile;
-      
+      // Vue.set(state, 'profile', profile);
       const { color, nickname } = profile;
+
+      state.profile = {
+        ...state.profile,
+        color,
+        nickname
+      };
+    },
+    syncProfile(state) {
+      const { color, nickname } = state.profile;
+
       if (color) localStorage.setColor(color);
       if (nickname) localStorage.setNickname(nickname);
+    },
+    revertProfile(state) {
+      const color = localStorage.getColor();
+      const nickname = localStorage.getNickname();
+
+      state.profile = {
+        color,
+        nickname 
+      };
     },
     toggleSelfReady(state) {
       state.isSelfReady = !state.isSelfReady;
     },
     setRooms(state, rooms) {
-      state.rooms = rooms || [];
+      state.rooms = [
+        ...rooms 
+      ];
     },
     updateRoomState(state, roomState) {
       console.info("updateRoomState -> updated roomState: ", roomState)
-      state.roomState = roomState;
+      state.roomState = {
+        ...roomState,
+        lastUpdated: Date.now()
+      };
       
       const { players = {} } = roomState;
 
@@ -54,8 +77,11 @@ export default new Vuex.Store({
         .map(([id, playerInfo]) => playerInfo);
 
       const myPlayer = state.players.find(({ playerSessionId }) => playerSessionId === colyseusService.room.sessionId);
-      state.myPlayer = myPlayer;
-      console.log("updateRoomState -> myPlayer", myPlayer)
+
+      state.myPlayer = {
+        ...myPlayer,
+        lastUpdated: Date.now()
+      };
       
       const updatedStructures = [
         ...initialActiveStructures
@@ -71,7 +97,9 @@ export default new Vuex.Store({
         };
       });
 
-      state.activeStructures = updatedStructures;
+      state.activeStructures = [
+        ...updatedStructures
+      ];
 
       const updatedRoads = [
         ...initialActiveRoads
@@ -86,15 +114,23 @@ export default new Vuex.Store({
         };
       });
 
-      state.activeRoads = updatedRoads;
+      state.activeRoads = [
+        ...updatedRoads
+      ];
     },
-    destroyRoomState(state, payload) {
+    destroyRoomState(state) {
       state.isSelfReady = false;
+      
       state.players = [];
       state.gameLog = [];
       state.myPlayer = {};
-      state.activeStructures = initialActiveStructures;
-      state.activeRoads = initialActiveRoads;
+
+      state.activeStructures = [
+        ...initialActiveStructures
+      ];
+      state.activeRoads = [
+        ...initialActiveRoads
+      ];
     },
     addGameLog(state, log) {
       state.gameLog = [

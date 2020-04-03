@@ -15,13 +15,13 @@
   export default {
     name: 'Icon',
     props: {
+      name: {
+        type: String,
+        required: true
+      },
       size: {
         type: String,
         default: MD
-      },
-      name: {
-        type: String,
-        default: 'account'
       },
       dark: {
         type: Boolean,

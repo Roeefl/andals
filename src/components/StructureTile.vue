@@ -17,25 +17,26 @@
   };
 
   export default {
-    name: 'Road',
+    name: 'StructureTile',
     components: {
       Button,
       Icon
     },
     props: {
-      type: {
-        type: String,
-        default: 'settlement'
-      },
       placement: {
         type: String,
-        default: 'top'
+        required: true
       },
       enabled: {
         type: Boolean,
         default: true
       },
-      activeData: Object
+      activeData: {
+        type: Object,
+        default: function() {
+          return {};
+        }
+      }
     },
     created() {
       this.iconNames = iconNames;

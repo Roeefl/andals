@@ -17,6 +17,11 @@
       return {
         color: this.initialColor
       }
-    }
+    },
+    watch: {
+      initialColor: function(newColor, oldColor) {
+        if (newColor !== this.color) this.color = newColor; // reverted
+      }
+    },
   }
 </script>

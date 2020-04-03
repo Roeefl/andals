@@ -29,18 +29,23 @@
   import Icon from '@/components/Icon';
 
   export default {
-    name: 'Tile',
+    name: 'HexTile',
     components: {
       Icon,
     },
     props: {
-      type: String,
+      type: {
+        type: String,
+        required: true
+      },
       tile: {
         type: Object,
-        default: {
-          type: TILE_WATER,
-          resource: null,
-          value: 0
+        default: function() {
+          return {
+            type: TILE_WATER,
+            resource: null,
+            value: 0
+          };
         }
       }
     },

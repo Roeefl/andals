@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '@/views/Home';
 import GameRoom from '@/views/GameRoom';
-import Settings from '@/views/Settings';
 
 Vue.use(VueRouter)
 
@@ -29,11 +28,6 @@ const routes = [
     path: '/room',
     name: 'Room',
     component: GameRoom
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: Settings
   }
 ]
 

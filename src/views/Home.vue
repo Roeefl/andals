@@ -3,6 +3,9 @@
     <Button :onClick="createRoom">
       Create Room
     </Button>
+    <ChoiceDialog iconName="wrench" title="Customize Player" @approve="saveProfile" @cancel="revertProfile">
+      <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
+    </ChoiceDialog>
     <RoomsList :rooms="rooms" @join="joinRoom($event)" />
   </main>
 </template>
@@ -11,14 +14,19 @@
   import { mapState } from 'vuex'
   import router from '@/router';
   import colyseusService from '@/services/colyseus';
+  
   import RoomsList from '@/components/RoomsList';
   import Button from '@/components/Button';
+  import ChoiceDialog from '@/components/ChoiceDialog';
+  import CustomizePlayer from '@/components/CustomizePlayer';
 
   export default {
     name: 'Home',
     components: {
       RoomsList,
-      Button
+      Button,
+      ChoiceDialog,
+      CustomizePlayer
     },
     async created() {
       this.fetchRooms();
@@ -49,6 +57,15 @@
         } catch (err) {
           console.error(err);
         }
+      },
+      updateProfile: function(updatedProfile) {
+        this.$store.commit('updateProfile', updatedProfile);
+      },
+      saveProfile: function() {
+        this.$store.commit('syncProfile');
+      },
+      revertProfile: function() {
+        this.$store.commit('revertProfile');
       }
     }
   }
