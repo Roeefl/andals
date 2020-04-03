@@ -5,7 +5,7 @@
     </ChoiceDialog>
     <ResourceCounts :counts="roomState.resourceCounts" />
     <div class="dice" v-if="roomState.isGameReady">
-      <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn">
+      <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled">
         Roll Dice
       </Button>
       <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
@@ -13,7 +13,7 @@
         <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
       </div>
     </div>
-    <Button color="red" :onClick="() => $emit('end-turn')" :disabled="!isMyTurn">
+    <Button color="red" :onClick="() => $emit('end-turn')" :disabled="roomState.isTurnOrderPhase || !isMyTurn">
       End Turn
     </Button>
     <Button

@@ -8,14 +8,12 @@ import initialActiveRoads from '@/tilemaps/initialActiveRoads';
 Vue.use(Vuex);
 
 const initialNickname = 'Jhon Doe';
-const randomInt = Math.floor(Math.random() * 9999);
-
 const initialColor = '#2c3e50';
 
 export default new Vuex.Store({
   state: {
     profile: {
-      nickname: localStorage.getNickname() || `${initialNickname} ${randomInt}`,
+      nickname: localStorage.getNickname() || initialNickname,
       color: localStorage.getColor() || initialColor
     },
     isSelfReady: false,
@@ -86,6 +84,8 @@ export default new Vuex.Store({
       const updatedStructures = [
         ...initialActiveStructures
       ];
+
+      console.log(roomState.structures);
 
       roomState.structures.forEach(({ type, ownerId, row, col }) => {
         const owner = state.players.find(({ playerSessionId }) => playerSessionId === ownerId) || {};

@@ -1,6 +1,11 @@
+export const pluralTypes = ['roads', 'settlements', 'cities', 'gameCards'];
+
+export const types = ['road', 'settlement', 'city', 'gameCard'];
+const [ROAD, SETTLEMENT, CITY, GAMECARD] = types;
+
 export default {
   road: {
-    type: 'road',
+    type: ROAD,
     vp: 0,
     lumber: 1,
     brick: 1,
@@ -9,7 +14,7 @@ export default {
     wheat: 0
   },
   settlement: {
-    type: 'settlement',
+    type: SETTLEMENT,
     vp: 1,
     lumber: 1,
     brick: 1,
@@ -18,7 +23,7 @@ export default {
     ore: 0
   },
   city: {
-    type: 'city',
+    type: CITY,
     vp: 2,
     wheat: 2,
     ore: 3,
@@ -26,7 +31,7 @@ export default {
     brick: 0
   },
   gameCard: {
-    type: 'development card',
+    type: GAMECARD,
     vp: '?',
     sheep: 1,
     wheat: 1,

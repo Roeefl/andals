@@ -1,4 +1,5 @@
 export const types = {
+  0: 'hide',
   1: 'top-left',
   2: 'top-right',
   3: 'left',

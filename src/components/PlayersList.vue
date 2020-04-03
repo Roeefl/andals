@@ -62,7 +62,7 @@
     background: #B0BEC5;
 
     &.current-turn {
-      background: red;
+      background: lightgreen;
     }
 
     & + & {

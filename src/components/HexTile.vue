@@ -104,7 +104,7 @@
     &.resource {
       &.brick   {   background: $tile-brick;    }
       &.lumber  {   background: $tile-lumber;   }
-      &.desert  {   background: $tile-desert;   }
+      &.desert  {   background: yellow;   }
       &.ore     {   background: $tile-ore;      }
       &.wheat   {   background: $tile-wheat;    }
       &.sheep   {   background: $tile-sheep;    }

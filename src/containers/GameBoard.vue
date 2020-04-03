@@ -9,50 +9,23 @@
           :tile="board[i * 7 + j]"
         >
           <RoadTile
-            v-if="roadTileMap[i * 2][j * 2]"
-            :placement="roadTileTypes[roadTileMap[i * 2][j * 2]]"
-            :enabled="hasResourcesRoad"
-            @clicked="$emit('tile-clicked', { type: 'road', row: i * 2, col: j * 2 })"
-            :activeData="activeRoads[i * 2][j * 2] || {}"
+            v-for="([row, col]) in [[i * 2, j * 2], [i * 2, j * 2 + 1], [i * 2 + 1, j * 2], [i * 2 + 1, j * 2 + 1]]"
+            :key="`road-tile-${row}-${col}`"
+            v-show="roadTileMap[row][col]"
+            :placement="roadTileTypes[roadTileMap[row][col]]"
+            :enabled="isRoadPurchaseEnabled"
+            @clicked="$emit('tile-clicked', { type: 'road', row, col })"
+            :activeData="activeRoads[row][col] || {}"
           />
-          <RoadTile
-            v-if="roadTileMap[i * 2][j * 2 + 1]"
-            :placement="roadTileTypes[roadTileMap[i * 2][j * 2 + 1]]"
-            :enabled="hasResourcesRoad"
-            @clicked="$emit('tile-clicked', { type: 'road', row: i * 2, col: j * 2 + 1 })"
-            :activeData="activeRoads[i * 2][j * 2 + 1] || {}"
+          <StructureTile
+            v-for="([row, col]) in [[i, j * 2], [i, j * 2 + 1]]"
+            :key="`structure-tile-${row}-${col}`"
+            v-show="structureTileMap[row][col]"
+            :placement="structureTileTypes[structureTileMap[row][col]]" 
+            :enabled="isSettlementPurchaseEnabled"
+            @clicked="$emit('tile-clicked', { type: 'settlement', row, col })"
+            :activeData="activeStructures[row][col] || {}"
           />
-          <RoadTile
-            v-if="roadTileMap[i * 2 + 1][j * 2]"
-            :placement="roadTileTypes[roadTileMap[i * 2 + 1][j * 2]]"
-            :enabled="hasResourcesRoad"
-            @clicked="$emit('tile-clicked', { type: 'road', row: i * 2 + 1, col: j * 2 })"
-            :activeData="activeRoads[i * 2 + 1][j * 2] || {}"
-          />
-          <RoadTile
-            v-if="roadTileMap[i * 2 + 1][j * 2 + 1]"
-            :placement="roadTileTypes[roadTileMap[i * 2 + 1][j * 2 + 1]]"
-            :enabled="hasResourcesRoad"
-            @clicked="$emit('tile-clicked', { type: 'road', row: i * 2 + 1, col: j * 2 + 1 })"
-            :activeData="activeRoads[i * 2 + 1 ][j * 2 + 1] || {}"
-          />
-
-          <fragment v-if="started && isMyTurn">
-            <StructureTile
-              v-if="structureTileMap[i][j * 2]"
-              :placement="structureTileTypes[structureTileMap[i][j * 2]]" 
-              :enabled="hasResourcesStructure"
-              @clicked="$emit('tile-clicked', { type: 'settlement', row: i, col: j * 2 })"
-              :activeData="activeStructures[i][j * 2] || {}"
-            />
-            <StructureTile
-              v-if="structureTileMap[i][j * 2 + 1]"
-              :placement="structureTileTypes[structureTileMap[i][j * 2 + 1]]"
-              :enabled="hasResourcesStructure"
-              @clicked="$emit('tile-clicked', { type: 'settlement', row: i, col: j * 2 + 1 })"
-              :activeData="activeStructures[i][j * 2 + 1] || {}"
-            />
-          </fragment>
         </HexTile>
       </div>
     </div>
@@ -86,7 +59,7 @@
         type: Boolean,
         default: false
       },
-      started: {
+      isSetupPhase: {
         type: Boolean,
         default: false
       },
@@ -94,25 +67,24 @@
         type: Boolean,
         default: false
       },
+      isDiceRolled: {
+        type: Boolean,
+        default: false
+      },
       board: Array
     },
-    data: () => ({
-      hasResourcesRoad: false,
-      hasResourcesStructure: false
-    }),
-    computed: mapState([
-      'activeStructures',
-      'activeRoads',
-      'myPlayer'
-    ]),
-    updated() {
-      const { resourceCounts = {} } = this.myPlayer;
-
-      this.hasResourcesRoad = Object.entries(resourceCounts)
-        .every(([resourceName, value]) => value >= buildingCosts.road[resourceName]);
-
-      this.hasResourcesStructure = Object.entries(resourceCounts)
-        .every(([resourceName, value]) => value >= buildingCosts.settlement[resourceName]);
+    computed: {
+      isRoadPurchaseEnabled: function() {
+        return this.isMyTurn && this.myPlayer.hasResources.road && (this.isDiceRolled || this.isSetupPhase);
+      },
+      isSettlementPurchaseEnabled: function() {
+        return this.isMyTurn && this.myPlayer.hasResources.settlement && (this.isDiceRolled || this.isSetupPhase);
+      },
+      ...mapState([
+        'activeStructures',
+        'activeRoads',
+        'myPlayer'
+      ])
     },
     created() {
       this.hexTileMap = hexTileMap;
@@ -120,7 +92,7 @@
       this.roadTileTypes = roadTileTypes;
       this.structureTileMap = structureTileMap;
       this.structureTileTypes = structureTileTypes;
-    }
+    },
   }
 </script>
 

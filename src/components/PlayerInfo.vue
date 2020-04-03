@@ -4,7 +4,7 @@
       {{ player.nickname }}
     </div>
     <div class="resources">
-      <div v-for="resourceName in ['settlements', 'cities', 'roads', 'gameCards']" :key="resourceName" class="resource">
+      <div v-for="resourceName in purchaseTypes" :key="resourceName" class="resource">
         <Button icon>
           <Icon
             size="x-large"
@@ -28,6 +28,7 @@
   import invert from 'invert-color';
   
   import { resourceCardTypes, resourceNameToIcon } from '@/utils/tileManifest';
+  import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
   import { PLAYER_BG } from '@/utils/colors';
   
   import Button from '@/components/Button';
@@ -64,6 +65,7 @@
     }),
     created: function() {
       this.nameColor = invert(PLAYER_BG);
+      this.purchaseTypes = purchaseTypes;
       this.resourceNameToIcon = resourceNameToIcon;
       this.resourceCardTypes = resourceCardTypes;
     }

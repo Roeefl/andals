@@ -24,9 +24,13 @@ export const harborManifest = {
 };
 
 export const resourceNameToIcon = {
-  settlements: 'home',
-  cities: 'city',
+  road: 'road',
   roads: 'road',
+  settlement: 'home',
+  settlements: 'home',
+  city: 'city',
+  cities: 'city',
+  gameCard: 'cards',
   gameCards: 'cards'
 };
 

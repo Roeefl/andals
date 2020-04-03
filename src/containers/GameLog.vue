@@ -4,7 +4,7 @@
       <div v-if="log.type === CHAT_LOG_SIMPLE">
         {{ log.message }}
       </div>
-      <div v-if="log.type === CHAT_LOG_DICE" class="log">
+      <div v-if="log.type === CHAT_LOG_DICE">
         {{ log.playerName }} rolls:
         <Icon v-for="(diceValue, i) in log.dice" :key="`cube-${i}`" size="20px" :color="!i ? 'yellow' : 'red'" :name="`dice-${diceValue}`" />
       </div>

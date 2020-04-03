@@ -19,7 +19,8 @@
         <GameBoard
           :board="roomState.board"
           :ready="roomState.isGameReady"
-          :started="roomState.isGameStarted"
+          :isDiceRolled="roomState.isDiceRolled"
+          :isSetupPhase="roomState.isSetupPhase"
           :isMyTurn="isMyTurn"
           @tile-clicked="onTileClick($event)"
         />
