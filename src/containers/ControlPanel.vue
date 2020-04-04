@@ -1,34 +1,44 @@
 <template>
   <div class="control">
-    <ChoiceDialog iconName="wrench" title="Building Costs">
-      <BuildingCosts />
-    </ChoiceDialog>
-    <ResourceCounts :counts="roomState.resourceCounts" />
-    <div class="dice" v-if="roomState.isGameReady">
-      <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled">
-        Roll Dice
-      </Button>
-      <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
-      <div v-for="(diceValue, i) in roomState.dice" :key="i" class="cube" :class="`cube-${i}`">
-        <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
+    <div class="actions">
+      <ChoiceDialog iconName="wrench" title="Building Costs">
+        <BuildingCosts />
+      </ChoiceDialog>
+      <ResourceCounts :counts="roomState.resourceCounts" />
+      <div class="dice" v-if="roomState.isGameReady">
+        <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled">
+          Roll Dice
+        </Button>
+        <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
+        <div v-for="(diceValue, i) in roomState.dice" :key="i" class="cube" :class="`cube-${i}`">
+          <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
+        </div>
       </div>
+      <Button color="red" :onClick="() => $emit('end-turn')" :disabled="roomState.isTurnOrderPhase || !isMyTurn">
+        End Turn
+      </Button>
+      <Button
+        v-if="!roomState.isGameReady"
+        :color="isSelfReady ? 'red' : 'green'"
+        :onClick="() => $emit('toggle-ready')"
+        class="ready"
+      >
+        <span v-if="isSelfReady">
+          Not Ready
+        </span>
+        <span v-else>
+          Ready!
+        </span>
+      </Button>
     </div>
-    <Button color="red" :onClick="() => $emit('end-turn')" :disabled="roomState.isTurnOrderPhase || !isMyTurn">
-      End Turn
-    </Button>
-    <Button
-      v-if="!roomState.isGameReady"
-      :color="isSelfReady ? 'red' : 'green'"
-      :onClick="() => $emit('toggle-ready')"
-      class="ready"
-    >
-      <span v-if="isSelfReady">
-        Not Ready
+    <div class="room-stats">
+      <span>
+        You are in: {{ roomState.roomTitle }}
       </span>
-      <span v-else>
-        Ready!
+      <span>
+        Your PlayerSessionID is: {{ myPlayer.playerSessionId }}
       </span>
-    </Button>
+    </div>
   </div>
 </template>
 
@@ -60,6 +70,7 @@
     },
     computed: mapState([
       'roomState',
+      'myPlayer',
       'isSelfReady'
     ]),
     data: () => ({
@@ -83,30 +94,42 @@
 
   .control {
     display: flex;
+    justify-content: space-between;
 
-    & > * {
-      margin-left: $spacer * 3;
-    }
-
-    .dice {
+    .actions {
       display: flex;
 
-      .cube {
-        width: 64px;
-        height: 64px;
-        border: 1px solid black;
+      & > * {
+        margin-left: $spacer * 3;
+      }
+
+      .dice {
         display: flex;
-        justify-content: center;
-        align-items: center;
 
-        &.cube-0 {
-          background: rgba(yellow, 0.5);
-        }
+        .cube {
+          width: 64px;
+          height: 64px;
+          border: 1px solid black;
+          display: flex;
+          justify-content: center;
+          align-items: center;
 
-        &.cube-1 {
-          background: rgba(red, 0.5);
+          &.cube-0 {
+            background: rgba(yellow, 0.5);
+          }
+
+          &.cube-1 {
+            background: rgba(red, 0.5);
+          }
         }
       }
+    }
+
+    .room-stats {
+      border: 1px solid black;
+      padding: 0 $spacer;
+      display: flex;
+      flex-direction: column;
     }
   }
 </style>

@@ -75,7 +75,15 @@
     },
     computed: {
       isRoadPurchaseEnabled: function() {
-        return this.isMyTurn && this.myPlayer.hasResources.road && (this.isDiceRolled || this.isSetupPhase);
+        const isRoadAdjacentToOwnedStructure = true;
+
+
+        return (
+          this.isMyTurn &&
+          this.myPlayer.hasResources.road &&
+          (this.isSetupPhase || this.isDiceRolled) &&
+          this.isRoadAdjacentToOwnedStructure
+        );
       },
       isSettlementPurchaseEnabled: function() {
         return this.isMyTurn && this.myPlayer.hasResources.settlement && (this.isDiceRolled || this.isSetupPhase);

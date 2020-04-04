@@ -85,8 +85,6 @@ export default new Vuex.Store({
         ...initialActiveStructures
       ];
 
-      console.log(roomState.structures);
-
       roomState.structures.forEach(({ type, ownerId, row, col }) => {
         const owner = state.players.find(({ playerSessionId }) => playerSessionId === ownerId) || {};
         

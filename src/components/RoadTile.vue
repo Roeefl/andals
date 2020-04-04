@@ -1,6 +1,12 @@
 <template>
-  <Button icon :disabled="!enabled" :onClick="() => $emit('clicked')" class="road" :class="placement" :style="{ background: activeData.color }">
-  </Button>
+  <Button
+    icon
+    :disabled="!enabled"
+    :onClick="() => $emit('clicked')"
+    class="road"
+    :class="[placement, { 'enabled': enabled }]"
+    :style="{ background: activeData.color }"
+  />
 </template>
 
 <script>
@@ -34,20 +40,19 @@
   @import '@/styles/partials';
 
   .road {
+    background: $ground;
     z-index: 20;
     position: absolute;
     border-radius: 3px;
     height: $tile-size;
     width: 8px;
-    background: $ground;
 
-    &.target {
-      background-color: transparent;
-      position: absolute;
-      border: 2px dashed black;
+    &.enabled {
+      background: transparent;
+      border: 1px dashed black;
 
       &:hover {
-        background-color: yellow;
+        background: yellow;
       }
     }
 

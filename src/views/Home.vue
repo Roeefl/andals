@@ -1,11 +1,16 @@
 <template>
   <main class="home">
-    <Button :onClick="createRoom">
-      Create Room
-    </Button>
-    <ChoiceDialog iconName="wrench" title="Customize Player" @approve="saveProfile" @cancel="revertProfile">
-      <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
-    </ChoiceDialog>
+    <div class="actions">
+      <ChoiceDialog iconName="plus-circle" title="Create Room" @approve="createRoom">
+        <CustomizeRoom :roomTitle="roomTitle" @saved="roomTitle = $event" />
+      </ChoiceDialog>
+      <Button iconName="refresh-circle" :onClick="refreshRooms">
+        Refresh List
+      </Button>
+      <ChoiceDialog iconName="wrench" title="Customize Player" @approve="saveProfile" @cancel="revertProfile">
+        <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
+      </ChoiceDialog>
+    </div>
     <RoomsList :rooms="rooms" @join="joinRoom($event)" />
   </main>
 </template>
@@ -19,6 +24,7 @@
   import Button from '@/components/Button';
   import ChoiceDialog from '@/components/ChoiceDialog';
   import CustomizePlayer from '@/components/CustomizePlayer';
+  import CustomizeRoom from '@/components/CustomizeRoom';
 
   export default {
     name: 'Home',
@@ -26,7 +32,8 @@
       RoomsList,
       Button,
       ChoiceDialog,
-      CustomizePlayer
+      CustomizePlayer,
+      CustomizeRoom
     },
     async created() {
       this.fetchRooms();
@@ -35,19 +42,51 @@
       'profile',
       'rooms'
     ]),
+    data: function() {
+      const randomInt = Math.floor(Math.random() * 9999);
+      
+      return {
+        roomTitle: `Room ${randomInt}`,
+        autoRefresh: null
+      };
+    },
+    mounted: function() {
+      this.autoRefresh = setInterval(
+        () => this.fetchRooms(),
+        5 * 1000
+      );
+    },
+    destroyed: function() {
+      clearInterval(this.autoRefresh);
+    },
     methods: {
       fetchRooms: async function() {
         const rooms = await colyseusService.listRooms();
         this.$store.commit('setRooms', rooms);
       },
+      refreshRooms: async function() {
+        await this.fetchRooms();
+        this.$store.commit('addAlert', 'Rooms list refreshed');
+      },
       createRoom: async function() {
-       return this.joinRoom(null);
+        try {
+          const options = {
+            roomTitle: this.roomTitle,
+            ...this.profile
+          };
+
+          const room = await colyseusService.createRoom(options);
+
+          colyseusService.setRoom(room);
+          router.push('/room');
+        } catch (err) {
+          console.error(err);
+        }
       },
       joinRoom: async function (roomId) {
         try {
           const options = {
-            nickname: this.profile.nickname,
-            color: this.profile.color
+            ...this.profile
           };
 
           const room = await colyseusService.joinById(roomId, options);
@@ -74,29 +113,16 @@
 <style scoped lang="scss">
  @import '@/styles/partials';
 
-  .rooms-list {
-    width: 30%;
-    padding: $spacer;
+  .home {
     display: flex;
     flex-direction: column;
 
-    .header {
-      margin-bottom: $spacer;
-    }
-  }
+    .actions {
+      display: flex;
 
-  .room {
-    border: 1px solid black;
-    padding: $spacer;
-    display: flex;
-    flex-direction: column;
-  
-    & + & {
-      margin-top: $spacer * 2;
-    }
-
-    & > * {
-      margin-bottom: $spacer / 2;
+      & > * {
+        margin-right: $spacer;
+      }
     }
   }
 </style>

@@ -1,9 +1,6 @@
 <template>
   <div class="room">
     <div v-if="this.room" class="inner">
-      <h2 class="header">
-        You are in room {{ room.id }} | Your PlayerSessionID is: {{ room.sessionId }}
-      </h2>
       <ControlPanel
         :isMyTurn="isMyTurn"
         @toggle-ready="toggleReady"
@@ -209,10 +206,6 @@
 
     .inner {
       flex: 1;
-
-      .header {
-        margin-bottom: $spacer * 2;
-      }
     }
   }
 

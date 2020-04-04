@@ -9,13 +9,19 @@
     @click="onClick"
     v-on="on"
   >
-    <slot></slot>
+    <Icon v-if="iconName" :color="iconColor" :name="iconName" class="button-icon" />
+    <slot />
   </v-btn>
 </template>
 
 <script>
+  import Icon from '@/components/Icon';
+  
   export default {
     name: 'Button',
+    components: {
+      Icon
+    },
     props: {
       type: {
         type: String,
@@ -41,6 +47,14 @@
         type: Boolean,
         default: false
       },
+      iconName: {
+        type: String,
+        default: null
+      },
+      iconColor: {
+        type: String,
+        default: 'white'
+      },
       onClick: {
         type: Function,
         default: () => {}
@@ -51,5 +65,9 @@
 </script>
 
 <style scoped lang="scss">
+  @import '@/styles/partials';
 
+  .button-icon {
+    margin-right: $spacer / 2;
+  }
 </style>
