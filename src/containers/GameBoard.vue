@@ -105,7 +105,7 @@
           .flat()
           .filter(structure => !!structure && structure.ownerId && structure.ownerId === this.myPlayer.playerSessionId)
           .map(({ row: sRow, col: sCol }) => {
-            const structureTile = structureTileMap[sRow][sCol]; // 'top' === 1 or 'top-left' === 2
+            const structureTile = structureTileMap[sRow][sCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
 
             if (!structureTile) return false;
 
@@ -113,16 +113,45 @@
               ? [[sRow * 2 - 1, sCol - 1], [sRow * 2, sCol - 1], [sRow * 2, sCol]] // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
               : [[sRow * 2, sCol - 1], [sRow * 2, sCol], [sRow * 2 + 1, sCol]]     // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
 
-            return intersections.some(([rRow, rCol]) => rRow === row && rCol === col);
+            return intersections.some(([iRow, iCol]) => iRow === row && iCol === col);
           });
 
-        return isAllowedPerStructure.some(r => r);
+        const isAllowedPerRoad = this.activeRoads
+          .flat()
+          .filter(road => !!road && road.ownerId && road.ownerId === this.myPlayer.playerSessionId)
+          .map(({ row: sRow, col: sCol }) => {
+            const roadTile = roadTileMap[sRow][sCol];
+            // 0: 'hide', 1: 'top-left', 2: 'top-right', 3: 'left', 4: 'right'
 
-        // return isAdjacentToStructure;
-        // adjcent roads are:
-        // X-AXIS BEFORE AND AFTER - ALWAYS [2, 3], [2, 5]
-        // Y-AXIS: [1, 3], [1, 4] AND [3, 3] [3, 4]
-        // this.activeRoads;
+            if (!roadTile) return false;
+
+            let intersections = [];
+            switch (roadTile) {
+              // road: [6, 6], type: 1 || intersecting roads: [6, 5], [6, 7], [5, 6], [7, 6]
+              case 1:
+                intersections = [[sRow, sCol - 1], [sRow, sCol + 1], [sRow - 1, sCol], [sRow + 1, sCol]];
+                break;
+
+              // road: [6, 7], type: 2 || intersecting roads: [6, 6], [6, 8], [5, 5], [7, 7]
+              case 2:
+                intersections = [[sRow, sCol - 1], [sRow, sCol + 1], [sRow - 1, sCol - 2], [sRow + 1, sCol]];
+                break;
+
+              // road: [7, 7], type: 3 || intersecting roads: [6, 6], [6, 7], [8, 5], [8, 6]
+              case 3:
+                intersections = [[sRow - 1, sCol - 1], [sRow - 1, sCol], [sRow + 1, sCol - 2], [sRow + 1, sCol - 1]];
+                break;
+
+              // road: [9, 9], type: 4 || intersecting roads: [8, 9], [8, 10], [10, 10], [10, 11]
+              case 4:
+                intersections = [[sRow - 1, sCol], [sRow - 1, sCol + 1], [sRow + 1, sCol + 1], [sRow + 1, sCol + 2]];
+                break;
+            }
+
+            return intersections.some(([iRow, iCol]) => iRow === row && iCol === col);
+          });
+
+        return isAllowedPerStructure.some(s => s) || isAllowedPerRoad.some(r => r);
       }
     }
   }
