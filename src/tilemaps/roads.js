@@ -3,7 +3,7 @@ export const types = {
   1: 'top-left',
   2: 'top-right',
   3: 'left',
-  4: 'right',
+  4: 'right'
   // 5: 'bottom-left',
   // 6: 'bottom-right'
 };

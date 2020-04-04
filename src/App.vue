@@ -2,7 +2,9 @@
   <v-app>
     <div id="app" class="app-wrapper">
       <header id="header">
-        <router-link to="/">firstmen.io</router-link>
+        <router-link to="/">
+          <img src="./assets/logo.png" alt="logo" />
+        </router-link>
         <div id="nav">
           <router-link to="/rooms">Rooms</router-link>
           <router-link to="/room">Game Room</router-link>
