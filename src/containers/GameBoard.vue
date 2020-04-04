@@ -11,7 +11,7 @@
           <RoadTile
             v-for="([row, col]) in [[i * 2, j * 2], [i * 2, j * 2 + 1], [i * 2 + 1, j * 2], [i * 2 + 1, j * 2 + 1]]"
             :key="`road-tile-${row}-${col}`"
-            v-show="roadTileMap[row][col]"
+            v-if="roadTileMap[row][col]"
             :placement="roadTileTypes[roadTileMap[row][col]]"
             :enabled="isRoadPurchaseEnabled && isRoadAllowed(row, col)"
             @clicked="$emit('tile-clicked', { type: 'road', row, col })"
@@ -21,7 +21,7 @@
           <StructureTile
             v-for="([row, col]) in [[i, j * 2], [i, j * 2 + 1]]"
             :key="`structure-tile-${row}-${col}`"
-            v-show="structureTileMap[row][col]"
+            v-if="structureTileMap[row][col]"
             :placement="structureTileTypes[structureTileMap[row][col]]" 
             :enabled="isSettlementPurchaseEnabled"
             @clicked="$emit('tile-clicked', { type: 'settlement', row, col })"
@@ -109,10 +109,12 @@
 
             if (!structureTile) return false;
 
+            // @TODO: For even/odd rows, need to allocate sRow * 2 - 1 or sRow * 2 + 1 , not sure in which order
             const intersections = structureTile === 1 // 'top' ?
               ? [[sRow * 2 - 1, sCol - 1], [sRow * 2, sCol - 1], [sRow * 2, sCol]] // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
               : [[sRow * 2, sCol - 1], [sRow * 2, sCol], [sRow * 2 + 1, sCol]]     // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
 
+            if (row === 7 && col === 2) console.log(sRow, sCol, intersections);
             return intersections.some(([iRow, iCol]) => iRow === row && iCol === col);
           });
 
@@ -129,7 +131,7 @@
             switch (roadTile) {
               // road: [6, 6], type: 1 || intersecting roads: [6, 5], [6, 7], [5, 6], [7, 6]
               case 1:
-                intersections = [[sRow, sCol - 1], [sRow, sCol + 1], [sRow - 1, sCol], [sRow + 1, sCol]];
+                intersections = [[sRow, sCol - 1], [sRow, sCol + 1], [sRow - 1, sCol + 2], [sRow + 1, sCol]];
                 break;
 
               // road: [6, 7], type: 2 || intersecting roads: [6, 6], [6, 8], [5, 5], [7, 7]
@@ -139,7 +141,7 @@
 
               // road: [7, 7], type: 3 || intersecting roads: [6, 6], [6, 7], [8, 5], [8, 6]
               case 3:
-                intersections = [[sRow - 1, sCol - 1], [sRow - 1, sCol], [sRow + 1, sCol - 2], [sRow + 1, sCol - 1]];
+                intersections = [[sRow - 1, sCol], [sRow - 1, sCol - 1], [sRow + 1, sCol], [sRow + 1, sCol + 1]];
                 break;
 
               // road: [9, 9], type: 4 || intersecting roads: [8, 9], [8, 10], [10, 10], [10, 11]

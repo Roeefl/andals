@@ -1,6 +1,11 @@
 <template>
   <div class="room">
     <div v-if="this.room" class="inner">
+      <div class="loot">
+        <div v-for="player in players" :key="player.nickname">
+          {{ player.availableLoot }}
+        </div>
+      </div>
       <ControlPanel
         :isMyTurn="isMyTurn"
         @toggle-ready="toggleReady"
@@ -10,6 +15,7 @@
       <div class="board-area">
         <PlayersList
           :players="players"
+          :myPlayerIndex="myPlayerIndex"
           :isGameReady="roomState.isGameReady"
           :currentTurn="roomState.currentTurn"
         />
@@ -97,11 +103,12 @@
     },
     computed: {
       room: () => colyseusService.room,
-      isMyTurn: function() {
-        const myPlayerIndex = this.players
+      myPlayerIndex: function() {
+        return this.players
           .findIndex(p => p.playerSessionId === colyseusService.room.sessionId);
-
-        return this.roomState.currentTurn === myPlayerIndex
+      },
+      isMyTurn: function() {
+        return this.roomState.currentTurn === this.myPlayerIndex
       },
       ...mapState([
         'isSelfReady',

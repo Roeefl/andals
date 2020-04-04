@@ -37,6 +37,9 @@
 
   export default {
     name: 'BuildingCosts',
+    components: {
+      ResourceCard
+    },
     created() {
       this.buildingCosts = buildingCosts;
       this.resourceNameToIcon = resourceNameToIcon;

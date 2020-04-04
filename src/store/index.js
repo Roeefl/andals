@@ -23,7 +23,9 @@ export default new Vuex.Store({
     activeStructures: initialActiveStructures,
     activeRoads: initialActiveRoads,
     players: [],
-    myPlayer: {},
+    myPlayer: {
+      hasResources: {}
+    },
     gameLog: [],
     alerts: []
   },
@@ -70,9 +72,13 @@ export default new Vuex.Store({
       
       const { players = {} } = roomState;
 
-      state.players = Object
+      const updatedPlayers = Object
         .entries(players || {})
         .map(([id, playerInfo]) => playerInfo);
+
+      state.players = [
+        ...updatedPlayers
+      ];
 
       const myPlayer = state.players.find(({ playerSessionId }) => playerSessionId === colyseusService.room.sessionId);
 
@@ -110,7 +116,9 @@ export default new Vuex.Store({
         
         updatedRoads[row][col] = {
           ownerId,
-          color: owner.color
+          color: owner.color,
+          row,
+          col
         };
       });
 
@@ -123,7 +131,9 @@ export default new Vuex.Store({
       
       state.players = [];
       state.gameLog = [];
-      state.myPlayer = {};
+      state.myPlayer = {
+        hasResources: {}
+      };
 
       state.activeStructures = [
         ...initialActiveStructures

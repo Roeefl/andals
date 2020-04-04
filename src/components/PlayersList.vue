@@ -7,6 +7,9 @@
         class="player-wrapper"
         :class="{ 'current-turn': currentTurn === index }"
       >
+        <div v-if="myPlayerIndex === index" class="yourself">
+          YOU
+        </div>
         <PlayerInfo :player="player" :resourceCounts="player.resourceCounts" :isStarted="isGameReady" />
       </li>
     </ul>
@@ -33,6 +36,10 @@
       isGameReady: {
         type: Boolean,
         default: false
+      },
+      myPlayerIndex: {
+        type: Number,
+        required: true
       }
     }
   }
@@ -60,13 +67,20 @@
     border-radius: 20px;
     margin-top: $spacer / 2;
     background: #B0BEC5;
+    position: relative;
 
     &.current-turn {
-      background: lightgreen;
+      box-shadow: 4px 4px 10px 10px lightgreen;
     }
 
     & + & {
       border-top: 1px solid gray;
+    }
+
+    .yourself {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 </style>
