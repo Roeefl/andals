@@ -4,8 +4,8 @@ export const types = {
   2: 'top-right',
   3: 'left',
   4: 'right',
-  5: 'bottom-left',
-  6: 'bottom-right'
+  // 5: 'bottom-left',
+  // 6: 'bottom-right'
 };
 
 // 14 rows x 14 columns

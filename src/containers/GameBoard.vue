@@ -13,9 +13,10 @@
             :key="`road-tile-${row}-${col}`"
             v-show="roadTileMap[row][col]"
             :placement="roadTileTypes[roadTileMap[row][col]]"
-            :enabled="isRoadPurchaseEnabled"
+            :enabled="isRoadPurchaseEnabled && isRoadAllowed(row, col)"
             @clicked="$emit('tile-clicked', { type: 'road', row, col })"
             :activeData="activeRoads[row][col] || {}"
+            :myColor="myPlayer.color"
           />
           <StructureTile
             v-for="([row, col]) in [[i, j * 2], [i, j * 2 + 1]]"
@@ -25,6 +26,7 @@
             :enabled="isSettlementPurchaseEnabled"
             @clicked="$emit('tile-clicked', { type: 'settlement', row, col })"
             :activeData="activeStructures[row][col] || {}"
+            :myColor="myPlayer.color"
           />
         </HexTile>
       </div>
@@ -75,14 +77,10 @@
     },
     computed: {
       isRoadPurchaseEnabled: function() {
-        const isRoadAdjacentToOwnedStructure = true;
-
-
         return (
           this.isMyTurn &&
           this.myPlayer.hasResources.road &&
-          (this.isSetupPhase || this.isDiceRolled) &&
-          this.isRoadAdjacentToOwnedStructure
+          (this.isSetupPhase || this.isDiceRolled)
         );
       },
       isSettlementPurchaseEnabled: function() {
@@ -101,6 +99,32 @@
       this.structureTileMap = structureTileMap;
       this.structureTileTypes = structureTileTypes;
     },
+    methods: {
+      isRoadAllowed: function(row, col) {
+        const isAllowedPerStructure = this.activeStructures
+          .flat()
+          .filter(structure => !!structure && structure.ownerId && structure.ownerId === this.myPlayer.playerSessionId)
+          .map(({ row: sRow, col: sCol }) => {
+            const structureTile = structureTileMap[sRow][sCol]; // 'top' === 1 or 'top-left' === 2
+
+            if (!structureTile) return false;
+
+            const intersections = structureTile === 1 // 'top' ?
+              ? [[sRow * 2 - 1, sCol - 1], [sRow * 2, sCol - 1], [sRow * 2, sCol]] // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
+              : [[sRow * 2, sCol - 1], [sRow * 2, sCol], [sRow * 2 + 1, sCol]]     // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
+
+            return intersections.some(([rRow, rCol]) => rRow === row && rCol === col);
+          });
+
+        return isAllowedPerStructure.some(a => a);
+
+        // return isAdjacentToStructure;
+        // adjcent roads are:
+        // X-AXIS BEFORE AND AFTER - ALWAYS [2, 3], [2, 5]
+        // Y-AXIS: [1, 3], [1, 4] AND [3, 3] [3, 4]
+        // this.activeRoads;
+      }
+    }
   }
 </script>
 

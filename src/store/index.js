@@ -91,7 +91,9 @@ export default new Vuex.Store({
         updatedStructures[row][col] = {
           type,
           ownerId,
-          color: owner.color
+          color: owner.color,
+          row,
+          col
         };
       });
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :style="{ color: nameColor }">
+  <div class="player" :style="{ color: player.color }">
     <div class="nickname">
       {{ player.nickname }}
     </div>
@@ -8,7 +8,7 @@
         <Button icon>
           <Icon
             size="x-large"
-            :color="nameColor"
+            :color="player.color"
             :name="resourceNameToIcon[resourceName]"
           />
           <NumberBadge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length || '0') : player[resourceName]" />
@@ -25,11 +25,8 @@
 </template>
 
 <script>
-  import invert from 'invert-color';
-  
   import { resourceCardTypes, resourceNameToIcon } from '@/utils/tileManifest';
   import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
-  import { PLAYER_BG } from '@/utils/colors';
   
   import Button from '@/components/Button';
   import Icon from '@/components/Icon';
@@ -60,11 +57,7 @@
         default: false
       },
     },
-    data: () => ({
-      nameColor: ''
-    }),
     created: function() {
-      this.nameColor = invert(PLAYER_BG);
       this.purchaseTypes = purchaseTypes;
       this.resourceNameToIcon = resourceNameToIcon;
       this.resourceCardTypes = resourceCardTypes;

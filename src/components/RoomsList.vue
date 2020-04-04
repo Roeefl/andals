@@ -9,7 +9,7 @@
           Room ID: {{ room.roomId }}
         </span>
         <span>
-          Room Name: {{ room.name }}
+          Room Name: {{ room.roomTitle || room.name }}
         </span>
         <span>
           Players: {{ room.clients }}

@@ -60,12 +60,9 @@
 </script>
 
 <style scoped lang="scss">
-  .wraper {
-    display: flex;
-    flex-direction: column;
-    
+  .wrapper {
     .messages {
-      flex: 3;
+      flex: 5;
     }
 
     .new-message {

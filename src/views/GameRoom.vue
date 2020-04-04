@@ -224,7 +224,7 @@
 
       & > * {
         flex: 1;
-        max-height: 35vh; // @FIXME: not like this
+        max-height: 40vh; // @FIXME: not like this
         overflow-y: auto;
         display: flex;
         flex-direction: column;
