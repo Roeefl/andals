@@ -7,7 +7,7 @@
       {{ harborTypes[tile.resource] }}
       <Icon
         v-if="tile.resource && !tile.resource === HARBOR_GENERIC"
-        :name="resouceCardNameToIcon[tile.resource]"
+        :name="resourceCardNameToIcon[tile.resource]"
         color="white"
         size="large"
       />
@@ -22,7 +22,7 @@
     TILE_WATER,
     TILE_SPACER,
     HARBOR_GENERIC,
-    resouceCardNameToIcon,
+    resourceCardNameToIcon,
     resourceCardColors 
   } from '@/utils/tileManifest';
   
@@ -54,7 +54,7 @@
       this.TILE_WATER = TILE_WATER;
       this.HARBOR_GENERIC = HARBOR_GENERIC;
       this.resourceCardColors = resourceCardColors;
-      this.resouceCardNameToIcon = resouceCardNameToIcon;
+      this.resourceCardNameToIcon = resourceCardNameToIcon;
     }
   }
 </script>

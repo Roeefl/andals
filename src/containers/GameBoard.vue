@@ -116,7 +116,7 @@
             return intersections.some(([rRow, rCol]) => rRow === row && rCol === col);
           });
 
-        return isAllowedPerStructure.some(a => a);
+        return isAllowedPerStructure.some(r => r);
 
         // return isAdjacentToStructure;
         // adjcent roads are:

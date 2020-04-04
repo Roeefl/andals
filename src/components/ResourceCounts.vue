@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import { resourceCardTypes, resouceCardNameToIcon, resourceCardColors } from '@/utils/tileManifest';
+  import { resourceCardTypes, resourceCardColors } from '@/utils/tileManifest';
   import ResourceCard from '@/components/ResourceCard';
   import Icon from '@/components/Icon';
 
@@ -32,7 +32,6 @@
     created() {
       console.log(this.counts);
       this.resourceCardTypes = resourceCardTypes;
-      this.resouceCardNameToIcon = resouceCardNameToIcon;
       this.resourceCardColors = resourceCardColors;
     }
   }

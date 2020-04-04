@@ -10,15 +10,13 @@
         </span>
       </div>
       <div class="cost">
-        <span v-for="resource in resourceCardTypes" :key="resource">
-          <Icon
-            v-for="(icon, i) in Array(section[resource] || 0).fill(resource)"
-            :key="i"
-            size="x-large"
-            :name="resouceCardNameToIcon[resource]"
-            :color="resourceCardColors[resource]"
-          />
-        </span>
+        <ResourceCard
+          v-for="resource in resourceCardTypes"
+          :key="resource"
+          :resource="resource"
+          :count="section[resource]"
+          class="resource-card"
+        />    
       </div>
     </section>
     <footer>
@@ -33,21 +31,17 @@
 </template>
 
 <script>
-  import Icon from '@/components/Icon';
-  import { resourceCardTypes, resourceNameToIcon, resouceCardNameToIcon, resourceCardColors } from '@/utils/tileManifest';
+  import { resourceCardTypes, resourceNameToIcon, resourceCardColors } from '@/utils/tileManifest';
   import buildingCosts from '@/utils/buildingCosts';
+  import ResourceCard from '@/components/ResourceCard';
 
   export default {
     name: 'BuildingCosts',
-    components: {
-      Icon
-    },
     created() {
       this.buildingCosts = buildingCosts;
       this.resourceNameToIcon = resourceNameToIcon;
       this.resourceCardTypes = resourceCardTypes;
       this.resourceCardColors = resourceCardColors;
-      this.resouceCardNameToIcon = resouceCardNameToIcon;
     }
   }
 </script>

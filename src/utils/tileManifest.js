@@ -42,7 +42,7 @@ export const resourceCardColors = {
   ore: '#7a768c'
 };
 
-export const resouceCardNameToIcon = {
+export const resourceCardNameToIcon = {
   lumber: 'pine-tree',
   brick: 'wall',
   sheep: 'sheep',

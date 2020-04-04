@@ -167,11 +167,8 @@
           dice
         });
 
-        if (this.roomState.isTurnOrderPhase) {
-          colyseusService.room.send({
-            type: MESSAGE_FINISH_TURN
-          });
-        }
+        if (this.roomState.isTurnOrderPhase)
+          this.finishTurn();
       },
       onTileClick: function(tile) {
         this.activeTile = tile;
@@ -187,7 +184,10 @@
           type: type === 'road' ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
           row,
           col
-        })
+        });
+
+        if (type === 'road' && this.roomState.isSetupPhase)
+          this.finishTurn();
       },
       finishTurn: function() {
         colyseusService.room.send({

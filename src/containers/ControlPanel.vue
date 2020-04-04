@@ -14,7 +14,7 @@
           <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
         </div>
       </div>
-      <Button color="red" :onClick="() => $emit('end-turn')" :disabled="roomState.isTurnOrderPhase || !isMyTurn">
+      <Button color="red" :onClick="() => $emit('end-turn')" :disabled="isEndTurnDisabled">
         End Turn
       </Button>
       <Button
@@ -68,11 +68,22 @@
         default: false
       }
     },
-    computed: mapState([
-      'roomState',
-      'myPlayer',
-      'isSelfReady'
-    ]),
+    computed: {
+      isEndTurnDisabled: function() {
+        return (
+          this.roomState.isTurnOrderPhase ||
+          (this.roomState.isSetupPhase && this.myPlayer.hasResources.road) ||
+          // Game started - meaning: either its not even my turn, or it is but I have not played yet
+          !this.isMyTurn ||
+          !this.roomState.isDiceRolled
+        );
+      },
+      ...mapState([
+        'roomState',
+        'myPlayer',
+        'isSelfReady'
+      ])
+    },
     data: () => ({
       isDisplayDice: false
     }),
