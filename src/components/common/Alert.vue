@@ -8,10 +8,10 @@
 </template>
 
 <script>
-  import Button from '@/components/Button';
+  import Button from '@/components/common/Button';
 
   export default {
-    name: 'GameAlert',
+    name: 'Alert',
     components: {
       Button
     },

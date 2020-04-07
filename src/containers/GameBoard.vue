@@ -40,9 +40,9 @@
 <script>
   import { mapState } from 'vuex';
 
-  import HexTile from '@/components/HexTile';
-  import RoadTile from '@/components/RoadTile';
-  import StructureTile from '@/components/StructureTile';
+  import HexTile from '@/components/tiles/HexTile';
+  import RoadTile from '@/components/tiles/RoadTile';
+  import StructureTile from '@/components/tiles/StructureTile';
 
   import hexTileMap from '@/tilemaps/hexes';
   import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';
@@ -114,7 +114,6 @@
               ? [[sRow * 2 - 1, sCol - 1], [sRow * 2, sCol - 1], [sRow * 2, sCol]] // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
               : [[sRow * 2, sCol - 1], [sRow * 2, sCol], [sRow * 2 + 1, sCol]]     // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
 
-            if (row === 7 && col === 2) console.log(sRow, sCol, intersections);
             return intersections.some(([iRow, iCol]) => iRow === row && iCol === col);
           });
 

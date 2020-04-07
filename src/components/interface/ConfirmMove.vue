@@ -5,16 +5,18 @@
     width="400"
   >
    <ActionCard :title="`Confirm: ${type}`" @cancel="$emit('no')" @approve="$emit('yes')">
-    Build {{ type }} for:
-    <div class="cost">
-      <ResourceCard
-        v-for="resource in resourceCardTypes"
-        :key="resource"
-        :resource="resource"
-        :count="buildingCosts[type][resource]"
-        v-show="buildingCosts[type][resource]"
-        class="resource-card"
-      />
+    <div v-if="!isFree">
+      Build {{ type }} for:
+      <div class="cost">
+        <ResourceCard
+          v-for="resource in resourceCardTypes"
+          :key="resource"
+          :resource="resource"
+          :count="buildingCosts[type][resource]"
+          v-show="buildingCosts[type][resource]"
+          class="resource-card"
+        />
+      </div>
     </div>
   </ActionCard>
   </v-dialog>
@@ -24,8 +26,8 @@
   import buildingCosts from '@/utils/buildingCosts';
   import { resourceCardTypes, resourceNameToIcon, resourceCardColors } from '@/utils/tileManifest';
 
-  import ResourceCard from '@/components/ResourceCard';
-  import ActionCard from '@/components/ActionCard';
+  import ResourceCard from '@/components/game/ResourceCard';
+  import ActionCard from '@/components/common/ActionCard';
 
   export default {
     name: 'ConfirmMove',
@@ -41,6 +43,10 @@
       type: {
         type: String,
         required: true
+      },
+      isFree: {
+        type: Boolean,
+        default: false
       }
     },
     created() {

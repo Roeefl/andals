@@ -19,9 +19,9 @@
 </template>
 
 <script>
-  import ActionCard from '@/components/ActionCard';
-  import Button from '@/components/Button';
-  import Icon from '@/components/Icon';
+  import ActionCard from '@/components/common/ActionCard';
+  import Button from '@/components/common/Button';
+  import Icon from '@/components/common/Icon';
 
   export default {
     name: 'ChoiceDialog',

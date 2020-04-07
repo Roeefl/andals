@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import TextField from '@/components/TextField';
+  import TextField from '@/components/common/TextField';
 
   export default {
     name: 'CustomizeRoom',

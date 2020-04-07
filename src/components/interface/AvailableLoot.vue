@@ -1,24 +1,36 @@
 <template>
   <div class="counts">
+    Available Loot:
     <ResourceCard
       v-for="resource in resourceCardTypes"
       :key="resource"
+      collectable
       :resource="resource"
-      :count="counts[resource] || '0'"
+      :count="counts[resource]"
+      v-show="counts[resource] > 0"
       class="resource-card"
+    />
+    <Button
+      color="transparent"
+      iconName="treasure-chest"
+      iconColor="red"
+      iconSize="x-large"
+      :onClick="() => $emit('collect-all')"
     />
   </div>
 </template>
 
 <script>
   import { resourceCardTypes, resourceCardColors } from '@/utils/tileManifest';
-  import ResourceCard from '@/components/ResourceCard';
-  import Icon from '@/components/Icon';
+  import ResourceCard from '@/components/game/ResourceCard';
+  import Button from '@/components/common/Button';
+  import Icon from '@/components/common/Icon';
 
   export default {
-    name: 'ResourceCounts',
+    name: 'AvailableLoot',
     components: {
       ResourceCard,
+      Button,
       Icon
     },
     props: {
@@ -30,7 +42,6 @@
       }
     },
     created() {
-      console.log(this.counts);
       this.resourceCardTypes = resourceCardTypes;
       this.resourceCardColors = resourceCardColors;
     }

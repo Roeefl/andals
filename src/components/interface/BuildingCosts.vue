@@ -33,7 +33,7 @@
 <script>
   import { resourceCardTypes, resourceNameToIcon, resourceCardColors } from '@/utils/tileManifest';
   import buildingCosts from '@/utils/buildingCosts';
-  import ResourceCard from '@/components/ResourceCard';
+  import ResourceCard from '@/components/game/ResourceCard';
 
   export default {
     name: 'BuildingCosts',
@@ -57,7 +57,7 @@
 
     .resource-type {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 40% 60%;
 
       border-bottom: 1px solid gray;
       margin: $spacer / 2 0;
@@ -71,11 +71,21 @@
           font-size: $font-size-sm;
         }
       }
+
+      .cost {
+        display: flex;
+      }
     }
   }
 
   .paragraph {
     margin: $spacer / 3 0;
     padding: $spacer / 3 0;
+  }
+
+  .resource-card {
+    & + & {
+      margin-left: $spacer;
+    }
   }
 </style>

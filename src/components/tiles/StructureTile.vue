@@ -8,8 +8,8 @@
 </template>
 
 <script>
-  import Button from '@/components/Button';
-  import Icon from '@/components/Icon';
+  import Button from '@/components/common/Button';
+  import Icon from '@/components/common/Icon';
 
   const iconNames = {
     settlement: 'home',

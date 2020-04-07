@@ -28,7 +28,8 @@ export default {
     wheat: 2,
     ore: 3,
     lumber: 0,
-    brick: 0
+    brick: 0,
+    sheep: 0
   },
   gameCard: {
     type: GAMECARD,

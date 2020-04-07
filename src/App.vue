@@ -14,7 +14,7 @@
       <div id="page">
         <router-view />
       </div>
-      <GameAlert v-for="(alert, i) in alerts" :key="i" :text="alert" />
+      <Alert v-for="(alert, i) in alerts" :key="i" :text="alert" />
     </div>
   </v-app>
 </template>
@@ -22,12 +22,12 @@
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
-  import GameAlert from '@/components/GameAlert';
+  import Alert from '@/components/common/Alert';
   
   export default {
     name: 'App',
     components: {
-      GameAlert
+      Alert
     },
     computed: mapState([
       'alerts'

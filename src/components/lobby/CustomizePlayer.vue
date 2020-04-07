@@ -13,8 +13,8 @@
 </template>
 
 <script>
-  import ColorPicker from '@/components/ColorPicker';
-  import Button from '@/components/Button';
+  import ColorPicker from '@/components/common/ColorPicker';
+  import Button from '@/components/common/Button';
 
   export default {
     name: 'CustomizePlayer',

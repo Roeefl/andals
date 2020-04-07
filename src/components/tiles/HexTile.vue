@@ -26,7 +26,7 @@
     resourceCardColors 
   } from '@/utils/tileManifest';
   
-  import Icon from '@/components/Icon';
+  import Icon from '@/components/common/Icon';
 
   export default {
     name: 'HexTile',

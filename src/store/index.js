@@ -20,8 +20,12 @@ export default new Vuex.Store({
     rooms: [],
     // reservations: [],
     roomState: {},
-    activeStructures: initialActiveStructures,
-    activeRoads: initialActiveRoads,
+    activeStructures: [
+      ...initialActiveStructures
+    ],
+    activeRoads: [
+      ...initialActiveRoads
+    ],
     players: [],
     myPlayer: {
       hasResources: {}
@@ -131,6 +135,7 @@ export default new Vuex.Store({
       
       state.players = [];
       state.gameLog = [];
+
       state.myPlayer = {
         hasResources: {}
       };
@@ -138,6 +143,10 @@ export default new Vuex.Store({
       state.activeStructures = [
         ...initialActiveStructures
       ];
+      console.log("destroyRoomState -> activeStructures", state.activeStructures)
+
+      
+
       state.activeRoads = [
         ...initialActiveRoads
       ];

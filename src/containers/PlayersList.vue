@@ -3,21 +3,29 @@
     <ul class="players">
       <li
         v-for="(player, index) in players"
-        :key="`player-${player.playerSessionId}-${player.isReady}`"
+        :key="renderKey(player)"
         class="player-wrapper"
         :class="{ 'current-turn': currentTurn === index }"
       >
-        <div v-if="myPlayerIndex === index" class="yourself">
+          {{ player.playerSessionId === myPlayer.playerSessionId }}
+
+        <div v-if="player.playerSessionId === myPlayer.playerSessionId" class="yourself">
           YOU
         </div>
-        <PlayerInfo :player="player" :resourceCounts="player.resourceCounts" :isStarted="isGameReady" />
+        <PlayerInfo
+          :player="player"
+          isMe
+          :isStarted="isGameReady"
+          @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
+        />
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-  import PlayerInfo from '@/components/PlayerInfo';
+  import { mapState } from 'vuex';
+  import PlayerInfo from '@/components/interface/PlayerInfo';
 
   export default {
     name: 'PlayersList',
@@ -25,10 +33,6 @@
       PlayerInfo,
     },
     props: {
-      players: {
-        type: Array,
-        default: []
-      },
       currentTurn: {
         type: Number,
         default: 0
@@ -37,9 +41,16 @@
         type: Boolean,
         default: false
       },
-      myPlayerIndex: {
-        type: Number,
-        required: true
+    },
+    computed: mapState([
+      'myPlayer',
+      'players'
+    ]),
+    methods: {
+      renderKey(player) {
+        const totalLoot = Object.values(player.availableLoot).reduce((r1, r2) => r1 + r2, 0);
+        const resourceCounts = Object.values(player.resourceCounts).reduce((r1, r2) => r1 + r2, 0);
+        return `${player.playerSessionId}-${player.isReady}-${totalLoot}-${resourceCounts}-${player.roads}-${player.settlements}-${player.cities}`;
       }
     }
   }

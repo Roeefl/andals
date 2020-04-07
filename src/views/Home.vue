@@ -20,20 +20,20 @@
   import router from '@/router';
   import colyseusService from '@/services/colyseus';
   
-  import RoomsList from '@/components/RoomsList';
-  import Button from '@/components/Button';
-  import ChoiceDialog from '@/components/ChoiceDialog';
-  import CustomizePlayer from '@/components/CustomizePlayer';
-  import CustomizeRoom from '@/components/CustomizeRoom';
+  import RoomsList from '@/components/lobby/RoomsList';
+  import CustomizePlayer from '@/components/lobby/CustomizePlayer';
+  import CustomizeRoom from '@/components/lobby/CustomizeRoom';
+  import ChoiceDialog from '@/components/common/ChoiceDialog';
+  import Button from '@/components/common/Button';
 
   export default {
     name: 'Home',
     components: {
       RoomsList,
-      Button,
       ChoiceDialog,
       CustomizePlayer,
-      CustomizeRoom
+      CustomizeRoom,
+      Button
     },
     async created() {
       this.fetchRooms();

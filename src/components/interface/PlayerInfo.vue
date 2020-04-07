@@ -11,12 +11,19 @@
             :color="player.color"
             :name="resourceNameToIcon[resourceName]"
           />
-          <NumberBadge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length || '0') : player[resourceName]" />
+          <NumberBadge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
         </Button>
       </div>
     </div>
-    <div class="resources cards">
-      <ResourceCard v-for="(resource, i) in resourceCardTypes" :key="i" :resource="resource" :count="resourceCounts[resource] || '0'" class="resource-card" />
+    <div class="resources cards" @click="$emit('deck-clicked')">
+      <ResourceCard
+        v-for="(resource, i) in resourceCardTypes"
+        :key="i"
+        :resource="resource"
+        :count="isMe ? player.resourceCounts[resource] : '?'"
+        class="resource-card"
+        :class="`${player.resourceCounts[resource]}`"
+      />
     </div>
     <div class="ready" v-if="!isStarted">
       <Icon color="green" name="checkbox-marked-circle-outline" v-if="player.isReady" />
@@ -28,10 +35,10 @@
   import { resourceCardTypes, resourceNameToIcon } from '@/utils/tileManifest';
   import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
   
-  import Button from '@/components/Button';
-  import Icon from '@/components/Icon';
-  import ResourceCard from '@/components/ResourceCard';
-  import NumberBadge from '@/components/NumberBadge';
+  import Button from '@/components/common/Button';
+  import Icon from '@/components/common/Icon';
+  import ResourceCard from '@/components/game/ResourceCard';
+  import NumberBadge from '@/components/common/NumberBadge';
 
   export default {
     name: 'PlayerInfo.vue',
@@ -46,16 +53,14 @@
         type: Object,
         required: true
       },
-      resourceCounts: {
-        type: Object,
-        default: function() {
-          return {};
-        }
-      },
       isStarted: {
         type: Boolean,
         default: false
       },
+      isMe: {
+        type: Boolean,
+        default: false
+      }
     },
     created: function() {
       this.purchaseTypes = purchaseTypes;
@@ -67,6 +72,17 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
+
+  @keyframes slide-in-bck-center {
+    0% {
+      transform: translateZ(600px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateZ(0);
+      opacity: 1;
+    }
+  }
 
   .player {
     position: relative;
@@ -103,6 +119,10 @@
   }
 
   .resource-card {
+    &.updated {
+      animation: slide-in-bck-center 1.4s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+    }
+
     & + & {
       margin-left: $spacer;
     }

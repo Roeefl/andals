@@ -1,11 +1,6 @@
 <template>
   <div class="room">
     <div v-if="this.room" class="inner">
-      <div class="loot">
-        <div v-for="player in players" :key="player.nickname">
-          {{ player.availableLoot }}
-        </div>
-      </div>
       <ControlPanel
         :isMyTurn="isMyTurn"
         @toggle-ready="toggleReady"
@@ -14,10 +9,9 @@
       />
       <div class="board-area">
         <PlayersList
-          :players="players"
-          :myPlayerIndex="myPlayerIndex"
           :isGameReady="roomState.isGameReady"
           :currentTurn="roomState.currentTurn"
+          @display-deck="isDisplayMyDeck = true"
         />
         <GameBoard
           :board="roomState.board"
@@ -35,9 +29,15 @@
       <ConfirmMove
         :type="activeTile.type"
         :isOpen="isDisplayConfirmMove"
+        :isFree="roomState.isSetupPhase"
         @yes="onTileBuild(true)"
         @no="onTileBuild(false)"
       />
+    <MyDeck
+      :isOpen="isDisplayMyDeck"
+      @close="isDisplayMyDeck = false"
+      :deck="myPlayer.resourceCounts"
+    />
     </div>
     <div v-else>
       Not currently connected to any game room.
@@ -53,20 +53,23 @@
   import GameBoard from '@/containers/GameBoard';
   import GameChat from '@/containers/GameChat';
   import GameLog from '@/containers/GameLog';
+  import PlayersList from '@/containers/PlayersList';
   
-  import PlayersList from '@/components/PlayersList';
-  import ConfirmMove from '@/components/ConfirmMove';
+  import MyDeck from '@/components/interface/MyDeck';
+  import ConfirmMove from '@/components/interface/ConfirmMove';
 
   import {
     MESSAGE_CHAT,
     MESSAGE_GAME_LOG,
     MESSAGE_READY,
     MESSAGE_ROLL_DICE,
+    MESSAGE_COLLECT_ALL_LOOT,
     MESSAGE_FINISH_TURN,
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
     CHAT_LOG_SIMPLE,
-    CHAT_LOG_DICE 
+    CHAT_LOG_DICE,
+    CHAT_LOG_LOOT
   } from '@/store/constants';
 
   export default {
@@ -77,11 +80,13 @@
       GameChat,
       GameLog,
       PlayersList,
-      ConfirmMove
+      ConfirmMove,
+      MyDeck
     },
     data: () => ({
       chatMessages: [],
       isDisplayConfirmMove: false,
+      isDisplayMyDeck: false,
       activeTile: {
         type: 'road'
       }
@@ -129,7 +134,8 @@
           type,
           sender,
           senderSessionId,
-          message
+          message,
+          playerName
         } = broadcast;
 
         switch (type) {
@@ -141,8 +147,13 @@
             break;
 
           case MESSAGE_ROLL_DICE:
-            const { playerName, dice } = broadcast;
+            const { dice } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_DICE, playerName, dice });
+            break;
+
+          case MESSAGE_COLLECT_ALL_LOOT:
+            const { loot } = broadcast;
+            this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
             break;
 
           case MESSAGE_GAME_LOG:

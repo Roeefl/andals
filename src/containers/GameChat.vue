@@ -20,9 +20,9 @@
   import colyseusService from '@/services/colyseus';
   import { MESSAGE_CHAT } from '@/store/constants';
 
-  import MessageList from '@/components/MessageList';
-  import Button from '@/components/Button';
-  import TextField from '@/components/TextField';
+  import MessageList from '@/components/common/MessageList';
+  import Button from '@/components/common/Button';
+  import TextField from '@/components/common/TextField';
 
   export default {
     name: 'GameChat',

@@ -2,6 +2,8 @@
   <v-btn
     :type="type"
     :color="color"
+    :small="small"
+    :x-small="xs"
     :disabled="disabled"
     :rounded="rounded"
     :outlined="outlined"
@@ -9,13 +11,13 @@
     @click="onClick"
     v-on="on"
   >
-    <Icon v-if="iconName" :color="iconColor" :name="iconName" class="button-icon" />
+    <Icon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="button-icon" />
     <slot />
   </v-btn>
 </template>
 
 <script>
-  import Icon from '@/components/Icon';
+  import Icon from '@/components/common/Icon';
   
   export default {
     name: 'Button',
@@ -30,6 +32,14 @@
       color: {
         type: String,
         default: 'primary'
+      },
+      small: {
+        type: Boolean,
+        default: false
+      },
+      xs: {
+        type: Boolean,
+        default: false
       },
       disabled: {
         type: Boolean,
@@ -54,6 +64,10 @@
       iconColor: {
         type: String,
         default: 'white'
+      },
+      iconSize: {
+        type: String,
+        default: 'medium'
       },
       onClick: {
         type: Function,

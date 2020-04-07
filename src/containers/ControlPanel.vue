@@ -1,10 +1,11 @@
 <template>
   <div class="control">
     <div class="actions">
-      <ChoiceDialog iconName="wrench" title="Building Costs">
+      <ChoiceDialog iconName="wrench" title="Building Costs" :width="500">
         <BuildingCosts />
       </ChoiceDialog>
       <ResourceCounts :counts="roomState.resourceCounts" />
+      <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" />
       <div class="dice" v-if="roomState.isGameReady">
         <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled">
           Roll Dice
@@ -44,18 +45,22 @@
 
 <script>
   import { mapState } from 'vuex';
+  import colyseusService from '@/services/colyseus';
+  import { MESSAGE_COLLECT_ALL_LOOT } from '@/store/constants';
 
-  import ResourceCounts from '@/components/ResourceCounts';
-  import ChoiceDialog from '@/components/ChoiceDialog';
-  import BuildingCosts from '@/components/BuildingCosts';
-  import Dice from '@/components/Dice';
-  import Button from '@/components/Button';
-  import Icon from '@/components/Icon';
+  import ResourceCounts from '@/components/interface/ResourceCounts';
+  import AvailableLoot from '@/components/interface/AvailableLoot';
+  import Dice from '@/components/interface/Dice';
+  import ChoiceDialog from '@/components/common/ChoiceDialog';
+  import BuildingCosts from '@/components/interface/BuildingCosts';
+  import Button from '@/components/common/Button';
+  import Icon from '@/components/common/Icon';
 
   export default {
     name: 'ControlPanel',
     components: {
       ResourceCounts,
+      AvailableLoot,
       ChoiceDialog,
       BuildingCosts,
       Dice,
@@ -96,6 +101,11 @@
           3000
         );
       },
+      collectAll: function() {
+        colyseusService.room.send({
+          type: MESSAGE_COLLECT_ALL_LOOT
+        });
+      }
     }
   }
 </script>
