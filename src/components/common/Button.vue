@@ -8,7 +8,7 @@
     :rounded="rounded"
     :outlined="outlined"
     :icon="icon"
-    @click="onClick"
+    @click="$emit('click')"
     v-on="on"
   >
     <Icon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="button-icon" />
@@ -68,10 +68,6 @@
       iconSize: {
         type: String,
         default: 'medium'
-      },
-      onClick: {
-        type: Function,
-        default: () => {}
       },
       on: Object
     }

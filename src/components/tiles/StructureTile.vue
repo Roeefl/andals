@@ -1,6 +1,6 @@
 <template>
   <span class="structure" :class="[placement, { 'enabled': enabled }]" :style="hoverStyle">
-    <Button icon :onClick="() => enabled && $emit('clicked')" class="wrapper" :class="[activeData.type, { 'disabled': !enabled }]">
+    <Button icon @click="enabled && $emit('clicked')" class="wrapper" :class="[activeData.type, { 'disabled': !enabled }]">
       <Icon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
       <Icon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="iconNames[activeData.type]" />
     </Button>

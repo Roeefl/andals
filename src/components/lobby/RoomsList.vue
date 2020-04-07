@@ -14,7 +14,7 @@
         <span>
           Players: {{ room.clients }}
         </span>
-        <Button :onClick="() => $emit('join', room.roomId)" :disabled="room.locked">
+        <Button @click="$emit('join', room.roomId)" :disabled="room.locked">
           Join Room
         </Button>
       </li>

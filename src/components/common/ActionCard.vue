@@ -9,12 +9,12 @@
     <slot />
     <v-divider />
     <v-card-actions>
-      <Button text :onClick="() => $emit('cancel')">
-        Cancel
+      <Button text @click="() => $emit('cancel')">
+        {{ cancelText }}
       </Button>
       <v-spacer />
-      <Button text :onClick="() => $emit('approve')">
-        Okey
+      <Button text @click="() => $emit('approve')" v-if="approve">
+        {{ approveText }}
       </Button>
     </v-card-actions>
   </v-card>
@@ -32,6 +32,18 @@
       title: {
         type: String,
         default: 'Card Title'
+      },
+      cancelText: {
+        type: String,
+        default: 'Cancel'
+      },
+      approve: {
+        type: Boolean,
+        default: true
+      },
+      approveText: {
+        type: String,
+        default: 'Okey'
       }
     } 
   }

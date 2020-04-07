@@ -12,6 +12,7 @@
           :isGameReady="roomState.isGameReady"
           :currentTurn="roomState.currentTurn"
           @display-deck="isDisplayMyDeck = true"
+          @trade-with="tradeWith($event)"
         />
         <GameBoard
           :board="roomState.board"
@@ -38,6 +39,14 @@
       @close="isDisplayMyDeck = false"
       :deck="myPlayer.resourceCounts"
     />
+    <TradeDialog
+      :isOpen="!!tradingWith"
+      :players="[myPlayer, tradingWith]"
+      @refuse="refuseTrade"
+      @add-card="addTradeCard($event)"
+      @remove-card="removeTradeCard($event)"
+      @confirm-trade="confirmTrade"
+    />
     </div>
     <div v-else>
       Not currently connected to any game room.
@@ -56,6 +65,7 @@
   import PlayersList from '@/containers/PlayersList';
   
   import MyDeck from '@/components/interface/MyDeck';
+  import TradeDialog from '@/components/interface/TradeDialog';
   import ConfirmMove from '@/components/interface/ConfirmMove';
 
   import {
@@ -67,6 +77,11 @@
     MESSAGE_FINISH_TURN,
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
+    MESSAGE_TRADE_REQUEST,
+    MESSAGE_TRADE_ADD_CARD,
+    MESSAGE_TRADE_REMOVE_CARD,
+    MESSAGE_TRADE_CONFIRM,
+    MESSAGE_TRADE_REFUSE,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT
@@ -81,12 +96,14 @@
       GameLog,
       PlayersList,
       ConfirmMove,
-      MyDeck
+      MyDeck,
+      TradeDialog
     },
     data: () => ({
       chatMessages: [],
       isDisplayConfirmMove: false,
       isDisplayMyDeck: false,
+      tradingWith: null,
       activeTile: {
         type: 'road'
       }
@@ -102,6 +119,12 @@
 
       this.room.onError(this.onRoomError);
       this.room.onLeave(this.onRoomLeave);
+    },
+    updated() {
+      console.log(this.myPlayer);
+      
+      if (this.myPlayer.pendingTrade)
+        this.tradingWidth = this.myPlayer.pendingTrade
     },
     destroyed() {
       this.$store.commit('destroyRoomState');
@@ -211,6 +234,40 @@
         colyseusService.room.send({
           type: MESSAGE_FINISH_TURN
         });
+      },
+      tradeWith(otherPlayerSessionId) {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_REQUEST,
+          otherPlayerSessionId
+        });
+
+// this.tradingWith = this.players.find(({ playerSessionId }) => playerSessionId === otherPlayerSessionId);
+      },
+      addTradeCard(resource) {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_ADD_CARD,
+          resource
+        });
+      },
+      removeTradeCard(resource) {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_REMOVE_CARD,
+          resource
+        });
+      },
+      refuseTrade() {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_REFUSE,
+          otherPlayerSessionId: tradingWith.playerSessionId
+        });
+        
+        this.tradingWith = null;
+      },
+      confirmTrade() {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_CONFIRM,
+          otherPlayerSessionId: tradingWith.playerSessionId
+        });
       }
     }
   }
@@ -220,14 +277,18 @@
   @import '@/styles/partials';
 
   .room {
+    height: 100%;
     display: flex;
 
     .inner {
       flex: 1;
+      display: flex;
+      flex-direction: column;
     }
   }
 
   .board-area {
+    flex: 1;
     background: $board-background;
     display: grid;
     grid-template-columns: 20% 60% 20%;

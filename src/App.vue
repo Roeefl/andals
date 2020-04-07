@@ -47,6 +47,8 @@
     color: $primary;
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    background: $tile-water;
 
     ul {
       padding-left: 0;

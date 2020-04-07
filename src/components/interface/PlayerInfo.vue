@@ -1,7 +1,11 @@
 <template>
-  <div class="player" :style="{ color: player.color }">
-    <div class="nickname">
-      {{ player.nickname }}
+  <div class="player" :style="{ color: player.color }" :class="{ 'myself': isMe }">
+    <div class="header">
+      <div class="nickname">
+        {{ player.nickname }}
+      </div>
+      <Button v-if="isStarted && !isMe" icon iconName="swap-vertical-circle" iconSize="x-large" @click="$emit('trade-with', player.playerSessionId)" />
+      <Icon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
     </div>
     <div class="resources">
       <div v-for="resourceName in purchaseTypes" :key="resourceName" class="resource">
@@ -22,11 +26,7 @@
         :resource="resource"
         :count="isMe ? player.resourceCounts[resource] : '?'"
         class="resource-card"
-        :class="`${player.resourceCounts[resource]}`"
       />
-    </div>
-    <div class="ready" v-if="!isStarted">
-      <Icon color="green" name="checkbox-marked-circle-outline" v-if="player.isReady" />
     </div>
   </div>
 </template>
@@ -88,15 +88,21 @@
     position: relative;
     padding: $spacer;
     overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
 
-    .nickname {
-      font-weight: 700;
+    &.myself {
+      box-shadow: inset 8px 8px 40px 6px rgba(255, 0, 0, 1); 
     }
 
-    .ready {
-      position: absolute;
-      top: $spacer;
-      right: $spacer;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .nickname {
+        font-weight: 700;
+      }
     }
 
     .resources {

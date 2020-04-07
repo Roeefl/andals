@@ -1,11 +1,11 @@
 <template>
   <transition name="puff">
-    <v-card max-width="300" class="resource-card">
+    <v-card max-width="300" class="resource-card" @click="$emit('clicked')">
       <Button icon :xs="small">
         <Icon
           :size="small ? 'medium' : 'x-large'"
-          :name="resourceCardNameToIcon[resource]"
-          :color="resourceCardColors[resource]"
+          :name="hideIcon ? 'help-box' : resourceCardNameToIcon[resource]"
+          :color="hideIcon? 'black' : resourceCardColors[resource]"
         />
         <NumberBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count === 0 ? '0' : count" />
       </Button>
@@ -44,6 +44,10 @@
         default: false
       },
       hideCount: {
+        type: Boolean,
+        default: false
+      },
+      hideIcon: {
         type: Boolean,
         default: false
       },

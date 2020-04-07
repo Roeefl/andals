@@ -16,6 +16,7 @@
             :key="`card-${i}`"
             small
             hideCount
+            hideIcon
             :resource="resource"
             class="resource"
           />

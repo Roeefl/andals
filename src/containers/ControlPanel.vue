@@ -7,7 +7,7 @@
       <ResourceCounts :counts="roomState.resourceCounts" />
       <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" />
       <div class="dice" v-if="roomState.isGameReady">
-        <Button color="success" :onClick="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled">
+        <Button color="success" @click="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled">
           Roll Dice
         </Button>
         <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
@@ -15,13 +15,13 @@
           <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
         </div>
       </div>
-      <Button color="red" :onClick="() => $emit('end-turn')" :disabled="isEndTurnDisabled">
+      <Button color="red" @click="$emit('end-turn')" :disabled="isEndTurnDisabled">
         End Turn
       </Button>
       <Button
         v-if="!roomState.isGameReady"
         :color="isSelfReady ? 'red' : 'green'"
-        :onClick="() => $emit('toggle-ready')"
+        @click="() => $emit('toggle-ready')"
         class="ready"
       >
         <span v-if="isSelfReady">

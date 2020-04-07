@@ -2,7 +2,7 @@
   <Button
     icon
     :disabled="!enabled"
-    :onClick="() => $emit('clicked')"
+    @click="$emit('clicked')"
     class="road"
     :class="[placement, { 'enabled': enabled }]"
     :style="{ background: activeData.color, ...hoverStyle }"

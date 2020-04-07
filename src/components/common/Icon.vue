@@ -21,7 +21,7 @@
       },
       size: {
         type: String,
-        default: MD,
+        default: LG,
         validator: value => sizes.includes(value) || value.endsWith('px')
       },
       dark: {

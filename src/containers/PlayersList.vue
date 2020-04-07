@@ -7,16 +7,13 @@
         class="player-wrapper"
         :class="{ 'current-turn': currentTurn === index }"
       >
-          {{ player.playerSessionId === myPlayer.playerSessionId }}
-
-        <div v-if="player.playerSessionId === myPlayer.playerSessionId" class="yourself">
-          YOU
-        </div>
         <PlayerInfo
           :player="player"
-          isMe
+          :isMe="player.playerSessionId === myPlayer.playerSessionId"
           :isStarted="isGameReady"
           @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
+          @trade-with="$emit('trade-with', $event)"
+          class="player"
         />
       </li>
     </ul>
@@ -88,10 +85,8 @@
       border-top: 1px solid gray;
     }
 
-    .yourself {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .player {
+      height: 100%;
     }
   }
 </style>

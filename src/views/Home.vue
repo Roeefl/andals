@@ -4,7 +4,7 @@
       <ChoiceDialog iconName="plus-circle" title="Create Room" @approve="createRoom">
         <CustomizeRoom :roomTitle="roomTitle" @saved="roomTitle = $event" />
       </ChoiceDialog>
-      <Button iconName="refresh-circle" :onClick="refreshRooms">
+      <Button iconName="refresh-circle" @click="refreshRooms">
         Refresh List
       </Button>
       <ChoiceDialog iconName="wrench" title="Customize Player" @approve="saveProfile" @cancel="revertProfile">

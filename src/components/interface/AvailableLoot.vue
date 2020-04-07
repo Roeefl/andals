@@ -15,7 +15,7 @@
       iconName="treasure-chest"
       iconColor="red"
       iconSize="x-large"
-      :onClick="() => $emit('collect-all')"
+      @click="$emit('collect-all')"
     />
   </div>
 </template>

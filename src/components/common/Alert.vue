@@ -1,7 +1,7 @@
 <template>
   <v-snackbar top v-model="isOpen" :timeout="timeout">
     {{ text }}
-    <Button color="white" text :onClick="() => isOpen = false">
+    <Button color="white" text @click="isOpen = false">
       X
     </Button>
   </v-snackbar>
