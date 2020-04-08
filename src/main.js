@@ -4,9 +4,11 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 import Fragment from 'vue-fragment';
+import draggable from 'vuedraggable';
 
 Vue.config.productionTip = false;
 Vue.use(Fragment.Plugin);
+Vue.use(draggable);
 
 new Vue({
   router,
