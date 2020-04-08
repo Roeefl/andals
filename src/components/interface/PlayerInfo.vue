@@ -4,7 +4,17 @@
       <div class="nickname">
         {{ player.nickname }}
       </div>
-      <Button v-if="isStarted && !isMe" icon iconName="swap-vertical-circle" iconSize="x-large" @click="$emit('trade-with', player.playerSessionId)" />
+      <Button
+        v-if="isStarted && !isMe"
+        icon
+        iconName="swap-vertical-circle"
+        iconSize="x-large"
+        :disabled="waitingTrade"
+        @click="$emit('trade-with', player.playerSessionId)"
+      />
+      <div v-if="waitingTrade">
+        Waiting Trade Response....
+      </div>
       <Icon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
     </div>
     <div class="resources">
@@ -58,6 +68,10 @@
         default: false
       },
       isMe: {
+        type: Boolean,
+        default: false
+      },
+      waitingTrade: {
         type: Boolean,
         default: false
       }

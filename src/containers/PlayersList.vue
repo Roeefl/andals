@@ -10,6 +10,7 @@
         <PlayerInfo
           :player="player"
           :isMe="player.playerSessionId === myPlayer.playerSessionId"
+          :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
           :isStarted="isGameReady"
           @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
           @trade-with="$emit('trade-with', $event)"
@@ -33,6 +34,10 @@
       currentTurn: {
         type: Number,
         default: 0
+      },
+      waitingTradeWith: {
+        type: String,
+        default: null
       },
       isGameReady: {
         type: Boolean,

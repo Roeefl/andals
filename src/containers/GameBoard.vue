@@ -23,10 +23,13 @@
             :key="`structure-tile-${row}-${col}`"
             v-if="structureTileMap[row][col]"
             :placement="structureTileTypes[structureTileMap[row][col]]" 
-            :enabled="isSettlementPurchaseEnabled"
+            :enabled="isSettlementPurchaseEnabled && isStructureAllowed(row, col)"
             @clicked="$emit('tile-clicked', { type: 'settlement', row, col })"
             :activeData="activeStructures[row][col] || {}"
             :myColor="myPlayer.color"
+          />
+          <Robber
+            v-if="robberPosition === i * 7 + j"
           />
         </HexTile>
       </div>
@@ -43,6 +46,7 @@
   import HexTile from '@/components/tiles/HexTile';
   import RoadTile from '@/components/tiles/RoadTile';
   import StructureTile from '@/components/tiles/StructureTile';
+  import Robber from '@/components/game/Robber';
 
   import hexTileMap from '@/tilemaps/hexes';
   import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';
@@ -54,12 +58,17 @@
     components: {
       HexTile,
       RoadTile,
-      StructureTile
+      StructureTile,
+      Robber
     },
     props: {
       ready: {
         type: Boolean,
         default: false
+      },
+      robberPosition: {
+        type: Number,
+        required: true
       },
       isSetupPhase: {
         type: Boolean,
@@ -100,19 +109,40 @@
       this.structureTileTypes = structureTileTypes;
     },
     methods: {
+      isStructureAllowed: function(row, col) {
+        const isAdjacentToActiveStructures = this.activeStructures
+          .flat()
+          .filter(structure => !!structure && !!structure.ownerId)
+          .map(({ row: sRow, col: sCol }) => {
+            const structureTile = structureTileMap[sRow][sCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
+            if (!structureTile) return false;
+
+            // offset by +1 for ODD rows only
+            const colOffset = sRow % 2 === 0 ? 2 : 0;
+
+            const adjacentStructures = structureTile === 1 // 'top' ?  
+              ? [[sRow, sCol - 1], [sRow, sCol + 1], [sRow - 1, sCol + 1]]
+              : [[sRow, sCol - 1], [sRow, sCol + 1], [sRow + 1, sCol - 1 + colOffset]]
+
+            return adjacentStructures.some(([iRow, iCol]) => iRow === row && iCol === col);
+          });
+
+        return isAdjacentToActiveStructures.every(s => !s);
+      },
       isRoadAllowed: function(row, col) {
         const isAllowedPerStructure = this.activeStructures
           .flat()
           .filter(structure => !!structure && structure.ownerId && structure.ownerId === this.myPlayer.playerSessionId)
           .map(({ row: sRow, col: sCol }) => {
             const structureTile = structureTileMap[sRow][sCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
-
             if (!structureTile) return false;
 
-            // @TODO: For even/odd rows, need to allocate sRow * 2 - 1 or sRow * 2 + 1 , not sure in which order
+            // offset by +2 for EVEN rows only
+            const colOffset = sRow % 2 === 0 ? 1 : 1;
+
             const intersections = structureTile === 1 // 'top' ?
-              ? [[sRow * 2 - 1, sCol - 1], [sRow * 2, sCol - 1], [sRow * 2, sCol]] // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
-              : [[sRow * 2, sCol - 1], [sRow * 2, sCol], [sRow * 2 + 1, sCol]]     // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
+              ? [[sRow * 2 - 1, sCol - 1 + colOffset], [sRow * 2, sCol - 1], [sRow * 2, sCol]] // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
+              : [[sRow * 2, sCol - 1], [sRow * 2, sCol], [sRow * 2 + 1, sCol - 1 + colOffset]]     // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
 
             return intersections.some(([iRow, iCol]) => iRow === row && iCol === col);
           });
@@ -121,12 +151,15 @@
           .flat()
           .filter(road => !!road && road.ownerId && road.ownerId === this.myPlayer.playerSessionId)
           .map(({ row: sRow, col: sCol }) => {
-            const roadTile = roadTileMap[sRow][sCol];
             // 0: 'hide', 1: 'top-left', 2: 'top-right', 3: 'left', 4: 'right'
-
+            const roadTile = roadTileMap[sRow][sCol];
             if (!roadTile) return false;
 
             let intersections = [];
+            
+            // offset by +2 for EVEN rows only
+            let colOffset = sRow % 2 === 0 ? 2 : 0;
+
             switch (roadTile) {
               // road: [6, 6], type: 1 || intersecting roads: [6, 5], [6, 7], [5, 6], [7, 6]
               case 1:
@@ -140,7 +173,8 @@
 
               // road: [7, 7], type: 3 || intersecting roads: [6, 6], [6, 7], [8, 5], [8, 6]
               case 3:
-                intersections = [[sRow - 1, sCol], [sRow - 1, sCol - 1], [sRow + 1, sCol], [sRow + 1, sCol + 1]];
+                colOffset = 2;
+                intersections = [[sRow - 1, sCol], [sRow - 1, sCol - 1], [sRow + 1, sCol - 2 + colOffset], [sRow + 1, sCol - 1 + colOffset]];
                 break;
 
               // road: [9, 9], type: 4 || intersecting roads: [8, 9], [8, 10], [10, 10], [10, 11]

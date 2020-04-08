@@ -1,6 +1,6 @@
 <template>
   <transition name="puff">
-    <v-card max-width="300" class="resource-card" @click="$emit('clicked')">
+    <v-card max-width="300" class="resource-card" @click="!disabled && $emit('clicked')">
       <Button icon :xs="small">
         <Icon
           :size="small ? 'medium' : 'x-large'"
@@ -52,6 +52,10 @@
         default: false
       },
       small: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
         type: Boolean,
         default: false
       }

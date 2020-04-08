@@ -11,11 +11,13 @@
         <PlayersList
           :isGameReady="roomState.isGameReady"
           :currentTurn="roomState.currentTurn"
+          :waitingTradeWith="waitingTradeWith"
           @display-deck="isDisplayMyDeck = true"
-          @trade-with="tradeWith($event)"
+          @trade-with="requestTradeWith($event)"
         />
         <GameBoard
           :board="roomState.board"
+          :robberPosition="roomState.robberPosition"
           :ready="roomState.isGameReady"
           :isDiceRolled="roomState.isDiceRolled"
           :isSetupPhase="roomState.isSetupPhase"
@@ -39,14 +41,22 @@
       @close="isDisplayMyDeck = false"
       :deck="myPlayer.resourceCounts"
     />
+    <ConfirmTrade
+      :isOpen="!!myPlayer.pendingTrade"
+      :withWho="tradingWith"
+      @no="respondToIncomingTrade(false)"
+      @yes="respondToIncomingTrade(true)"
+    />
     <TradeDialog
-      :isOpen="!!tradingWith"
-      :players="[myPlayer, tradingWith]"
-      @refuse="refuseTrade"
+      :isOpen="!!myPlayer.tradingWith"
+      :players="[myPlayer, players.find(({ playerSessionId }) => playerSessionId === myPlayer.tradingWith)]"
       @add-card="addTradeCard($event)"
       @remove-card="removeTradeCard($event)"
+      @refuse="refuseTrade"
       @confirm-trade="confirmTrade"
-    />
+    >
+      <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
+    </TradeDialog>
     </div>
     <div v-else>
       Not currently connected to any game room.
@@ -63,10 +73,11 @@
   import GameChat from '@/containers/GameChat';
   import GameLog from '@/containers/GameLog';
   import PlayersList from '@/containers/PlayersList';
-  
+
   import MyDeck from '@/components/interface/MyDeck';
   import TradeDialog from '@/components/interface/TradeDialog';
   import ConfirmMove from '@/components/interface/ConfirmMove';
+  import ConfirmTrade from '@/components/interface/ConfirmTrade';
 
   import {
     MESSAGE_CHAT,
@@ -82,6 +93,7 @@
     MESSAGE_TRADE_REMOVE_CARD,
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
+    MESSAGE_TRADE_INCOMING_RESPONSE,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT
@@ -95,18 +107,19 @@
       GameChat,
       GameLog,
       PlayersList,
+      ConfirmTrade,
       ConfirmMove,
       MyDeck,
-      TradeDialog
+      TradeDialog,
     },
     data: () => ({
       chatMessages: [],
       isDisplayConfirmMove: false,
       isDisplayMyDeck: false,
-      tradingWith: null,
       activeTile: {
         type: 'road'
-      }
+      },
+      waitingTradeWith: null
     }),
     created() {
       if (!this.room) return;
@@ -120,12 +133,6 @@
       this.room.onError(this.onRoomError);
       this.room.onLeave(this.onRoomLeave);
     },
-    updated() {
-      console.log(this.myPlayer);
-      
-      if (this.myPlayer.pendingTrade)
-        this.tradingWidth = this.myPlayer.pendingTrade
-    },
     destroyed() {
       this.$store.commit('destroyRoomState');
     },
@@ -137,6 +144,11 @@
       },
       isMyTurn: function() {
         return this.roomState.currentTurn === this.myPlayerIndex
+      },
+      tradingWith: function() {
+        return this.myPlayer.pendingTrade
+          ? (this.players.find(({ playerSessionId }) => playerSessionId === this.myPlayer.pendingTrade) || {}).nickname
+          : 'NONE';
       },
       ...mapState([
         'isSelfReady',
@@ -235,38 +247,40 @@
           type: MESSAGE_FINISH_TURN
         });
       },
-      tradeWith(otherPlayerSessionId) {
+      requestTradeWith: function(withWho) {
         colyseusService.room.send({
           type: MESSAGE_TRADE_REQUEST,
-          otherPlayerSessionId
+          withWho
         });
 
-// this.tradingWith = this.players.find(({ playerSessionId }) => playerSessionId === otherPlayerSessionId);
+        this.waitingTradeWith = withWho;
       },
-      addTradeCard(resource) {
+      respondToIncomingTrade: function(isAgreed) {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_INCOMING_RESPONSE,
+          isAgreed
+        });
+      },
+      addTradeCard: function(resource) {
         colyseusService.room.send({
           type: MESSAGE_TRADE_ADD_CARD,
           resource
         });
       },
-      removeTradeCard(resource) {
+      removeTradeCard: function(resource) {
         colyseusService.room.send({
           type: MESSAGE_TRADE_REMOVE_CARD,
           resource
         });
       },
-      refuseTrade() {
+      refuseTrade: function() {
         colyseusService.room.send({
-          type: MESSAGE_TRADE_REFUSE,
-          otherPlayerSessionId: tradingWith.playerSessionId
+          type: MESSAGE_TRADE_REFUSE
         });
-        
-        this.tradingWith = null;
       },
-      confirmTrade() {
+      confirmTrade: function() {
         colyseusService.room.send({
-          type: MESSAGE_TRADE_CONFIRM,
-          otherPlayerSessionId: tradingWith.playerSessionId
+          type: MESSAGE_TRADE_CONFIRM
         });
       }
     }

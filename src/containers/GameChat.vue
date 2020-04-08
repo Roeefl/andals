@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <MessageList title="Chat Messages" :messages="messages" class="messages">
+    <MessageList title="Chat" :messages="messages" class="messages">
       <li v-for="(msg, i) in messages" :key="i">
         <div>
           {{ msg.sender }}: {{ msg.message }}
@@ -61,6 +61,9 @@
 
 <style scoped lang="scss">
   .wrapper {
+    height: 100%;
+    display: flex;
+
     .messages {
       flex: 5;
     }

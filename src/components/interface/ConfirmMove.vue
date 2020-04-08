@@ -24,7 +24,7 @@
 
 <script>
   import buildingCosts from '@/utils/buildingCosts';
-  import { resourceCardTypes, resourceNameToIcon, resourceCardColors } from '@/utils/tileManifest';
+  import { resourceCardTypes } from '@/utils/tileManifest';
 
   import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';
@@ -51,9 +51,7 @@
     },
     created() {
       this.buildingCosts = buildingCosts;
-      this.resourceNameToIcon = resourceNameToIcon;
       this.resourceCardTypes = resourceCardTypes;
-      this.resourceCardColors = resourceCardColors;
     }
   }
 </script>
