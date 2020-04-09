@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import { resourceCardTypes } from '@/utils/tileManifest';
+  import { resourceCardTypes } from '@/specs/resources';
   import ResourceCard from '@/components/game/ResourceCard';
 
   export default {

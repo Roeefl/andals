@@ -4,7 +4,7 @@
     persistent
     width="400"
   >
-   <ActionCard :title="`Confirm: ${type}`" @cancel="$emit('no')" @approve="$emit('yes')">
+   <ActionCard :title="`Confirm Purchase: ${type}`" @cancel="$emit('no')" @approve="$emit('yes')">
     <div v-if="!isFree">
       Build {{ type }} for:
       <div class="cost">
@@ -23,8 +23,8 @@
 </template>
 
 <script>
+  import { resourceCardTypes } from '@/specs/resources';
   import buildingCosts from '@/utils/buildingCosts';
-  import { resourceCardTypes } from '@/utils/tileManifest';
 
   import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';
