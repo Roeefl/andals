@@ -63,6 +63,9 @@
   .wrapper {
     height: 100%;
     display: flex;
+    flex-direction: column;
+    background: #5E35B1;
+    color: white;
 
     .messages {
       flex: 5;

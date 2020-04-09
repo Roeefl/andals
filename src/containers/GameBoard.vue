@@ -7,6 +7,7 @@
           :key="`tile-${i}-${j}`"
           :type="tile"
           :tile="board[i * 7 + j]"
+          @dropped="onRobberDropped(i * 7 + j)"
         >
           <RoadTile
             v-for="([row, col]) in [[i * 2, j * 2], [i * 2, j * 2 + 1], [i * 2 + 1, j * 2], [i * 2 + 1, j * 2 + 1]]"
@@ -14,7 +15,7 @@
             v-if="roadTileMap[row][col]"
             :placement="roadTileTypes[roadTileMap[row][col]]"
             :enabled="isRoadPurchaseEnabled && isRoadAllowed(row, col)"
-            @clicked="$emit('tile-clicked', { type: 'road', row, col })"
+            @clicked="$emit('tile-clicked', { type: ROAD, row, col })"
             :activeData="activeRoads[row][col] || {}"
             :myColor="myPlayer.color"
           />
@@ -23,14 +24,17 @@
             :key="`structure-tile-${row}-${col}`"
             v-if="structureTileMap[row][col]"
             :placement="structureTileTypes[structureTileMap[row][col]]" 
-            :enabled="isSettlementPurchaseEnabled && isStructureAllowed(row, col)"
-            @clicked="$emit('tile-clicked', { type: 'settlement', row, col })"
+            :enabled="isSettlementPurchaseEnabled && (isSettlementAllowed(row, col) || isCityAllowed(row, col))"
+            @clicked="$emit('tile-clicked', { type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
             :activeData="activeStructures[row][col] || {}"
             :myColor="myPlayer.color"
           />
-          <Robber
-            v-if="robberPosition === i * 7 + j"
-          />
+          <drag :transfer-data="{}">
+            <Robber
+              v-if="(myPlayer.mustMoveRobber && (desiredRobberTile === -1 ? robberPosition === i * 7 + j : desiredRobberTile === i * 7 + j)) || (!myPlayer.mustMoveRobber && robberPosition === i * 7 + j)"
+              :active="myPlayer.mustMoveRobber"
+            />
+          </drag>
         </HexTile>
       </div>
     </div>
@@ -51,7 +55,8 @@
   import hexTileMap from '@/tilemaps/hexes';
   import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';
   import structureTileMap, { types as structureTileTypes } from '@/tilemaps/structures';
-  import buildingCosts from '@/utils/buildingCosts';
+  import buildingCosts, { ROAD, SETTLEMENT, CITY, GAMECARD } from '@/utils/buildingCosts';
+  import { isPurchaseAllowedSettlement } from '@/utils/board';
 
   export default {
     name: 'GameBoard',
@@ -67,6 +72,10 @@
         default: false
       },
       robberPosition: {
+        type: Number,
+        required: true
+      },
+      desiredRobberTile: {
         type: Number,
         required: true
       },
@@ -89,11 +98,17 @@
         return (
           this.isMyTurn &&
           this.myPlayer.hasResources.road &&
-          (this.isSetupPhase || this.isDiceRolled)
+          (this.isSetupPhase || this.isDiceRolled) &&
+          !this.myPlayer.mustMoveRobber
         );
       },
       isSettlementPurchaseEnabled: function() {
-        return this.isMyTurn && this.myPlayer.hasResources.settlement && (this.isDiceRolled || this.isSetupPhase);
+        return (
+          this.isMyTurn &&
+          (this.myPlayer.hasResources.settlement || this.myPlayer.hasResources.city) &&
+          (this.isDiceRolled || this.isSetupPhase) &&
+          !this.myPlayer.mustMoveRobber
+        );
       },
       ...mapState([
         'activeStructures',
@@ -107,27 +122,17 @@
       this.roadTileTypes = roadTileTypes;
       this.structureTileMap = structureTileMap;
       this.structureTileTypes = structureTileTypes;
+      this.ROAD = ROAD;
+      this.SETTLEMENT = SETTLEMENT;
+      this.CITY = CITY;
+      this.GAMECARD = GAMECARD;
     },
     methods: {
-      isStructureAllowed: function(row, col) {
-        const isAdjacentToActiveStructures = this.activeStructures
-          .flat()
-          .filter(structure => !!structure && !!structure.ownerId)
-          .map(({ row: sRow, col: sCol }) => {
-            const structureTile = structureTileMap[sRow][sCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
-            if (!structureTile) return false;
-
-            // offset by +1 for ODD rows only
-            const colOffset = sRow % 2 === 0 ? 2 : 0;
-
-            const adjacentStructures = structureTile === 1 // 'top' ?  
-              ? [[sRow, sCol - 1], [sRow, sCol + 1], [sRow - 1, sCol + 1]]
-              : [[sRow, sCol - 1], [sRow, sCol + 1], [sRow + 1, sCol - 1 + colOffset]]
-
-            return adjacentStructures.some(([iRow, iCol]) => iRow === row && iCol === col);
-          });
-
-        return isAdjacentToActiveStructures.every(s => !s);
+      isSettlementAllowed: function(row, col) {
+        return isPurchaseAllowedSettlement(this.activeStructures, row, col);
+      },
+      isCityAllowed: function(row, col) {
+        return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT;
       },
       isRoadAllowed: function(row, col) {
         const isAllowedPerStructure = this.activeStructures
@@ -137,12 +142,25 @@
             const structureTile = structureTileMap[sRow][sCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
             if (!structureTile) return false;
 
-            // offset by +2 for EVEN rows only
-            const colOffset = sRow % 2 === 0 ? 1 : 1;
+            // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
+            // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
+            let intersections = [[sRow * 2, sCol - 1], [sRow * 2, sCol]];
 
-            const intersections = structureTile === 1 // 'top' ?
-              ? [[sRow * 2 - 1, sCol - 1 + colOffset], [sRow * 2, sCol - 1], [sRow * 2, sCol]] // structure: [3, 7], type: 1 || intersecting roads:  [5, 6], [6, 6], [6, 7]
-              : [[sRow * 2, sCol - 1], [sRow * 2, sCol], [sRow * 2 + 1, sCol - 1 + colOffset]]     // structure: [3, 8], type: 2 || intersecting roads:  [6, 7], [6, 8], [7, 8]
+            let colOffset = sRow % 2 === 0 ? 2 : 0;
+
+            if (structureTile === 1) { // 'top' ?
+              intersections = [
+                ...intersections,
+                [sRow * 2 - 1, sCol],
+                [sRow * 2 - 1, sCol - 1 + colOffset]
+              ];
+            } else {
+              intersections = [
+                ...intersections,
+                [sRow * 2 + 1, sCol - 1],
+                [sRow * 2 + 1, sCol]
+              ];
+            }
 
             return intersections.some(([iRow, iCol]) => iRow === row && iCol === col);
           });
@@ -187,6 +205,10 @@
           });
 
         return isAllowedPerStructure.some(s => s) || isAllowedPerRoad.some(r => r);
+      },
+      onRobberDropped: function(tileIndex) {
+        if (!this.myPlayer.mustMoveRobber) return;
+        this.$emit('robber-dropped', tileIndex);
       }
     }
   }

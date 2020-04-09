@@ -1,0 +1,11 @@
+@import './variables';
+
+:export {
+  tileWater: $tile-water;
+  tileLumber: $tile-lumber;
+  tileBrick: $tile-brick;
+  tileSheep: $tile-sheep;
+  tileWheat: $tile-wheat;
+  tileOre: $tile-ore;
+  road: $tile-road;
+}

@@ -12,8 +12,10 @@
           :isMe="player.playerSessionId === myPlayer.playerSessionId"
           :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
           :isStarted="isGameReady"
+          :allowStealing="myPlayer.allowStealingFrom.includes(player.playerSessionId)"
           @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
           @trade-with="$emit('trade-with', $event)"
+          @steal-from="$emit('steal-from', $event)"
           class="player"
         />
       </li>

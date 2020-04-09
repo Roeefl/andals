@@ -1,19 +1,26 @@
 <template>
-  <div class="tile" :class="[type, tile.resource]">
+  <drop @drop="$emit('dropped')" class="tile" :class="[type, tile.resource]">
+    <Icon
+      v-if="tile.resource && tile.value"
+      :name="resourceCardNameToIcon[tile.resource]"
+      size="50px"
+      color="black"
+      class="resource-icon"
+    />
     <span class="inner value" v-if="tile.value">
       {{ tile.value }}
     </span>
     <span class="inner harbor" v-if="tile.type === TILE_WATER && !!tile.resource" :class="tile.resource">
       {{ harborTypes[tile.resource] }}
       <Icon
-        v-if="tile.resource && !tile.resource === HARBOR_GENERIC"
+        v-if="tile.resource && tile.resource !== HARBOR_GENERIC"
         :name="resourceCardNameToIcon[tile.resource]"
         color="white"
         size="large"
       />
     </span>
     <slot />
-  </div>
+  </drop>
 </template>
 
 <script>
@@ -104,45 +111,49 @@
     &.resource {
       &.brick   {   background: $tile-brick;    }
       &.lumber  {   background: $tile-lumber;   }
-      &.desert  {   background: yellow;   }
+      &.desert  {   background: $tile-desert;   }
       &.ore     {   background: $tile-ore;      }
       &.wheat   {   background: $tile-wheat;    }
       &.sheep   {   background: $tile-sheep;    }
     }
-  }
 
-  .inner {
-    transform: rotate(90deg);
+    .resource-icon {
+      transform: rotate(90deg);
+      position: absolute;
+      top: $tile-size * 0.45;
+      left: $tile-size / 3;
+      z-index: $zindex-tile-value + 1;
+    }
 
-    width: $tile-value-size;
-    height: $tile-value-size;
+    .inner {
+      transform: rotate(90deg);
+      width: $tile-value-size * 0.75;
+      height: $tile-value-size * 0.75;
+      position: absolute;
+      top: $tile-size * 0.55;
+      right: $tile-size * 0.75;
+      border-radius: 999px;
+      z-index: $zindex-tile-value;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-    position: absolute;
-    top: $tile-size / 2;
-    left: $tile-size / 4;
+      &.value {
+        font-size: $font-size-md;
+        border: 2px solid black;
+        background: white;
+      }
 
-    border-radius: 999px;
-    z-index: $zindex-tile-value;
+      &.harbor {
+        font-size: $font-size-sm;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .value {
-    font-size: $font-size-lg;
-    border: 2px solid black;
-    background: white;
-  }
-
-  .harbor {
-    font-size: $font-size-sm;
-
-    &.harborGeneric { background: white; }
-    &.brick   {   background: $tile-brick;    }
-    &.lumber  {   background: $tile-lumber;   }
-    &.ore     {   background: $tile-ore;      }
-    &.wheat   {   background: $tile-wheat;    }
-    &.sheep   {   background: $tile-sheep;    }
+        &.harborGeneric { background: white; }
+        &.brick   {   background: $tile-brick;    }
+        &.lumber  {   background: $tile-lumber;   }
+        &.ore     {   background: $tile-ore;      }
+        &.wheat   {   background: $tile-wheat;    }
+        &.sheep   {   background: $tile-sheep;    }
+      }
+    }
   }
 </style>

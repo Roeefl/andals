@@ -7,7 +7,8 @@
           :name="hideIcon ? 'help-box' : resourceCardNameToIcon[resource]"
           :color="hideIcon? 'black' : resourceCardColors[resource]"
         />
-        <NumberBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count === 0 ? '0' : count" />
+        <Badge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count === 0 ? '0' : count" />
+        <Icon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
       </Button>
       <Button icon v-if="collectable" class="collect">
         <Icon size="x-large" name="sack" color="red" />
@@ -21,14 +22,14 @@
 
   import Button from '@/components/common/Button';
   import Icon from '@/components/common/Icon';
-  import NumberBadge from '@/components/common/NumberBadge';
+  import Badge from '@/components/common/Badge';
 
   export default {
     name: 'ResourceCard',
     components: {
       Button,
       Icon,
-      NumberBadge
+      Badge
     },
     props: {
       resource: {
@@ -56,6 +57,10 @@
         default: false
       },
       disabled: {
+        type: Boolean,
+        default: false
+      },
+      selected: {
         type: Boolean,
         default: false
       }
@@ -97,5 +102,11 @@
     position: absolute;
     bottom: -1.2 * $spacer;
     left: 0;
+  }
+
+  .selected {
+    position: absolute;
+    top: 0;
+    right: -$spacer;
   }
 </style>

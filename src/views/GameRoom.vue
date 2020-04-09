@@ -3,9 +3,11 @@
     <div v-if="this.room" class="inner">
       <ControlPanel
         :isMyTurn="isMyTurn"
+        :desiredRobberTile="desiredRobberTile"
         @toggle-ready="toggleReady"
         @dice-finished="sendDice($event)"
         @end-turn="finishTurn"
+        @move-robber="moveRobber"
       />
       <div class="board-area">
         <PlayersList
@@ -14,15 +16,18 @@
           :waitingTradeWith="waitingTradeWith"
           @display-deck="isDisplayMyDeck = true"
           @trade-with="requestTradeWith($event)"
+          @steal-from="stealFrom($event)"
         />
         <GameBoard
           :board="roomState.board"
-          :robberPosition="roomState.robberPosition"
+          :robberPosition="roomState.robberPosition || -1"
           :ready="roomState.isGameReady"
           :isDiceRolled="roomState.isDiceRolled"
           :isSetupPhase="roomState.isSetupPhase"
           :isMyTurn="isMyTurn"
           @tile-clicked="onTileClick($event)"
+          :desiredRobberTile="desiredRobberTile"
+          @robber-dropped="desiredRobberTile = $event"
         />
         <aside class="sidebar">
           <GameLog />
@@ -37,9 +42,11 @@
         @no="onTileBuild(false)"
       />
     <MyDeck
-      :isOpen="isDisplayMyDeck"
-      @close="isDisplayMyDeck = false"
+      :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
+      :discardMode="myPlayer.mustDiscardHalfDeck"
       :deck="myPlayer.resourceCounts"
+      @close="closeDeck"
+      @approve="closeDeck($event)"
     />
     <ConfirmTrade
       :isOpen="!!myPlayer.pendingTrade"
@@ -57,6 +64,11 @@
     >
       <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
     </TradeDialog>
+    <OpponentDeck
+      :isOpen="!!stealingFrom.playerSessionId"
+      :opponent="stealingFrom"
+      @steal="selectStealCard($event)"
+    />
     </div>
     <div v-else>
       Not currently connected to any game room.
@@ -78,6 +90,9 @@
   import TradeDialog from '@/components/interface/TradeDialog';
   import ConfirmMove from '@/components/interface/ConfirmMove';
   import ConfirmTrade from '@/components/interface/ConfirmTrade';
+  import OpponentDeck from '@/components/interface/OpponentDeck';
+
+  import { initialResourceCounts } from '@/utils/tileManifest';
 
   import {
     MESSAGE_CHAT,
@@ -88,15 +103,19 @@
     MESSAGE_FINISH_TURN,
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
+    MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_TRADE_REQUEST,
     MESSAGE_TRADE_ADD_CARD,
     MESSAGE_TRADE_REMOVE_CARD,
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
     MESSAGE_TRADE_INCOMING_RESPONSE,
+    MESSAGE_MOVE_ROBBER,
+    MESSAGE_STEAL_CARD,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
-    CHAT_LOG_LOOT
+    CHAT_LOG_LOOT,
+    CHAT_LOG_DISCARD
   } from '@/store/constants';
 
   export default {
@@ -111,6 +130,7 @@
       ConfirmMove,
       MyDeck,
       TradeDialog,
+      OpponentDeck
     },
     data: () => ({
       chatMessages: [],
@@ -119,7 +139,9 @@
       activeTile: {
         type: 'road'
       },
-      waitingTradeWith: null
+      waitingTradeWith: null,
+      desiredRobberTile: -1,
+      stealingFrom: {}
     }),
     created() {
       if (!this.room) return;
@@ -191,6 +213,10 @@
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
             break;
 
+          case MESSAGE_DISCARD_HALF_DECK:
+            const { discardedCounts } = broadcast;
+            this.$store.commit('addGameLog', { type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
+
           case MESSAGE_GAME_LOG:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
             this.$store.commit('addAlert', message);
@@ -235,6 +261,7 @@
         
         colyseusService.room.send({
           type: type === 'road' ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
+          structureType: type === 'road' ? null : type,
           row,
           col
         });
@@ -261,7 +288,9 @@
           isAgreed
         });
       },
-      addTradeCard: function(resource) {
+      addTradeCard: function(card) {
+        const { resource } = card;
+        
         colyseusService.room.send({
           type: MESSAGE_TRADE_ADD_CARD,
           resource
@@ -282,6 +311,43 @@
         colyseusService.room.send({
           type: MESSAGE_TRADE_CONFIRM
         });
+      },
+      closeDeck: function(selectedCards) {
+        this.isDisplayMyDeck = false;
+
+        if (!this.myPlayer.mustDiscardHalfDeck) return;
+
+        const discardedCounts = selectedCards.reduce((acc, { resource }) => {
+          acc[resource]++;
+          return acc;
+        }, initialResourceCounts);
+
+        colyseusService.room.send({
+          type: MESSAGE_DISCARD_HALF_DECK,
+          discardedCounts
+        });
+      },
+      moveRobber: function() {
+        if (!this.myPlayer.mustMoveRobber) return;
+
+        colyseusService.room.send({
+          type: MESSAGE_MOVE_ROBBER,
+          tile: this.desiredRobberTile
+        });
+      },
+      stealFrom: function(playerSessionId) {
+        this.stealingFrom = this.players.find(p => p.playerSessionId === playerSessionId);
+      },
+      selectStealCard: function(selectedCard) {
+        const { resource } = selectedCard;
+
+        colyseusService.room.send({
+          type: MESSAGE_STEAL_CARD,
+          stealFrom: this.stealingFrom.playerSessionId,
+          resource
+        });
+
+        this.stealingFrom = {};
       }
     }
   }

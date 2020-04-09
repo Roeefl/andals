@@ -2,7 +2,12 @@
   <main class="home">
     <div class="actions">
       <ChoiceDialog iconName="plus-circle" title="Create Room" @approve="createRoom">
-        <CustomizeRoom :roomTitle="roomTitle" @saved="roomTitle = $event" />
+        <CustomizeRoom
+          :roomTitle="roomTitle"
+          @update-title="roomTitle = $event"
+          :roomMaxPlayers="roomMaxPlayers"
+          @update-max-players="roomMaxPlayers = $event"
+        />
       </ChoiceDialog>
       <Button iconName="refresh-circle" @click="refreshRooms">
         Refresh List
@@ -47,6 +52,7 @@
       
       return {
         roomTitle: `Room ${randomInt}`,
+        roomMaxPlayers: 2,
         autoRefresh: null
       };
     },
@@ -72,6 +78,7 @@
         try {
           const options = {
             roomTitle: this.roomTitle,
+            maxPlayers: this.roomMaxPlayers,
             ...this.profile
           };
 

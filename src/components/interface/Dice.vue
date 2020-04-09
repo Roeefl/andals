@@ -29,12 +29,12 @@
         const randomDice1 = Math.floor(Math.random() * 6) + 1;
         const randomDice2 = Math.floor(Math.random() * 6) + 1;
         this.dice = [randomDice1, randomDice2];
-      }, 100);
+      }, 50);
 
       setTimeout(() => {
         clearInterval(diceRoller);
         this.$emit('finished', this.dice);
-      }, 1500);
+      }, 2000);
     }
   }
 </script>

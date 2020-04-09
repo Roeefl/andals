@@ -7,16 +7,29 @@
       <ResourceCounts :counts="roomState.resourceCounts" />
       <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" />
       <div class="dice" v-if="roomState.isGameReady">
-        <Button color="success" @click="rollDice" :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled">
-          Roll Dice
-        </Button>
         <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
-        <div v-for="(diceValue, i) in roomState.dice" :key="i" class="cube" :class="`cube-${i}`">
-          <Icon size="50px" color="black" :name="`dice-${diceValue}`" />
-        </div>
+        <Button
+          v-for="(diceValue, i) in roomState.dice"
+          :key="i"
+          :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled"
+          @click="rollDice"
+          :iconName="`dice-${diceValue}`"
+          :color="i === 0 ? 'deep-orange darken-3' : 'lime accent-3'"
+          iconSize="50px"
+          iconColor="black"
+          class="cube"
+        />
       </div>
       <Button color="red" @click="$emit('end-turn')" :disabled="isEndTurnDisabled">
         End Turn
+      </Button>
+      <Button
+        v-if="myPlayer.mustMoveRobber"
+        color="pink darken-3"
+        @click="$emit('move-robber')"
+        :disabled="desiredRobberTile === -1 || roomState.robberPosition === desiredRobberTile"
+      >
+        Move Robber
       </Button>
       <Button
         v-if="!roomState.isGameReady"
@@ -71,6 +84,10 @@
       isMyTurn: {
         type: Boolean,
         default: false
+      },
+      desiredRobberTile: {
+        type: Number,
+        required: true
       }
     },
     computed: {
@@ -80,7 +97,9 @@
           (this.roomState.isSetupPhase && this.myPlayer.hasResources.road) ||
           // Game started - meaning: either its not even my turn, or it is but I have not played yet
           !this.isMyTurn ||
-          !this.roomState.isDiceRolled
+          !this.roomState.isDiceRolled ||
+          (this.myPlayer.mustMoveRobber && this.desiredRobberTile === -1) ||
+          this.myPlayer.allowStealingFrom.length > 0
         );
       },
       ...mapState([
@@ -130,18 +149,7 @@
         .cube {
           width: 64px;
           height: 64px;
-          border: 1px solid black;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          &.cube-0 {
-            background: rgba(yellow, 0.5);
-          }
-
-          &.cube-1 {
-            background: rgba(red, 0.5);
-          }
+          margin-right: $spacer / 3;
         }
       }
     }

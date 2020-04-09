@@ -7,25 +7,29 @@
     <ActionCard v-if="!!players[1]" :title="`Trading with ${players[1].nickname}`" :approve="false" cancelText="Refuse" @cancel="$emit('refuse')">
       <div class="wrapper">
         <div class="trade">
-          <div class="my-deck">
+          <drop class="my-deck" @drop="$emit('remove-card', $event.resource)">
             <Deck :deck="players[0].resourceCounts" @card-clicked="$emit('add-card', $event)" />
-          </div>
-          <div v-for="(player, i) in players" :key="renderKey(player)" class="player">
+          </drop>
+          <drop v-for="(player, i) in players" :key="renderKey(player)" class="player" @drop="i === 0 && $emit('add-card', $event)">
             <div class="nickname">
               {{ i === 0 ? 'You are' : `${player.nickname} is` }} offering:
             </div>
             <div class="trade-cards">
               <div v-for="resource in resourceCardTypes" :key="resource" v-show="player.tradeCounts[resource]" class="resource-type">
-                <ResourceCard
-                  v-for="(card, c) in Array(player.tradeCounts[resource] || 0).fill(resource)"
+                <drag 
+                  v-for="(card, c) in Array(player.tradeCounts[resource] > 0 ? player.tradeCounts[resource] : 0).fill(resource)"
                   :key="`card-${c}`"
-                  :resource="resource"
-                  :disabled="i !== 0"
-                  hideCount
-                  big
+                  :transfer-data="{ resource }"
                   class="resource-card"
-                  @clicked="$emit('remove-card', resource)"
-                />
+                >
+                  <ResourceCard
+                    :resource="resource"
+                    :disabled="i !== 0"
+                    hideCount
+                    big
+                    @clicked="$emit('remove-card', resource)"
+                  />
+                </drag>
               </div>
             </div>
             <div class="confirmed">
@@ -37,7 +41,7 @@
                 {{ player.isTradeConfirmed ? 'Confirmed' : 'Confirm' }}
               </Button>
             </div>
-          </div>
+          </drop>
         </div>
         <div class="chat">
           <slot />
@@ -74,7 +78,6 @@
       }
     },
     created() {
-      console.log(this.isOpen);
       this.resourceCardTypes = resourceCardTypes;
     },
     methods: {
@@ -90,27 +93,30 @@
   @import '@/styles/partials';
 
   .wrapper {
-    display: flex;
-
-    .chat {
-      flex: 2;
-    }
+    display: grid;
+    grid-template-columns: 70% 30%;
 
     .trade {
-      flex: 3;
       display: flex;
       flex-direction: column;
 
+      .nickname {
+        padding: $spacer / 2;
+      }
+
       .my-deck {
-        height: 80px;
+        padding: $spacer;
+        height: 100px;
         display: flex;
         align-items: center;
+        overflow-x: auto;
+        overflow-y: hidden;
       }
 
       .player {
         height: 80px;
         display: grid;
-        grid-template-columns: 30% 50% 20%;
+        grid-template-columns: 20% 60% 20%;
         margin: $spacer 0;
         padding: $spacer 0;
         border-top: 1px solid black;
@@ -124,13 +130,9 @@
 
   .resource-type { 
     display: flex;
-    margin-left: $spacer;
   }
 
   .resource-card {
-    & + & {
-      margin-left: $spacer * 2;
-    }
+    margin-left: $spacer / 3;
   }
-
 </style>

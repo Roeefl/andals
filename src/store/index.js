@@ -31,7 +31,7 @@ export default new Vuex.Store({
       hasResources: {}
     },
     gameLog: [],
-    alerts: []
+    alerts: {}
   },
   mutations: {
     updateProfile(state, profile) {
@@ -143,9 +143,6 @@ export default new Vuex.Store({
       state.activeStructures = [
         ...initialActiveStructures
       ];
-      console.log("destroyRoomState -> activeStructures", state.activeStructures)
-
-      
 
       state.activeRoads = [
         ...initialActiveRoads
@@ -158,14 +155,20 @@ export default new Vuex.Store({
       ];
     },
     addAlert(state, alert) {
-      state.alerts = [
+      const alertKey = `alert-${Date.now()}`;
+
+      state.alerts = {
         ...state.alerts,
-        alert
-      ];
+        [alertKey]: alert
+      };
       
       setTimeout(() => {
-        state.alerts = [];
-        console.log(state.alerts); // @FIXME: Remove only this one
+        const updatedAlerts = {
+          ...state.alerts
+        };
+        delete updatedAlerts[alertKey];
+
+        state.alerts = updatedAlerts;
       }, 3000);
     }
   },

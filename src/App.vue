@@ -14,7 +14,7 @@
       <div id="page">
         <router-view />
       </div>
-      <Alert v-for="(alert, i) in alerts" :key="i" :text="alert" />
+      <Alert v-for="(alert, alertId) in alerts" :key="alertId" :text="alert" />
     </div>
   </v-app>
 </template>

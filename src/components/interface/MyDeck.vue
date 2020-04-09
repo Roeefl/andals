@@ -2,10 +2,16 @@
   <v-dialog
     :value="isOpen"
     persistent
-    width="600"
+    width="800"
   >
-    <ActionCard title="My Deck" @cancel="$emit('close')" @approve="$emit('close')">
-      <Deck :deck="deck" />
+    <ActionCard
+      :title="discardMode ? `Discard ${discardCardsNeeded} Cards` : 'My Deck'"
+      :cancel="!discardMode"
+      @cancel="$emit('close')"
+      :approve="!discardMode || selectedCards.length === discardCardsNeeded"
+      @approve="$emit('approve', selectedCards)"
+    >
+      <Deck :deck="deck" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
     </ActionCard>
   </v-dialog>
 </template>
@@ -25,11 +31,43 @@
         type: Boolean,
         default: false
       },
+      discardMode: {
+        type: Boolean,
+        default: false
+      },
       deck: {
         type: Object,
         default: function() {
           return {};
         }
+      }
+    },
+    data: () => ({
+      selectedCards: []
+    }),
+    computed: {
+      discardCardsNeeded: function() {
+        const totalCards = Object
+          .values(this.deck)
+          .reduce((r1, r2) => r1 + r2, 0);
+
+        return Math.floor(totalCards / 2);
+      }
+    },
+    methods: {
+      toggleCardSelection: function(card) {
+        if (!this.discardMode) return;
+        
+        const { index, resource } = card;
+
+        const isCardSelected = this.selectedCards.some(sel => sel.index === index && sel.resource === resource);
+
+        this.selectedCards = isCardSelected
+          ? this.selectedCards.filter(sel => sel.index !== index || sel.resource !== resource)
+          : [
+            ...this.selectedCards,
+            card
+          ];
       }
     }
   }

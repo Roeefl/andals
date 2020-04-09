@@ -51,7 +51,7 @@
   @import '@/styles/partials';
 
   .road {
-    background: $ground;
+    background: $tile-road;
     z-index: 20;
     position: absolute;
     border-radius: 3px;

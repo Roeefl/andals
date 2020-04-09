@@ -9,11 +9,11 @@
     <slot />
     <v-divider />
     <v-card-actions>
-      <Button text @click="() => $emit('cancel')">
+      <Button text v-if="cancel" @click="() => $emit('cancel')">
         {{ cancelText }}
       </Button>
       <v-spacer />
-      <Button text @click="() => $emit('approve')" v-if="approve">
+      <Button text v-if="approve" @click="() => $emit('approve')">
         {{ approveText }}
       </Button>
     </v-card-actions>
@@ -32,6 +32,10 @@
       title: {
         type: String,
         default: 'Card Title'
+      },
+      cancel: {
+        type: Boolean,
+        default: true
       },
       cancelText: {
         type: String,

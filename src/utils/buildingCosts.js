@@ -1,7 +1,7 @@
 export const pluralTypes = ['roads', 'settlements', 'cities', 'gameCards'];
 
 export const types = ['road', 'settlement', 'city', 'gameCard'];
-const [ROAD, SETTLEMENT, CITY, GAMECARD] = types;
+export const [ROAD, SETTLEMENT, CITY, GAMECARD] = types;
 
 export default {
   road: {

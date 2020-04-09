@@ -4,6 +4,7 @@
     :color="color"
     :small="small"
     :x-small="xs"
+    :x-large="xl"
     :disabled="disabled"
     :rounded="rounded"
     :outlined="outlined"
@@ -38,6 +39,10 @@
         default: false
       },
       xs: {
+        type: Boolean,
+        default: false
+      },
+      xl: {
         type: Boolean,
         default: false
       },

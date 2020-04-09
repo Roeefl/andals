@@ -4,18 +4,24 @@
       <div class="nickname">
         {{ player.nickname }}
       </div>
-      <Button
-        v-if="isStarted && !isMe"
-        icon
-        iconName="swap-vertical-circle"
-        iconSize="x-large"
-        :disabled="waitingTrade"
-        @click="$emit('trade-with', player.playerSessionId)"
-      />
-      <div v-if="waitingTrade">
-        Waiting Trade Response....
+      <div class="status">
+        <Button
+          v-if="isStarted && !isMe && !waitingTrade"
+          icon
+          iconName="swap-vertical-circle"
+          iconSize="x-large"
+          @click="$emit('trade-with', player.playerSessionId)"
+        />
+        <Button
+          v-if="allowStealing"
+          icon
+          iconName="hand-okay"
+          iconSize="x-large"
+          @click="$emit('steal-from', player.playerSessionId)"
+        />
+        <Badge v-if="waitingTrade" color="red" content="........" icon="head-dots-horizontal" class="waiting" />
+        <Icon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
       </div>
-      <Icon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
     </div>
     <div class="resources">
       <div v-for="resourceName in purchaseTypes" :key="resourceName" class="resource">
@@ -25,7 +31,7 @@
             :color="player.color"
             :name="resourceNameToIcon[resourceName]"
           />
-          <NumberBadge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
+          <Badge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
         </Button>
       </div>
     </div>
@@ -48,7 +54,7 @@
   import Button from '@/components/common/Button';
   import Icon from '@/components/common/Icon';
   import ResourceCard from '@/components/game/ResourceCard';
-  import NumberBadge from '@/components/common/NumberBadge';
+  import Badge from '@/components/common/Badge';
 
   export default {
     name: 'PlayerInfo.vue',
@@ -56,7 +62,7 @@
       Button,
       Icon,
       ResourceCard,
-      NumberBadge
+      Badge
     },
     props: {
       player: {
@@ -72,6 +78,10 @@
         default: false
       },
       waitingTrade: {
+        type: Boolean,
+        default: false
+      },
+      allowStealing: {
         type: Boolean,
         default: false
       }
@@ -110,12 +120,19 @@
     }
 
     .header {
+      width: 85%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
       
       .nickname {
+        flex: 2;
         font-weight: 700;
+      }
+
+      .status {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
       }
     }
 

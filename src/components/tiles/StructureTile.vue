@@ -89,7 +89,7 @@
     }
 
     &.city {
-      background: orange;
+      background: #CFD8DC;
     }
 
     &.disabled {

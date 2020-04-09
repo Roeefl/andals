@@ -1,3 +1,5 @@
+import tileColors from '@/styles/export.scss';
+
 const serverResourceTypes = ['lumber', 'brick', 'sheep', 'wheat', 'ore', 'desert', 'water', 'harborGeneric'];
 export const [LUMBER, BRICK, SHEEP, WHEAT, ORE, DESERT, WATER, HARBOR_GENERIC] = serverResourceTypes;
 
@@ -35,11 +37,11 @@ export const resourceNameToIcon = {
 };
 
 export const resourceCardColors = {
-  lumber: '#214013',
-  brick: '#a0350e',
-  sheep: '#7dbe3c',
-  wheat: '#fabc0c',
-  ore: '#7a768c'
+  lumber: tileColors.tileLumber,
+  brick: tileColors.tileBrick,
+  sheep: tileColors.tileSheep,
+  wheat: tileColors.tileWheat,
+  ore: tileColors.tileOre
 };
 
 export const resourceCardNameToIcon = {
@@ -48,4 +50,12 @@ export const resourceCardNameToIcon = {
   sheep: 'sheep',
   wheat: 'barley',
   ore: 'diamond-stone'  
+};
+
+export const initialResourceCounts = {
+  lumber: 0,
+  sheep: 0,
+  brick: 0,
+  wheat: 0,
+  ore: 0
 };
