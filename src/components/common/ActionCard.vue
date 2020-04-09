@@ -47,7 +47,7 @@
       },
       approveText: {
         type: String,
-        default: 'Okey'
+        default: 'Confirm'
       }
     } 
   }

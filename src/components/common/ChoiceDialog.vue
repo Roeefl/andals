@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpen" :width="width">
     <template v-slot:activator="{ on }">
-      <Button :on="on" color="purple">
+      <Button :on="on" color="primary">
         <Icon
           size="x-large"
           color="white"

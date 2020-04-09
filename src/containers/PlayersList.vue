@@ -60,7 +60,6 @@
   }
 </script>
 
-
 <style scoped lang="scss">
   @import '@/styles/partials';
 
@@ -78,18 +77,13 @@
   .player-wrapper {
     // flex: 1;
     overflow-y: hidden;
-    height: 24%;
-    border-radius: 20px;
-    margin-top: $spacer / 2;
-    background: #B0BEC5;
+    height: 23%;
+    margin-top: $spacer;
     position: relative;
 
     &.current-turn {
       box-shadow: 4px 4px 10px 10px lightgreen;
-    }
-
-    & + & {
-      border-top: 1px solid gray;
+      // box-shadow: inset 8px 8px 40px 6px rgba(255, 0, 0, 1); 
     }
 
     .player {

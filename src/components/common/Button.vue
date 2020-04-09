@@ -9,8 +9,9 @@
     :rounded="rounded"
     :outlined="outlined"
     :icon="icon"
-    @click="$emit('click')"
+    @click="clickable && $emit('click')"
     v-on="on"
+    :class="{ 'non-clickable': !clickable }"
   >
     <Icon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="button-icon" />
     <slot />
@@ -45,6 +46,10 @@
       xl: {
         type: Boolean,
         default: false
+      },
+      clickable: {
+        type: Boolean,
+        default: true
       },
       disabled: {
         type: Boolean,
@@ -84,5 +89,10 @@
 
   .button-icon {
     margin-right: $spacer / 2;
+  }
+
+  .non-clickable {
+    opacity: 0.5;
+    cursor: auto;
   }
 </style>

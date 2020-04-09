@@ -1,18 +1,20 @@
 <template>
   <div class="counts">
-    Bank:
     <ResourceCard
       v-for="resource in resourceCardTypes"
       :key="resource"
       :resource="resource"
+      :clickable="clickable"
+      :hideCount="hideCounts"
       :count="counts[resource]"
       class="resource-card"
+      :class="{ 'spaced' : spaced }"
     />
   </div>
 </template>
 
 <script>
-  import { resourceCardTypes, resourceCardColors } from '@/utils/tileManifest';
+  import { resourceCardTypes } from '@/specs/resources';
   import ResourceCard from '@/components/game/ResourceCard';
   import Icon from '@/components/common/Icon';
 
@@ -28,12 +30,22 @@
         default: function() {
           return {};
         }
+      },
+      clickable: {
+        type: Boolean,
+        default: true
+      },
+      hideCounts: {
+        type: Boolean,
+        default: false
+      },
+      spaced: {
+        type: Boolean,
+        default: false
       }
     },
     created() {
-      console.log(this.counts);
       this.resourceCardTypes = resourceCardTypes;
-      this.resourceCardColors = resourceCardColors;
     }
   }
 </script>
@@ -48,6 +60,12 @@
   .resource-card {
     & + & {
       margin-left: $spacer;
+    }
+
+    &.spaced {
+      & + & {
+        margin-left: $spacer * 2;
+      }
     }
   }
 </style>

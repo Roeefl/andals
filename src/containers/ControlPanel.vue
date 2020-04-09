@@ -1,26 +1,24 @@
 <template>
   <div class="control">
-    <div class="actions">
-      <ChoiceDialog iconName="wrench" title="Building Costs" :width="500">
-        <BuildingCosts />
-      </ChoiceDialog>
-      <ResourceCounts :counts="roomState.resourceCounts" />
+    <div class="dice">
+      <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
+      <Button
+        v-for="(diceValue, i) in roomState.dice"
+        :key="i"
+        @click="rollDice"
+        :iconName="`dice-${diceValue}`"
+        :color="i === 0 ? 'deep-orange darken-3' : 'lime accent-3'"
+        iconSize="50px"
+        iconColor="black"
+        :clickable="isDiceEnabled"
+        class="cube"
+      />
+    </div>
+    <div class="loot">
       <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" />
-      <div class="dice" v-if="roomState.isGameReady">
-        <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
-        <Button
-          v-for="(diceValue, i) in roomState.dice"
-          :key="i"
-          :disabled="roomState.isSetupPhase || !isMyTurn || roomState.isDiceRolled"
-          @click="rollDice"
-          :iconName="`dice-${diceValue}`"
-          :color="i === 0 ? 'deep-orange darken-3' : 'lime accent-3'"
-          iconSize="50px"
-          iconColor="black"
-          class="cube"
-        />
-      </div>
-      <Button color="red" @click="$emit('end-turn')" :disabled="isEndTurnDisabled">
+    </div>
+    <div class="turn-action">
+      <Button v-if="roomState.isGameReady && !myPlayer.mustMoveRobber" color="red" @click="$emit('end-turn')" :clickable="!isEndTurnDisabled">
         End Turn
       </Button>
       <Button
@@ -45,14 +43,6 @@
         </span>
       </Button>
     </div>
-    <div class="room-stats">
-      <span>
-        You are in: {{ roomState.roomTitle }}
-      </span>
-      <span>
-        Your PlayerSessionID is: {{ myPlayer.playerSessionId }}
-      </span>
-    </div>
   </div>
 </template>
 
@@ -61,21 +51,15 @@
   import colyseusService from '@/services/colyseus';
   import { MESSAGE_COLLECT_ALL_LOOT } from '@/store/constants';
 
-  import ResourceCounts from '@/components/interface/ResourceCounts';
   import AvailableLoot from '@/components/interface/AvailableLoot';
   import Dice from '@/components/interface/Dice';
-  import ChoiceDialog from '@/components/common/ChoiceDialog';
-  import BuildingCosts from '@/components/interface/BuildingCosts';
   import Button from '@/components/common/Button';
   import Icon from '@/components/common/Icon';
 
   export default {
     name: 'ControlPanel',
     components: {
-      ResourceCounts,
       AvailableLoot,
-      ChoiceDialog,
-      BuildingCosts,
       Dice,
       Button,
       Icon
@@ -91,6 +75,9 @@
       }
     },
     computed: {
+      isDiceEnabled: function() {
+        return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled;
+      },
       isEndTurnDisabled: function() {
         return (
           this.roomState.isTurnOrderPhase ||
@@ -133,32 +120,33 @@
   @import '@/styles/partials';
 
   .control {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
+    align-items: center;
 
-    .actions {
+    .dice {
+      flex: 1;
       display: flex;
+      justify-content: center;
 
-      & > * {
-        margin-left: $spacer * 3;
-      }
-
-      .dice {
-        display: flex;
-
-        .cube {
-          width: 64px;
-          height: 64px;
-          margin-right: $spacer / 3;
-        }
+      .cube {
+        width: 50px;
+        height: 50px;
+        margin-right: $spacer / 3;
       }
     }
-
-    .room-stats {
-      border: 1px solid black;
-      padding: 0 $spacer;
+    
+    .loot {
+      flex: 3;
+      padding-left: $spacer;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+    }
+
+    .turn-action {
+      flex: 1;
+      display: flex;
+      justify-content: center;
     }
   }
 </style>

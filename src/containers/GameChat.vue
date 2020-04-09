@@ -1,19 +1,17 @@
 <template>
-  <div class="wrapper">
-    <MessageList title="Chat" :messages="messages" class="messages">
-      <li v-for="(msg, i) in messages" :key="i">
-        <div>
-          {{ msg.sender }}: {{ msg.message }}
-        </div>
-      </li>
-    </MessageList>
+  <MessageList title="Chat" :messages="messages" class="messages-container">
+    <li v-for="(msg, i) in messages" :key="i">
+      <div>
+        {{ msg.sender }}: {{ msg.message }}
+      </div>
+    </li>
     <form @submit="sendMessage" class="new-message">
       <TextField dark :value="newMessage" @input="newMessage = $event" label="Say hi..." />
       <Button type="submit" color="success" :disabled="!newMessage.length">
         Send
       </Button>
     </form>
-  </div>
+  </MessageList>
 </template>
 
 <script>
@@ -60,25 +58,28 @@
 </script>
 
 <style scoped lang="scss">
-  .wrapper {
-    height: 100%;
+  @import '@/styles/partials';
+  $zindex-chat: 25;
+
+  .messages-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    background: #5E35B1;
+    height: 100%;
+  }
+
+  .new-message {
+    position: sticky;
+    bottom: 0;
+    background: rgba(black, 0.8);
     color: white;
+    z-index: $zindex-chat;
+    flex: 1;
+    display: flex;
+    align-items: center;
 
-    .messages {
-      flex: 5;
-    }
-
-    .new-message {
-      flex: 1;
-      display: flex;
-      align-items: center;
-
-      & > * {
-        margin: 0 $spacer;
-      }
+    & > * {
+      margin: 0 $spacer;
     }
   }
 </style>

@@ -191,7 +191,7 @@
 
               // road: [7, 7], type: 3 || intersecting roads: [6, 6], [6, 7], [8, 5], [8, 6]
               case 3:
-                colOffset = 2;
+                colOffset = 0;
                 intersections = [[sRow - 1, sCol], [sRow - 1, sCol - 1], [sRow + 1, sCol - 2 + colOffset], [sRow + 1, sCol - 1 + colOffset]];
                 break;
 
@@ -218,7 +218,11 @@
   @import '@/styles/partials';
 
   .board {
-    // opacity: 0.4;
+    // opacity: 0.6;
+    background-image: url('../assets/ocean.jpg');
+    background-size: cover;
+    border: 4px dashed black;
+    padding-left: $spacer * 2.5;
 
     &.ready {
       opacity: 1;

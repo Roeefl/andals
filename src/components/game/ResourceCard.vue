@@ -1,24 +1,24 @@
 <template>
   <transition name="puff">
-    <v-card max-width="300" class="resource-card" @click="!disabled && $emit('clicked')">
-      <Button icon :xs="small">
-        <Icon
-          :size="small ? 'medium' : 'x-large'"
-          :name="hideIcon ? 'help-box' : resourceCardNameToIcon[resource]"
-          :color="hideIcon? 'black' : resourceCardColors[resource]"
-        />
+    <v-card max-width="300" @click="clickable && $emit('clicked')" class="resource-card" :class="{ 'clickable': clickable }">
+      <Button
+        icon
+        :xs="small"
+        :iconSize="small ? 'medium' : 'x-large'"
+        :iconName="hideIcon ? 'help-box' : resourceCardIcons[resource]"
+        :iconColor="hideIcon? 'black' : resourceCardColors[resource]"
+        :clickable="clickable"
+      >
         <Badge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count === 0 ? '0' : count" />
         <Icon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
       </Button>
-      <Button icon v-if="collectable" class="collect">
-        <Icon size="x-large" name="sack" color="red" />
-      </Button>
+      <Icon v-if="collectable" size="x-large" name="sack" color="red" class="collect" />
     </v-card>
   </transition>
 </template>
 
 <script>
-  import { resourceCardNameToIcon, resourceCardColors } from '@/utils/tileManifest';
+  import { resourceCardIcons, resourceCardColors } from '@/specs/resources';
 
   import Button from '@/components/common/Button';
   import Icon from '@/components/common/Icon';
@@ -40,6 +40,10 @@
         type: [Number, String],
         default: 0
       },
+      clickable: {
+        type: Boolean,
+        default: true
+      },
       collectable: {
         type: Boolean,
         default: false
@@ -56,17 +60,13 @@
         type: Boolean,
         default: false
       },
-      disabled: {
-        type: Boolean,
-        default: false
-      },
       selected: {
         type: Boolean,
         default: false
       }
     },
     created: function() {
-      this.resourceCardNameToIcon = resourceCardNameToIcon;
+      this.resourceCardIcons = resourceCardIcons;
       this.resourceCardColors = resourceCardColors;
     }
   }
@@ -96,12 +96,17 @@
     height: 50px;
     padding: 0 $spacer / 4;
     position: relative;
+    cursor: auto;
+
+    &.clickable {
+      cursor: pointer;
+    }
   }
   
   .collect {
     position: absolute;
-    bottom: -1.2 * $spacer;
-    left: 0;
+    bottom: -0.6 * $spacer;
+    left: $spacer * 0.4;
   }
 
   .selected {

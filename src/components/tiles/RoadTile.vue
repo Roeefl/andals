@@ -51,16 +51,16 @@
   @import '@/styles/partials';
 
   .road {
-    background: $tile-road;
-    z-index: 20;
+    background: #6D4C41;
+    z-index: $zindex-tile-value - 1;
     position: absolute;
     border-radius: 3px;
     height: $tile-size;
-    width: 8px;
+    width: 16px;
 
     &.enabled {
       // background: transparent;
-      box-shadow: 4px 4px 12px 8px rgba(211,68,219,1);
+      box-shadow: 4px 4px 16px 16px #E1F5FE;
       
       &:hover {
         background: var(--color-hover);
@@ -70,14 +70,14 @@
     &.left {
       transform: rotate(90deg);
       right: $tile-size * 0.45;
-      bottom: $tile-size * 1.32;
+      bottom: $tile-size * 1.35;
       // background: red;
     }
 
     &.top-left {
       transform: rotate(150deg);
       left: $tile-size * 1.3;
-      top: $tile-size * -0.15;
+      top: $tile-size * -0.05;
       // background: yellow;
     }
 

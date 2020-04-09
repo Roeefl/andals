@@ -61,7 +61,7 @@
   .structure {
     transform: rotate(90deg);
     position: absolute;
-    z-index: 30;
+    z-index: $zindex-tile-value + 3;
 
     &.top {
       top: $tile-size * 0.51;
@@ -75,21 +75,23 @@
 
     &.enabled {
       border-radius: 999px;
-      border: 1px dashed black;
+      box-shadow: 1px 1px 4px 4px #E1F5FE;
 
       &:hover {
-        background: var(--color-hover);
+        box-shadow: 2px 2px 12px 12px var(--color-hover);
       }
     }
   }
 
   .wrapper {
+    background: #6D4C41;
+      
     &.settlement {
       background: white;
     }
 
     &.city {
-      background: #CFD8DC;
+      background: #F4FF81;
     }
 
     &.disabled {

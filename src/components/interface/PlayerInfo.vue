@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :style="{ color: player.color }" :class="{ 'myself': isMe }">
+  <div class="player" :style="playerStyle(player.color)">
     <div class="header">
       <div class="nickname">
         {{ player.nickname }}
@@ -28,40 +28,39 @@
         <Button icon>
           <Icon
             size="x-large"
-            :color="player.color"
-            :name="resourceNameToIcon[resourceName]"
+            :color="invertColor(player.color)"
+            :name="structureIcons[resourceName]"
           />
-          <Badge color="purple" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
+          <Badge color="black" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
         </Button>
       </div>
     </div>
     <div class="resources cards" @click="$emit('deck-clicked')">
-      <ResourceCard
-        v-for="(resource, i) in resourceCardTypes"
-        :key="i"
-        :resource="resource"
-        :count="isMe ? player.resourceCounts[resource] : '?'"
-        class="resource-card"
-      />
+      <ResourceCounts :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
     </div>
   </div>
 </template>
 
 <script>
-  import { resourceCardTypes, resourceNameToIcon } from '@/utils/tileManifest';
+  import invertColor from 'invert-color';
+
+  import { resourceCardTypes } from '@/specs/resources';
+  import { structureIcons } from '@/specs/structures';
   import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
   
+  import ResourceCounts from '@/components/interface/ResourceCounts';
+  import ResourceCard from '@/components/game/ResourceCard';
   import Button from '@/components/common/Button';
   import Icon from '@/components/common/Icon';
-  import ResourceCard from '@/components/game/ResourceCard';
   import Badge from '@/components/common/Badge';
 
   export default {
     name: 'PlayerInfo.vue',
     components: {
+      ResourceCounts,
+      ResourceCard,
       Button,
       Icon,
-      ResourceCard,
       Badge
     },
     props: {
@@ -87,9 +86,36 @@
       }
     },
     created: function() {
+      this.invertColor = invertColor;
       this.purchaseTypes = purchaseTypes;
-      this.resourceNameToIcon = resourceNameToIcon;
+      this.structureIcons = structureIcons;
       this.resourceCardTypes = resourceCardTypes;
+    },
+    methods: {
+      hexToRgb: function(hex) {
+        const noHashtag = hex.substr(1);
+        
+        const bigInt = parseInt(noHashtag, 16);
+
+        const r = (bigInt >> 16) & 255;
+        const g = (bigInt >> 8) & 255;
+        const b = bigInt & 255;
+
+        return `${r}, ${g}, ${b}`;
+      },
+      playerStyle: function(playerColor) {
+        const rgbPlayerColor = this.hexToRgb(playerColor);
+
+        const style = {
+          color: invertColor(playerColor),
+          backgroundColor: `rgba(${rgbPlayerColor}, 0.25)`
+        };
+
+        if (this.isMe)
+          style.backgroundColor = `rgba(${rgbPlayerColor}, 0.75)`
+
+        return style;
+      }
     }
   }
 </script>
@@ -114,10 +140,7 @@
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
-
-    &.myself {
-      box-shadow: inset 8px 8px 40px 6px rgba(255, 0, 0, 1); 
-    }
+    border-radius: 30px;
 
     .header {
       width: 85%;

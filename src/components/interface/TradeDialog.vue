@@ -24,7 +24,7 @@
                 >
                   <ResourceCard
                     :resource="resource"
-                    :disabled="i !== 0"
+                    :clickable="i === 0"
                     hideCount
                     big
                     @clicked="$emit('remove-card', resource)"
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-  import { resourceCardTypes } from '@/utils/tileManifest';
+  import { resourceCardTypes } from '@/specs/resources';
   
   import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';

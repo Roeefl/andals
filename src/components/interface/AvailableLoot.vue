@@ -1,27 +1,31 @@
 <template>
   <div class="counts">
-    Available Loot:
+    <Button
+      xs
+      color="red accent-3"
+      iconName="treasure-chest"
+      iconColor="white"
+      iconSize="x-large"
+      :clickable="hasAnyLoot"
+      @click="$emit('collect-all')"
+      class="collect-all"
+    />
     <ResourceCard
       v-for="resource in resourceCardTypes"
       :key="resource"
-      collectable
       :resource="resource"
       :count="counts[resource]"
-      v-show="counts[resource] > 0"
+      :hideCount="!counts[resource]"
+      :clickable="counts[resource] > 0"
+      :collectable="counts[resource] > 0"
       class="resource-card"
-    />
-    <Button
-      color="transparent"
-      iconName="treasure-chest"
-      iconColor="red"
-      iconSize="x-large"
-      @click="$emit('collect-all')"
+      @clicked="$emit('collect-all')"
     />
   </div>
 </template>
 
 <script>
-  import { resourceCardTypes, resourceCardColors } from '@/utils/tileManifest';
+  import { resourceCardTypes } from '@/specs/resources';
   import ResourceCard from '@/components/game/ResourceCard';
   import Button from '@/components/common/Button';
   import Icon from '@/components/common/Icon';
@@ -41,9 +45,13 @@
         }
       }
     },
+    computed: {
+      hasAnyLoot: function() {
+        return Object.values(this.counts).some(val => !!val);
+      }
+    },
     created() {
       this.resourceCardTypes = resourceCardTypes;
-      this.resourceCardColors = resourceCardColors;
     }
   }
 </script>
@@ -53,6 +61,13 @@
 
   .counts {
     display: flex;
+    align-items: center;
+
+    .collect-all {
+      width: 100px;
+      height: 50px;
+      margin-right: $spacer;
+    }
   }
 
   .resource-card {

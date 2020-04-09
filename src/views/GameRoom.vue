@@ -1,23 +1,27 @@
 <template>
   <div class="room">
-    <div v-if="this.room" class="inner">
-      <ControlPanel
-        :isMyTurn="isMyTurn"
-        :desiredRobberTile="desiredRobberTile"
-        @toggle-ready="toggleReady"
-        @dice-finished="sendDice($event)"
-        @end-turn="finishTurn"
-        @move-robber="moveRobber"
-      />
-      <div class="board-area">
-        <PlayersList
-          :isGameReady="roomState.isGameReady"
-          :currentTurn="roomState.currentTurn"
-          :waitingTradeWith="waitingTradeWith"
-          @display-deck="isDisplayMyDeck = true"
-          @trade-with="requestTradeWith($event)"
-          @steal-from="stealFrom($event)"
+    <div class="inner">
+      <DraggableWidget class="control-panel">
+        <ControlPanel
+          :isMyTurn="isMyTurn"
+          :desiredRobberTile="desiredRobberTile"
+          @toggle-ready="toggleReady"
+          @dice-finished="sendDice($event)"
+          @end-turn="finishTurn"
+          @move-robber="moveRobber"
         />
+      </DraggableWidget>
+      <div class="board-area">
+        <DraggableWidget class="players-list">
+          <PlayersList
+            :isGameReady="roomState.isGameReady"
+            :currentTurn="roomState.currentTurn"
+            :waitingTradeWith="waitingTradeWith"
+            @display-deck="isDisplayMyDeck = true"
+            @trade-with="requestTradeWith($event)"
+            @steal-from="stealFrom($event)"
+          />
+        </DraggableWidget>
         <GameBoard
           :board="roomState.board"
           :robberPosition="roomState.robberPosition || -1"
@@ -28,12 +32,20 @@
           @tile-clicked="onTileClick($event)"
           :desiredRobberTile="desiredRobberTile"
           @robber-dropped="desiredRobberTile = $event"
+          class="game-board"
         />
         <aside class="sidebar">
-          <GameLog />
-          <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
+          <DraggableWidget>
+            <GameLog class="game-log" />
+          </DraggableWidget>
+          <DraggableWidget>
+            <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" class="game-chat" />
+          </DraggableWidget>
         </aside>
       </div>
+      <DraggableWidget class="game-status">
+        <GameStatus />
+      </DraggableWidget>
       <ConfirmMove
         :type="activeTile.type"
         :isOpen="isDisplayConfirmMove"
@@ -41,46 +53,45 @@
         @yes="onTileBuild(true)"
         @no="onTileBuild(false)"
       />
-    <MyDeck
-      :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
-      :discardMode="myPlayer.mustDiscardHalfDeck"
-      :deck="myPlayer.resourceCounts"
-      @close="closeDeck"
-      @approve="closeDeck($event)"
-    />
-    <ConfirmTrade
-      :isOpen="!!myPlayer.pendingTrade"
-      :withWho="tradingWith"
-      @no="respondToIncomingTrade(false)"
-      @yes="respondToIncomingTrade(true)"
-    />
-    <TradeDialog
-      :isOpen="!!myPlayer.tradingWith"
-      :players="[myPlayer, players.find(({ playerSessionId }) => playerSessionId === myPlayer.tradingWith)]"
-      @add-card="addTradeCard($event)"
-      @remove-card="removeTradeCard($event)"
-      @refuse="refuseTrade"
-      @confirm-trade="confirmTrade"
-    >
-      <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
-    </TradeDialog>
-    <OpponentDeck
-      :isOpen="!!stealingFrom.playerSessionId"
-      :opponent="stealingFrom"
-      @steal="selectStealCard($event)"
-    />
-    </div>
-    <div v-else>
-      Not currently connected to any game room.
+      <MyDeck
+        :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
+        :discardMode="myPlayer.mustDiscardHalfDeck"
+        :deck="myPlayer.resourceCounts"
+        @close="closeDeck"
+        @approve="closeDeck($event)"
+      />
+      <ConfirmTrade
+        :isOpen="!!myPlayer.pendingTrade"
+        :withWho="tradingWith"
+        @no="respondToIncomingTrade(false)"
+        @yes="respondToIncomingTrade(true)"
+      />
+      <TradeDialog
+        :isOpen="!!myPlayer.tradingWith"
+        :players="[myPlayer, players.find(({ playerSessionId }) => playerSessionId === myPlayer.tradingWith)]"
+        @add-card="addTradeCard($event)"
+        @remove-card="removeTradeCard($event)"
+        @refuse="refuseTrade"
+        @confirm-trade="confirmTrade"
+      >
+        <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
+      </TradeDialog>
+      <OpponentDeck
+        :isOpen="!!stealingFrom.playerSessionId"
+        :opponent="stealingFrom"
+        @steal="selectStealCard($event)"
+      />
     </div>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex';
+  import router from '@/router';
   import colyseusService from '@/services/colyseus';
 
   import ControlPanel from '@/containers/ControlPanel';
+  import GameStatus from '@/containers/GameStatus';
   import GameBoard from '@/containers/GameBoard';
   import GameChat from '@/containers/GameChat';
   import GameLog from '@/containers/GameLog';
@@ -92,7 +103,9 @@
   import ConfirmTrade from '@/components/interface/ConfirmTrade';
   import OpponentDeck from '@/components/interface/OpponentDeck';
 
-  import { initialResourceCounts } from '@/utils/tileManifest';
+  import DraggableWidget from '@/components/common/DraggableWidget';
+
+  import { initialResourceCounts } from '@/specs/resources';
 
   import {
     MESSAGE_CHAT,
@@ -121,7 +134,9 @@
   export default {
     name: 'GameRoom',
     components: {
+      DraggableWidget,
       ControlPanel,
+      GameStatus,
       GameBoard,
       GameChat,
       GameLog,
@@ -144,7 +159,10 @@
       stealingFrom: {}
     }),
     created() {
-      if (!this.room) return;
+      if (!this.room) {
+        router.push('/');
+        return;
+      }
 
       // Define a series of room lifecycle methods
       this.room.onStateChange.once(this.initializeState);
@@ -361,33 +379,58 @@
     display: flex;
 
     .inner {
+      padding: 0 $spacer;
       flex: 1;
       display: flex;
       flex-direction: column;
-    }
-  }
 
-  .board-area {
-    flex: 1;
-    background: $board-background;
-    display: grid;
-    grid-template-columns: 20% 60% 20%;
+      .control-panel {
+        height: 70px;
+        margin-bottom: $spacer / 2;
+        justify-content: flex-start;
+      }
 
-    .sidebar {
-      background: #5E35B1;
-      border-left: 1px solid gray;
-      padding-left: $spacer / 2;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-
-      & > * {
-        flex: 1;
-        max-height: 40vh; // @FIXME: not like this
-        overflow-y: auto;
+      .board-area {
         display: flex;
-        flex-direction: column;
-        color: white;
+
+        & > * {
+          margin: 0 $spacer / 2;
+        }
+
+        .players-list {
+          flex: 1;
+        }
+
+        .game-board {
+          flex: 3;
+        }
+
+        .sidebar {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+
+          & > * {
+            flex: 1;
+
+            &:last-of-type {
+              margin-top: $spacer;
+            }
+          }
+
+          .game-log,
+          .game-chat {
+            max-height: 35vh;
+            overflow-y: auto;
+            padding: $spacer / 2;
+          }
+        }
+      }
+
+      .game-status {
+        height: 70px;
+        margin-top: $spacer / 2;
+        justify-content: flex-start;
       }
     }
   }

@@ -1,17 +1,8 @@
 <template>
   <v-app>
     <div id="app" class="app-wrapper">
-      <header id="header">
-        <router-link to="/">
-          <img src="./assets/logo.png" alt="logo" />
-        </router-link>
-        <div id="nav">
-          <router-link to="/rooms">Rooms</router-link>
-          <router-link to="/room">Game Room</router-link>
-          <router-link to="/about">About</router-link>
-        </div>
-      </header>
       <div id="page">
+        <Header />
         <router-view />
       </div>
       <Alert v-for="(alert, alertId) in alerts" :key="alertId" :text="alert" />
@@ -21,12 +12,16 @@
 
 <script>
   import { mapState } from 'vuex';
+
   import colyseusService from '@/services/colyseus';
+
+  import Header from '@/containers/Header';
   import Alert from '@/components/common/Alert';
   
   export default {
     name: 'App',
     components: {
+      Header,
       Alert
     },
     computed: mapState([
@@ -42,39 +37,26 @@
   @import '@/styles/reset';
   @import '@/styles/partials';
 
+  $header-height: 85px;
+
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     color: $primary;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background: $tile-water;
 
     ul {
       padding-left: 0;
     }
   }
 
-  #header {
-    padding: $spacer * 2;
-    display: flex;
-
-    #nav {
-      margin-left: $spacer * 4;
-    }
-
-    a {
-      font-weight: bold;
-      color: $primary;
-      margin-right: $spacer;
-
-      &.router-link-exact-active {
-        color: $highlighted;
-      }
-    }
-  }
-
   #page {
+    position: relative;
     flex: 1;
+    padding-top: $header-height;
+    background-image: url('./assets/wood.jpg');
+    background-size: cover;
+    color: white;
   }
 </style>

@@ -4,6 +4,7 @@
       <div class="description">
         <h3>
           {{ section.type }}
+          <Icon :name="structureIcons[type]" size="20px" color="black" />
         </h3>
         <span class="vp">
           {{ section.vp }} victory points
@@ -31,20 +32,23 @@
 </template>
 
 <script>
-  import { resourceCardTypes, resourceNameToIcon, resourceCardColors } from '@/utils/tileManifest';
-  import buildingCosts from '@/utils/buildingCosts';
   import ResourceCard from '@/components/game/ResourceCard';
+  import Icon from '@/components/common/Icon';
+
+  import { resourceCardTypes } from '@/specs/resources';
+  import buildingCosts from '@/utils/buildingCosts';
+  import { structureIcons } from '@/specs/structures';
 
   export default {
     name: 'BuildingCosts',
     components: {
-      ResourceCard
+      ResourceCard,
+      Icon
     },
     created() {
       this.buildingCosts = buildingCosts;
-      this.resourceNameToIcon = resourceNameToIcon;
+      this.structureIcons = structureIcons;
       this.resourceCardTypes = resourceCardTypes;
-      this.resourceCardColors = resourceCardColors;
     }
   }
 </script>

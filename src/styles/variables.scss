@@ -12,13 +12,15 @@ $highlighted: #42b983;
 
 $tile-size: 60px;
 $tile-value-size: $tile-size * 0.75;
+
 $zindex-tile-value: 10;
+$zindex-robber: 15;
 
 $board-background: #01579B;
 $tile-water: #2d9cd9;
 $tile-desert: #E64A19;
 $tile-lumber: #1B5E20;
-$tile-brick: #5D4037;
+$tile-brick: #AD1457;
 $tile-sheep: #9CCC65;
 $tile-wheat: #fabc0c;
 $tile-ore: #37474F;

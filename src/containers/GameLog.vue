@@ -1,5 +1,5 @@
 <template>
-  <MessageList title="Game Log" :messages="gameLog">
+  <MessageList title="Game Log" :messages="gameLog" class="messages-container">
     <li v-for="(log, i) in gameLog" :key="i" class="log">
       <div v-if="log.type === CHAT_LOG_SIMPLE">
         {{ log.message }}
@@ -29,12 +29,11 @@
 <script>
   import { mapState } from 'vuex';
 
+  import { resourceCardTypes } from '@/specs/resources';
   import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD } from '@/store/constants';
-  import { resourceCardTypes, resourceCardColors } from '@/utils/tileManifest';
 
   import MessageList from '@/components/common/MessageList';
   import ResourceCard from '@/components/game/ResourceCard';
-  import Button from '@/components/common/Button';
   import Icon from '@/components/common/Icon';
 
   export default {
@@ -42,7 +41,6 @@
     components: {
       MessageList,
       ResourceCard,
-      Button,
       Icon
     },
     computed: mapState([
@@ -50,7 +48,6 @@
     ]),
     created() {
       this.resourceCardTypes = resourceCardTypes;
-      this.resourceCardColors = resourceCardColors;
       this.CHAT_LOG_SIMPLE = CHAT_LOG_SIMPLE;
       this.CHAT_LOG_DICE = CHAT_LOG_DICE;
       this.CHAT_LOG_LOOT = CHAT_LOG_LOOT;
@@ -60,21 +57,28 @@
 </script>
 
 <style scoped lang="scss">
-  .log {
-    border-top: 1px solid lightgray;
-    margin: $spacer / 3 0;
-    padding: $spacer / 3 0;
+  .messages-container {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
-    .loot {
-      display: flex;
+    .log {
+      border-top: 1px solid lightgray;
+      margin: $spacer / 3 0;
+      padding: $spacer / 3 0;
 
-      .resource-type { 
+      .loot {
         display: flex;
 
-        .resource {
-          width: 24px;
-          height: 24px;
-          margin-left: $spacer / 2;
+        .resource-type { 
+          display: flex;
+
+          .resource {
+            width: 24px;
+            height: 24px;
+            margin-left: $spacer / 2;
+          }
         }
       }
     }

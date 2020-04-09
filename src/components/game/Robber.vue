@@ -34,7 +34,7 @@
     position: absolute;
     top: $tile-size * 1.1;
     right: $tile-size * 0.35;
-    z-index: 20;
+    z-index: $zindex-robber;
     cursor: -webkit-drag;
   }
 </style>
