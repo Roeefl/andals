@@ -32,7 +32,8 @@ export default new Vuex.Store({
       hasResources: {}
     },
     gameLog: [],
-    alerts: {}
+    alerts: {},
+    justPurchasedGameCard: false
   },
   mutations: {
     toggleDeveloperMode(state) {
@@ -42,6 +43,9 @@ export default new Vuex.Store({
     toggleUseGameEngine(state) {
       state.isUseGameEngine = !state.isUseGameEngine;
       localStorage.setUseGameEngine(state.isUseGameEngine);
+    },
+    setJustPurchasedGameCard(state, isPurchased) {
+      state.justPurchasedGameCard = isPurchased;
     },
     updateProfile(state, profile) {
       // Vue.set(state, 'profile', profile);
