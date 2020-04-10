@@ -7,10 +7,10 @@
     <ActionCard
       :title="`${opponent.nickname}'s Deck`"
       :cancel="false"
-      :approve="!!selectedCard"
+      :approve="!!selectedCard.resource"
       @approve="$emit('steal', selectedCard)"
     >
-      <BaseDeck v-if="opponent.resourceCounts" hideResources :deck="opponent.resourceCounts" @card-clicked="toggleCard($event)" :selectedCards="[selectedCard]" />
+      <BaseDeck v-if="opponent.resourceCounts" hideResources :deck="opponent.resourceCounts" @card-clicked="toggleSelectedCard($event)" :selectedCards="[selectedCard]" />
     </ActionCard>
   </v-dialog>
 </template>
@@ -39,7 +39,7 @@
       selectedCard: {}
     }),
     methods: {
-      toggleCard: function(card) {
+      toggleSelectedCard: function(card) {
         const { index, resource } = card;
         
         const isTheSameCard = this.selectedCard.index === index && this.selectedCard.resource === resource;

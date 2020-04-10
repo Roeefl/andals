@@ -23,16 +23,14 @@
         <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
       </div>
     </div>
-    <div class="resources">
-      <div v-for="resourceName in purchaseTypes" :key="resourceName" class="resource">
-        <BaseButton icon>
-          <BaseIcon
-            size="x-large"
-            :color="invertColor(player.color)"
-            :name="structureIcons[resourceName]"
-          />
-          <BaseBadge color="black" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
-        </BaseButton>
+    <div class="resources" @click="$emit('deck-clicked')">
+      <div v-for="pieceType in purchaseTypes" :key="pieceType" class="resource">
+        <GamePiece 
+          showCount
+          :count="pieceType === 'gameCards' ? (player[pieceType].length) : player[pieceType]"
+          :type="pieceType"
+          :color="invertColor(player.color)"
+        />
       </div>
     </div>
     <div class="resources cards" @click="$emit('deck-clicked')">
@@ -45,11 +43,11 @@
   import invertColor from 'invert-color';
 
   import { resourceCardTypes } from '@/specs/resources';
-  import { structureIcons } from '@/specs/structures';
   import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
   
   import ResourceCounts from '@/components/interface/ResourceCounts';
   import ResourceCard from '@/components/game/ResourceCard';
+  import GamePiece from '@/components/game/GamePiece';
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
   import BaseBadge from '@/components/common/BaseBadge';
@@ -59,6 +57,7 @@
     components: {
       ResourceCounts,
       ResourceCard,
+      GamePiece,
       BaseButton,
       BaseIcon,
       BaseBadge
@@ -88,7 +87,6 @@
     created: function() {
       this.invertColor = invertColor;
       this.purchaseTypes = purchaseTypes;
-      this.structureIcons = structureIcons;
       this.resourceCardTypes = resourceCardTypes;
     },
     methods: {

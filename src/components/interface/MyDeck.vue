@@ -5,17 +5,21 @@
     width="800"
   >
     <ActionCard
-      :title="discardMode ? `Discard ${discardCardsNeeded} Cards` : 'My Deck'"
-      :cancel="!discardMode"
+      :title="myPlayer.mustDiscardHalfDeck ? `Discard ${discardCardsNeeded} Cards` : 'My Deck'"
+      :cancel="!myPlayer.mustDiscardHalfDeck"
       @cancel="$emit('close')"
-      :approve="!discardMode || selectedCards.length === discardCardsNeeded"
+      :approve="!myPlayer.mustDiscardHalfDeck || selectedCards.length === discardCardsNeeded"
       @approve="$emit('approve', selectedCards)"
     >
       <div class="wrapper">
-        <BaseDeck :deck="deck" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
+        <GamePieces type="road" :pieces="myPlayer.roads" :color="myPlayer.color" class="pieces" />
+        <GamePieces type="settlement" :pieces="myPlayer.settlements" :color="myPlayer.color" class="pieces" />
+        <GamePieces type="cities" :pieces="myPlayer.cities" :color="myPlayer.color" class="pieces" />
+        <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
         <GameCards
-          allowed
-          :deck="gameCards"
+          v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
+          :deck="myPlayer.gameCards"
+          class="game-cards"
         />
       </div>
     </ActionCard>
@@ -26,30 +30,24 @@
   import ActionCard from '@/components/common/ActionCard';
   import BaseDeck from '@/components/game/BaseDeck';
   import GameCards from '@/components/interface/GameCards';
+  import GamePieces from '@/components/interface/GamePieces';
 
   export default {
     name: 'MyDeck',
     components: {
       ActionCard,
       BaseDeck,
-      GameCards
+      GameCards,
+      GamePieces
     },
     props: {
       isOpen: {
         type: Boolean,
         default: false
       },
-      discardMode: {
-        type: Boolean,
-        default: false
-      },
-      deck: {
+      myPlayer: {
         type: Object,
         default: () => {}
-      },
-      gameCards: {
-        type: Array,
-        default: () => []
       }
     },
     data: () => ({
@@ -58,7 +56,7 @@
     computed: {
       discardCardsNeeded: function() {
         const totalCards = Object
-          .values(this.deck)
+          .values(this.myPlayer.resourceCounts)
           .reduce((r1, r2) => r1 + r2, 0);
 
         return Math.floor(totalCards / 2);
@@ -66,7 +64,7 @@
     },
     methods: {
       toggleCardSelection: function(card) {
-        if (!this.discardMode) return;
+        if (!this.myPlayer.mustDiscardHalfDeck) return;
         
         const { index, resource } = card;
 
@@ -89,5 +87,20 @@
   .wrapper {
     display: flex;
     flex-direction: column;
+  }
+
+  .pieces {
+    padding: $spacer / 2;
+    margin: $spacer / 2;
+    
+    & + & {
+      border-top: 1px solid lightgray;
+    }
+  }
+
+  .game-cards {
+    padding: $spacer / 2;
+    margin: $spacer / 2;
+    border-top: 1px solid lightgray;
   }
 </style>
