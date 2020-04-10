@@ -1,6 +1,6 @@
 import * as Colyseus from 'colyseus.js';
 
-const baseUrl = 'ws://localhost:2567';
+const baseUrl = process.env.VUE_APP_SERVER_API_URL || 'ws://localhost:2567';
 
 const roomTypes = ['gameRoom'];
 const [ROOM_TYPE_GAME] = roomTypes;
