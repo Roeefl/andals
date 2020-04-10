@@ -7,7 +7,7 @@
     </div>
     <div class="game-info">
       <div class="bank-resources">
-        <Icon name="bank" size="32px" color="white" class="bank-icon" />
+        <BaseIcon name="bank" size="32px" color="white" class="bank-icon" />
         <ResourceCounts :counts="roomState.resourceCounts" :clickable="false" spaced />
         <GameCards
           :count="(roomState.gameCards || []).length"
@@ -41,7 +41,7 @@
       RoomStats,
       GameCards,
       ResourceCounts,
-      Icon
+      BaseIcon
     },
     props: {
       isMyTurn: {

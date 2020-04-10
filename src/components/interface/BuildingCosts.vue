@@ -3,7 +3,7 @@
     <section class="resource-type" v-for="section in buildingCosts" :key="section.type">
       <div class="description">
         <h3 class="purchase-type">
-          <Icon :name="structureIcons[section.type]" size="20px" color="black" />
+          <BaseIcon :name="structureIcons[section.type]" size="20px" color="black" />
           {{ section.type }}
         </h3>
         <span class="vp">
@@ -43,7 +43,7 @@
     name: 'BuildingCosts',
     components: {
       ResourceCard,
-      Icon
+      BaseIcon
     },
     created() {
       this.buildingCosts = buildingCosts;

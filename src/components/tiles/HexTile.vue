@@ -1,6 +1,6 @@
 <template>
   <drop @drop="$emit('dropped')" class="tile" :class="[type, tile.resource]">
-    <Icon
+    <BaseIcon
       v-if="tile.resource && tile.value"
       :name="resourceCardIcons[tile.resource]"
       size="50px"
@@ -12,14 +12,14 @@
     </span>
     <span class="inner harbor" v-if="tile.type === TILE_WATER && !!tile.resource" :class="tile.resource">
       {{ harborManifest[tile.resource] }}
-      <Icon
+      <BaseIcon
         v-if="tile.resource && tile.resource !== HARBOR_GENERIC"
         :name="resourceCardIcons[tile.resource]"
         color="white"
         size="large"
       />
     </span>
-    <Icon v-if="tile.type === TILE_WATER && !!tile.resource" name="sail-boat" color="#3E2723" size="50px" class="harbor-icon" />
+    <BaseIcon v-if="tile.type === TILE_WATER && !!tile.resource" name="sail-boat" color="#3E2723" size="50px" class="harbor-icon" />
     <slot />
   </drop>
 </template>
@@ -38,7 +38,7 @@
   export default {
     name: 'HexTile',
     components: {
-      Icon,
+      BaseIcon,
     },
     props: {
       type: {

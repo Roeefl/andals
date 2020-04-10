@@ -6,7 +6,7 @@
       </div>
       <div v-if="log.type === CHAT_LOG_DICE">
         {{ log.playerName }} rolls:
-        <Icon v-for="(diceValue, i) in log.dice" :key="`cube-${i}`" size="20px" :color="!i ? 'yellow' : 'red'" :name="`dice-${diceValue}`" />
+        <BaseIcon v-for="(diceValue, i) in log.dice" :key="`cube-${i}`" size="20px" :color="!i ? 'yellow' : 'red'" :name="`dice-${diceValue}`" />
       </div>
       <div v-if="log.type === CHAT_LOG_LOOT || log.type === CHAT_LOG_DISCARD" class="loot">
         {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collects' : 'discards' }}
@@ -41,7 +41,7 @@
     components: {
       MessageList,
       ResourceCard,
-      Icon
+      BaseIcon
     },
     computed: mapState([
       'gameLog'

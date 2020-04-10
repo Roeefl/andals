@@ -22,7 +22,7 @@
     name: 'ResourceCounts',
     components: {
       ResourceCard,
-      Icon
+      BaseIcon
     },
     props: {
       counts: {

@@ -13,7 +13,7 @@
     v-on="on"
     :class="{ 'non-clickable': !clickable }"
   >
-    <Icon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="button-icon" />
+    <BaseIcon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="button-icon" />
     <slot />
   </v-btn>
 </template>
@@ -24,7 +24,7 @@
   export default {
     name: 'BaseButton',
     components: {
-      Icon
+      BaseIcon
     },
     props: {
       type: {

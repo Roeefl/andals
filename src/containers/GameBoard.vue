@@ -30,7 +30,7 @@
             :myColor="myPlayer.color"
           />
           <drag :transfer-data="{}">
-            <Robber
+            <RobberTile
               v-if="(myPlayer.mustMoveRobber && (desiredRobberTile === -1 ? robberPosition === i * 7 + j : desiredRobberTile === i * 7 + j)) || (!myPlayer.mustMoveRobber && robberPosition === i * 7 + j)"
               :active="myPlayer.mustMoveRobber"
             />
@@ -64,7 +64,7 @@
       HexTile,
       RoadTile,
       StructureTile,
-      Robber
+      RobberTile
     },
     props: {
       ready: {

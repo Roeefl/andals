@@ -7,7 +7,7 @@
   >
     <div class="dice">
       <div v-for="(diceValue, i) in dice" :key="`dice-${i}-${diceValue}`" class="cube" :class="`cube-${i}`">
-        <Icon size="80px" color="black" :name="`dice-${diceValue}`" />
+        <BaseIcon size="80px" color="black" :name="`dice-${diceValue}`" />
       </div>
     </div>
   </v-dialog>
@@ -19,7 +19,7 @@
   export default {
     name: 'GameDice',
     components: {
-      Icon
+      BaseIcon
     },
     data: () => ({
       dice: [4, 3]
