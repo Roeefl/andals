@@ -7,6 +7,7 @@
       :clickable="clickable"
       :hideCount="hideCounts"
       :count="counts[resource]"
+      @clicked="$emit('clicked')"
       class="resource-card"
       :class="{ 'spaced' : spaced }"
     />
@@ -58,10 +59,6 @@
   }
 
   .resource-card {
-    & + & {
-      margin-left: $spacer;
-    }
-
     &.spaced {
       & + & {
         margin-left: $spacer * 2;

@@ -18,7 +18,6 @@
       :hideCount="!counts[resource]"
       :clickable="counts[resource] > 0"
       :collectable="counts[resource] > 0"
-      class="resource-card"
       @clicked="$emit('collect-all')"
     />
   </div>
@@ -65,12 +64,6 @@
       width: 100px;
       height: 50px;
       margin-right: $spacer;
-    }
-  }
-
-  .resource-card {
-    & + & {
-      margin-left: $spacer;
     }
   }
 </style>

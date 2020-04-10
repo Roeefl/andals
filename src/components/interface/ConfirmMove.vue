@@ -14,7 +14,6 @@
           :resource="resource"
           :count="buildingCosts[type][resource]"
           v-show="buildingCosts[type][resource]"
-          class="resource-card"
         />
       </div>
     </div>
@@ -61,11 +60,5 @@
 
   .cost {
     display: flex;
-  }
-
-  .resource-card {
-    & + & {
-      margin-left: $spacer * 2;
-    }
   }
 </style>

@@ -110,6 +110,10 @@
       right: $spacer / 4;
       top: $spacer / 2;
     }
+
+    & + & {
+      margin-left: $spacer;
+    }
   }
   
   .collect {

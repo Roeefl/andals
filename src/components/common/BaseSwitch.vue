@@ -18,9 +18,6 @@
         type: String,
         default: '-'
       }
-    },
-    created() {
-      console.log(this.value, this.label)
     }
   }
 </script>

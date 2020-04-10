@@ -16,7 +16,6 @@
           :key="resource"
           :resource="resource"
           :count="section[resource]"
-          class="resource-card"
         />    
       </div>
     </section>
@@ -91,11 +90,5 @@
     font-size: $font-size-sm;
     margin: $spacer / 3 0;
     padding: $spacer / 3 0;
-  }
-
-  .resource-card {
-    & + & {
-      margin-left: $spacer;
-    }
   }
 </style>

@@ -5,7 +5,6 @@
         v-for="(card, index) in Array(deck[resource]).fill(resource)"
         :key="`card-${resource}-${index}`"
         :transfer-data="{ resource, index }"
-        class="resource-card"
       >
         <ResourceCard
           :resource="resource"
@@ -56,12 +55,6 @@
 
   .deck {
     display: flex;
-  }
-
-  .resource-card {
-    & + & {
-      margin-left: $spacer;
-    }
   }
 
   .resource-type { 
