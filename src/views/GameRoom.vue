@@ -38,13 +38,13 @@
           <DraggableWidget>
             <GameLog class="game-log" />
           </DraggableWidget>
-          <DraggableWidget>
-            <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" class="game-chat" />
+          <DraggableWidget class="game-chat-widget">
+            <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
           </DraggableWidget>
         </aside>
       </div>
       <DraggableWidget class="game-status">
-        <GameStatus :isMyTurn="isMyTurn" @purchase-card="onGameCardPurchase" />
+        <GameStatus :isMyTurn="isMyTurn" @purchase-card="onGameCardPurchase" @bank-trading="onTradeWithBank($event)" />
       </DraggableWidget>
       <ConfirmMove
         :type="activePurchase.type"
@@ -55,9 +55,7 @@
       />
       <MyDeck
         :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
-        :discardMode="myPlayer.mustDiscardHalfDeck"
-        :deck="myPlayer.resourceCounts"
-        :gameCards="myPlayer.gameCards"
+        :myPlayer="myPlayer"
         @close="closeDeck"
         @approve="closeDeck($event)"
       />
@@ -77,10 +75,24 @@
       >
         <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" class="game-chat" />
       </TradeDialog>
+      <TradeDialog
+        :isOpen="!!bankTradeResource"
+        withBank
+        :players="bankTradePlayers"
+        @add-card="addTradeCard($event)"
+        @remove-card="removeTradeCard($event)"
+        @refuse="cancelBankTrade"
+        @confirm-trade="requestBankTrade"
+        cancelText="Cancel"
+      />
       <OpponentDeck
         :isOpen="!!stealingFrom.playerSessionId"
         :opponent="stealingFrom"
         @steal="selectStealCard($event)"
+      />
+      <SelectResource
+        :isOpen="myPlayer.isDeclaringMonopoly"
+        @resource-selected="onMonopolySelected($event)"
       />
     </div>
   </div>
@@ -103,6 +115,7 @@
   import ConfirmMove from '@/components/interface/ConfirmMove';
   import ConfirmTrade from '@/components/interface/ConfirmTrade';
   import OpponentDeck from '@/components/interface/OpponentDeck';
+  import SelectResource from '@/components/interface/SelectResource';
 
   import DraggableWidget from '@/components/common/DraggableWidget';
 
@@ -119,14 +132,16 @@
     MESSAGE_PLACE_ROAD,
     MESSAGE_PURCHASE_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
+    MESSAGE_MOVE_ROBBER,
+    MESSAGE_STEAL_CARD,
+    MESSAGE_SELECT_MONOPOLY_RESOURCE,
+    MESSAGE_TRADE_WITH_BANK,
     MESSAGE_TRADE_REQUEST,
     MESSAGE_TRADE_ADD_CARD,
     MESSAGE_TRADE_REMOVE_CARD,
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
     MESSAGE_TRADE_INCOMING_RESPONSE,
-    MESSAGE_MOVE_ROBBER,
-    MESSAGE_STEAL_CARD,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
@@ -147,7 +162,8 @@
       ConfirmMove,
       MyDeck,
       TradeDialog,
-      OpponentDeck
+      OpponentDeck,
+      SelectResource
     },
     data: () => ({
       chatMessages: [],
@@ -157,7 +173,15 @@
         type: 'road'
       },
       waitingTradeWith: null,
+      bankTradeResource: null,
       desiredRobberTile: -1,
+      bankDummy: {
+        nickname: 'Bank',
+        playerSessionId: '-bank-',
+        resourceCounts: {},
+        tradeCounts: {},
+        isTradeConfirmed: false
+      },
       stealingFrom: {}
     }),
     created() {
@@ -192,6 +216,12 @@
           ? (this.players.find(({ playerSessionId }) => playerSessionId === this.myPlayer.pendingTrade) || {}).nickname
           : 'NONE';
       },
+      bankTradePlayers: function() {
+        return [
+          this.myPlayer,
+          this.bankDummy
+        ];
+      },
       ...mapState([
         'isSelfReady',
         'myPlayer',
@@ -205,6 +235,8 @@
       },
       updateState: function(updatedRoomState) {
         this.$store.commit('updateRoomState', updatedRoomState);
+        
+        if (this.bankTradeResource) this.evaluateBankTrade();
       },
       onBroadcastReceived: function(broadcast) {
         const {
@@ -230,7 +262,6 @@
 
           case MESSAGE_COLLECT_ALL_LOOT:
             const { loot } = broadcast;
-            console.log("loot", loot)
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
             break;
 
@@ -240,7 +271,7 @@
 
           case MESSAGE_GAME_LOG:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
-            this.$store.commit('addAlert', message);
+            // this.$store.commit('addAlert', message);
             break;
             
           default:
@@ -291,6 +322,7 @@
             type: MESSAGE_PURCHASE_GAME_CARD
           });
 
+          this.$store.commit('setJustPurchasedGameCard', true);
           return;
         }
         
@@ -308,6 +340,8 @@
         colyseusService.room.send({
           type: MESSAGE_FINISH_TURN
         });
+
+        this.$store.commit('setJustPurchasedGameCard', false);
       },
       requestTradeWith: function(withWho) {
         colyseusService.room.send({
@@ -316,6 +350,58 @@
         });
 
         this.waitingTradeWith = withWho;
+      },
+      resetBankDummy: function() {
+        this.bankTradeResource = null;
+        
+        this.bankDummy = {
+          ...this.bankDummy,
+          tradeCounts: {},
+          isTradeConfirmed: false
+        };
+      },
+      cancelBankTrade: function() {
+        this.resetBankDummy();
+        this.refuseTrade();
+      },
+      onTradeWithBank: function(resource) {
+        if (!this.roomState.isGameStarted || !!this.waitingTradeWith) return;
+        
+        this.bankTradeResource = resource;
+
+        const updateBankDummyTradeCounts = {
+          ...this.bankDummy.tradeCounts,
+          [resource]: 1
+        };
+        this.bankDummy = {
+          ...this.bankDummy,
+          tradeCounts: updateBankDummyTradeCounts
+        };
+      },
+      evaluateBankTrade: function() {
+        this.bankDummy.isTradeConfirmed = false;
+
+        const tradeCounts = Object.entries(this.myPlayer.tradeCounts);
+        console.log("tradeCounts", tradeCounts)
+
+        const offeredResource = tradeCounts.find(([resource, count]) => count === 4);
+        console.log("offeredResource", offeredResource)
+        if (!offeredResource) return;
+
+        const isTradeValid = tradeCounts
+          .filter(([resource, count]) => count !== 4)
+          .every(([resource, count]) => count === 0)
+        console.log("isTradeValid", isTradeValid)
+
+        if (isTradeValid) this.bankDummy.isTradeConfirmed = true;
+      },
+      requestBankTrade: function() {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_WITH_BANK,
+          requestedResource: this.bankTradeResource
+        });
+
+        this.resetBankDummy();
       },
       respondToIncomingTrade: function(isAgreed) {
         colyseusService.room.send({
@@ -383,6 +469,12 @@
         });
 
         this.stealingFrom = {};
+      },
+      onMonopolySelected: function(selectedResource) {
+        colyseusService.room.send({
+          type: MESSAGE_SELECT_MONOPOLY_RESOURCE,
+          selectedResource
+        });
       }
     }
   }
@@ -445,8 +537,13 @@
     }
   }
 
-  .game-log,
-  .game-chat {
+  .game-log {
+    max-height: 35vh;
+    overflow-y: auto;
+  }
+
+  .game-chat-widget {
+    position: relative;
     max-height: 35vh;
     overflow-y: auto;
   }
