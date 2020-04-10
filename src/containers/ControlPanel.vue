@@ -6,8 +6,8 @@
     <div class="filler" />
     <div class="game-actions">
       <div class="dice">
-        <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
-        <Button
+        <GameDice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
+        <BaseButton
           v-for="(diceValue, i) in roomState.dice"
           :key="i"
           sm
@@ -21,18 +21,18 @@
         />
       </div>
       <div class="turn-action">
-        <Button v-if="roomState.isGameReady && !myPlayer.mustMoveRobber" color="red" @click="$emit('end-turn')" :clickable="!isEndTurnDisabled">
+        <BaseButton v-if="roomState.isGameReady && !myPlayer.mustMoveRobber" color="red" @click="$emit('end-turn')" :clickable="!isEndTurnDisabled">
           End Turn
-        </Button>
-        <Button
+        </BaseButton>
+        <BaseButton
           v-if="myPlayer.mustMoveRobber"
           color="pink darken-3"
           @click="$emit('move-robber')"
           :clickable="desiredRobberTile > -1 && roomState.robberPosition !== desiredRobberTile"
         >
           Move Robber
-        </Button>
-        <Button
+        </BaseButton>
+        <BaseButton
           v-if="!roomState.isGameReady"
           :color="isSelfReady ? 'red' : 'green'"
           @click="() => $emit('toggle-ready')"
@@ -44,7 +44,7 @@
           <span v-else>
             Ready!
           </span>
-        </Button>
+        </BaseButton>
       </div>
     </div>
   </div>
@@ -56,17 +56,15 @@
   import { MESSAGE_COLLECT_ALL_LOOT } from '@/store/constants';
 
   import AvailableLoot from '@/components/interface/AvailableLoot';
-  import Dice from '@/components/interface/Dice';
-  import Button from '@/components/common/Button';
-  import Icon from '@/components/common/Icon';
+  import GameDice from '@/components/interface/GameDice';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'ControlPanel',
     components: {
       AvailableLoot,
-      Dice,
-      Button,
-      Icon
+      GameDice,
+      BaseButton
     },
     props: {
       isMyTurn: {

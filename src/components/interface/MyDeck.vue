@@ -12,7 +12,7 @@
       @approve="$emit('approve', selectedCards)"
     >
       <div class="wrapper">
-        <Deck :deck="deck" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
+        <BaseDeck :deck="deck" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
         <GameCards
           allowed
           :deck="gameCards"
@@ -24,14 +24,14 @@
 
 <script>
   import ActionCard from '@/components/common/ActionCard';
-  import Deck from '@/components/game/Deck';
+  import BaseDeck from '@/components/game/BaseDeck';
   import GameCards from '@/components/interface/GameCards';
 
   export default {
     name: 'MyDeck',
     components: {
       ActionCard,
-      Deck,
+      BaseDeck,
       GameCards
     },
     props: {

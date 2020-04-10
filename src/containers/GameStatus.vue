@@ -31,7 +31,7 @@
   import GameCards from '@/components/interface/GameCards';
   import ResourceCounts from '@/components/interface/ResourceCounts';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
-  import Icon from '@/components/common/Icon';
+  import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
     name: 'GameStatus',

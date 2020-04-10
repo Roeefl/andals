@@ -33,7 +33,7 @@
   } from '@/utils/tileManifest';
   import { resourceCardIcons } from '@/specs/resources';
   
-  import Icon from '@/components/common/Icon';
+  import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
     name: 'HexTile',

@@ -10,20 +10,20 @@
       :approve="!!selectedCard"
       @approve="$emit('steal', selectedCard)"
     >
-      <Deck v-if="opponent.resourceCounts" hideResources :deck="opponent.resourceCounts" @card-clicked="toggleCard($event)" :selectedCards="[selectedCard]" />
+      <BaseDeck v-if="opponent.resourceCounts" hideResources :deck="opponent.resourceCounts" @card-clicked="toggleCard($event)" :selectedCards="[selectedCard]" />
     </ActionCard>
   </v-dialog>
 </template>
 
 <script>
   import ActionCard from '@/components/common/ActionCard';
-  import Deck from '@/components/game/Deck';
+  import BaseDeck from '@/components/game/BaseDeck';
 
   export default {
     name: 'OpponentDeck',
     components: {
       ActionCard,
-      Deck
+      BaseDeck
     },
     props: {
       isOpen: {

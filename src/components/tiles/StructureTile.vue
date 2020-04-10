@@ -1,15 +1,15 @@
 <template>
   <span class="structure" :class="[placement, { 'enabled': enabled }]" :style="hoverStyle">
-    <Button icon @click="enabled && $emit('clicked')" class="wrapper" :class="[activeData.type, { 'disabled': !enabled }]">
-      <Icon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
-      <Icon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="iconNames[activeData.type]" />
-    </Button>
+    <BaseButton icon @click="enabled && $emit('clicked')" class="wrapper" :class="[activeData.type, { 'disabled': !enabled }]">
+      <BaseIcon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
+      <BaseIcon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="iconNames[activeData.type]" />
+    </BaseButton>
   </span>
 </template>
 
 <script>
-  import Button from '@/components/common/Button';
-  import Icon from '@/components/common/Icon';
+  import BaseButton from '@/components/common/BaseButton';
+  import BaseIcon from '@/components/common/BaseIcon';
 
   const iconNames = {
     settlement: 'home',
@@ -19,8 +19,8 @@
   export default {
     name: 'StructureTile',
     components: {
-      Button,
-      Icon
+      BaseButton,
+      BaseIcon
     },
     props: {
       placement: {

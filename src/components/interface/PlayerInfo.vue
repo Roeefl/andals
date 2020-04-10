@@ -5,34 +5,34 @@
         {{ player.nickname }}
       </div>
       <div class="status">
-        <Button
+        <BaseButton
           v-if="isStarted && !isMe && !waitingTrade"
           icon
           iconName="swap-vertical-circle"
           iconSize="x-large"
           @click="$emit('trade-with', player.playerSessionId)"
         />
-        <Button
+        <BaseButton
           v-if="allowStealing"
           icon
           iconName="hand-okay"
           iconSize="x-large"
           @click="$emit('steal-from', player.playerSessionId)"
         />
-        <Badge v-if="waitingTrade" color="red" content="........" icon="head-dots-horizontal" class="waiting" />
-        <Icon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
+        <BaseBadge v-if="waitingTrade" color="red" content="........" icon="head-dots-horizontal" class="waiting" />
+        <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
       </div>
     </div>
     <div class="resources">
       <div v-for="resourceName in purchaseTypes" :key="resourceName" class="resource">
-        <Button icon>
-          <Icon
+        <BaseButton icon>
+          <BaseIcon
             size="x-large"
             :color="invertColor(player.color)"
             :name="structureIcons[resourceName]"
           />
-          <Badge color="black" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
-        </Button>
+          <BaseBadge color="black" :content="resourceName === 'gameCards' ? (player[resourceName].length) : player[resourceName]" />
+        </BaseButton>
       </div>
     </div>
     <div class="resources cards" @click="$emit('deck-clicked')">
@@ -50,18 +50,18 @@
   
   import ResourceCounts from '@/components/interface/ResourceCounts';
   import ResourceCard from '@/components/game/ResourceCard';
-  import Button from '@/components/common/Button';
-  import Icon from '@/components/common/Icon';
-  import Badge from '@/components/common/Badge';
+  import BaseButton from '@/components/common/BaseButton';
+  import BaseIcon from '@/components/common/BaseIcon';
+  import BaseBadge from '@/components/common/BaseBadge';
 
   export default {
     name: 'PlayerInfo.vue',
     components: {
       ResourceCounts,
       ResourceCard,
-      Button,
-      Icon,
-      Badge
+      BaseButton,
+      BaseIcon,
+      BaseBadge
     },
     props: {
       player: {

@@ -19,10 +19,10 @@
 </template>
 
 <script>
-  import Icon from '@/components/common/Icon';
+  import BaseIcon from '@/components/common/BaseIcon';
   
   export default {
-    name: 'Button',
+    name: 'BaseButton',
     components: {
       Icon
     },

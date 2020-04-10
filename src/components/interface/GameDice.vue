@@ -14,10 +14,10 @@
 </template>
 
 <script>
-  import Icon from '@/components/common/Icon';
+  import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
-    name: 'Dice',
+    name: 'GameDice',
     components: {
       Icon
     },

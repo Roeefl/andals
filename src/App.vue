@@ -2,10 +2,10 @@
   <v-app>
     <div id="app" class="app-wrapper">
       <div id="page">
-        <Header />
+        <AppHeader />
         <router-view />
       </div>
-      <Alert v-for="(alert, alertId) in alerts" :key="alertId" :text="alert" />
+      <BaseAlert v-for="(alert, alertId) in alerts" :key="alertId" :text="alert" />
     </div>
   </v-app>
 </template>
@@ -15,14 +15,14 @@
 
   import colyseusService from '@/services/colyseus';
 
-  import Header from '@/containers/Header';
-  import Alert from '@/components/common/Alert';
+  import AppHeader from '@/containers/AppHeader';
+  import BaseAlert from '@/components/common/BaseAlert';
   
   export default {
     name: 'App',
     components: {
-      Header,
-      Alert
+      AppHeader,
+      BaseAlert
     },
     computed: mapState([
       'alerts'

@@ -1,5 +1,5 @@
 <template>
-  <Button
+  <BaseButton
     icon
     :xl="active"
     iconName="guy-fawkes-mask"
@@ -10,12 +10,12 @@
 </template>
 
 <script>
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
-    name: 'Robber',
+    name: 'RobberTile',
     components: {
-      Button
+      BaseButton
     },
     props: {
       active: {

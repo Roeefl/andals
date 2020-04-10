@@ -8,7 +8,7 @@
       <div class="wrapper">
         <div class="trade">
           <drop class="my-deck" @drop="$emit('remove-card', $event.resource)">
-            <Deck :deck="players[0].resourceCounts" @card-clicked="$emit('add-card', $event)" />
+            <BaseDeck :deck="players[0].resourceCounts" @card-clicked="$emit('add-card', $event)" />
           </drop>
           <drop v-for="(player, i) in players" :key="renderKey(player)" class="player" @drop="i === 0 && $emit('add-card', $event)">
             <div class="nickname">
@@ -33,13 +33,13 @@
               </div>
             </div>
             <div class="confirmed">
-              <Button
+              <BaseButton
                 :color="player.isTradeConfirmed ? 'warning' : 'success'"
                 :iconName="player.isTradeConfirmed ? 'cancel' : 'check-decagram'"
                 @click="i === 0 && $emit('confirm-trade')"
               >
                 {{ player.isTradeConfirmed ? 'Confirmed' : 'Confirm' }}
-              </Button>
+              </BaseButton>
             </div>
           </drop>
         </div>
@@ -56,16 +56,16 @@
   
   import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';
-  import Deck from '@/components/game/Deck';
-  import Button from '@/components/common/Button';
+  import BaseDeck from '@/components/game/BaseDeck';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'TradeDialog',
     components: {
       ResourceCard,
       ActionCard,
-      Deck,
-      Button
+      BaseDeck,
+      BaseButton
     },
     props: {
       isOpen: {

@@ -1,5 +1,5 @@
 <template>
-  <Button
+  <BaseButton
     icon
     :disabled="!enabled"
     @click="$emit('clicked')"
@@ -10,12 +10,12 @@
 </template>
 
 <script>
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'RoadTile',
     components: {
-      Button
+      BaseButton
     },
     props: {
       placement: {

@@ -9,9 +9,9 @@
           @update-max-players="roomMaxPlayers = $event"
         />
       </ChoiceDialog>
-      <Button iconName="refresh-circle" @click="refreshRooms">
+      <BaseButton iconName="refresh-circle" @click="refreshRooms">
         Refresh List
-      </Button>
+      </BaseButton>
       <ChoiceDialog iconName="wrench" title="Customize Player" @approve="saveProfile" @cancel="revertProfile">
         <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
       </ChoiceDialog>
@@ -29,7 +29,7 @@
   import CustomizePlayer from '@/components/lobby/CustomizePlayer';
   import CustomizeRoom from '@/components/lobby/CustomizeRoom';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'Home',
@@ -38,7 +38,7 @@
       ChoiceDialog,
       CustomizePlayer,
       CustomizeRoom,
-      Button
+      BaseButton
     },
     async created() {
       this.fetchRooms();

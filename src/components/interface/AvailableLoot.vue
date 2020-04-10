@@ -1,6 +1,6 @@
 <template>
   <div class="counts">
-    <Button
+    <BaseButton
       xs
       color="red accent-3"
       iconName="treasure-chest"
@@ -27,15 +27,13 @@
 <script>
   import { resourceCardTypes } from '@/specs/resources';
   import ResourceCard from '@/components/game/ResourceCard';
-  import Button from '@/components/common/Button';
-  import Icon from '@/components/common/Icon';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'AvailableLoot',
     components: {
       ResourceCard,
-      Button,
-      Icon
+      BaseButton
     },
     props: {
       counts: {

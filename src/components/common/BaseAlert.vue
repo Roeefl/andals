@@ -1,19 +1,19 @@
 <template>
   <v-snackbar top v-model="isOpen" :timeout="timeout">
     {{ text }}
-    <Button color="white" text @click="isOpen = false">
+    <BaseButton color="white" text @click="isOpen = false">
       X
-    </Button>
+    </BaseButton>
   </v-snackbar>
 </template>
 
 <script>
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
-    name: 'Alert',
+    name: 'BaseAlert',
     components: {
-      Button
+      BaseButton
     },
     props: {
       text: {

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   const links = [
     {
@@ -25,9 +25,9 @@
   ];
 
   export default {
-    name: 'Header',
+    name: 'AppHeader',
     components: {
-      Button
+      BaseButton
     },
     created() {
       this.links = links;

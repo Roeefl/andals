@@ -1,7 +1,7 @@
 <template>
   <transition name="puff">
     <v-card max-width="300" @click="clickable && $emit('clicked')" class="resource-card" :class="{ 'clickable': clickable }">
-      <Button
+      <BaseButton
         icon
         :xs="small"
         :iconSize="small ? 'medium' : 'x-large'"
@@ -9,10 +9,10 @@
         :iconColor="hideIcon? 'black' : resourceCardColors[resource]"
         :clickable="clickable"
       >
-        <Badge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count === 0 ? '0' : count" />
-        <Icon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
-      </Button>
-      <Icon v-if="collectable" size="x-large" name="sack" color="red" class="collect" />
+        <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count === 0 ? '0' : count" />
+        <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
+      </BaseButton>
+      <BaseIcon v-if="collectable" size="x-large" name="sack" color="red" class="collect" />
     </v-card>
   </transition>
 </template>
@@ -20,16 +20,16 @@
 <script>
   import { resourceCardIcons, resourceCardColors } from '@/specs/resources';
 
-  import Button from '@/components/common/Button';
-  import Icon from '@/components/common/Icon';
-  import Badge from '@/components/common/Badge';
+  import BaseButton from '@/components/common/BaseButton';
+  import BaseIcon from '@/components/common/BaseIcon';
+  import BaseBadge from '@/components/common/BaseBadge';
 
   export default {
     name: 'ResourceCard',
     components: {
-      Button,
-      Icon,
-      Badge
+      BaseButton,
+      BaseIcon,
+      BaseBadge
     },
     props: {
       resource: {

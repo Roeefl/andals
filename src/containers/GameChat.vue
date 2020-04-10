@@ -7,9 +7,9 @@
     </li>
     <form @submit="sendMessage" class="new-message">
       <TextField dark :value="newMessage" @input="newMessage = $event" label="Say hi..." />
-      <Button type="submit" color="success" :disabled="!newMessage.length">
+      <BaseButton type="submit" color="success" :disabled="!newMessage.length">
         Send
-      </Button>
+      </BaseButton>
     </form>
   </MessageList>
 </template>
@@ -19,14 +19,14 @@
   import { MESSAGE_CHAT } from '@/store/constants';
 
   import MessageList from '@/components/common/MessageList';
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
   import TextField from '@/components/common/TextField';
 
   export default {
     name: 'GameChat',
     components: {
       MessageList,
-      Button,
+      BaseButton,
       TextField
     },
     props: {

@@ -50,7 +50,7 @@
   import HexTile from '@/components/tiles/HexTile';
   import RoadTile from '@/components/tiles/RoadTile';
   import StructureTile from '@/components/tiles/StructureTile';
-  import Robber from '@/components/game/Robber';
+  import RobberTile from '@/components/tiles/RobberTile';
 
   import hexTileMap from '@/tilemaps/hexes';
   import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';

@@ -9,24 +9,24 @@
     <slot />
     <v-divider />
     <v-card-actions>
-      <Button text v-if="cancel" @click="() => $emit('cancel')">
+      <BaseButton text v-if="cancel" @click="() => $emit('cancel')">
         {{ cancelText }}
-      </Button>
+      </BaseButton>
       <v-spacer />
-      <Button text v-if="approve" @click="() => $emit('approve')">
+      <BaseButton text v-if="approve" @click="() => $emit('approve')">
         {{ approveText }}
-      </Button>
+      </BaseButton>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'ActionCard',
     components: {
-      Button
+      BaseButton
     },
     props: {
       title: {

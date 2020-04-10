@@ -34,7 +34,7 @@
 
   import MessageList from '@/components/common/MessageList';
   import ResourceCard from '@/components/game/ResourceCard';
-  import Icon from '@/components/common/Icon';
+  import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
     name: 'GameLog',

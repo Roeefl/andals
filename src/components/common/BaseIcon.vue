@@ -13,7 +13,7 @@
   const [XS, SM, MD, LG, XL] = sizes;
 
   export default {
-    name: 'Icon',
+    name: 'BaseIcon',
     props: {
       name: {
         type: String,

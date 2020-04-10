@@ -14,13 +14,13 @@
 
 <script>
   import ColorPicker from '@/components/common/ColorPicker';
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'CustomizePlayer',
     components: {
       ColorPicker,
-      Button
+      BaseButton
     },
     props: {
       storedName: {

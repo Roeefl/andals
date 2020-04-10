@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="isOpen" :width="width">
     <template v-slot:activator="{ on }">
-      <Button :on="on" color="primary">
-        <Icon
+      <BaseButton :on="on" color="primary">
+        <BaseIcon
           size="x-large"
           color="white"
           :name="iconName"
@@ -10,7 +10,7 @@
           class="test"
         />
         {{ buttonText || title }}
-      </Button>
+      </BaseButton>
     </template>
     <ActionCard :title="title" @cancel="onCancel" @approve="onApprove">
       <slot />
@@ -20,15 +20,15 @@
 
 <script>
   import ActionCard from '@/components/common/ActionCard';
-  import Button from '@/components/common/Button';
-  import Icon from '@/components/common/Icon';
+  import BaseButton from '@/components/common/BaseButton';
+  import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
     name: 'ChoiceDialog',
     components: {
       ActionCard,
-      Button,
-      Icon
+      BaseButton,
+      BaseIcon
     },
     props: {
       buttonText: {

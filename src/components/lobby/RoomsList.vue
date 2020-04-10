@@ -14,21 +14,21 @@
         <span>
           Players: {{ room.clients }}
         </span>
-        <Button @click="$emit('join', room.roomId)" :disabled="room.locked">
+        <BaseButton @click="$emit('join', room.roomId)" :disabled="room.locked">
           Join Room
-        </Button>
+        </BaseButton>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-  import Button from '@/components/common/Button';
+  import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'RoomsList',
     components: {
-      Button
+      BaseButton
     },
     props: {
       rooms: {

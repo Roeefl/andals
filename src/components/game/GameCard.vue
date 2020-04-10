@@ -1,7 +1,7 @@
 <template>
   <!-- <transition name="puff"> -->
     <v-card max-width="300" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable }">
-      <Button
+      <BaseButton
         icon
         :xs="small"
         :iconSize="small ? 'medium' : 'x-large'"
@@ -9,9 +9,9 @@
         :iconColor="hideIcon? 'black' : 'white'"
         :clickable="clickable"
       >
-        <Icon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
-        <Badge v-if="!!count" :color="gameCardColors[type]" :content="count === 0 ? '0' : count" />
-      </Button>
+        <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
+        <BaseBadge v-if="!!count" :color="gameCardColors[type]" :content="count === 0 ? '0' : count" />
+      </BaseButton>
     </v-card>
   <!-- </transition> -->
 </template>
@@ -19,16 +19,16 @@
 <script>
   import { gameCardIcons, gameCardColors } from '@/specs/gameCards';
 
-  import Button from '@/components/common/Button';
-  import Icon from '@/components/common/Icon';
-  import Badge from '@/components/common/Badge';
+  import BaseButton from '@/components/common/BaseButton';
+  import BaseIcon from '@/components/common/BaseIcon';
+  import BaseBadge from '@/components/common/BaseBadge';
 
   export default {
     name: 'GameCard',
     components: {
-      Button,
-      Icon,
-      Badge
+      BaseButton,
+      BaseIcon,
+      BaseBadge
     },
     props: {
       type: {

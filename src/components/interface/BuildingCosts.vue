@@ -33,7 +33,7 @@
 
 <script>
   import ResourceCard from '@/components/game/ResourceCard';
-  import Icon from '@/components/common/Icon';
+  import BaseIcon from '@/components/common/BaseIcon';
 
   import { resourceCardTypes } from '@/specs/resources';
   import buildingCosts from '@/utils/buildingCosts';
