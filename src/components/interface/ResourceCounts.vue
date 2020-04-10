@@ -7,7 +7,7 @@
       :clickable="clickable"
       :hideCount="hideCounts"
       :count="counts[resource]"
-      @clicked="$emit('clicked')"
+      @clicked="$emit('resource-clicked', resource)"
       class="resource-card"
       :class="{ 'spaced' : spaced }"
     />
