@@ -3,7 +3,13 @@
     <div class="loot">
       <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" />
     </div>
-    <div class="filler" />
+    <div class="game-cards">
+      <GameCards
+        :deck="myPlayer.gameCards"
+        :allowed="!myPlayer.hasPlayedGameCard"
+         @play-game-card="playGameCard($event)"
+      />
+    </div>
     <div class="game-actions">
       <div class="dice">
         <GameDice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
@@ -53,16 +59,20 @@
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
-  import { MESSAGE_COLLECT_ALL_LOOT } from '@/store/constants';
 
   import AvailableLoot from '@/components/interface/AvailableLoot';
+  import GameCards from '@/components/interface/GameCards';
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
+
+  import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_PLAY_GAME_CARD } from '@/store/constants';
+  import { CARD_VICTORY_POINT } from '@/specs/gameCards';
 
   export default {
     name: 'ControlPanel',
     components: {
       AvailableLoot,
+      GameCards,
       GameDice,
       BaseButton
     },
@@ -88,13 +98,15 @@
           !this.isMyTurn ||
           !this.roomState.isDiceRolled ||
           (this.myPlayer.mustMoveRobber && this.desiredRobberTile === -1) ||
-          this.myPlayer.allowStealingFrom.length > 0
+          this.myPlayer.allowStealingFrom.length > 0 ||
+          this.myPlayer.roadBuildingPhase > 0
         );
       },
       ...mapState([
         'roomState',
         'myPlayer',
-        'isSelfReady'
+        'isSelfReady',
+        'justPurchasedGameCard'
       ])
     },
     data: () => ({
@@ -113,6 +125,23 @@
         colyseusService.room.send({
           type: MESSAGE_COLLECT_ALL_LOOT
         });
+      },
+      playGameCard: function(card) {
+        const { index, cardType } = card;
+        console.log("cardType", cardType)
+        console.log("index", index)
+        
+        if (this.justPurchasedGameCard && index === this.myPlayer.gameCards.length - 1) {
+          this.$store.commit('addAlert', 'You cannot play a development card on the same round you purchased it');
+          return;
+        };
+        if (cardType === CARD_VICTORY_POINT) return; // not a playable card
+
+        colyseusService.room.send({
+          type: MESSAGE_PLAY_GAME_CARD,
+          cardType,
+          cardIndex: index
+        });
       }
     }
   }
@@ -129,6 +158,13 @@
     .loot {
       padding-left: $spacer;
       display: flex;
+      align-items: center;
+    }
+
+    .game-cards {
+      padding-right: $spacer;
+      display: flex;
+      justify-content: flex-end;
       align-items: center;
     }
 
