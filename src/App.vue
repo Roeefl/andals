@@ -5,7 +5,7 @@
         <AppHeader />
         <router-view />
       </div>
-      <BaseAlert v-for="(alert, alertId) in alerts" :key="alertId" :text="alert" />
+      <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }" />
     </div>
   </v-app>
 </template>
