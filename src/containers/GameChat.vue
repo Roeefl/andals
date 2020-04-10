@@ -1,17 +1,19 @@
 <template>
-  <MessageList title="Chat" :messages="messages" class="messages-container">
-    <li v-for="(msg, i) in messages" :key="i">
-      <div>
-        {{ msg.sender }}: {{ msg.message }}
-      </div>
-    </li>
+  <fragment>
+    <MessageList title="Chat" :messages="messages" class="messages-container">
+      <li v-for="(msg, i) in messages" :key="i">
+        <div>
+          {{ msg.sender }}: {{ msg.message }}
+        </div>
+      </li>
+    </MessageList>
     <form @submit="sendMessage" class="new-message">
       <TextField dark :value="newMessage" @input="newMessage = $event" label="Say hi..." />
       <BaseButton type="submit" color="success" :disabled="!newMessage.length">
         Send
       </BaseButton>
     </form>
-  </MessageList>
+  </fragment>
 </template>
 
 <script>
@@ -70,12 +72,12 @@
   }
 
   .new-message {
-    position: sticky;
+    position: absolute;
     bottom: 0px;
+    left: 0px;
     background: rgba(black, 0.85);
     color: white;
     z-index: $zindex-chat;
-    flex: 1;
     display: flex;
     align-items: center;
 
