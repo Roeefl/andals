@@ -49,9 +49,11 @@
 
 <style scoped lang="scss">
   .messages {
+    flex: 1;
     display: flex;
     flex-direction: column;
     max-height: 90%;
     overflow-y: auto;
+    position: relative;
   }
 </style>

@@ -62,6 +62,7 @@
   $zindex-chat: 25;
 
   .messages-container {
+    padding: $spacer / 2;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -70,8 +71,8 @@
 
   .new-message {
     position: sticky;
-    bottom: 0;
-    background: rgba(black, 0.8);
+    bottom: 0px;
+    background: rgba(black, 0.85);
     color: white;
     z-index: $zindex-chat;
     flex: 1;

@@ -11,7 +11,13 @@
       :approve="!discardMode || selectedCards.length === discardCardsNeeded"
       @approve="$emit('approve', selectedCards)"
     >
-      <Deck :deck="deck" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
+      <div class="wrapper">
+        <Deck :deck="deck" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
+        <GameCards
+          allowed
+          :deck="gameCards"
+        />
+      </div>
     </ActionCard>
   </v-dialog>
 </template>
@@ -19,12 +25,14 @@
 <script>
   import ActionCard from '@/components/common/ActionCard';
   import Deck from '@/components/game/Deck';
+  import GameCards from '@/components/interface/GameCards';
 
   export default {
     name: 'MyDeck',
     components: {
       ActionCard,
-      Deck
+      Deck,
+      GameCards
     },
     props: {
       isOpen: {
@@ -37,9 +45,11 @@
       },
       deck: {
         type: Object,
-        default: function() {
-          return {};
-        }
+        default: () => {}
+      },
+      gameCards: {
+        type: Array,
+        default: () => []
       }
     },
     data: () => ({
@@ -72,3 +82,12 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

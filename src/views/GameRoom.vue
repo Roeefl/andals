@@ -44,19 +44,20 @@
         </aside>
       </div>
       <DraggableWidget class="game-status">
-        <GameStatus />
+        <GameStatus :isMyTurn="isMyTurn" @purchase-card="onGameCardPurchase" />
       </DraggableWidget>
       <ConfirmMove
-        :type="activeTile.type"
+        :type="activePurchase.type"
         :isOpen="isDisplayConfirmMove"
         :isFree="roomState.isSetupPhase"
-        @yes="onTileBuild(true)"
-        @no="onTileBuild(false)"
+        @yes="onConfirmPurchase(true)"
+        @no="onConfirmPurchase(false)"
       />
       <MyDeck
         :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
         :discardMode="myPlayer.mustDiscardHalfDeck"
         :deck="myPlayer.resourceCounts"
+        :gameCards="myPlayer.gameCards"
         @close="closeDeck"
         @approve="closeDeck($event)"
       />
@@ -74,7 +75,7 @@
         @refuse="refuseTrade"
         @confirm-trade="confirmTrade"
       >
-        <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
+        <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" class="game-chat" />
       </TradeDialog>
       <OpponentDeck
         :isOpen="!!stealingFrom.playerSessionId"
@@ -116,6 +117,7 @@
     MESSAGE_FINISH_TURN,
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
+    MESSAGE_PURCHASE_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_TRADE_REQUEST,
     MESSAGE_TRADE_ADD_CARD,
@@ -151,7 +153,7 @@
       chatMessages: [],
       isDisplayConfirmMove: false,
       isDisplayMyDeck: false,
-      activeTile: {
+      activePurchase: {
         type: 'road'
       },
       waitingTradeWith: null,
@@ -228,6 +230,7 @@
 
           case MESSAGE_COLLECT_ALL_LOOT:
             const { loot } = broadcast;
+            console.log("loot", loot)
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
             break;
 
@@ -267,15 +270,29 @@
         if (this.roomState.isTurnOrderPhase)
           this.finishTurn();
       },
-      onTileClick: function(tile) {
-        this.activeTile = tile;
+      onGameCardPurchase: function() {
+        this.activePurchase = {
+          type: 'gameCard'
+        };
         this.isDisplayConfirmMove = true;
       },
-      onTileBuild: function(approved) {
+      onTileClick: function(tile) {
+        this.activePurchase = tile;
+        this.isDisplayConfirmMove = true;
+      },
+      onConfirmPurchase: function(approved) {
         this.isDisplayConfirmMove = false;
         if (!approved) return;
 
-        const { type, row, col } = this.activeTile;
+        const { type, row, col } = this.activePurchase;
+
+        if (type === 'gameCard') {
+          colyseusService.room.send({
+            type: MESSAGE_PURCHASE_GAME_CARD
+          });
+
+          return;
+        }
         
         colyseusService.room.send({
           type: type === 'road' ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
@@ -417,13 +434,6 @@
               margin-top: $spacer;
             }
           }
-
-          .game-log,
-          .game-chat {
-            max-height: 35vh;
-            overflow-y: auto;
-            padding: $spacer / 2;
-          }
         }
       }
 
@@ -433,5 +443,11 @@
         justify-content: flex-start;
       }
     }
+  }
+
+  .game-log,
+  .game-chat {
+    max-height: 35vh;
+    overflow-y: auto;
   }
 </style>

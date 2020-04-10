@@ -2,9 +2,9 @@
   <div class="building-costs">
     <section class="resource-type" v-for="section in buildingCosts" :key="section.type">
       <div class="description">
-        <h3>
+        <h3 class="purchase-type">
+          <Icon :name="structureIcons[section.type]" size="20px" color="black" />
           {{ section.type }}
-          <Icon :name="structureIcons[type]" size="20px" color="black" />
         </h3>
         <span class="vp">
           {{ section.vp }} victory points
@@ -71,6 +71,11 @@
         display: flex;
         flex-direction: column;
 
+        .purchase-type {
+          display: grid;
+          grid-template-columns: 30% 70%;
+        }
+
         .vp {
           font-size: $font-size-sm;
         }
@@ -83,6 +88,7 @@
   }
 
   .paragraph {
+    font-size: $font-size-sm;
     margin: $spacer / 3 0;
     padding: $spacer / 3 0;
   }

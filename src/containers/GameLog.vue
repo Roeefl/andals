@@ -62,6 +62,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: $spacer / 2;
 
     .log {
       border-top: 1px solid lightgray;
