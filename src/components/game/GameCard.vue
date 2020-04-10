@@ -10,7 +10,8 @@
         :clickable="clickable"
       >
         <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
-        <BaseBadge v-if="!!count" color="black" :content="count" class="card-count" />
+        <BaseBadge v-if="!!count" color="black" :content="count" class="card-badge" />
+        <BaseBadge v-if="wasPlayed" color="red" content="X" class="card-badge" />
       </BaseButton>
     </v-card>
   <!-- </transition> -->
@@ -38,6 +39,10 @@
       clickable: {
         type: Boolean,
         default: true
+      },
+      wasPlayed: {
+        type: Boolean,
+        default: false
       },
       hideIcon: {
         type: Boolean,
@@ -80,7 +85,7 @@
       cursor: pointer;
     }
 
-    .card-count {
+    .card-badge {
       position: absolute;
       right: $spacer / 4;
       top: $spacer / 2;

@@ -6,6 +6,7 @@
         :key="`${card.type}-${index}`"
         :type="card.type"
         :clickable="!card.wasPlayed"
+        :wasPlayed="card.wasPlayed"
         @clicked="$emit('play-game-card', { cardType: card.type, index })"
       />
     </div>

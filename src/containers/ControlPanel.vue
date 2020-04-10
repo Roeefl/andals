@@ -6,7 +6,7 @@
     <div class="game-cards">
       <GameCards
         :deck="myPlayer.gameCards"
-        :allowed="!myPlayer.hasPlayedGameCard"
+        :allowed="isGameCardsEnabled"
          @play-game-card="playGameCard($event)"
       />
     </div>
@@ -89,6 +89,13 @@
     computed: {
       isDiceEnabled: function() {
         return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled;
+      },
+      isGameCardsEnabled: function() {
+        return(
+          this.roomState.isGameStarted &&
+          this.isMyTurn &&
+          !this.myPlayer.hasPlayedGameCard
+        );
       },
       isEndTurnDisabled: function() {
         return (

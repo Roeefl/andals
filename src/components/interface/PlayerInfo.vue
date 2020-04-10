@@ -19,7 +19,7 @@
           iconSize="x-large"
           @click="$emit('steal-from', player.playerSessionId)"
         />
-        <BaseBadge v-if="waitingTrade" color="red" content="........" icon="head-dots-horizontal" class="waiting" />
+        <BaseIcon v-if="waitingTrade" name="head-dots-horizontal" size="32px" color="red" class="thinking" />
         <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
       </div>
     </div>
@@ -41,7 +41,9 @@
         v-for="(gameCard, index) in (player.gameCards || []).filter(({ type, wasPlayed }) => wasPlayed && type === CARD_KNIGHT)"
         :key="`${gameCard.type}-${index}`"
         :type="gameCard.type"
+        wasPlayed
         :clickable="false"
+        class="game-card"
       />
     </div>
   </div>
@@ -61,7 +63,6 @@
   
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
-  import BaseBadge from '@/components/common/BaseBadge';
 
   export default {
     name: 'PlayerInfo.vue',
@@ -71,8 +72,7 @@
       GamePiece,
       GameCard,
       BaseButton,
-      BaseIcon,
-      BaseBadge
+      BaseIcon
     },
     props: {
       player: {
@@ -100,6 +100,7 @@
       this.invertColor = invertColor;
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;
+      this.CARD_KNIGHT = CARD_KNIGHT;
     },
     methods: {
       hexToRgb: function(hex) {
@@ -153,7 +154,6 @@
     border-radius: 30px;
 
     .header {
-      width: 85%;
       display: flex;
       align-items: center;
       
@@ -166,6 +166,12 @@
         flex: 1;
         display: flex;
         justify-content: flex-end;
+
+        .thinking {
+          position: absolute;
+          top: $spacer;
+          right: $spacer;
+        }
       }
     }
 
@@ -178,6 +184,15 @@
         .name {
           margin-bottom: $spacer;
         }
+      }
+    }
+
+    .game-cards {
+      margin-top: $spacer / 2;
+      display: flex;
+
+      .game-card {
+        height: 40px;
       }
     }
   }

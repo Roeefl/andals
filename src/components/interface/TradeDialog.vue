@@ -105,10 +105,10 @@
 
   .wrapper {
     display: grid;
-    grid-template-columns: 70% 30%;
+    grid-template-columns: 1fr;
 
     &.with-chat {
-      grid-template-columns: 1fr;
+      grid-template-columns: 70% 30%;
     }
 
     .trade {
@@ -140,6 +140,10 @@
       .trade-cards {
         display: flex;
       }
+    }
+
+    .chat {
+      position: relative;
     }
   }
 

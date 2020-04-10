@@ -9,7 +9,7 @@
         :iconColor="hideIcon? 'black' : resourceCardColors[resource]"
         :clickable="clickable"
       >
-        <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count" class="resource-count" />
+        <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="maskCount ? '?' : count" class="resource-count" />
         <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
       </BaseButton>
       <BaseIcon v-if="collectable" size="x-large" name="sack" color="red" class="collect" />
@@ -49,6 +49,10 @@
         default: false
       },
       hideCount: {
+        type: Boolean,
+        default: false
+      },
+      maskCount: {
         type: Boolean,
         default: false
       },
