@@ -33,8 +33,16 @@
         />
       </div>
     </div>
-    <div class="resources cards" @click="$emit('deck-clicked')">
+    <div class="resources" @click="$emit('deck-clicked')">
       <ResourceCounts :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
+    </div>
+    <div class="game-cards">
+      <GameCard
+        v-for="(gameCard, index) in (player.gameCards || []).filter(({ type, wasPlayed }) => wasPlayed && type === CARD_KNIGHT)"
+        :key="`${gameCard.type}-${index}`"
+        :type="gameCard.type"
+        :clickable="false"
+      />
     </div>
   </div>
 </template>
@@ -44,10 +52,13 @@
 
   import { resourceCardTypes } from '@/specs/resources';
   import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
+  import { CARD_KNIGHT } from '@/specs/gameCards';
   
   import ResourceCounts from '@/components/interface/ResourceCounts';
   import ResourceCard from '@/components/game/ResourceCard';
   import GamePiece from '@/components/game/GamePiece';
+  import GameCard from '@/components/game/GameCard';
+  
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
   import BaseBadge from '@/components/common/BaseBadge';
@@ -58,6 +69,7 @@
       ResourceCounts,
       ResourceCard,
       GamePiece,
+      GameCard,
       BaseButton,
       BaseIcon,
       BaseBadge

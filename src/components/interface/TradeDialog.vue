@@ -4,8 +4,8 @@
     persistent
     width="900"
   >
-    <ActionCard v-if="!!players[1]" :title="`Trading with ${players[1].nickname}`" :approve="false" cancelText="Refuse" @cancel="$emit('refuse')">
-      <div class="wrapper">
+    <ActionCard v-if="!!players[1]" :title="`Trading with ${players[1].nickname}`" :approve="false" :cancelText="cancelText" @cancel="$emit('refuse')">
+      <div class="wrapper" :class="{ 'with-chat': !withBank }">
         <div class="trade">
           <drop class="my-deck" @drop="$emit('remove-card', $event.resource)">
             <BaseDeck :deck="players[0].resourceCounts" @card-clicked="$emit('add-card', $event)" />
@@ -15,9 +15,9 @@
               {{ i === 0 ? 'You are' : `${player.nickname} is` }} offering:
             </div>
             <div class="trade-cards">
-              <div v-for="resource in resourceCardTypes" :key="resource" v-show="player.tradeCounts[resource]" class="resource-type">
+              <div v-for="resource in resourceCardTypes" :key="resource" v-show="player.tradeCounts && player.tradeCounts[resource]" class="resource-type">
                 <drag 
-                  v-for="(card, c) in Array(player.tradeCounts[resource] > 0 ? player.tradeCounts[resource] : 0).fill(resource)"
+                  v-for="(card, c) in Array(player.tradeCounts && player.tradeCounts[resource] > 0 ? player.tradeCounts[resource] : 0).fill(resource)"
                   :key="`card-${c}`"
                   :transfer-data="{ resource }"
                   class="resource-card"
@@ -43,7 +43,7 @@
             </div>
           </drop>
         </div>
-        <div class="chat">
+        <div v-if="!withBank" class="chat">
           <slot />
         </div>
       </div>
@@ -72,9 +72,17 @@
         type: Boolean,
         default: false
       },
+      withBank: {
+        type: Boolean,
+        default: false
+      },
       players: {
         type: Array,
         required: true
+      },
+      cancelText: {
+        type: String,
+        default: 'Refuse'
       }
     },
     created() {
@@ -82,7 +90,10 @@
     },
     methods: {
       renderKey(player) {
-        const totalCurrentTradeCards = Object.values(player.tradeCounts).reduce((r1, r2) => r1 + r2, 0);
+        const totalCurrentTradeCards = Object
+          .values(player.tradeCounts || {})
+          .reduce((r1, r2) => r1 + r2, 0);
+          
         return `${player.playerSessionId}-${totalCurrentTradeCards}`;
       }
     }
@@ -95,6 +106,10 @@
   .wrapper {
     display: grid;
     grid-template-columns: 70% 30%;
+
+    &.with-chat {
+      grid-template-columns: 1fr;
+    }
 
     .trade {
       display: flex;
