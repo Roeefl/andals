@@ -9,6 +9,9 @@
           :tile="board[i * 7 + j]"
           @dropped="onRobberDropped(i * 7 + j)"
         >
+          <span v-if="isDeveloperMode" class="tile-index">
+            [{{ i }}, {{ j }}]
+          </span>
           <RoadTile
             v-for="([row, col]) in [[i * 2, j * 2], [i * 2, j * 2 + 1], [i * 2 + 1, j * 2], [i * 2 + 1, j * 2 + 1]]"
             :key="`road-tile-${row}-${col}`"
@@ -111,6 +114,7 @@
         );
       },
       ...mapState([
+        'isDeveloperMode',
         'activeStructures',
         'activeRoads',
         'myPlayer'
@@ -244,6 +248,14 @@
     &.odd {
       margin-top: $tile-size * -0.85;
       margin-bottom: $tile-size * -0.9
+    }
+
+    .tile-index {
+      transform: rotate(90deg);
+      font-size: $font-size-xs;
+      position: absolute;
+      top: 5px;
+      right: 5px;
     }
   }
 </style>

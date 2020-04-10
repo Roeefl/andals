@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="building-costs">
-      <ChoiceDialog iconName="wrench" title="Building Costs" :width="500">
+      <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Building Costs" :width="500">
         <BuildingCosts />
       </ChoiceDialog>
     </div>

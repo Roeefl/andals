@@ -1,7 +1,7 @@
 <template>
   <main class="home">
     <div class="actions">
-      <ChoiceDialog iconName="plus-circle" title="Create Room" @approve="createRoom">
+      <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
         <CustomizeRoom
           :roomTitle="roomTitle"
           @update-title="roomTitle = $event"
@@ -9,10 +9,10 @@
           @update-max-players="roomMaxPlayers = $event"
         />
       </ChoiceDialog>
-      <BaseButton iconName="refresh-circle" @click="refreshRooms">
+      <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
         Refresh List
       </BaseButton>
-      <ChoiceDialog iconName="wrench" title="Customize Player" @approve="saveProfile" @cancel="revertProfile">
+      <ChoiceDialog iconName="wrench" title="Customize Player" buttonText="Customize Player" @approve="saveProfile" @cancel="revertProfile" class="customize-player">
         <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
       </ChoiceDialog>
     </div>
@@ -127,8 +127,12 @@
     .actions {
       display: flex;
 
-      & > * {
-        margin-right: $spacer;
+      .refresh-list {
+        margin-left: $spacer;
+      }
+
+      .customize-player {
+        margin-left: $spacer * 3;
       }
     }
   }

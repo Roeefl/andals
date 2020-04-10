@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpen" :width="width">
     <template v-slot:activator="{ on }">
-      <BaseButton :on="on" color="primary">
+      <BaseButton :on="on" :color="buttonColor">
         <BaseIcon
           size="x-large"
           color="white"
@@ -9,10 +9,11 @@
           v-if="iconName"
           class="test"
         />
-        {{ buttonText || title }}
+        <img v-if="assetName" :src="require(`../../assets/${assetName}`)" :alt="assetName" />
+        {{ buttonText }}
       </BaseButton>
     </template>
-    <ActionCard :title="title" @cancel="onCancel" @approve="onApprove">
+    <ActionCard :title="title" :cancel="hasCancel" @cancel="onCancel" @approve="onApprove">
       <slot />
     </ActionCard>
   </v-dialog>
@@ -35,13 +36,25 @@
         type: String,
         default: null
       },
+      buttonColor: {
+        type: String,
+        default: 'primary'
+      },
+      hasCancel: {
+        type: Boolean,
+        default: true
+      },
       iconName: {
+        type: String,
+        default: null
+      },
+      assetName: {
         type: String,
         default: null
       },
       title: {
         type: String,
-        default: 'Modal'
+        default: null
       },
       width: {
         type: Number,

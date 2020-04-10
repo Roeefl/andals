@@ -10,7 +10,7 @@
         :clickable="clickable"
       >
         <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
-        <BaseBadge v-if="!!count" :color="gameCardColors[type]" :content="count === 0 ? '0' : count" />
+        <BaseBadge v-if="!!count" color="black" :content="count" class="card-count" />
       </BaseButton>
     </v-card>
   <!-- </transition> -->
@@ -72,9 +72,18 @@
     position: relative;
     background: $game-card-knight;
     cursor: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
     &.clickable {
       cursor: pointer;
+    }
+
+    .card-count {
+      position: absolute;
+      right: $spacer / 4;
+      top: $spacer / 2;
     }
 
     .selected {

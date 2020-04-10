@@ -12,7 +12,6 @@
 
 <script>
   import { mapState } from 'vuex';
-
   import colyseusService from '@/services/colyseus';
 
   import AppHeader from '@/containers/AppHeader';
@@ -48,6 +47,10 @@
 
     ul {
       padding-left: 0;
+    }
+
+    .button-icon {
+      margin-right: 0;
     }
   }
 

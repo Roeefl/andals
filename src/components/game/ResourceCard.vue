@@ -9,7 +9,7 @@
         :iconColor="hideIcon? 'black' : resourceCardColors[resource]"
         :clickable="clickable"
       >
-        <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count === 0 ? '0' : count" />
+        <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="count" class="resource-count" />
         <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
       </BaseButton>
       <BaseIcon v-if="collectable" size="x-large" name="sack" color="red" class="collect" />
@@ -97,9 +97,18 @@
     padding: 0 $spacer / 4;
     position: relative;
     cursor: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &.clickable {
       cursor: pointer;
+    }
+
+    .resource-count {
+      position: absolute;
+      right: $spacer / 4;
+      top: $spacer / 2;
     }
   }
   

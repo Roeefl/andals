@@ -11,6 +11,8 @@ const initialColor = '#2c3e50';
 
 export default new Vuex.Store({
   state: {
+    isDeveloperMode: localStorage.getDeveloperMode() || false,
+    isUseGameEngine: localStorage.getUseGameEngine() || false,
     profile: {
       nickname: localStorage.getNickname() || initialNickname,
       color: localStorage.getColor() || initialColor
@@ -33,6 +35,14 @@ export default new Vuex.Store({
     alerts: {}
   },
   mutations: {
+    toggleDeveloperMode(state) {
+      state.isDeveloperMode = !state.isDeveloperMode;
+      localStorage.setDeveloperMode(state.isDeveloperMode);
+    },
+    toggleUseGameEngine(state) {
+      state.isUseGameEngine = !state.isUseGameEngine;
+      localStorage.setUseGameEngine(state.isUseGameEngine);
+    },
     updateProfile(state, profile) {
       // Vue.set(state, 'profile', profile);
       const { color, nickname } = profile;

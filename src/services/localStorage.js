@@ -1,6 +1,8 @@
 const keys = {
   nickname: 'userNickname',
-  color: 'userColor'
+  color: 'userColor',
+  developerMode: 'enableDeveloperMode',
+  useGameEngine: 'eneableExperimentalGameEngine'
 };
 
 class localStorage {
@@ -32,6 +34,22 @@ class localStorage {
 
   setColor(color) {
     return this.set(keys.color, color);
+  }
+
+  getDeveloperMode() {
+    return this.get(keys.developerMode) === 'true' ? true: false;
+  }
+
+  setDeveloperMode(isEnabled) {
+    return this.set(keys.developerMode, isEnabled);
+  }
+
+  getUseGameEngine() {
+    return this.get(keys.useGameEngine) === 'true' ? true: false;
+  }
+
+  setUseGameEngine(isEnabled) {
+    return this.set(keys.useGameEngine, isEnabled);
   }
 }
 
