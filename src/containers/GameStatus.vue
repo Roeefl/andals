@@ -8,7 +8,7 @@
     <div class="game-info">
       <div class="bank-resources">
         <BaseIcon name="bank" size="32px" color="white" class="bank-icon" />
-        <ResourceCounts spaced :counts="roomState.resourceCounts" @clicked="$emit('bank-trading')" />
+        <ResourceCounts spaced :counts="roomState.resourceCounts" @resource-clicked="$emit('bank-trading', $event)" />
         <GameCards
           :count="(roomState.gameCards || []).length"
           :allowed="isCardPurchaseEnabled"

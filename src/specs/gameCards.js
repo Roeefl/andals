@@ -1,7 +1,7 @@
 import cardColors from '@/styles/export.scss';
 
 const gameCardTypes = ['knight', 'victoryPoint', 'roadBuilding', 'yearOfPlenty', 'monopoly'];
-export const [CARD_KNIGHT, CARD_VICTORY_POINT, CARD_ROAD_BUILDING, CARD_YEAR_PLENTY, CARD_MONOPOLY] = gameCardTypes;
+export const [CARD_KNIGHT, CARD_VICTORY_POINT, CARD_ROAD_BUILDING, CARD_YEAR_OF_PLENTY, CARD_MONOPOLY] = gameCardTypes;
 
 export const gameCardIcons = {
   knight: 'shield-cross',
