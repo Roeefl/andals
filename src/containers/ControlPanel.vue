@@ -1,47 +1,51 @@
 <template>
   <div class="control">
-    <div class="dice">
-      <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
-      <Button
-        v-for="(diceValue, i) in roomState.dice"
-        :key="i"
-        @click="rollDice"
-        :iconName="`dice-${diceValue}`"
-        :color="i === 0 ? 'deep-orange darken-3' : 'lime accent-3'"
-        iconSize="50px"
-        iconColor="black"
-        :clickable="isDiceEnabled"
-        class="cube"
-      />
-    </div>
     <div class="loot">
       <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" />
     </div>
-    <div class="turn-action">
-      <Button v-if="roomState.isGameReady && !myPlayer.mustMoveRobber" color="red" @click="$emit('end-turn')" :clickable="!isEndTurnDisabled">
-        End Turn
-      </Button>
-      <Button
-        v-if="myPlayer.mustMoveRobber"
-        color="pink darken-3"
-        @click="$emit('move-robber')"
-        :disabled="desiredRobberTile === -1 || roomState.robberPosition === desiredRobberTile"
-      >
-        Move Robber
-      </Button>
-      <Button
-        v-if="!roomState.isGameReady"
-        :color="isSelfReady ? 'red' : 'green'"
-        @click="() => $emit('toggle-ready')"
-        class="ready"
-      >
-        <span v-if="isSelfReady">
-          Not Ready
-        </span>
-        <span v-else>
-          Ready!
-        </span>
-      </Button>
+    <div class="filler" />
+    <div class="game-actions">
+      <div class="dice">
+        <Dice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
+        <Button
+          v-for="(diceValue, i) in roomState.dice"
+          :key="i"
+          sm
+          @click="rollDice"
+          :iconName="`dice-${diceValue}`"
+          :color="i === 0 ? 'deep-orange darken-3' : 'lime accent-3'"
+          iconSize="50px"
+          iconColor="black"
+          :clickable="isDiceEnabled"
+          class="cube"
+        />
+      </div>
+      <div class="turn-action">
+        <Button v-if="roomState.isGameReady && !myPlayer.mustMoveRobber" color="red" @click="$emit('end-turn')" :clickable="!isEndTurnDisabled">
+          End Turn
+        </Button>
+        <Button
+          v-if="myPlayer.mustMoveRobber"
+          color="pink darken-3"
+          @click="$emit('move-robber')"
+          :clickable="desiredRobberTile > -1 && roomState.robberPosition !== desiredRobberTile"
+        >
+          Move Robber
+        </Button>
+        <Button
+          v-if="!roomState.isGameReady"
+          :color="isSelfReady ? 'red' : 'green'"
+          @click="() => $emit('toggle-ready')"
+          class="ready"
+        >
+          <span v-if="isSelfReady">
+            Not Ready
+          </span>
+          <span v-else>
+            Ready!
+          </span>
+        </Button>
+      </div>
     </div>
   </div>
 </template>
@@ -121,32 +125,37 @@
 
   .control {
     flex: 1;
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 30% 50% 20%;
 
-    .dice {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-
-      .cube {
-        width: 50px;
-        height: 50px;
-        margin-right: $spacer / 3;
-      }
-    }
-    
     .loot {
-      flex: 3;
       padding-left: $spacer;
       display: flex;
       align-items: center;
     }
 
-    .turn-action {
-      flex: 1;
+    .game-actions {
       display: flex;
       justify-content: center;
+      align-items: center;
+
+      .dice {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+
+        .cube {
+          width: 54px;
+          height: 54px;
+          margin-right: $spacer / 3;
+        }
+      }
+
+      .turn-action {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 </style>
