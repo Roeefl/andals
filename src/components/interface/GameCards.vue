@@ -2,13 +2,14 @@
   <div class="wrapper">
     <div v-if="!!deck" class="deck">
       <GameCard
-        v-for="(card, i) in deck"
-        :key="`${card.type}-${i}`"
+        v-for="(card, index) in deck"
+        :key="`${card.type}-${index}`"
         :type="card.type"
-        clickable
+        :clickable="!card.wasPlayed"
+        @clicked="$emit('play-game-card', { cardType: card.type, index })"
       />
     </div>
-    <GameCard v-else type="knight" @clicked="$emit('purchase-card')" :count="count" :clickable="allowed" />
+    <GameCard v-else type="knight" :count="count" :clickable="allowed" @clicked="$emit('purchase-card')" />
   </div>
 </template>
 
@@ -45,9 +46,6 @@
   
     .deck {
       display: flex;
-      padding: $spacer / 2;
-      margin: $spacer / 2;
-      border-top: 1px solid lightgray;
     }
   }
 </style>

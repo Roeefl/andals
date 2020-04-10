@@ -24,7 +24,7 @@
         A city replaces an already-built settlement.
       </h5>
       <h5 class="paragraph">
-        Usually, you only play 1 Development Card per turn, and you cannot play a Development Card on the same turn you fetched it.
+        Usually, you only play 1 Development Card per turn, and you cannot play a Development Card on the same turn you purchased it.
       </h5>
     </footer>
   </div>

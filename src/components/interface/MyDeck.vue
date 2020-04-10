@@ -12,15 +12,17 @@
       @approve="$emit('approve', selectedCards)"
     >
       <div class="wrapper">
-        <GamePieces type="road" :pieces="myPlayer.roads" :color="myPlayer.color" class="pieces" />
-        <GamePieces type="settlement" :pieces="myPlayer.settlements" :color="myPlayer.color" class="pieces" />
-        <GamePieces type="cities" :pieces="myPlayer.cities" :color="myPlayer.color" class="pieces" />
-        <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" />
-        <GameCards
-          v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
-          :deck="myPlayer.gameCards"
-          class="game-cards"
-        />
+        <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
+        <fragment v-if="!myPlayer.mustDiscardHalfDeck">
+          <GamePieces type="road" :pieces="myPlayer.roads" :color="myPlayer.color" class="pieces" />
+          <GamePieces type="settlement" :pieces="myPlayer.settlements" :color="myPlayer.color" class="pieces" />
+          <GamePieces type="cities" :pieces="myPlayer.cities" :color="myPlayer.color" class="pieces" />
+          <GameCards
+            v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
+            :deck="myPlayer.gameCards"
+            class="game-cards"
+          />
+        </fragment>
       </div>
     </ActionCard>
   </v-dialog>
@@ -87,15 +89,16 @@
   .wrapper {
     display: flex;
     flex-direction: column;
+
+    .resources-deck {
+      padding: $spacer;
+    }
   }
 
   .pieces {
     padding: $spacer / 2;
     margin: $spacer / 2;
-    
-    & + & {
-      border-top: 1px solid lightgray;
-    }
+    border-top: 1px solid lightgray;
   }
 
   .game-cards {
