@@ -102,7 +102,10 @@
         type: Boolean,
         default: false
       },
-      board: Array
+      board: {
+        type: Array,
+        default: () => []
+      }
     },
     computed: {
       allowPurchase: function() {
@@ -135,7 +138,7 @@
         return isPurchaseAllowedRoad(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.myPlayer.lastStructureBuilt);
       },
       isSettlementAllowed: function(row, col) {
-        return isPurchaseAllowedSettlement(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase);
+        return isPurchaseAllowedSettlement(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.board);
       },
       isCityAllowed: function(row, col) {
         return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT;

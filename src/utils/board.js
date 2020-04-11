@@ -1,5 +1,18 @@
 import structureTileMap from '@/tilemaps/structures';
 import roadTileMap from '@/tilemaps/roads';
+import { TILE_WATER } from '@/utils/tileManifest';
+
+function adjacentStructuresToHexTile(row, col) {
+  // offset by +2 for EVEN rows only
+  const colOffset = row % 2 === 0 ? 2 : 0;
+
+  return [
+    // top-left, top, top-right
+    [row, col * 2], [row, col * 2 + 1], [row, col * 2 + 2],
+    // bottom-left, bottom, bottom-right
+    [row + 1, col * 2 - 1 + colOffset], [row + 1, col * 2 + colOffset], [row + 1, col * 2 + 1 + colOffset]
+  ];
+}
 
 function adjacentStructuresToStructure(tileType, row, col) {
   // offset by +2 for EVEN rows only
@@ -18,7 +31,16 @@ function adjacentStructuresToStructure(tileType, row, col) {
   ];
 };
 
-export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false) {
+function isAdjacentToHarbor(board, row, col) {
+  return board
+    .filter(({ type, resource }) => type === TILE_WATER && !!resource)
+    .some(({ row: tileRow, col: tileCol }) => {
+      const adjacentStructures = adjacentStructuresToHexTile(tileRow, tileCol);
+      return adjacentStructures.some(([structureRow, structureCol]) => structureRow === row && structureCol === col);
+    });
+}
+
+export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, board = []) {
   if (!isSetupPhase) {
     const isAdjacentToOwnedRoad = activeRoads
       .flat()
@@ -48,6 +70,9 @@ export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySes
   
     if (isAdjacentToOwnedRoad.every(allowed => !allowed)) return false;
   }
+
+  // Not allowed to place structure on ports on setup round
+  if (isSetupPhase && isAdjacentToHarbor(board, row, col)) return false;
 
   const isAdjacentToActiveStructures = activeStructures
     .flat()
