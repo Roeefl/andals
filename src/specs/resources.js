@@ -8,7 +8,8 @@ export const resourceCardIcons = {
   brick: 'wall',
   sheep: 'sheep',
   wheat: 'barley',
-  ore: 'diamond-stone'  
+  ore: 'diamond-stone',
+  harborGeneric: 'ferry'
 };
 
 export const resourceCardColors = {
@@ -17,7 +18,7 @@ export const resourceCardColors = {
   sheep: tileColors.tileSheep,
   wheat: tileColors.tileWheat,
   ore: tileColors.tileOre,
-  harborGeneric: 'black'
+  harborGeneric: '#000'
 };
 
 export const initialResourceCounts = {

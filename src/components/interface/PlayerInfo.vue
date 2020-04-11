@@ -65,6 +65,7 @@
 
   import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
   import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
+  import { hexToRgb } from '@/utils/colors';
   import { CARD_KNIGHT } from '@/specs/gameCards';
   
   import ResourceCounts from '@/components/interface/ResourceCounts';
@@ -115,19 +116,8 @@
       this.resourceCardColors = resourceCardColors;
     },
     methods: {
-      hexToRgb: function(hex) {
-        const noHashtag = hex.substr(1);
-        
-        const bigInt = parseInt(noHashtag, 16);
-
-        const r = (bigInt >> 16) & 255;
-        const g = (bigInt >> 8) & 255;
-        const b = bigInt & 255;
-
-        return `${r}, ${g}, ${b}`;
-      },
       playerStyle: function(playerColor) {
-        const rgbPlayerColor = this.hexToRgb(playerColor);
+        const rgbPlayerColor = hexToRgb(playerColor);
 
         const style = {
           color: invertColor(playerColor),

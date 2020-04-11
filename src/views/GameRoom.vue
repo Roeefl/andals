@@ -24,6 +24,7 @@
         </DraggableWidget>
         <GameBoard
           :board="roomState.board"
+          :harborPorts="roomState.ports"
           :robberPosition="roomState.robberPosition || -1"
           :ready="roomState.isGameReady"
           :isDiceRolled="roomState.isDiceRolled"
@@ -122,7 +123,6 @@
   import { initialResourceCounts } from '@/specs/resources';
 
   import {
-    harborManifest,
     TILE_WATER,
     HARBOR_GENERIC
   } from '@/utils/tileManifest';

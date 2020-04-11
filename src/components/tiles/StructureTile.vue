@@ -1,6 +1,12 @@
 <template>
   <span class="structure" :class="[placement, { 'enabled': enabled }]" :style="hoverStyle">
-    <BaseButton icon @click="enabled && $emit('clicked')" class="wrapper" :class="[activeData.type, { 'disabled': !enabled }]">
+    <BaseButton
+      icon
+      @click="enabled && $emit('clicked')"
+      class="wrapper"
+      :class="[activeData.type, { 'disabled': !enabled }]"
+      :style="structureStyle"
+    >
       <BaseIcon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
       <BaseIcon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="iconNames[activeData.type]" />
       <slot />
@@ -11,11 +17,15 @@
 <script>
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
+  import { resourceCardColors } from '@/specs/resources';
+  import { hexToRgb } from '@/utils/colors';
 
   const iconNames = {
     settlement: 'home',
     city: 'city'
   };
+
+  const DEFAULT_HEX_BG = '#6D4C41';
 
   export default {
     name: 'StructureTile',
@@ -38,9 +48,11 @@
       },
       activeData: {
         type: Object,
-        default: function() {
-          return {};
-        }
+        default: () => {}
+      },
+      harbor: {
+        type: Object,
+        default: () => null
       }
     },
     computed: {
@@ -48,6 +60,17 @@
         return {
           '--color-hover': this.myColor
         }
+      },
+      structureStyle: function() {
+        const hexBackground = (this.harbor && this.harbor.resource) ?
+          resourceCardColors[this.harbor.resource]
+          : DEFAULT_HEX_BG;
+
+        const rgbBackground = hexToRgb(hexBackground);
+
+        return {
+          backgroundColor: `rgba(${rgbBackground}, 0.7)`
+        };
       }
     },
     created() {

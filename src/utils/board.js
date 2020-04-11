@@ -3,27 +3,33 @@ import roadTileMap from '@/tilemaps/roads';
 import { TILE_WATER } from '@/utils/tileManifest';
 
 // @TODO: Find a way to share this method and similar others across server-client - they are identical and currently I need to keep 2 copies
-function hexTileAdjacentStructures(row, col) {
+function hexTileAdjacentStructures(tileRow, tileCol) {
   // offset by +2 for EVEN rows only
-  const colOffset = row % 2 === 0 ? 2 : 0;
+  const colOffset = tileRow % 2 === 0 ? 2 : 0;
 
   // top-left, top, top-right, bottom-left, bottom, bottom-right
   return [
-    [row, col * 2],
-    [row, col * 2 + 1],
-    [row, col * 2 + 2],
-    [row + 1, col * 2 - 1 + colOffset],
-    [row + 1, col * 2 + colOffset],
-    [row + 1, col * 2 + 1 + colOffset]
+    [tileRow, tileCol * 2],
+    [tileRow, tileCol * 2 + 1],
+    [tileRow, tileCol * 2 + 2],
+    [tileRow + 1, tileCol * 2 - 1 + colOffset],
+    [tileRow + 1, tileCol * 2 + colOffset],
+    [tileRow + 1, tileCol * 2 + 1 + colOffset]
   ];
 };
 
-function harborAdjacentStructures(row, col) {
-  const allAdjacentStructures = hexTileAdjacentStructures(row, col);
+export function harborAdjacentStructures(tileRow, tileCol, harborPorts = [0, 1]) {
+  const adjacentStructures = hexTileAdjacentStructures(tileRow, tileCol)
+    .filter(([sRow, sCol]) => sRow >= 0 && sRow < structureTileMap.length && !!structureTileMap[sRow][sCol]);
 
-  return allAdjacentStructures
-    .filter(([sRow, sCol]) => !!structureTileMap[sRow][sCol])
-    .slice(0, 2);
+  const [firstPortIndex, secondPortIndex] = harborPorts;
+
+  return adjacentStructures.length > 2
+    ? [
+        adjacentStructures[firstPortIndex],
+        adjacentStructures[secondPortIndex]
+      ]
+    : adjacentStructures;
 };
 
 function adjacentStructuresToStructure(tileType, row, col) {
@@ -43,16 +49,16 @@ function adjacentStructuresToStructure(tileType, row, col) {
   ];
 };
 
-function isStructureAdjacentToHarbor(board, row, col) {
+export function harborAdjacentToStructure(board, row, col, harborPorts = [0, 1]) {
   return board
     .filter(({ type, resource }) => type === TILE_WATER && !!resource)
-    .some(({ row: tileRow, col: tileCol }) => {
-      const adjacentStructures = harborAdjacentStructures(tileRow, tileCol);
+    .find(({ row: tileRow, col: tileCol }) => {
+      const adjacentStructures = harborAdjacentStructures(tileRow, tileCol, harborPorts);
       return adjacentStructures.some(([structureRow, structureCol]) => structureRow === row && structureCol === col);
     });
 }
 
-export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, board = []) {
+export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, board = [], harborPorts = [0, 1]) {
   if (!isSetupPhase) {
     const isAdjacentToOwnedRoad = activeRoads
       .flat()
@@ -84,7 +90,7 @@ export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySes
   }
 
   // Not allowed to place structure on ports on setup round
-  if (isSetupPhase && isStructureAdjacentToHarbor(board, row, col)) return false;
+  if (isSetupPhase && harborAdjacentToStructure(board, row, col, harborPorts)) return false;
 
   const isAdjacentToActiveStructures = activeStructures
     .flat()

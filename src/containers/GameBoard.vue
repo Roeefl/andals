@@ -34,12 +34,14 @@
             :enabled="(allowPurchase && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchase && myPlayer.hasResources.city && isCityAllowed(row, col))"
             @clicked="$emit('tile-clicked', { type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
             :activeData="activeStructures[row][col] || {}"
+            :harbor="harborAdjacentToStructure(board, row, col, harborPorts)"
             :myColor="myPlayer.color"
           >
             <span v-if="isDeveloperMode" class="structure-index">
               [{{ row }}, {{ col }}]
             </span>
           </StructureTile>
+          <HarborTile :tile="board[i * 7 + j]" />
           <drag :transfer-data="{}">
             <RobberTile
               v-if="(myPlayer.mustMoveRobber && (desiredRobberTile === -1 ? robberPosition === i * 7 + j : desiredRobberTile === i * 7 + j)) || (!myPlayer.mustMoveRobber && robberPosition === i * 7 + j)"
@@ -62,12 +64,14 @@
   import RoadTile from '@/components/tiles/RoadTile';
   import StructureTile from '@/components/tiles/StructureTile';
   import RobberTile from '@/components/tiles/RobberTile';
+  import HarborTile from '@/components/tiles/HarborTile';
 
   import hexTileMap from '@/tilemaps/hexes';
   import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';
   import structureTileMap, { types as structureTileTypes } from '@/tilemaps/structures';
   import buildingCosts, { ROAD, SETTLEMENT, CITY, GAMECARD } from '@/utils/buildingCosts';
-  import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad } from '@/utils/board';
+  import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
+  import { TILE_WATER } from '@/utils/tileManifest';
 
   export default {
     name: 'GameBoard',
@@ -75,6 +79,7 @@
       HexTile,
       RoadTile,
       StructureTile,
+      HarborTile,
       RobberTile
     },
     props: {
@@ -105,6 +110,10 @@
       board: {
         type: Array,
         default: () => []
+      },
+      harborPorts: {
+        type: Array,
+        default: () => [0, 1]
       }
     },
     computed: {
@@ -132,13 +141,15 @@
       this.SETTLEMENT = SETTLEMENT;
       this.CITY = CITY;
       this.GAMECARD = GAMECARD;
+      this.TILE_WATER = TILE_WATER;
+      this.harborAdjacentToStructure = harborAdjacentToStructure;
     },
     methods: {
       isRoadAllowed: function(row, col) {
         return isPurchaseAllowedRoad(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.myPlayer.lastStructureBuilt);
       },
       isSettlementAllowed: function(row, col) {
-        return isPurchaseAllowedSettlement(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.board);
+        return isPurchaseAllowedSettlement(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.board, this.harborPorts);
       },
       isCityAllowed: function(row, col) {
         return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT;

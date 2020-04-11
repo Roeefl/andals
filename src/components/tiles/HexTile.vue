@@ -10,29 +10,13 @@
     <span class="inner value" v-if="tile.value">
       {{ tile.value }}
     </span>
-    <span class="inner harbor" v-if="tile.type === TILE_WATER && !!tile.resource" :class="tile.resource">
-      {{ harborManifest[tile.resource] }}
-      <BaseIcon
-        v-if="tile.resource && tile.resource !== HARBOR_GENERIC"
-        :name="resourceCardIcons[tile.resource]"
-        color="white"
-        size="large"
-      />
-    </span>
-    <BaseIcon v-if="tile.type === TILE_WATER && !!tile.resource" name="sail-boat" color="#3E2723" size="50px" class="harbor-icon" />
     <slot />
   </drop>
 </template>
 
 <script>
-  import {
-    harborManifest,
-    TILE_WATER,
-    TILE_SPACER,
-    HARBOR_GENERIC
-  } from '@/utils/tileManifest';
   import { resourceCardIcons } from '@/specs/resources';
-  
+  import { TILE_WATER } from '@/utils/tileManifest';
   import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
@@ -57,9 +41,6 @@
       }
     },
     created() {
-      this.harborManifest = harborManifest;
-      this.TILE_WATER = TILE_WATER;
-      this.HARBOR_GENERIC = HARBOR_GENERIC;
       this.resourceCardIcons = resourceCardIcons;
     }
   }
@@ -99,8 +80,8 @@
 
     &.spacer {
       opacity: 0;
-      opacity: 1;
-      background: lightgray;
+      // opacity: 1;
+      // background: lightgray;
     }
 
     &.water {
@@ -152,29 +133,6 @@
         color: black;
         cursor: default;
       }
-
-      &.harbor {
-        font-size: $font-size-sm;
-        color: white;
-        width: $tile-value-size;
-        height: $tile-value-size;
-        top: $tile-size * 0.5;
-        right: $tile-size * 0.45;
-
-        &.harborGeneric   {   background: white; color: black;       }
-        &.brick           {   background: $tile-brick;  }
-        &.lumber          {   background: $tile-lumber; }
-        &.ore             {   background: $tile-ore;    }
-        &.wheat           {   background: $tile-wheat;  }
-        &.sheep           {   background: $tile-sheep;  }
-      }
-    }
-
-    .harbor-icon {
-      transform: rotate(90deg);
-      position: absolute;
-      top: $tile-size * 0.45;
-      right: $tile-size * -0.3;
     }
   }
 </style>
