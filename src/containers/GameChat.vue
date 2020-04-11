@@ -18,7 +18,7 @@
 
 <script>
   import colyseusService from '@/services/colyseus';
-  import { MESSAGE_CHAT } from '@/store/constants';
+  import { MESSAGE_CHAT } from '@/constants';
 
   import MessageList from '@/components/common/MessageList';
   import BaseButton from '@/components/common/BaseButton';

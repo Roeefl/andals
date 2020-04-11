@@ -152,7 +152,7 @@
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
     CHAT_LOG_DISCARD
-  } from '@/store/constants';
+  } from '@/constants';
 
   export default {
     name: 'GameRoom',
@@ -406,6 +406,8 @@
         if (isTradeValid) this.bankDummy.isTradeConfirmed = true;
       },
       requestBankTrade: function() {
+        if (!this.bankDummy.isTradeConfirmed) return;
+        
         colyseusService.room.send({
           type: MESSAGE_TRADE_WITH_BANK,
           requestedResource: this.bankTradeResource

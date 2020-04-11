@@ -36,7 +36,7 @@
 
   import { resourceCardTypes } from '@/specs/resources';
   import buildingCosts from '@/utils/buildingCosts';
-  import { structureIcons } from '@/specs/structures';
+  import { structureIcons } from '@/specs/gamePieces';
 
   export default {
     name: 'BuildingCosts',

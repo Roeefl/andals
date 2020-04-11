@@ -30,7 +30,7 @@
   import { mapState } from 'vuex';
 
   import { resourceCardTypes } from '@/specs/resources';
-  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD } from '@/store/constants';
+  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD } from '@/constants';
 
   import MessageList from '@/components/common/MessageList';
   import ResourceCard from '@/components/game/ResourceCard';

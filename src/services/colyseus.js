@@ -1,6 +1,11 @@
 import * as Colyseus from 'colyseus.js';
 
+// const ENDPOINT = process.env.GAME_SERVER_URL || `${window.location.protocol}//${window.location.host}`;
 const baseUrl = process.env.VUE_APP_SERVER_API_URL || 'ws://localhost:2567';
+
+// const data = await axios
+//   .get(`${ENDPOINT}/colyseus/api/`)
+//   .then(({ data }) => data);
 
 const roomTypes = ['gameRoom'];
 const [ROOM_TYPE_GAME] = roomTypes;

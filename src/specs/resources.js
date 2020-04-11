@@ -16,7 +16,8 @@ export const resourceCardColors = {
   brick: tileColors.tileBrick,
   sheep: tileColors.tileSheep,
   wheat: tileColors.tileWheat,
-  ore: tileColors.tileOre
+  ore: tileColors.tileOre,
+  harborGeneric: 'black'
 };
 
 export const initialResourceCounts = {

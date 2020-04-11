@@ -10,7 +10,7 @@
 </template>
 
 <script>
-  import { structureIcons } from '@/specs/structures';
+  import { structureIcons } from '@/specs/gamePieces';
 
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';

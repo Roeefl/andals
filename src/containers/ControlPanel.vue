@@ -65,7 +65,7 @@
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
 
-  import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_PLAY_GAME_CARD } from '@/store/constants';
+  import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_PLAY_GAME_CARD } from '@/constants';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
 
   export default {
