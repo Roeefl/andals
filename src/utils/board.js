@@ -2,17 +2,29 @@ import structureTileMap from '@/tilemaps/structures';
 import roadTileMap from '@/tilemaps/roads';
 import { TILE_WATER } from '@/utils/tileManifest';
 
-function adjacentStructuresToHexTile(row, col) {
+// @TODO: Find a way to share this method and similar others across server-client - they are identical and currently I need to keep 2 copies
+function hexTileAdjacentStructures(row, col) {
   // offset by +2 for EVEN rows only
   const colOffset = row % 2 === 0 ? 2 : 0;
 
+  // top-left, top, top-right, bottom-left, bottom, bottom-right
   return [
-    // top-left, top, top-right
-    [row, col * 2], [row, col * 2 + 1], [row, col * 2 + 2],
-    // bottom-left, bottom, bottom-right
-    [row + 1, col * 2 - 1 + colOffset], [row + 1, col * 2 + colOffset], [row + 1, col * 2 + 1 + colOffset]
+    [row, col * 2],
+    [row, col * 2 + 1],
+    [row, col * 2 + 2],
+    [row + 1, col * 2 - 1 + colOffset],
+    [row + 1, col * 2 + colOffset],
+    [row + 1, col * 2 + 1 + colOffset]
   ];
-}
+};
+
+function harborAdjacentStructures(row, col) {
+  const allAdjacentStructures = hexTileAdjacentStructures(row, col);
+
+  return allAdjacentStructures
+    .filter(([sRow, sCol]) => !!structureTileMap[sRow][sCol])
+    .slice(0, 2);
+};
 
 function adjacentStructuresToStructure(tileType, row, col) {
   // offset by +2 for EVEN rows only
@@ -31,11 +43,11 @@ function adjacentStructuresToStructure(tileType, row, col) {
   ];
 };
 
-function isAdjacentToHarbor(board, row, col) {
+function isStructureAdjacentToHarbor(board, row, col) {
   return board
     .filter(({ type, resource }) => type === TILE_WATER && !!resource)
     .some(({ row: tileRow, col: tileCol }) => {
-      const adjacentStructures = adjacentStructuresToHexTile(tileRow, tileCol);
+      const adjacentStructures = harborAdjacentStructures(tileRow, tileCol);
       return adjacentStructures.some(([structureRow, structureCol]) => structureRow === row && structureCol === col);
     });
 }
@@ -72,7 +84,7 @@ export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySes
   }
 
   // Not allowed to place structure on ports on setup round
-  if (isSetupPhase && isAdjacentToHarbor(board, row, col)) return false;
+  if (isSetupPhase && isStructureAdjacentToHarbor(board, row, col)) return false;
 
   const isAdjacentToActiveStructures = activeStructures
     .flat()
