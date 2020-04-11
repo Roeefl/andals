@@ -36,15 +36,26 @@
     <div class="resources" @click="$emit('deck-clicked')">
       <ResourceCounts :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
     </div>
-    <div class="game-cards">
-      <GameCard
-        v-for="(gameCard, index) in (player.gameCards || []).filter(({ type, wasPlayed }) => wasPlayed && type === CARD_KNIGHT)"
-        :key="`${gameCard.type}-${index}`"
-        :type="gameCard.type"
-        wasPlayed
-        :clickable="false"
-        class="game-card"
-      />
+    <div class="belongings">
+      <div class="game-cards">
+        <GameCard
+          v-for="(gameCard, index) in (player.gameCards || []).filter(({ type, wasPlayed }) => wasPlayed && type === CARD_KNIGHT)"
+          :key="`${gameCard.type}-${index}`"
+          :type="gameCard.type"
+          wasPlayed
+          :clickable="false"
+          class="game-card"
+        />
+      </div>
+      <div class="owned-harbors">
+        <BaseIcon
+          v-for="(harbor, resource) in player.ownedHarbors"
+          :key="`owned-harbor-${resource}`"
+          v-show="harbor"
+          name="sail-boat"
+          :color="resourceCardColors[resource] || '#3E2723'" size="32px"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -52,7 +63,7 @@
 <script>
   import invertColor from 'invert-color';
 
-  import { resourceCardTypes } from '@/specs/resources';
+  import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
   import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
   import { CARD_KNIGHT } from '@/specs/gameCards';
   
@@ -101,6 +112,7 @@
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;
       this.CARD_KNIGHT = CARD_KNIGHT;
+      this.resourceCardColors = resourceCardColors;
     },
     methods: {
       hexToRgb: function(hex) {
@@ -185,6 +197,11 @@
           margin-bottom: $spacer;
         }
       }
+    }
+
+    .belongings {
+      margin-top: $spacer / 2;
+      display: flex;
     }
 
     .game-cards {

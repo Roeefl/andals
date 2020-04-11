@@ -5,7 +5,7 @@
       :key="resource"
       :resource="resource"
       :clickable="clickable"
-      :maskCount="false"
+      :maskCount="hideCounts"
       :count="counts[resource]"
       @clicked="$emit('resource-clicked', resource)"
       class="resource-card"

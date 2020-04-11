@@ -5,8 +5,10 @@
     @click="$emit('clicked')"
     class="road"
     :class="[placement, { 'enabled': enabled }]"
-    :style="{ background: activeData.color, ...hoverStyle }"
-  />
+    :style="roadStyle"
+  >
+    <slot />
+  </BaseButton>
 </template>
 
 <script>
@@ -38,9 +40,11 @@
       }
     },
     computed: {
-      hoverStyle: function() {
+      roadStyle: function() {
         return {
-          '--color-hover': this.myColor
+          '--color-hover': this.myColor,
+          background: this.activeData.color,
+          border: this.activeData.color ? '4px inset black' : ''
         }
       }
     }
@@ -57,6 +61,7 @@
     border-radius: 3px;
     height: $tile-size;
     width: 16px;
+    border: 2px dashed black;
 
     &.enabled {
       // background: transparent;

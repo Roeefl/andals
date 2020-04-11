@@ -99,6 +99,8 @@
 
     &.spacer {
       opacity: 0;
+      opacity: 1;
+      background: lightgray;
     }
 
     &.water {

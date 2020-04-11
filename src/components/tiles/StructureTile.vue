@@ -3,6 +3,7 @@
     <BaseButton icon @click="enabled && $emit('clicked')" class="wrapper" :class="[activeData.type, { 'disabled': !enabled }]">
       <BaseIcon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
       <BaseIcon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="iconNames[activeData.type]" />
+      <slot />
     </BaseButton>
   </span>
 </template>

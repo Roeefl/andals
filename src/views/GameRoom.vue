@@ -122,6 +122,12 @@
   import { initialResourceCounts } from '@/specs/resources';
 
   import {
+    harborManifest,
+    TILE_WATER,
+    HARBOR_GENERIC
+  } from '@/utils/tileManifest';
+
+  import {
     MESSAGE_CHAT,
     MESSAGE_GAME_LOG,
     MESSAGE_READY,
@@ -365,7 +371,7 @@
         this.refuseTrade();
       },
       onTradeWithBank: function(resource) {
-        if (!this.roomState.isGameStarted || !!this.waitingTradeWith) return;
+        if (!this.roomState.isGameStarted) return;
         
         this.bankTradeResource = resource;
 
@@ -382,17 +388,21 @@
         this.bankDummy.isTradeConfirmed = false;
 
         const tradeCounts = Object.entries(this.myPlayer.tradeCounts);
-        console.log("tradeCounts", tradeCounts)
+        console.log("tradeCounts", tradeCounts);
 
-        const offeredResource = tradeCounts.find(([resource, count]) => count === 4);
-        console.log("offeredResource", offeredResource)
-        if (!offeredResource) return;
+        const acceptableResourceIndex = tradeCounts.findIndex(([resource, count]) => (
+          (this.myPlayer.ownedHarbors[resource] && count === 2) ||
+          (this.myPlayer.ownedHarbors[HARBOR_GENERIC] && count === 3) ||
+          count === 4
+        ));
+
+        if (acceptableResourceIndex < 0) return;
 
         const isTradeValid = tradeCounts
-          .filter(([resource, count]) => count !== 4)
+          .filter((x, index) => index !== acceptableResourceIndex)
           .every(([resource, count]) => count === 0)
-        console.log("isTradeValid", isTradeValid)
 
+        console.log("isTradeValid", isTradeValid);
         if (isTradeValid) this.bankDummy.isTradeConfirmed = true;
       },
       requestBankTrade: function() {

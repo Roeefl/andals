@@ -59,7 +59,7 @@
     mounted: function() {
       this.autoRefresh = setInterval(
         () => this.fetchRooms(),
-        5 * 1000
+        15 * 1000
       );
     },
     destroyed: function() {

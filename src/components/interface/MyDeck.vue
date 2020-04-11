@@ -9,7 +9,7 @@
       :cancel="!myPlayer.mustDiscardHalfDeck"
       @cancel="$emit('close')"
       :approve="!myPlayer.mustDiscardHalfDeck || selectedCards.length === discardCardsNeeded"
-      @approve="$emit('approve', selectedCards)"
+      @approve="onApproveDiscard"
     >
       <div class="wrapper">
         <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
@@ -78,6 +78,10 @@
             ...this.selectedCards,
             card
           ];
+      },
+      onApproveDiscard: function() {
+        this.$emit('approve', this.selectedCards);
+        this.selectedCards = [];
       }
     }
   }
