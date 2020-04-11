@@ -22,7 +22,7 @@ export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySes
   if (!isSetupPhase) {
     const isAdjacentToOwnedRoad = activeRoads
       .flat()
-      .filter(road => road.ownerId && road.ownerId === mySessionId)
+      .filter(road => !!road && road.ownerId && road.ownerId === mySessionId)
       .map(({ row: roadRow, col: roadCol }) => {
         const roadTile = roadTileMap[roadRow][roadCol];
         if (!roadTile) return false;
@@ -63,7 +63,7 @@ export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySes
   return isAdjacentToActiveStructures.every(isAdjacent => !isAdjacent);
 };
 
-export function isPurchaseAllowedRoad(activeStructures, activeRoads, mySessionId, row, col) {
+export function isPurchaseAllowedRoad(activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, lastStructureBuilt = null) {
   const allRoads = activeRoads.flat();
 
   // Already owns this road...
@@ -72,6 +72,7 @@ export function isPurchaseAllowedRoad(activeStructures, activeRoads, mySessionId
 
   const isAllowedPerStructure = activeStructures
     .flat()
+    .filter(structure => !isSetupPhase || !lastStructureBuilt || (!!structure && structure.row === lastStructureBuilt.row && structure.col === lastStructureBuilt.col))
     .filter(structure => !!structure && structure.ownerId && structure.ownerId === mySessionId)
     .map(({ row: structureRow, col: structureCol }) => {
       const structureTile = structureTileMap[structureRow][structureCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
@@ -96,6 +97,9 @@ export function isPurchaseAllowedRoad(activeStructures, activeRoads, mySessionId
 
       return intersections.some(([iRow, iCol]) => iRow === row && iCol === col);
     });
+
+  // During setup phase -- only allow if adjacent to the last structure built
+  if (isSetupPhase) return isAllowedPerStructure.some(allowed => allowed);
 
   const isAllowedPerRoad = allRoads
     .filter(road => !!road && road.ownerId && road.ownerId === mySessionId)
