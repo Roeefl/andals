@@ -120,7 +120,7 @@
   import SelectResource from '@/components/interface/SelectResource';
 
   import DraggableWidget from '@/components/common/DraggableWidget';
-  import BaseOverlay from '@components/common/BaseOverlay';
+  import BaseOverlay from '@/components/common/BaseOverlay';
 
   import { initialResourceCounts } from '@/specs/resources';
 
