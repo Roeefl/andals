@@ -19,6 +19,8 @@
           iconSize="x-large"
           @click="$emit('steal-from', player.playerSessionId)"
         />
+        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="white" class="longest-road" />
+        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="white" class="largest-army" />
         <BaseIcon v-if="waitingTrade" name="head-dots-horizontal" size="32px" color="red" class="thinking" />
         <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
       </div>
@@ -168,6 +170,10 @@
         flex: 1;
         display: flex;
         justify-content: flex-end;
+
+        & > * {
+          margin-left: $spacer / 2;
+        }
 
         .thinking {
           position: absolute;
