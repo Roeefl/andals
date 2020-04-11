@@ -95,6 +95,7 @@
         :isOpen="myPlayer.isDeclaringMonopoly"
         @resource-selected="onMonopolySelected($event)"
       />
+      <BaseOverlay :isOpen="showVictoryScreen" closeText="OKEY COOL FOR HIM" @close="showVictoryScreen = false" />
     </div>
   </div>
 </template>
@@ -119,6 +120,7 @@
   import SelectResource from '@/components/interface/SelectResource';
 
   import DraggableWidget from '@/components/common/DraggableWidget';
+  import BaseOverlay from '@components/common/BaseOverlay';
 
   import { initialResourceCounts } from '@/specs/resources';
 
@@ -140,6 +142,7 @@
     MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_MOVE_ROBBER,
     MESSAGE_STEAL_CARD,
+    MESSAGE_GAME_VICTORY,
     MESSAGE_SELECT_MONOPOLY_RESOURCE,
     MESSAGE_TRADE_WITH_BANK,
     MESSAGE_TRADE_REQUEST,
@@ -158,6 +161,7 @@
     name: 'GameRoom',
     components: {
       DraggableWidget,
+      BaseOverlay,
       ControlPanel,
       GameStatus,
       GameBoard,
@@ -188,7 +192,8 @@
         tradeCounts: {},
         isTradeConfirmed: false
       },
-      stealingFrom: {}
+      stealingFrom: {},
+      showVictoryScreen: false
     }),
     created() {
       if (!this.room) {
@@ -232,8 +237,12 @@
         'isSelfReady',
         'myPlayer',
         'roomState',
-        'players'
+        'players',
+        'gameWinner'
       ])
+    },
+    updated() {
+      if (this.gameWinner) this.showVictoryScreen = true;
     },
     methods: {
       initializeState: function(initialRoomState) {
@@ -279,6 +288,10 @@
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
             // this.$store.commit('addAlert', message);
             break;
+
+          case MESSAGE_GAME_VICTORY:
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
+            this.$store.commit('victory', playerName);
             
           default:
             break;

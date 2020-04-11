@@ -33,7 +33,8 @@ export default new Vuex.Store({
     },
     gameLog: [],
     alerts: {},
-    justPurchasedGameCard: false
+    justPurchasedGameCard: false,
+    gameWinner: null
   },
   mutations: {
     toggleDeveloperMode(state) {
@@ -183,6 +184,9 @@ export default new Vuex.Store({
 
         state.alerts = updatedAlerts;
       }, 3000);
+    },
+    victory(state, playerName) {
+      state.gameWinner = playerName;
     }
   },
   actions: {
