@@ -6,6 +6,7 @@
     :iconColor="active ? 'black' : 'deep-orange darken-4'"
     :iconSize="active ? '64px' : '32px'"
     class="robber"
+    :class="{ 'moveable': active }"
   />
 </template>
 
@@ -35,6 +36,10 @@
     top: $tile-size * 1.1;
     right: $tile-size * 0.35;
     z-index: $zindex-robber;
-    cursor: -webkit-drag;
+    cursor: default;
+
+    &.moveable {
+      cursor: -webkit-drag;
+    }
   }
 </style>

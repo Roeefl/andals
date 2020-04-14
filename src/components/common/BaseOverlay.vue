@@ -1,6 +1,6 @@
 <template>
   <v-overlay
-    :absolute="absolute"
+    absolute
     :opacity="0.75"
     :value="isOpen"
   >

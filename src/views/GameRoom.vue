@@ -241,9 +241,6 @@
         'gameWinner'
       ])
     },
-    updated() {
-      if (this.gameWinner) this.showVictoryScreen = true;
-    },
     methods: {
       initializeState: function(initialRoomState) {
         this.$store.commit('updateRoomState', initialRoomState);
@@ -283,6 +280,7 @@
           case MESSAGE_DISCARD_HALF_DECK:
             const { discardedCounts } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
+            break;
 
           case MESSAGE_GAME_LOG:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
@@ -292,6 +290,8 @@
           case MESSAGE_GAME_VICTORY:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
             this.$store.commit('victory', playerName);
+            this.showVictoryScreen = true;
+            break;
             
           default:
             break;

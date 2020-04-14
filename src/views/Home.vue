@@ -7,6 +7,8 @@
           @update-title="roomTitle = $event"
           :roomMaxPlayers="roomMaxPlayers"
           @update-max-players="roomMaxPlayers = $event"
+          :playVsBots="playVsBots"
+          @toggle-bots="playVsBots = !playVsBots"
         />
       </ChoiceDialog>
       <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
@@ -52,8 +54,9 @@
       
       return {
         roomTitle: `Room ${randomInt}`,
-        roomMaxPlayers: 2,
-        autoRefresh: null
+        roomMaxPlayers: 4,
+        autoRefresh: null,
+        playVsBots: true
       };
     },
     mounted: function() {
@@ -79,6 +82,7 @@
           const options = {
             roomTitle: this.roomTitle,
             maxPlayers: this.roomMaxPlayers,
+            playVsBots: this.playVsBots,
             ...this.profile
           };
 

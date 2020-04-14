@@ -10,10 +10,11 @@
     :outlined="outlined"
     :icon="icon"
     @click="clickable && $emit('click')"
+    :ripple="clickable"
     v-on="on"
     :class="{ 'non-clickable': !clickable }"
   >
-    <BaseIcon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="button-icon" />
+    <BaseIcon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="base-button-icon" />
     <slot />
   </v-btn>
 </template>
@@ -87,7 +88,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .button-icon {
+  .base-button-icon {
     margin-right: $spacer / 2;
   }
 

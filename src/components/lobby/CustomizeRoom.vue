@@ -8,6 +8,11 @@
         :selected="{ text: String(roomMaxPlayers), value: roomMaxPlayers }"
         @selected="$emit('update-max-players', $event)"
       />
+      <BaseSwitch
+        label="Play vs. Bots"
+        :value="playVsBots"
+        @flipped="$emit('toggle-bots')"
+      />
     </form>
   </div>
 </template>
@@ -15,6 +20,7 @@
 <script>
   import TextField from '@/components/common/TextField';
   import SelectValue from '@/components/common/SelectValue';
+  import BaseSwitch from '@/components/common/BaseSwitch';
 
   const maxPlayersOptions = [2, 3, 4].map(value => ({ text: String(value), value }));
 
@@ -22,7 +28,8 @@
     name: 'CustomizeRoom',
     components: {
       TextField,
-      SelectValue
+      SelectValue,
+      BaseSwitch
     },
     props: {
       roomTitle: {
@@ -32,6 +39,10 @@
       roomMaxPlayers: {
         type: Number,
         default: 2
+      },
+      playVsBots: {
+        type: Boolean,
+        default: false
       }
     },
     created() {
