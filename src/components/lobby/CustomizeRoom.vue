@@ -18,6 +18,11 @@
         :value="autoPickup"
         @flipped="$emit('toggle-auto-pickup')"
       />
+      <BaseSwitch
+        label="Display collected resources in Game Log (Good while still learning the game)"
+        :value="friendlyGameLog"
+        @flipped="$emit('toggle-friendly-game-log')"
+      />
     </form>
   </div>
 </template>
@@ -52,6 +57,10 @@
       autoPickup: {
         type: Boolean,
         default: true
+      },
+      friendlyGameLog: {
+        type: Boolean,
+        default: false
       }
     },
     created() {

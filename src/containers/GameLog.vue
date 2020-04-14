@@ -16,7 +16,7 @@
             :key="`card-${i}`"
             small
             hideCount
-            hideIcon
+            :hideIcon="!friendly"
             :resource="resource"
             class="resource"
           />
@@ -42,6 +42,12 @@
       MessageList,
       ResourceCard,
       BaseIcon
+    },
+    props: {
+      friendly: {
+        type: Boolean,
+        default: false
+      }
     },
     computed: mapState([
       'gameLog'

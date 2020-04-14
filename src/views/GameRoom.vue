@@ -37,7 +37,7 @@
         />
         <aside class="sidebar">
           <DraggableWidget>
-            <GameLog class="game-log" />
+            <GameLog :friendly="roomState.friendlyGameLog" class="game-log" />
           </DraggableWidget>
           <DraggableWidget class="game-chat-widget">
             <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />

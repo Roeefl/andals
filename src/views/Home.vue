@@ -11,6 +11,8 @@
           @toggle-bots="playVsBots = !playVsBots"
           :autoPickup="autoPickup"
           @toggle-auto-pickup="autoPickup = !autoPickup"
+          :friendlyGameLog="friendlyGameLog"
+          @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
         />
       </ChoiceDialog>
       <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
@@ -59,7 +61,8 @@
         roomMaxPlayers: 4,
         autoRefresh: null,
         playVsBots: true,
-        autoPickup: true
+        autoPickup: true,
+        friendlyGameLog: false
       };
     },
     mounted: function() {
@@ -87,6 +90,7 @@
             maxPlayers: this.roomMaxPlayers,
             playVsBots: this.playVsBots,
             autoPickup: this.autoPickup,
+            friendlyGameLog: this.friendlyGameLog,
             ...this.profile
           };
 
