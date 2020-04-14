@@ -23,6 +23,11 @@
         :value="friendlyGameLog"
         @flipped="$emit('toggle-friendly-game-log')"
       />
+      <BaseSwitch
+        label="Immediately replace disconnected players by Bots until reconnection?"
+        :value="botReplacement"
+        @flipped="$emit('toggle-bot-replacement')"
+      />
     </form>
   </div>
 </template>
@@ -61,6 +66,10 @@
       friendlyGameLog: {
         type: Boolean,
         default: false
+      },
+      botReplacement: {
+        type: Boolean,
+        default: true
       }
     },
     created() {
