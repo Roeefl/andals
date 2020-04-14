@@ -13,6 +13,11 @@
         :value="playVsBots"
         @flipped="$emit('toggle-bots')"
       />
+      <BaseSwitch
+        label="Automatically pick up Loot"
+        :value="autoPickup"
+        @flipped="$emit('toggle-auto-pickup')"
+      />
     </form>
   </div>
 </template>
@@ -43,6 +48,10 @@
       playVsBots: {
         type: Boolean,
         default: false
+      },
+      autoPickup: {
+        type: Boolean,
+        default: true
       }
     },
     created() {

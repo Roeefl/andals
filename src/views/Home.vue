@@ -9,6 +9,8 @@
           @update-max-players="roomMaxPlayers = $event"
           :playVsBots="playVsBots"
           @toggle-bots="playVsBots = !playVsBots"
+          :autoPickup="autoPickup"
+          @toggle-auto-pickup="autoPickup = !autoPickup"
         />
       </ChoiceDialog>
       <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
@@ -56,7 +58,8 @@
         roomTitle: `Room ${randomInt}`,
         roomMaxPlayers: 4,
         autoRefresh: null,
-        playVsBots: true
+        playVsBots: true,
+        autoPickup: true
       };
     },
     mounted: function() {
@@ -83,6 +86,7 @@
             roomTitle: this.roomTitle,
             maxPlayers: this.roomMaxPlayers,
             playVsBots: this.playVsBots,
+            autoPickup: this.autoPickup,
             ...this.profile
           };
 
