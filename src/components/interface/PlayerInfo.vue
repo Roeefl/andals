@@ -10,6 +10,7 @@
           icon
           iconName="swap-vertical-circle"
           iconSize="x-large"
+          :clickable="enableTrading"
           @click="$emit('trade-with', player.playerSessionId)"
         />
         <BaseButton
@@ -100,6 +101,10 @@
       isMe: {
         type: Boolean,
         default: false
+      },
+      enableTrading: {
+        type: Boolean,
+        default: true
       },
       waitingTrade: {
         type: Boolean,

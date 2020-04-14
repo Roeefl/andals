@@ -10,6 +10,7 @@
         <PlayerInfo
           :player="player"
           :isMe="player.playerSessionId === myPlayer.playerSessionId"
+          :enableTrading="isGameStarted"
           :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
           :isStarted="isGameReady"
           :allowStealing="myPlayer.allowStealingFrom.includes(player.playerSessionId)"
@@ -45,6 +46,10 @@
         type: Boolean,
         default: false
       },
+      isGameStarted: {
+        type: Boolean,
+        default: false
+      }
     },
     computed: mapState([
       'myPlayer',

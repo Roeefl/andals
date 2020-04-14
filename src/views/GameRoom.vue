@@ -15,6 +15,7 @@
         <DraggableWidget class="players-list">
           <PlayersList
             :isGameReady="roomState.isGameReady"
+            :isGameStarted="roomState.isGameStarted"
             :currentTurn="roomState.currentTurn"
             :waitingTradeWith="waitingTradeWith"
             @display-deck="isDisplayMyDeck = true"
@@ -146,11 +147,11 @@
     MESSAGE_SELECT_MONOPOLY_RESOURCE,
     MESSAGE_TRADE_WITH_BANK,
     MESSAGE_TRADE_REQUEST,
+    MESSAGE_TRADE_START_AGREED,
     MESSAGE_TRADE_ADD_CARD,
     MESSAGE_TRADE_REMOVE_CARD,
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
-    MESSAGE_TRADE_INCOMING_RESPONSE,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
@@ -363,6 +364,8 @@
         this.$store.commit('setJustPurchasedGameCard', false);
       },
       requestTradeWith: function(withWho) {
+        if (!this.roomState.isGameStarted) return;
+
         colyseusService.room.send({
           type: MESSAGE_TRADE_REQUEST,
           withWho
@@ -430,7 +433,7 @@
       },
       respondToIncomingTrade: function(isAgreed) {
         colyseusService.room.send({
-          type: MESSAGE_TRADE_INCOMING_RESPONSE,
+          type: MESSAGE_TRADE_START_AGREED,
           isAgreed
         });
       },
