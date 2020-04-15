@@ -1,7 +1,10 @@
 <template>
   <div class="room-stats">
     <span>
-      You are in: {{ roomTitle }}
+      Room Title: {{ roomTitle }}
+    </span>
+    <span>
+      Room ID: {{ this.$route.params.roomId  }}
     </span>
     <span>
       Your SessionID is: {{ mySessionId }}

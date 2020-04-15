@@ -107,7 +107,7 @@
           const room = await colyseusService.createRoom(this.roomType, options);
 
           colyseusService.setRoom(room);
-          router.push('/room');
+          router.push(`/room/${room.id}`);
         } catch (err) {
           console.error(err);
         }
@@ -121,7 +121,7 @@
           const room = await colyseusService.joinById(roomId, options);
 
           colyseusService.setRoom(room);
-          router.push('/room');
+          router.push(`/room/${room.id}`);
         } catch (err) {
           console.error(err);
         }
@@ -136,7 +136,7 @@
           }
           
           colyseusService.setRoom(room);
-          router.push('/room');
+          router.push(`/room/${room.id}`);
         } catch (err) {
           console.error('reconnect failed:', err);
         }

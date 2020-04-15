@@ -41,8 +41,8 @@ class ColyseusService {
     return reservation;
   }
 
-  async reconnect() {
-    const roomId = localStorage.lastRoomId;
+  async reconnect(specifiedRoomId) {
+    const roomId = specifiedRoomId || localStorage.lastRoomId;
     const sessionId = localStorage.lastSessionId;
 
     if (!roomId || !sessionId) return false;
