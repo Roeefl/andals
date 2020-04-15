@@ -3,6 +3,8 @@
     <div class="actions">
       <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
         <CustomizeRoom
+          :roomType="roomType"
+          @select-room-type="roomType = $event"
           :roomTitle="roomTitle"
           @update-title="roomTitle = $event"
           :roomMaxPlayers="roomMaxPlayers"
@@ -34,7 +36,7 @@
 <script>
   import { mapState } from 'vuex'
   import router from '@/router';
-  import colyseusService from '@/services/colyseus';
+  import colyseusService, { ROOM_TYPE_BASE_GAME } from '@/services/colyseus';
   
   import RoomsList from '@/components/lobby/RoomsList';
   import CustomizePlayer from '@/components/lobby/CustomizePlayer';
@@ -62,6 +64,7 @@
       const randomInt = Math.floor(Math.random() * 9999);
       
       return {
+        roomType: ROOM_TYPE_BASE_GAME,
         roomTitle: `Room ${randomInt}`,
         roomMaxPlayers: 4,
         autoRefresh: null,
@@ -101,7 +104,7 @@
             ...this.profile
           };
 
-          const room = await colyseusService.createRoom(options);
+          const room = await colyseusService.createRoom(this.roomType, options);
 
           colyseusService.setRoom(room);
           router.push('/room');

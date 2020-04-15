@@ -1,10 +1,16 @@
 <template>
   <div>
     <form class="customize">
+      <SelectValue
+        label="Game Type"
+        :options="roomTypeOptions"
+        :selected="{ text: roomType, value: roomType }"
+        @selected="$emit('select-room-type', $event)"
+      />
       <TextField :value="roomTitle" @input="$emit('update-title', $event)" label="Room Title..." />
       <SelectValue
-        :options="maxPlayersOptions"
         label="Max Players"
+        :options="maxPlayersOptions"
         :selected="{ text: String(roomMaxPlayers), value: roomMaxPlayers }"
         @selected="$emit('update-max-players', $event)"
       />
@@ -36,8 +42,10 @@
   import TextField from '@/components/common/TextField';
   import SelectValue from '@/components/common/SelectValue';
   import BaseSwitch from '@/components/common/BaseSwitch';
+  import { roomTypes, ROOM_TYPE_BASE_GAME } from '@/services/colyseus';
 
   const maxPlayersOptions = [2, 3, 4].map(value => ({ text: String(value), value }));
+  const roomTypeOptions = roomTypes.map(roomType => ({ text: roomType, value: roomType }));
 
   export default {
     name: 'CustomizeRoom',
@@ -47,6 +55,10 @@
       BaseSwitch
     },
     props: {
+      roomType: {
+        type: String,
+        default: ROOM_TYPE_BASE_GAME
+      },
       roomTitle: {
         type: String,
         default: 'My Room'
@@ -74,6 +86,7 @@
     },
     created() {
       this.maxPlayersOptions = maxPlayersOptions;
+      this.roomTypeOptions = roomTypeOptions;
     }
   }
 </script>

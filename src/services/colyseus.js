@@ -6,10 +6,10 @@ import localStorage from '@/services/localStorage';
 //   .get(`${ENDPOINT}/colyseus/api/`)
 //   .then(({ data }) => data);
 
-const baseUrl = process.env.VUE_APP_SERVER_API_URL;
+const baseUrl = `${process.env.VUE_APP_SERVER_API_URL}:${process.env.VUE_APP_SERVER_API_PORT}`;
 
-const roomTypes = ['gameRoom'];
-const [ROOM_TYPE_GAME] = roomTypes;
+export const roomTypes = ['baseGame', 'firstMen'];
+export const [ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN] = roomTypes;
 
 class ColyseusService {
   constructor() {
@@ -36,8 +36,8 @@ class ColyseusService {
     return this._.room;
   }
 
-  async createRoom(options) {
-    const reservation = await this.client.create(ROOM_TYPE_GAME, options);
+  async createRoom(roomType = ROOM_TYPE_BASE_GAME, options = {}) {
+    const reservation = await this.client.create(roomType, options);
     return reservation;
   }
 
@@ -64,7 +64,7 @@ class ColyseusService {
 
   async listRooms() {
     try {
-      const rooms = await this.client.getAvailableRooms(ROOM_TYPE_GAME);
+      const rooms = await this.client.getAvailableRooms();
       return rooms;
     } catch (err) {
       console.error(err);
