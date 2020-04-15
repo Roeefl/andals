@@ -2,11 +2,11 @@ import * as Colyseus from 'colyseus.js';
 import localStorage from '@/services/localStorage';
 
 // const ENDPOINT = process.env.GAME_SERVER_URL || `${window.location.protocol}//${window.location.host}`;
-const baseUrl = process.env.VUE_APP_SERVER_API_URL || 'ws://localhost:2568';
-
 // const data = await axios
 //   .get(`${ENDPOINT}/colyseus/api/`)
 //   .then(({ data }) => data);
+
+const baseUrl = process.env.VUE_APP_SERVER_API_URL;
 
 const roomTypes = ['gameRoom'];
 const [ROOM_TYPE_GAME] = roomTypes;
