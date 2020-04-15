@@ -11,11 +11,11 @@ const initialColor = '#2c3e50';
 
 export default new Vuex.Store({
   state: {
-    isDeveloperMode: localStorage.getDeveloperMode() || false,
-    isUseGameEngine: localStorage.getUseGameEngine() || false,
+    isDeveloperMode: localStorage.developerMode || false,
+    isUseGameEngine: localStorage.useGameEngine || false,
     profile: {
-      nickname: localStorage.getNickname() || initialNickname,
-      color: localStorage.getColor() || initialColor
+      nickname: localStorage.nickname || initialNickname,
+      color: localStorage.color || initialColor
     },
     isSelfReady: false,
     rooms: [],
@@ -65,8 +65,8 @@ export default new Vuex.Store({
       if (nickname) localStorage.setNickname(nickname);
     },
     revertProfile(state) {
-      const color = localStorage.getColor();
-      const nickname = localStorage.getNickname();
+      const color = localStorage.color;
+      const nickname = localStorage.nickname;
 
       state.profile = {
         color,

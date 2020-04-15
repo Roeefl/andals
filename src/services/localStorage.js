@@ -2,7 +2,9 @@ const keys = {
   nickname: 'userNickname',
   color: 'userColor',
   developerMode: 'enableDeveloperMode',
-  useGameEngine: 'eneableExperimentalGameEngine'
+  useGameEngine: 'eneableExperimentalGameEngine',
+  lastRoomId: 'lastRoomId',
+  lastSessionId: 'lastSessionId'
 };
 
 class localStorage {
@@ -20,7 +22,7 @@ class localStorage {
     return true;
   }
 
-  getNickname() {
+  get nickname() {
     return this.get(keys.nickname);
   }
 
@@ -28,7 +30,7 @@ class localStorage {
     return this.set(keys.nickname, nickname);
   }
 
-  getColor() {
+  get color() {
     return this.get(keys.color);
   }
 
@@ -36,7 +38,7 @@ class localStorage {
     return this.set(keys.color, color);
   }
 
-  getDeveloperMode() {
+  get developerMode() {
     return this.get(keys.developerMode) === 'true' ? true: false;
   }
 
@@ -44,12 +46,28 @@ class localStorage {
     return this.set(keys.developerMode, isEnabled);
   }
 
-  getUseGameEngine() {
+  get useGameEngine() {
     return this.get(keys.useGameEngine) === 'true' ? true: false;
   }
 
   setUseGameEngine(isEnabled) {
     return this.set(keys.useGameEngine, isEnabled);
+  }
+
+  get lastRoomId() {
+    return this.get(keys.lastRoomId);
+  }
+
+  setLastRoomId(roomId) {
+    return this.set(keys.lastRoomId, roomId);
+  }
+
+  get lastSessionId() {
+    return this.get(keys.lastSessionId);
+  }
+
+  setLastSessionId(playerSessionId) {
+    return this.set(keys.lastSessionId, playerSessionId);
   }
 }
 

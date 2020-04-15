@@ -24,7 +24,7 @@
         @flipped="$emit('toggle-friendly-game-log')"
       />
       <BaseSwitch
-        label="Immediately replace disconnected players by Bots until reconnection?"
+        label="Immediately replace disconnected players by Bots until reconnection"
         :value="botReplacement"
         @flipped="$emit('toggle-bot-replacement')"
       />

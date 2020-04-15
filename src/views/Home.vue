@@ -23,6 +23,9 @@
       <ChoiceDialog iconName="wrench" title="Customize Player" buttonText="Customize Player" @approve="saveProfile" @cancel="revertProfile" class="customize-player">
         <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
       </ChoiceDialog>
+      <BaseButton iconName="add" @click="reconnect">
+        Reconnect
+      </BaseButton>
     </div>
     <RoomsList :rooms="rooms" @join="joinRoom($event)" />
   </main>
@@ -106,7 +109,7 @@
           console.error(err);
         }
       },
-      joinRoom: async function (roomId) {
+      joinRoom: async function(roomId) {
         try {
           const options = {
             ...this.profile
@@ -118,6 +121,21 @@
           router.push('/room');
         } catch (err) {
           console.error(err);
+        }
+      },
+      reconnect: async function(roomId) {
+        try {
+          const room = await colyseusService.reconnect();
+
+          if (!room) {
+            this.$store.commit('addAlert', 'Unable to reconnect. Sorry.');
+            return;
+          }
+          
+          colyseusService.setRoom(room);
+          router.push('/room');
+        } catch (err) {
+          console.error('reconnect failed:', err);
         }
       },
       updateProfile: function(updatedProfile) {

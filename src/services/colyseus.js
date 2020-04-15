@@ -1,4 +1,5 @@
 import * as Colyseus from 'colyseus.js';
+import localStorage from '@/services/localStorage';
 
 // const ENDPOINT = process.env.GAME_SERVER_URL || `${window.location.protocol}//${window.location.host}`;
 const baseUrl = process.env.VUE_APP_SERVER_API_URL || 'ws://localhost:2568';
@@ -40,6 +41,20 @@ class ColyseusService {
     return reservation;
   }
 
+  async reconnect() {
+    const roomId = localStorage.lastRoomId;
+    const sessionId = localStorage.lastSessionId;
+
+    if (!roomId || !sessionId) return false;
+
+    try {
+      const room = await this.client.reconnect(roomId, sessionId);
+      return room;
+    } catch (err) {
+      console.error('Reconnect Failed', err);
+    }
+  }
+
   async joinById(roomId, options) {
     if (!roomId) return this.createRoom(options);
 
@@ -60,6 +75,8 @@ class ColyseusService {
     this._.isJoinedRoom = true;
     this._.room = room;
 
+    localStorage.setLastRoomId(room.id);
+    localStorage.setLastSessionId(room.sessionId);
     console.info(`ColyseusService -> setRoom -> joined room: ${room.name} (${room.id})`);
   }
 
