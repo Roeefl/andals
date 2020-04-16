@@ -10,7 +10,7 @@
         @move-robber="moveRobber"
       />
     </DraggableWidget>
-    <div class="board-area">
+    <div class="board-container">
       <DraggableWidget class="players-list">
         <PlayersList
           :isGameReady="roomState.isGameReady"
@@ -22,19 +22,23 @@
           @steal-from="stealFrom($event)"
         />
       </DraggableWidget>
-      <GameBoard
-        :board="roomState.board"
-        :harborPorts="roomState.ports"
-        :robberPosition="roomState.robberPosition || -1"
-        :ready="roomState.isGameReady"
-        :isDiceRolled="roomState.isDiceRolled"
-        :isSetupPhase="roomState.isSetupPhase"
-        :isMyTurn="isMyTurn"
-        @tile-clicked="onTileClick($event)"
-        :desiredRobberTile="desiredRobberTile"
-        @robber-dropped="desiredRobberTile = $event"
-        class="game-board"
-      />
+      <div class="board-area">
+        <FrostFangs v-if="isWithNorth" />
+        <GameBoard
+          :board="roomState.board"
+          :harborPorts="roomState.ports"
+          :robberPosition="roomState.robberPosition || -1"
+          :ready="roomState.isGameReady"
+          :isDiceRolled="roomState.isDiceRolled"
+          :isSetupPhase="roomState.isSetupPhase"
+          :isMyTurn="isMyTurn"
+          @tile-clicked="onTileClick($event)"
+          :desiredRobberTile="desiredRobberTile"
+          @robber-dropped="desiredRobberTile = $event"
+          class="game-board"
+          :class="{ 'with-north': isWithNorth }"
+        />
+      </div>
       <aside class="sidebar">
         <DraggableWidget>
           <GameLog :friendly="roomState.friendlyGameLog" class="game-log" />
@@ -102,11 +106,12 @@
 <script>
   import { mapState } from 'vuex';
   import router from '@/router';
-  import colyseusService from '@/services/colyseus';
+  import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import ControlPanel from '@/containers/ControlPanel';
   import GameStatus from '@/containers/GameStatus';
   import GameBoard from '@/containers/GameBoard';
+  import FrostFangs from '@/containers/FrostFangs';
   import GameChat from '@/containers/GameChat';
   import GameLog from '@/containers/GameLog';
   import PlayersList from '@/containers/PlayersList';
@@ -164,6 +169,7 @@
       ControlPanel,
       GameStatus,
       GameBoard,
+      FrostFangs,
       GameChat,
       GameLog,
       PlayersList,
@@ -207,6 +213,9 @@
     },
     computed: {
       room: () => colyseusService.room,
+      isWithNorth: function() {
+        return this.room && this.room.name === ROOM_TYPE_FIRST_MEN;
+      },
       myPlayerIndex: function() {
         return this.players
           .findIndex(p => p.playerSessionId === colyseusService.room.sessionId);
@@ -542,7 +551,7 @@
       justify-content: flex-start;
     }
 
-    .board-area {
+    .board-container {
       display: flex;
 
       & > * {
@@ -553,8 +562,24 @@
         flex: 1;
       }
 
-      .game-board {
+      .board-area {
         flex: 3;
+        display: flex;
+        flex-direction: column;
+        background: white;
+
+        .game-board {
+          background-image: url('../assets/ocean.jpg');
+          background-size: cover;
+          border: 4px dashed black;
+          padding-left: $spacer * 3;
+
+          &.with-north {
+            background-image: url('../assets/snowy-trees-sm.png');
+            background-size: unset;
+            background-repeat: repeat;
+          }
+        }
       }
 
       .sidebar {

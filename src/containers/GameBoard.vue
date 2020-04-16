@@ -6,8 +6,8 @@
           v-for="(tile, j) in row.tiles"
           :key="`tile-${i}-${j}`"
           :type="tile"
-          :tile="board[i * 7 + j]"
-          @dropped="onRobberDropped(i * 7 + j)"
+          :tile="board[absoluteIndex(i, j)]"
+          @dropped="onRobberDropped(absoluteIndex(i, j))"
         >
           <span v-if="isDeveloperMode" class="tile-index">
             [{{ i }}, {{ j }}]
@@ -41,10 +41,10 @@
               [{{ row }}, {{ col }}]
             </span>
           </StructureTile>
-          <HarborTile :tile="board[i * 7 + j]" />
+          <HarborTile :tile="board[absoluteIndex(i, j)]" />
           <drag :transfer-data="{}">
             <RobberTile
-              v-if="(myPlayer.mustMoveRobber && (desiredRobberTile === -1 ? robberPosition === i * 7 + j : desiredRobberTile === i * 7 + j)) || (!myPlayer.mustMoveRobber && robberPosition === i * 7 + j)"
+              v-if="isDisplayRobberTile(i, j)"
               :active="myPlayer.mustMoveRobber"
             />
           </drag>
@@ -59,6 +59,8 @@
 
 <script>
   import { mapState } from 'vuex';
+
+  import boardService from '@/services/board';
 
   import HexTile from '@/components/tiles/HexTile';
   import RoadTile from '@/components/tiles/RoadTile';
@@ -143,6 +145,7 @@
       this.GAMECARD = GAMECARD;
       this.TILE_WATER = TILE_WATER;
       this.harborAdjacentToStructure = harborAdjacentToStructure;
+      this.absoluteIndex = boardService.absoluteIndex;
     },
     methods: {
       isRoadAllowed: function(row, col) {
@@ -157,7 +160,19 @@
       onRobberDropped: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
         this.$emit('robber-dropped', tileIndex);
-      }
+      },
+      isDisplayRobberTile: function(row, col) {
+        const absoluteTileIndex = boardService.absoluteIndex(row, col);
+
+        const isStaticPosition = !this.myPlayer.mustMoveRobber && this.robberPosition === absoluteTileIndex;
+
+        const dynamicPosition = this.desiredRobberTile === -1
+          ? this.robberPosition
+          : this.desiredRobberTile;
+        const isDynamicPosition = this.myPlayer.mustMoveRobber && absoluteTileIndex === dynamicPosition;
+
+         return isStaticPosition || isDynamicPosition;
+      },
     }
   }
 </script>
@@ -165,21 +180,11 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .board {
-    // opacity: 0.6;
-    background-image: url('../assets/ocean.jpg');
-    background-size: cover;
-    border: 4px dashed black;
-    padding-left: $spacer * 2.5;
-
-    &.ready {
-      opacity: 1;
-    }
-
-    .tiles {
-      padding-left: $spacer * 3;
-      // overflow-x: hidden;
-    }
+  // opacity: 0.5;
+  
+  .tiles {
+    padding-left: $spacer * 3;
+    // overflow-x: hidden;
   }
 
   .tile-row {

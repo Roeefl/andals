@@ -1,5 +1,6 @@
 <template>
   <main class="home">
+    <AppHeader />
     <div class="actions">
       <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
         <CustomizeRoom
@@ -38,6 +39,7 @@
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_BASE_GAME } from '@/services/colyseus';
   
+  import AppHeader from '@/containers/AppHeader';
   import RoomsList from '@/components/lobby/RoomsList';
   import CustomizePlayer from '@/components/lobby/CustomizePlayer';
   import CustomizeRoom from '@/components/lobby/CustomizeRoom';
@@ -47,6 +49,7 @@
   export default {
     name: 'Home',
     components: {
+      AppHeader,
       RoomsList,
       ChoiceDialog,
       CustomizePlayer,

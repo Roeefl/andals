@@ -1,3 +1,5 @@
+import hexTileMap from '@/tilemaps/hexes';
+
 // 7 rows x 14 columns
 const initialActiveStructures = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -47,6 +49,10 @@ class BoardService {
     ]));
 
     return clonedArr;
+  }
+
+  absoluteIndex(row, col) {
+    return row * hexTileMap.length + col;
   }
 }
 

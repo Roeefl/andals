@@ -43,9 +43,6 @@
   @import '@/styles/partials';
 
   #appHeader {
-    position: absolute;
-    top: $spacer / 2;
-    left: $spacer /2;
     padding: $spacer;
     display: flex;
 

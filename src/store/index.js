@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import colyseusService from '@/services/colyseus';
 import localStorage from '@/services/localStorage';
-import BoardService from '@/services/board';
+import boardService from '@/services/board';
 
 Vue.use(Vuex);
 
@@ -22,10 +22,10 @@ export default new Vuex.Store({
     // reservations: [],
     roomState: {},
     activeStructures: [
-      ...BoardService.initialStructures()
+      ...boardService.initialStructures()
     ],
     activeRoads: [
-      ...BoardService.initialRoads()
+      ...boardService.initialRoads()
     ],
     players: [],
     myPlayer: {
@@ -155,11 +155,11 @@ export default new Vuex.Store({
       };
 
       state.activeStructures = [
-        ...BoardService.initialStructures()
+        ...boardService.initialStructures()
       ];
 
       state.activeRoads = [
-        ...BoardService.initialRoads()
+        ...boardService.initialRoads()
       ];
     },
     addGameLog(state, log) {
