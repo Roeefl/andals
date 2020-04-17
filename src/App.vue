@@ -6,6 +6,9 @@
       </div>
       <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }" />
     </div>
+    <audio ref="ambience">
+      <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
+    </audio>
   </v-app>
 </template>
 
@@ -21,10 +24,24 @@
       BaseAlert
     },
     computed: mapState([
+      'ambience',
       'alerts'
     ]),
     async beforeCreate() {
       await colyseusService.init();
+    },
+    updated() {
+      if (this.ambience) this.startAmbience();
+    },
+    methods: {
+      startAmbience: function() {
+        const { ambience } = this.$refs;
+
+        if (ambience) {
+          ambience.play(); 
+          ambience.loop = true;
+        }
+      }
     }
   }
 </script>
@@ -34,7 +51,7 @@
   @import '@/styles/partials';
 
   #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Darker Grotesque', sans-serif;
     color: $primary;
     display: flex;
     flex-direction: column;
