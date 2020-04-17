@@ -23,7 +23,7 @@
         />
       </DraggableWidget>
       <div class="board-area">
-        <FrostFangs v-if="isWithNorth" />
+        <TheNorth v-if="isWithNorth" />
         <GameBoard
           :board="roomState.board"
           :harborPorts="roomState.ports"
@@ -111,7 +111,7 @@
   import ControlPanel from '@/containers/ControlPanel';
   import GameStatus from '@/containers/GameStatus';
   import GameBoard from '@/containers/GameBoard';
-  import FrostFangs from '@/containers/FrostFangs';
+  import TheNorth from '@/containers/TheNorth';
   import GameChat from '@/containers/GameChat';
   import GameLog from '@/containers/GameLog';
   import PlayersList from '@/containers/PlayersList';
@@ -169,7 +169,7 @@
       ControlPanel,
       GameStatus,
       GameBoard,
-      FrostFangs,
+      TheNorth,
       GameChat,
       GameLog,
       PlayersList,

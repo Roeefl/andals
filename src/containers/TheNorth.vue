@@ -1,5 +1,5 @@
 <template>
-  <div class="frostfangs" :class="{ ready: roomState.isGameReady }">
+  <div class="the-north" :class="{ ready: roomState.isGameReady }">
     &nbsp;
   </div>
 </template>
@@ -8,7 +8,7 @@
   import { mapState } from 'vuex';
 
   export default {
-    name: 'FrostFangs',
+    name: 'TheNorth',
     computed: mapState([
       'roomState'
     ])
@@ -18,7 +18,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .frostfangs {
+  .the-north {
     // opacity: 0.5;
     background-image: url('../assets/snowy-trees-sm.png');
     background-repeat: repeat;

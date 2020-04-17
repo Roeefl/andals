@@ -1,5 +1,5 @@
 <template>
-  <span class="structure" :class="[placement, { 'enabled': enabled }]" :style="hoverStyle">
+  <span class="structure-tile" :class="[placement, { 'enabled': enabled }]" :style="hoverStyle">
     <BaseButton
       icon
       @click="enabled && $emit('clicked')"
@@ -8,7 +8,7 @@
       :style="structureStyle"
     >
       <BaseIcon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
-      <BaseIcon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="iconNames[activeData.type]" />
+      <BaseIcon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="structureIcons[activeData.type]" />
       <slot />
     </BaseButton>
   </span>
@@ -17,13 +17,10 @@
 <script>
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
+  
   import { resourceCardColors } from '@/specs/resources';
+  import { structureIcons } from '@/specs/gamePieces';
   import { hexToRgb } from '@/utils/colors';
-
-  const iconNames = {
-    settlement: 'home',
-    city: 'city'
-  };
 
   const DEFAULT_HEX_BG = '#6D4C41';
 
@@ -74,7 +71,7 @@
       }
     },
     created() {
-      this.iconNames = iconNames;
+      this.structureIcons = structureIcons;
     }
   }
 </script>
@@ -82,7 +79,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .structure {
+  .structure-tile {
     transform: rotate(90deg);
     position: absolute;
     z-index: $zindex-tile-value + 3;
