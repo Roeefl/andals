@@ -1,17 +1,42 @@
 <template>
   <div class="the-north" :class="{ ready: roomState.isGameReady }">
-    &nbsp;
+    <div class="west">
+      <WildlingSpawn :wildlings="wildlingsMock" />
+    </div>
+    <div class="east">
+      <WildlingCamps class="wildling-camps" />
+      <TheWall :myColor="myPlayer.color" class="the-wall" />
+    </div>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex';
+  
+  import WildlingSpawn from '@/components/game/WildlingSpawn';
+  import WildlingCamps from '@/components/game/WildlingCamps';
+  import TheWall from '@/components/game/TheWall';
+
+  const wildlingsMock = {
+    regular: 12,
+    climber: 8,
+    giant: 6
+  };
 
   export default {
     name: 'TheNorth',
+    components: {
+      WildlingSpawn,
+      WildlingCamps,
+      TheWall
+    },
     computed: mapState([
-      'roomState'
-    ])
+      'roomState',
+      'myPlayer'
+    ]),
+    created() {
+      this.wildlingsMock = wildlingsMock;
+    }
   }
 </script>
 
@@ -20,13 +45,30 @@
 
   .the-north {
     // opacity: 0.5;
-    background-image: url('../assets/snowy-trees-sm.png');
-    background-repeat: repeat;
-    border: 2px dashed black;
     height: 300px;
+    display: grid;
+    grid-template-columns: 35% 65%;
+    border: 2px dashed black;
 
     &.ready {
       opacity: 1;
+    }
+
+    .west {
+      background: white;
+    }
+
+    .east {
+      display: flex;
+      flex-direction: column;
+
+      .wildling-camps {
+        flex: 3;
+      }
+
+      .the-wall {
+        flex: 1;
+      }
     }
   }
 </style>

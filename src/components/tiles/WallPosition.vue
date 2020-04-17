@@ -1,8 +1,7 @@
 <template>
   <BaseButton
+    icon
     @click="enabled && $emit('clicked')"
-    class="wall-position"
-    :class="{ 'disabled': !enabled }"
   >
     <BaseIcon v-if="guard" size="24px" color="white" :name="structureIcons.guard" class="icon" />
     <span v-if="!guard" class="position-order">
@@ -31,10 +30,6 @@
       enabled: {
         type: Boolean,
         default: true
-      },
-      myColor: {
-        type: String,
-        default: 'red'
       },
       guard: {
         type: Object,
