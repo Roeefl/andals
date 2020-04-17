@@ -72,17 +72,16 @@
 
   .wrapper {
     flex: 1;
-    display: flex;
-    align-items: center;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
 
     .building-costs {
-      flex: 1;
       display: flex;
       justify-content: center;
     }
 
     .game-info {
-      flex: 3;
       padding-left: $spacer;
       display: flex;
       align-items: center;
@@ -99,10 +98,6 @@
           margin-left: $spacer * 2;
         }
       }
-    }
-
-    .room-stats {
-      flex: 2;
     }
   }
 </style>

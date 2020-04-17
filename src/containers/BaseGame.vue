@@ -552,18 +552,14 @@
     }
 
     .board-container {
-      display: flex;
+      display: grid;
+      grid-template-columns: 20% 60% 20%;
 
       & > * {
         margin: 0 $spacer / 2;
       }
 
-      .players-list {
-        flex: 1;
-      }
-
       .board-area {
-        flex: 3;
         display: flex;
         flex-direction: column;
         background: white;
@@ -585,7 +581,6 @@
       }
 
       .sidebar {
-        flex: 1;
         display: flex;
         flex-direction: column;
 
