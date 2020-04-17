@@ -11,18 +11,12 @@
         Your SessionID is: {{ mySessionId }}
       </span>
     </div>
-    <AppHeader />
   </div>
 </template>
 
 <script>
-  import AppHeader from '@/containers/AppHeader';
-
   export default {
     name: 'RoomStats',
-    components: {
-      AppHeader
-    },
     props: {
       roomTitle: {
         type: String,

@@ -1,13 +1,15 @@
 <template>
-  <div class="control">
-    <div class="loot">
-      <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" />
+  <div class="control-panel">
+    <div class="app-header">
+      <AppHeader />
     </div>
-    <div class="game-cards">
+    <div class="game-ui">
+      <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" class="available-loot" />
       <GameCards
         :deck="myPlayer.gameCards"
         :allowed="isGameCardsEnabled"
          @play-game-card="playGameCard($event)"
+         class="game-cards"
       />
     </div>
     <div class="game-actions">
@@ -60,6 +62,7 @@
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
 
+  import AppHeader from '@/containers/AppHeader';
   import AvailableLoot from '@/components/interface/AvailableLoot';
   import GameCards from '@/components/interface/GameCards';
   import GameDice from '@/components/interface/GameDice';
@@ -71,6 +74,7 @@
   export default {
     name: 'ControlPanel',
     components: {
+      AppHeader,
       AvailableLoot,
       GameCards,
       GameDice,
@@ -157,22 +161,31 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .control {
+  .control-panel {
     flex: 1;
     display: grid;
-    grid-template-columns: 30% 50% 20%;
+    grid-template-columns: 20% 60% 20%;
 
-    .loot {
+    .app-header {
       padding-left: $spacer;
       display: flex;
       align-items: center;
     }
 
-    .game-cards {
+    .game-ui {
       padding-right: $spacer;
       display: flex;
-      justify-content: flex-end;
       align-items: center;
+      justify-content: space-between;
+
+      .available-loot {
+        padding-left: $spacer;
+      }
+
+      .game-cards {
+        display: flex;
+        justify-content: flex-end;
+      }
     }
 
     .game-actions {

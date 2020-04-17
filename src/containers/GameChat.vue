@@ -8,7 +8,7 @@
       </li>
     </MessageList>
     <form @submit="sendMessage" class="new-message">
-      <TextField dark :value="newMessage" @input="newMessage = $event" label="Say hi..." />
+      <TextField :value="newMessage" @input="newMessage = $event" label="Say hi..." />
       <BaseButton type="submit" color="success" :disabled="!newMessage.length">
         Send
       </BaseButton>
@@ -75,8 +75,8 @@
     position: absolute;
     bottom: 0px;
     left: 0px;
-    background: rgba(black, 0.85);
-    color: white;
+    background: white;
+    color: $app-background;
     z-index: $zindex-chat;
     display: flex;
     align-items: center;

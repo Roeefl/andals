@@ -11,6 +11,7 @@ const initialColor = '#2c3e50';
 
 export default new Vuex.Store({
   state: {
+    ambience: false,
     isDeveloperMode: localStorage.developerMode || false,
     isUseGameEngine: localStorage.useGameEngine || false,
     profile: {
@@ -37,6 +38,9 @@ export default new Vuex.Store({
     gameWinner: null
   },
   mutations: {
+    startAmbience(state) {
+      state.ambience = true;
+    },
     toggleDeveloperMode(state) {
       state.isDeveloperMode = !state.isDeveloperMode;
       localStorage.setDeveloperMode(state.isDeveloperMode);

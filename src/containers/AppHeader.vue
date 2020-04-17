@@ -49,7 +49,7 @@
     .header-item {
       width: 60px;
       height: 60px;
-      background: rgba(black, 0.5);
+      background: white;
       border-radius: 100px;
       display: flex;
       justify-content: center;

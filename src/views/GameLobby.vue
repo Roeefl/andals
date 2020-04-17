@@ -1,43 +1,42 @@
 <template>
   <main class="game-lobby">
-    <AppHeader />
-    <div class="actions">
-      <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
-        <CustomizeRoom
-          :roomType="roomType"
-          @select-room-type="roomType = $event"
-          :roomTitle="roomTitle"
-          @update-title="roomTitle = $event"
-          :roomMaxPlayers="roomMaxPlayers"
-          @update-max-players="roomMaxPlayers = $event"
-          :playVsBots="playVsBots"
-          @toggle-bots="playVsBots = !playVsBots"
-          :autoPickup="autoPickup"
-          @toggle-auto-pickup="autoPickup = !autoPickup"
-          :friendlyGameLog="friendlyGameLog"
-          @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
-          :botReplacement="botReplacement"
-          @toggle-bot-replacement="botReplacement = !botReplacement"
-        />
-      </ChoiceDialog>
-      <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
-        Refresh List
-      </BaseButton>
-      <ChoiceDialog iconName="wrench" title="Customize Player" buttonText="Customize Player" @approve="saveProfile" @cancel="revertProfile" class="customize-player">
-        <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
-      </ChoiceDialog>
-      <BaseButton iconName="add" @click="reconnect">
-        Reconnect
-      </BaseButton>
-    </div>
-    <RoomsList :rooms="rooms" @join="joinRoom($event)" />
     <div class="loader-wrapper">
       <SnowyTown class="game-loader" />
       <Snowflakes :count="100" class="snowflakes" />
     </div>
-    <audio ref="ambience">
-      <source src="../assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
-    </audio>
+    <section class="lobby-interface">
+      <AppHeader />
+      <div class="actions">
+        <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
+          <CustomizeRoom
+            :roomType="roomType"
+            @select-room-type="roomType = $event"
+            :roomTitle="roomTitle"
+            @update-title="roomTitle = $event"
+            :roomMaxPlayers="roomMaxPlayers"
+            @update-max-players="roomMaxPlayers = $event"
+            :playVsBots="playVsBots"
+            @toggle-bots="playVsBots = !playVsBots"
+            :autoPickup="autoPickup"
+            @toggle-auto-pickup="autoPickup = !autoPickup"
+            :friendlyGameLog="friendlyGameLog"
+            @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
+            :botReplacement="botReplacement"
+            @toggle-bot-replacement="botReplacement = !botReplacement"
+          />
+        </ChoiceDialog>
+        <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
+          Refresh List
+        </BaseButton>
+        <ChoiceDialog iconName="wrench" title="Customize Player" buttonText="Customize Player" @approve="saveProfile" @cancel="revertProfile" class="customize-player">
+          <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
+        </ChoiceDialog>
+        <BaseButton iconName="add" @click="reconnect">
+          Reconnect
+        </BaseButton>
+      </div>
+      <RoomsList :rooms="rooms" @join="joinRoom($event)" />
+    </section>
   </main>
 </template>
 
@@ -95,11 +94,7 @@
         15 * 1000
       );
 
-      const { ambience } = this.$refs;
-      if (ambience) {
-        ambience.loop = true;
-        ambience.play(); 
-      }
+      this.$store.commit('startAmbience');
     },
     destroyed: function() {
       clearInterval(this.autoRefresh);
@@ -180,8 +175,16 @@
 
   .game-lobby {
     overflow-y: hidden;
-    display: flex;
-    flex-direction: column;
+
+    .lobby-interface {
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+
+      & > * {
+        z-index: 20;
+      }
+    }
 
     .actions {
       display: flex;
@@ -197,6 +200,7 @@
   }
 
   .loader-wrapper {
+    z-index: 10;
     overflow-y: hidden;
     position: absolute;
     top: 0;
