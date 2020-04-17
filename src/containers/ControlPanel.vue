@@ -14,14 +14,14 @@
     </div>
     <div class="game-actions">
       <div class="dice">
-        <GameDice v-if="isDisplayDice" @finished="$emit('dice-finished', $event)"/>
+        <GameDice v-if="isDisplayDice" :type="roomState.roomType" @finished="$emit('dice-finished', $event)"/>
         <BaseButton
           v-for="(diceValue, i) in roomState.dice"
           :key="i"
           sm
           @click="rollDice"
           :iconName="`dice-${diceValue}`"
-          :color="i === 0 ? 'deep-orange darken-3' : 'lime accent-3'"
+          :color="diceColors[`dice${i}`]"
           iconSize="50px"
           iconColor="black"
           :clickable="isDiceEnabled"
@@ -70,6 +70,7 @@
 
   import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_PLAY_GAME_CARD } from '@/constants';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
+  import { diceColors } from '@/specs/dice';
 
   export default {
     name: 'ControlPanel',
@@ -123,6 +124,9 @@
     data: () => ({
       isDisplayDice: false
     }),
+    created() {
+      this.diceColors = diceColors;
+    },
     methods: {
       rollDice: function() {
         this.isDisplayDice = true;

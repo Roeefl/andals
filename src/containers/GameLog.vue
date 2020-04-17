@@ -6,7 +6,7 @@
       </div>
       <div v-if="log.type === CHAT_LOG_DICE">
         {{ log.playerName }} rolls:
-        <BaseIcon v-for="(diceValue, i) in log.dice" :key="`cube-${i}`" size="20px" :color="!i ? 'yellow' : 'red'" :name="`dice-${diceValue}`" />
+        <BaseIcon v-for="(diceValue, i) in log.dice" :key="`dice-${i}`" size="20px" :color="diceColors[`dice${i}`]" :name="`dice-${diceValue}`" />
       </div>
       <div v-if="log.type === CHAT_LOG_LOOT || log.type === CHAT_LOG_DISCARD" class="loot">
         {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collects' : 'discards' }}
@@ -30,6 +30,7 @@
   import { mapState } from 'vuex';
 
   import { resourceCardTypes } from '@/specs/resources';
+  import { diceColors } from '@/specs/dice';
   import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD } from '@/constants';
 
   import MessageList from '@/components/common/MessageList';
@@ -54,6 +55,8 @@
     ]),
     created() {
       this.resourceCardTypes = resourceCardTypes;
+      this.diceColors = diceColors;
+
       this.CHAT_LOG_SIMPLE = CHAT_LOG_SIMPLE;
       this.CHAT_LOG_DICE = CHAT_LOG_DICE;
       this.CHAT_LOG_LOOT = CHAT_LOG_LOOT;
