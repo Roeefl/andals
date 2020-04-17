@@ -1,11 +1,13 @@
 <template>
   <main class="game-room">
     <BaseGame />
-    <Snowflakes :count="40" class="snowflakes" />
+    <Snowflakes v-if="enableSnow" :count="40" class="snowflakes" />
   </main>
 </template>
 
 <script>
+  import { mapState } from 'vuex';
+
   import BaseGame from '@/containers/BaseGame';
   import Snowflakes from '@/components/decor/Snowflakes';
 
@@ -14,7 +16,10 @@
     components: {
       BaseGame,
       Snowflakes
-    }
+    },
+    computed: mapState([
+      'enableSnow'
+    ]),
   }
 </script>
 
@@ -25,6 +30,7 @@
     height: 100%;
     display: flex;
     z-index: 20;
+    padding: $spacer 0;
 
     & > * {
       z-index: 20;

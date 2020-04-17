@@ -182,9 +182,14 @@
 
   // opacity: 0.5;
   
+  .board {
+    display: flex;
+    justify-content: center;
+  }
+
   .tiles {
-    padding-left: $spacer * 3;
-    // overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .tile-row {

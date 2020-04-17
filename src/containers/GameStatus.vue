@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="game-status">
     <div class="building-costs">
       <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Building Costs" :width="500">
         <BuildingCosts />
@@ -70,11 +70,12 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .wrapper {
+  .game-status {
     flex: 1;
     height: 100%;
     display: grid;
     grid-template-columns: 20% 60% 20%;
+    color: $app-background;
 
     .building-costs {
       display: flex;

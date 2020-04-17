@@ -2,6 +2,16 @@
   <div class="app-settings">
     <form class="preferences">
       <BaseSwitch
+        label="Enable Background Music"
+        :value="enableAmbience"
+        @flipped="toggleAmbience"
+      />
+      <BaseSwitch
+        label="Enable Snow"
+        :value="enableSnow"
+        @flipped="toggleSnow"
+      />
+      <BaseSwitch
         label="Developer Mode"
         :value="isDeveloperMode"
         @flipped="toggleDeveloperMode"
@@ -25,10 +35,18 @@
       BaseSwitch
     },
     computed: mapState([
+      'enableSnow',
+      'enableAmbience',
       'isDeveloperMode',
       'isUseGameEngine'
     ]),
     methods: {
+      toggleAmbience: function() {
+        this.$store.commit('toggleAmbience');
+      },
+      toggleSnow: function() {
+        this.$store.commit('toggleSnow');
+      },
       toggleDeveloperMode: function() {
         this.$store.commit('toggleDeveloperMode');
       },

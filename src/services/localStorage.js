@@ -4,7 +4,9 @@ const keys = {
   developerMode: 'enableDeveloperMode',
   useGameEngine: 'eneableExperimentalGameEngine',
   lastRoomId: 'lastRoomId',
-  lastSessionId: 'lastSessionId'
+  lastSessionId: 'lastSessionId',
+  enableSound: 'enableSound',
+  enableFx: 'enableFx'
 };
 
 class localStorage {
@@ -39,7 +41,7 @@ class localStorage {
   }
 
   get developerMode() {
-    return this.get(keys.developerMode) === 'true' ? true: false;
+    return this.get(keys.developerMode) === 'true';
   }
 
   setDeveloperMode(isEnabled) {
@@ -47,11 +49,27 @@ class localStorage {
   }
 
   get useGameEngine() {
-    return this.get(keys.useGameEngine) === 'true' ? true: false;
+    return this.get(keys.useGameEngine) === 'true';
   }
 
   setUseGameEngine(isEnabled) {
     return this.set(keys.useGameEngine, isEnabled);
+  }
+
+  get enableSound() {
+    return this.get(keys.enableSound) === 'true';
+  }
+
+  set enableSound(value) {
+    this.set(keys.enableSound, value);
+  }
+
+  get enableFx() {
+    return this.get(keys.enableFx) === 'true';
+  }
+
+  set enableFx(value) {
+    this.set(keys.enableFx, value);
   }
 
   get lastRoomId() {

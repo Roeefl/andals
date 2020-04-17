@@ -24,14 +24,17 @@
       BaseAlert
     },
     computed: mapState([
-      'ambience',
+      'enableAmbience',
       'alerts'
     ]),
     async beforeCreate() {
       await colyseusService.init();
     },
-    updated() {
-      if (this.ambience) this.startAmbience();
+    watch: {
+      enableAmbience: function(enabled, prevEnabled) {
+        if (enabled && !prevEnabled) this.startAmbience();
+        if (!enabled && prevEnabled) this.stopAmbience();
+      }
     },
     methods: {
       startAmbience: function() {
@@ -40,6 +43,13 @@
         if (ambience) {
           ambience.play(); 
           ambience.loop = true;
+        }
+      },
+      stopAmbience: function() {
+        const { ambience } = this.$refs;
+        if (ambience) {
+          ambience.pause();
+          ambience.currentTime = 0;
         }
       }
     }

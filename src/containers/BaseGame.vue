@@ -553,7 +553,7 @@
 
     .board-container {
       display: grid;
-      grid-template-columns: 20% 60% 20%;
+      grid-template-columns: 250px 1fr 250px;
 
       & > * {
         margin: 0 $spacer / 2;
@@ -568,7 +568,6 @@
           background-image: url('../assets/ocean.jpg');
           background-size: cover;
           border: 4px dashed black;
-          padding-left: $spacer * 3;
 
           &.with-north {
             // background-image: url('../assets/snowy-trees-sm.png');
