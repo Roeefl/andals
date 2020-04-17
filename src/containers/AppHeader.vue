@@ -1,6 +1,6 @@
 <template>
   <header id="appHeader">
-    <div class="header-item" v-for="(item, i) in links" :key="`header-item-${item.to}`">
+    <div class="header-item" v-for="item in links" :key="`header-item-${item.to}`">
       <router-link v-if="!!item.to" :to="item.to">
         <img v-if="item.img" :src="require(`../assets/${item.img}`)" :alt="item.key" />
       </router-link>

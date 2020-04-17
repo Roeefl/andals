@@ -69,7 +69,7 @@
         default: false
       }
     },
-    created: function() {
+    created() {
       this.resourceCardIcons = resourceCardIcons;
       this.resourceCardColors = resourceCardColors;
     }

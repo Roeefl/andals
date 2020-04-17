@@ -24,7 +24,7 @@
     data: () => ({
       dice: [4, 3]
     }),
-    mounted: function() {
+    mounted() {
       const diceRoller = setInterval(() => {
         const randomDice1 = Math.floor(Math.random() * 6) + 1;
         const randomDice2 = Math.floor(Math.random() * 6) + 1;

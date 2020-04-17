@@ -115,7 +115,7 @@
         default: false
       }
     },
-    created: function() {
+    created() {
       this.invertColor = invertColor;
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;

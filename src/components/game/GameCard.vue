@@ -61,7 +61,7 @@
         default: 0
       }
     },
-    created: function() {
+    created() {
       this.gameCardIcons = gameCardIcons;
       this.gameCardColors = gameCardColors;
     }

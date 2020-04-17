@@ -259,7 +259,7 @@
 
           if (!room) {
             this.$store.commit('addAlert', 'Unable to reconnect. Sorry.');
-            router.push('/');
+            router.push('/lobby');
             return;
           }
           
@@ -268,7 +268,7 @@
         } catch (err) {
           console.error('reconnect failed:', err);
           this.$store.commit('addAlert', 'Unable to reconnect. Sorry.');
-          router.push('/');
+          router.push('/lobby');
         }
       },
       initializeState: function(initialRoomState) {

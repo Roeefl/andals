@@ -41,7 +41,7 @@
         default: 0
       }
     },
-    created: function() {
+    created() {
       this.structureIcons = structureIcons;
     }
   }
