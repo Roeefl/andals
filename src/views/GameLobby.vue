@@ -31,10 +31,12 @@
       </BaseButton>
     </div>
     <RoomsList :rooms="rooms" @join="joinRoom($event)" />
-    <GameLoader />
-
+    <div class="loader-wrapper">
+      <SnowyTown class="game-loader" />
+      <Snowflakes :count="100" class="snowflakes" />
+    </div>
     <audio ref="ambience">
-      <source src="../assets/audio/blizzard.mp3" type="audio/mpeg">
+      <source src="../assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
     </audio>
   </main>
 </template>
@@ -51,7 +53,8 @@
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BaseButton from '@/components/common/BaseButton';
 
-  import GameLoader from '@/components/game/GameLoader';
+  import SnowyTown from '@/components/decor/SnowyTown';
+  import Snowflakes from '@/components/decor/Snowflakes';
 
   export default {
     name: 'GameLobby',
@@ -62,7 +65,8 @@
       CustomizePlayer,
       CustomizeRoom,
       BaseButton,
-      GameLoader
+      SnowyTown,
+      Snowflakes
     },
     async created() {
       this.fetchRooms();
@@ -175,6 +179,7 @@
  @import '@/styles/partials';
 
   .game-lobby {
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
 
@@ -188,6 +193,30 @@
       .customize-player {
         margin-left: $spacer * 3;
       }
+    }
+  }
+
+  .loader-wrapper {
+    overflow-y: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    .game-loader {
+      background: $app-background;
+      width: 100%;
+      height: 60%;
+    }
+
+    .snowflakes {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 </style>

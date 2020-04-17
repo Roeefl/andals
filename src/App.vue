@@ -54,7 +54,7 @@
     flex: 1;
     // background-image: url('./assets/wood.jpg');
     // background-size: cover;
-    background: #0C0C0C;
+    background: $app-background;
     color: white;
   }
 </style>

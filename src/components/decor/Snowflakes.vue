@@ -10,21 +10,21 @@
     props: {
       count: {
         type: Number,
-        default: 30
+        default: 100
       }
     }
   }
 </script>
 
 <style scoped lang="scss">
-  $count: 30; //@TODO: Unify this and count prop
+  $count: 100; //@TODO: Unify this and count prop
 
   $snowflake-size: 7px;
   $snowflake-color: white;
   
   @keyframes snowflakes-fall {
     0% {
-      top: 1%;
+      top: 0;
     }
     100% {
       top: 105%;
@@ -45,19 +45,16 @@
 
   @mixin all-snowflakes() {
     @for $s from 0 to $count {
-      &:nth-child(#{$s + 1}) {
-        left: percentage(random(100) / 100);
-        animation-delay: #{random(8)}s, #{random(1)}s;
-      }
-    }
-  }
+      $left: random(100) / 100;
+      $size: #{random(14)}px;
+      $opacity: random(10) / 10;
 
-  @mixin some-snowflakes($first, $last, $size, $opacity) {
-    @for $s from $first through $last {
-      &:nth-child(#{$s}) {
+      &:nth-child(#{$s + 1}) {
+        left: percentage($left);
+        animation-delay: #{random(20)}s, #{random(10)}s;
         width: $size;
         height: $size;
-        background: rgba(255, 255, 255, $opacity);
+        background: rgba($snowflake-color, $opacity);
       }
     }
   }
@@ -65,24 +62,24 @@
   .snowflakes {
     width: 100%;
     height: 100%;
+    overflow-y: hidden;
 
     .snowflake {
+      position: absolute;
+      top: -1000px;
+      z-index: 9999;
       width: $snowflake-size;
       height: $snowflake-size;
       border-radius: 100%;
       background: $snowflake-color;
-      position: absolute;
-      top: -3%;
-      z-index: 9999;
-      animation-name: snowflakes-fall, snowflakes-shake;
+      // snowflakes-shake @FIXME: removed this animation
+      animation-name: snowflakes-fall;
       animation-duration: 7s, 3s;
       animation-timing-function: linear, ease-in-out;
       animation-iteration-count: infinite, infinite;
       animation-play-state: running, running;
-      
+
       @include all-snowflakes();
-      @include some-snowflakes(10, 14, 12px, 0.5);
-      @include some-snowflakes(15, 21, 3px, 0.7);
     }
   }
 </style>
