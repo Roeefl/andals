@@ -6,7 +6,7 @@ import localStorage from '@/services/localStorage';
 //   .get(`${ENDPOINT}/colyseus/api/`)
 //   .then(({ data }) => data);
 
-const baseUrl = `${process.env.VUE_APP_SERVER_API_URL}${process.env.VUE_APP_SERVER_API_PORT}`;
+const baseUrl = `${process.env.VUE_APP_SERVER_API_URL}${process.env.VUE_APP_SERVER_API_PORT || ''}`;
 
 export const roomTypes = ['baseGame', 'firstMen'];
 export const [ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN] = roomTypes;
