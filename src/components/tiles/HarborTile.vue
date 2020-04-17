@@ -57,7 +57,6 @@
       top: $tile-size * 1.1;
       right: $tile-size * 0.25;
       font-size: $font-size-sm;
-      color: white;
       width: $tile-value-size;
       height: $tile-value-size;
     }

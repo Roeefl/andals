@@ -17,8 +17,8 @@
 
   const links = [
     {
-      to: '/',
-      key: 'home',
+      to: '/lobby',
+      key: 'lobby',
       img: 'logo.png'
     },
     {
@@ -49,7 +49,7 @@
     .header-item {
       width: 60px;
       height: 60px;
-      background: white;
+      background: $primary;
       border-radius: 100px;
       display: flex;
       justify-content: center;

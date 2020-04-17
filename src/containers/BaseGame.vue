@@ -78,7 +78,7 @@
       @refuse="refuseTrade"
       @confirm-trade="confirmTrade"
     >
-      <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" class="game-chat" />
+      <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
     </TradeDialog>
     <TradeDialog
       :isOpen="!!bankTradeResource"
@@ -575,7 +575,9 @@
           padding-left: $spacer * 3;
 
           &.with-north {
-            background-image: url('../assets/snowy-trees-sm.png');
+            // background-image: url('../assets/snowy-trees-sm.png');
+            background: $primary;
+            color: $app-background;
             background-size: unset;
             background-repeat: repeat;
           }
@@ -605,13 +607,13 @@
   }
 
   .game-log {
-    max-height: 35vh;
+    max-height: 40vh;
     overflow-y: auto;
   }
 
   .game-chat-widget {
     position: relative;
-    max-height: 35vh;
+    max-height: 40vh;
     overflow-y: auto;
   }
 </style>

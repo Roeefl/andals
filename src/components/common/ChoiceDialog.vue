@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpen" :width="width">
     <template v-slot:activator="{ on }">
-      <BaseButton :on="on" :color="buttonColor">
+      <BaseButton :on="on" :color="buttonColor" class="activator">
         <BaseIcon
           size="x-large"
           color="white"
@@ -82,5 +82,9 @@
 
   .test {
     margin-right: $spacer;
+  }
+
+  .activator {
+    box-shadow: none;
   }
 </style>

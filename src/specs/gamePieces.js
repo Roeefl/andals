@@ -6,5 +6,7 @@ export const structureIcons = {
   city: 'city',
   cities: 'city',
   gameCard: 'cards',
-  gameCards: 'cards'
+  gameCards: 'cards',
+  guard: 'shield-cross',
+  guards: 'shield-cross'
 };

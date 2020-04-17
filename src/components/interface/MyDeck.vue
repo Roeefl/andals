@@ -17,6 +17,7 @@
           <GamePieces type="road" :pieces="myPlayer.roads" :color="myPlayer.color" class="pieces" />
           <GamePieces type="settlement" :pieces="myPlayer.settlements" :color="myPlayer.color" class="pieces" />
           <GamePieces type="cities" :pieces="myPlayer.cities" :color="myPlayer.color" class="pieces" />
+          <GamePieces type="guards" :pieces="myPlayer.guards" :color="myPlayer.color" class="pieces" />
           <GameCards
             v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
             :deck="myPlayer.gameCards"

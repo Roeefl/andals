@@ -75,7 +75,7 @@
     position: absolute;
     bottom: 0px;
     left: 0px;
-    background: white;
+    background: $primary;
     color: $app-background;
     z-index: $zindex-chat;
     display: flex;

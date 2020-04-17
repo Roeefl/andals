@@ -52,7 +52,6 @@
 
   #app {
     font-family: 'Darker Grotesque', sans-serif;
-    color: $primary;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -72,6 +71,6 @@
     // background-image: url('./assets/wood.jpg');
     // background-size: cover;
     background: $app-background;
-    color: white;
+    color: $primary;
   }
 </style>

@@ -59,7 +59,7 @@
       renderKey(player) {
         const totalLoot = Object.values(player.availableLoot).reduce((r1, r2) => r1 + r2, 0);
         const resourceCounts = Object.values(player.resourceCounts).reduce((r1, r2) => r1 + r2, 0);
-        return `${player.playerSessionId}-${player.isReady}-${totalLoot}-${resourceCounts}-${player.roads}-${player.settlements}-${player.cities}`;
+        return `${player.playerSessionId}-${player.isReady}-${totalLoot}-${resourceCounts}-${player.roads}-${player.settlements}-${player.cities}-${player.guards}`;
       }
     }
   }

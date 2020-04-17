@@ -2,7 +2,7 @@
   <main class="game-lobby">
     <div class="loader-wrapper">
       <SnowyTown class="game-loader" />
-      <Snowflakes :count="100" class="snowflakes" />
+      <Snowflakes class="snowflakes" />
     </div>
     <section class="lobby-interface">
       <AppHeader />
@@ -218,6 +218,7 @@
     }
 
     .snowflakes {
+      z-index: 0;
       position: absolute;
       top: 0;
       left: 0;
