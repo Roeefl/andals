@@ -1,6 +1,6 @@
 <template>
   <div class="the-wall">
-    <WallTile v-for="(wall, w) in wallTiles" :key="`wall-${w}`" :myColor="myColor" />
+    <WallTile v-for="(wall, w) in wallTiles" :key="`wall-${w}`" :myColor="myColor" @wall-clicked="$emit('wall-clicked', { section: w, position: $event })" />
   </div>
 </template>
 

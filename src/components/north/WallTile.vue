@@ -1,7 +1,8 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
     <li v-for="(pos, p) in positions" :key="p" class="wall-position">
-      <WallPosition :order="p + 1" />
+      <WallPosition :order="p + 1" @clicked="$emit('wall-clicked', p)"
+      />
     </li>
   </ul>
 </template>

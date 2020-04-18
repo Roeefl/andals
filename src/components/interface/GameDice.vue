@@ -4,7 +4,7 @@
       v-for="(diceValue, d) in dice"
       :key="`dice-${d}`"
       :color="diceColors[`dice${d}`]"
-      :iconName="diceValue <= 6 ? `dice-${diceValue}` : undefined"
+      :iconName="d <= 1 ? `dice-${diceValue}` : undefined"
       iconColor="black"
       :clickable="enabled"
       @click="$emit('clicked')"
@@ -13,7 +13,7 @@
       :height="small ? '28px' : '56px'"
       class="cube"
     >
-      <span v-if="diceValue > 6">
+      <span v-if="d >= 2">
         {{ diceValue }}
       </span>
     </BaseButton>

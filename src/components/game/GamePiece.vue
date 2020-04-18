@@ -17,7 +17,7 @@
   import BaseBadge from '@/components/common/BaseBadge';
 
   export default {
-    name: 'GameCard',
+    name: 'GamePiece',
     components: {
       BaseButton,
       BaseIcon,

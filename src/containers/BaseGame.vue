@@ -23,17 +23,20 @@
         />
       </DraggableWidget>
       <div class="board-area">
-        <TheNorth v-if="isWithNorth" />
+        <TheNorth
+          v-if="isWithNorth"
+          :allowPurchase="allowPurchase"
+          @wall-clicked="onGuardClick($event)"
+        />
         <GameBoard
           :board="roomState.board"
           :harborPorts="roomState.ports"
           :robberPosition="roomState.robberPosition || -1"
           :ready="roomState.isGameReady"
-          :isDiceRolled="roomState.isDiceRolled"
           :isSetupPhase="roomState.isSetupPhase"
-          :isMyTurn="isMyTurn"
-          @tile-clicked="onTileClick($event)"
+          :allowPurchase="allowPurchase"
           :desiredRobberTile="desiredRobberTile"
+          @tile-clicked="onTileClick($event)"
           @robber-dropped="desiredRobberTile = $event"
           class="game-board"
           :class="{ 'with-north': isWithNorth }"
@@ -127,6 +130,7 @@
   import BaseOverlay from '@/components/common/BaseOverlay';
 
   import { initialResourceCounts } from '@/specs/resources';
+  import { ROAD, GUARD, GAME_CARD } from '@/utils/buildingCosts';
 
   import {
     TILE_WATER,
@@ -142,6 +146,7 @@
     MESSAGE_FINISH_TURN,
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
+    MESSAGE_PLACE_GUARD,
     MESSAGE_PURCHASE_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_MOVE_ROBBER,
@@ -185,7 +190,7 @@
       isDisplayConfirmMove: false,
       isDisplayMyDeck: false,
       activePurchase: {
-        type: 'road'
+        type: ROAD
       },
       waitingTradeWith: null,
       bankTradeResource: null,
@@ -227,6 +232,13 @@
         return this.myPlayer.pendingTrade
           ? (this.players.find(({ playerSessionId }) => playerSessionId === this.myPlayer.pendingTrade) || {}).nickname
           : 'NONE';
+      },
+      allowPurchase: function() {
+        return (
+          this.isMyTurn &&
+          (this.roomState.isSetupPhase || this.roomState.isDiceRolled) &&
+          !this.myPlayer.mustMoveRobber
+        );
       },
       bankTradePlayers: function() {
         return [
@@ -351,12 +363,22 @@
       },
       onGameCardPurchase: function() {
         this.activePurchase = {
-          type: 'gameCard'
+          type: GAME_CARD
         };
         this.isDisplayConfirmMove = true;
       },
       onTileClick: function(tile) {
         this.activePurchase = tile;
+        this.isDisplayConfirmMove = true;
+      },
+      onGuardClick: function(location) {
+        const { section, position } = location;
+        
+        this.activePurchase = {
+          type: GUARD,
+          section,
+          position
+        };
         this.isDisplayConfirmMove = true;
       },
       onConfirmPurchase: function(approved) {
@@ -365,7 +387,18 @@
 
         const { type, row, col } = this.activePurchase;
 
-        if (type === 'gameCard') {
+        if (type === GUARD) {
+          const { section, position } = this.activePurchase;
+
+          colyseusService.room.send({
+            type: MESSAGE_PLACE_GUARD,
+            section,
+            position
+          });
+          return;
+        }
+
+        if (type === GAME_CARD) {
           colyseusService.room.send({
             type: MESSAGE_PURCHASE_GAME_CARD
           });
@@ -375,13 +408,13 @@
         }
         
         colyseusService.room.send({
-          type: type === 'road' ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
-          structureType: type === 'road' ? null : type,
+          type: type === ROAD ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
+          structureType: type === ROAD ? null : type,
           row,
           col
         });
 
-        if (type === 'road' && this.roomState.isSetupPhase)
+        if (type === ROAD && this.roomState.isSetupPhase)
           this.finishTurn();
       },
       finishTurn: function() {

@@ -5,7 +5,7 @@
     </div>
     <div class="east">
       <WildlingCamps class="wildling-camps" />
-      <TheWall :myColor="myPlayer.color" class="the-wall" />
+      <TheWall :myColor="myPlayer.color" @wall-clicked="onWallClicked($event)" class="the-wall" />
     </div>
   </div>
 </template>
@@ -24,10 +24,34 @@
       WildlingCamps,
       TheWall
     },
+    props: {
+      allowPurchase: {
+        type: Boolean,
+        default: false
+      }
+    },
     computed: mapState([
       'roomState',
       'myPlayer'
-    ])
+    ]),
+    methods: {
+      isGuardAllowed: function(section, position) {
+        const { wall } = this.roomState;
+
+        const startPos = section * 5;
+        const wallSection = wall.slice(startPos, startPos + 5);
+
+        return wallSection
+          .filter((pos, p) => p < position)
+          .every(guard => !!guard);
+      },
+      onWallClicked: function(location) {
+        const { section, position } = location;
+
+        if (this.allowPurchase && this.myPlayer.hasResources.guard && this.isGuardAllowed(section, position))
+          this.$emit('wall-clicked', location)
+      }
+    }
   }
 </script>
 

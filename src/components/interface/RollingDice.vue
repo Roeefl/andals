@@ -6,8 +6,11 @@
     width="500"
   >
     <div class="dice">
-      <div v-for="(diceValue, i) in dice" :key="`dice-${i}-${diceValue}`" class="cube" :class="`cube-${i}`">
-        <BaseIcon size="80px" color="black" :name="`dice-${diceValue}`" />
+      <div v-for="(diceValue, d) in dice" :key="`dice-${d}-${diceValue}`" class="cube" :class="`cube-${d}`">
+        <BaseIcon v-if="d <= 1" size="80px" color="black" :name="`dice-${diceValue}`" />
+        <span v-if="d >= 2">
+          {{ diceValue }}
+        </span>
       </div>
     </div>
   </v-dialog>

@@ -69,7 +69,7 @@
   import hexTileMap from '@/tilemaps/hexes';
   import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';
   import structureTileMap, { types as structureTileTypes } from '@/tilemaps/structures';
-  import buildingCosts, { ROAD, SETTLEMENT, CITY, GAMECARD } from '@/utils/buildingCosts';
+  import buildingCosts, { ROAD, SETTLEMENT, CITY } from '@/utils/buildingCosts';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
   import { TILE_WATER } from '@/utils/tileManifest';
 
@@ -99,11 +99,7 @@
         type: Boolean,
         default: false
       },
-      isMyTurn: {
-        type: Boolean,
-        default: false
-      },
-      isDiceRolled: {
+      allowPurchase: {
         type: Boolean,
         default: false
       },
@@ -117,13 +113,6 @@
       }
     },
     computed: {
-      allowPurchase: function() {
-        return (
-          this.isMyTurn &&
-          (this.isSetupPhase || this.isDiceRolled) &&
-          !this.myPlayer.mustMoveRobber
-        );
-      },
       ...mapState([
         'isDeveloperMode',
         'activeStructures',
@@ -140,7 +129,6 @@
       this.ROAD = ROAD;
       this.SETTLEMENT = SETTLEMENT;
       this.CITY = CITY;
-      this.GAMECARD = GAMECARD;
       this.TILE_WATER = TILE_WATER;
       this.harborAdjacentToStructure = harborAdjacentToStructure;
       this.absoluteIndex = boardService.absoluteIndex;

@@ -1,8 +1,5 @@
 <template>
-  <BaseButton
-    icon
-    @click="enabled && $emit('clicked')"
-  >
+  <BaseButton icon @click="$emit('clicked')">
     <BaseIcon v-if="guard" size="24px" color="white" :name="structureIcons.guard" class="icon" />
     <span v-if="!guard" class="position-order">
       {{ order }}
@@ -26,10 +23,6 @@
       order: {
         type: Number,
         default: 1
-      },
-      enabled: {
-        type: Boolean,
-        default: true
       },
       guard: {
         type: Object,

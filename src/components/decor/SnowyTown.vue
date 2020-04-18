@@ -5,24 +5,7 @@
       <div class="mountain-shadow" />
     </div>
     <div class="base" />
-    <div class="house house-1">
-      <div class="window">
-        <div class="window-inner" />
-      </div>
-      <div class="chimney" />
-    </div>
-    <div class="house house-2">
-      <div class="window window-middle">
-        <div class="window-inner" />
-      </div>
-      <div class="chimney" />
-    </div>
-    <div class="house house-3">
-      <div class="window">
-        <div class="window-inner" />
-      </div>
-      <div class="chimney" />
-    </div>
+    <Settlement v-for="(house, h) in houses" :key="h" class="house" :class="`house-${h}`" />
     <ul class="trees trees-left">
       <li v-for="(tree, t) in Array(3)" :key="t" class="tree">
         <div class="tree-bottom" />
@@ -38,7 +21,24 @@
   </div>
 </template>
 
+<script>
+  import Settlement from '@/components/decor/Settlement';
+  const houses = [0, 1, 2];
+
+  export default {
+    name: 'SnowyTown',
+    components: {
+      Settlement
+    },
+    created() {
+      this.houses = houses;
+    }
+  }
+</script>
+
 <style scoped lang="scss">
+  @import '@/styles/partials';
+
   $base-height: 50px;
   $mountains-start: 30%;
   $first-house: 36%;
@@ -171,157 +171,35 @@
   }
 
   .house {
-    position: absolute;
-    width: $house-width;
-    height: 80px;
-    z-index: 4;
-
-    &::before {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-left: 65px solid transparent;
-      border-right: 65px solid transparent;
-      border-bottom: 60px solid white;
-      top: -50px; left: -12px;
-    }
-    &::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-left: 53px solid transparent;
-      border-right: 53px solid transparent;
-      border-bottom: 50px solid #dd33b0;
-      top: -39px; left: 0px;
-    }
-  }
-  
-  .house-1 {
-    background: #dd33b0;
-    border-right: 5px solid #ce08a6;
-    bottom: $base-height * 1.35; left: $first-house;
-
-    &::after {
-      border-bottom: 50px solid #dd33b0;
-    }
-  }
-
-  .house-2 {
-    background: #33007c;
-    border-right: 5px solid #16002d;
-    bottom: $base-height * 1.35; left: calc(#{$first-house} + #{$house-width } + #{$house-margin});
-
-    &::after {
-       border-bottom: 50px solid #33007c;
-    }
-  }
-
-  .house-3 {
-    background: #0063dd;
-    border-right: 5px solid #003989;
-    bottom: $base-height * 1.35; left: calc(#{$first-house} + #{$house-width} * 2 + #{$house-margin} * 2);
-
-    &::after {
-      border-bottom: 50px solid #0063dd;
-    }
-  }
-
-  .window {
-    position: absolute;
-    width: 21px;
-    height: 30px;
-    border-radius: 30px 30px 0 0;
-    background: #333;
-    border: 2px solid #eaeaea;
-    top: 3px; left: 12px;
-    z-index: 10;
-
-    &::before {
-      content: '';
-      position: absolute;
-      width: 21px;
-      height: 30px;
-      border-radius: 30px 30px 0 0;
-      border: 2px solid #eaeaea;
-      top: -1px; left: 30px;
-      background: #edca4e;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      width: 21px;
-      height: 30px;
-      border-radius: 30px 30px 0 0;
-      background: #333;
-      border: 2px solid #eaeaea;
-      top: 0px; left: 60px;
-    }
-
-    &.window-middle {
-      &::before {
-        background: #333;
-      }
+    &.house-0 {
+      background: #dd33b0;
+      border-right: 5px solid #ce08a6;
+      bottom: $base-height * 1.35; left: $first-house;
 
       &::after {
-        background: #edca4e;
-      }
-
-      .window-inner {
-        &::before {
-           background: #edca4e;
-        }
-
-        &::after {
-          background: #333;
-        }
+        border-bottom: 50px solid #dd33b0;
       }
     }
 
-    .window-inner {
-      position: absolute;
-      width: 30px;
-      height: 40px;
-      border-radius: 30px 30px 0 0;
-      background: #333;
-      border: 2px solid #eaeaea;
-      top: 35px; left: -6px;
-
-      &::before {
-        content: '';
-        position: absolute;
-        width: 21px;
-        height: 30px;
-        border-radius: 30px 30px 0 0;
-        background: #333;
-        border: 2px solid #eaeaea;
-        top: 0px; left: 35px;
-      }
+    &.house-1 {
+      background: #33007c;
+      border-right: 5px solid #16002d;
+      bottom: $base-height * 1.35; left: calc(#{$first-house} + #{$house-width } + #{$house-margin});
 
       &::after {
-        content: '';
-        position: absolute;
-        width: 21px;
-        height: 30px;
-        border-radius: 30px 30px 0 0;
-        border: 2px solid #eaeaea;
-        top: 0px; left: 65px;
-        background: #edca4e;
+        border-bottom: 50px solid #33007c;
       }
     }
-  }
 
-  .chimney {
-    position: absolute;
-    width: 9px;
-    height: 21px;
-    background: gray;
-    border-top: 3px solid white;
-    top: -35px;
-    right: 5px;
-    z-index: 3;
+    &.house-2 {
+      background: #0063dd;
+      border-right: 5px solid #003989;
+      bottom: $base-height * 1.35; left: calc(#{$first-house} + #{$house-width} * 2 + #{$house-margin} * 2);
+
+      &::after {
+        border-bottom: 50px solid #0063dd;
+      }
+    }
   }
 
   @mixin tree-positions($start) {
