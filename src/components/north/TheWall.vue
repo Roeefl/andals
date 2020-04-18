@@ -1,13 +1,20 @@
 <template>
   <div class="the-wall">
-    <WallTile v-for="(wall, w) in wallTiles" :key="`wall-${w}`" :myColor="myColor" @wall-clicked="$emit('wall-clicked', { section: w, position: $event })" />
+    <WallTile
+      v-for="(sectionStart, w) in wallTiles"
+      :key="`wall-${w}`"
+      :myColor="myColor"
+      :enabled="allowPurchase"
+      :guards="wall.slice(sectionStart, sectionStart + 5)"
+      @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
+    />
   </div>
 </template>
 
 <script>
   import WallTile from '@/components/north/WallTile';
 
-  const wallTiles = [0, 1, 2, 3];
+  const wallTiles = [0, 5, 10, 15];
 
   export default {
     name: 'TheWall',
@@ -15,9 +22,17 @@
       WallTile
     },
     props: {
+      wall: {
+        type: Array,
+        default: () => Array(20).fill(null)
+      },
       myColor: {
         type: String,
         default: 'red'
+      },
+      allowPurchase: {
+        type: Boolean,
+        default: false
       }
     },
     created() {

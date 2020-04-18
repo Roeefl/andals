@@ -5,7 +5,7 @@
     </div>
     <div class="east">
       <WildlingCamps class="wildling-camps" />
-      <TheWall :myColor="myPlayer.color" @wall-clicked="onWallClicked($event)" class="the-wall" />
+      <TheWall :myColor="myPlayer.color" @wall-clicked="onWallClicked($event)" :allowPurchase="allowPurchase" :wall="roomState.wall" class="the-wall" />
     </div>
   </div>
 </template>

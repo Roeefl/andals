@@ -1,8 +1,7 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
-    <li v-for="(pos, p) in positions" :key="p" class="wall-position">
-      <WallPosition :order="p + 1" @clicked="$emit('wall-clicked', p)"
-      />
+    <li v-for="(guard, p) in guards" :key="`position-${p}`" class="wall-position">
+      <WallPosition :order="p + 1" :guard="guard" @clicked="$emit('wall-clicked', p)" />
     </li>
   </ul>
 </template>
@@ -10,14 +9,20 @@
 <script>
   import WallPosition from '@/components/north/WallPosition';
 
-  const positions = [0, 1, 2, 3, 4];
-
   export default {
     name: 'WallTile',
     components: {
       WallPosition
     },
     props: {
+      guards: {
+        type: Array,
+        default: () => new Array(5).fill(null)
+      },
+      enabled: {
+        type: Boolean,
+        default: false
+      },
       myColor: {
         type: String,
         default: 'red'
@@ -25,13 +30,12 @@
     },
     computed: {
       hoverStyle: function() {
+        if (!this.enabled) return {};
+        
         return {
           '--color-hover': this.myColor
         }
       }
-    },
-    created() {
-      this.positions = positions;
     }
   }
 </script>
