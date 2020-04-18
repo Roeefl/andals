@@ -5,7 +5,7 @@
     </div>
     <div class="east">
       <WildlingCamps class="wildling-camps" />
-      <TheWall :myColor="myPlayer.color" @wall-clicked="onWallClicked($event)" :allowPurchase="allowPurchase" :wall="roomState.wall" class="the-wall" />
+      <TheWall :myColor="myPlayer.color" :wall="guards" @wall-clicked="onWallClicked($event)" class="the-wall" />
     </div>
   </div>
 </template>
@@ -30,26 +30,33 @@
         default: false
       }
     },
-    computed: mapState([
-      'roomState',
-      'myPlayer'
-    ]),
-    methods: {
-      isGuardAllowed: function(section, position) {
-        const { wall } = this.roomState;
+    computed: {
+      guards: function() {
+        const { wall = [] } = this.roomState;
 
-        const startPos = section * 5;
-        const wallSection = wall.slice(startPos, startPos + 5);
+        return (wall || [])
+          .map(guard => {
+            if (!guard.ownerId) return guard;
 
-        return wallSection
-          .filter((pos, p) => p < position)
-          .every(guard => !!guard);
+            const owner = this.players.find(({ playerSessionId }) => playerSessionId === guard.ownerId) || {};
+            return {
+              ...guard,
+              ownerColor: owner.color
+            };
+          });
       },
+      ...mapState([
+        'roomState',
+        'players',
+        'myPlayer'
+      ])
+    },
+    methods: {
       onWallClicked: function(location) {
         const { section, position } = location;
-
-        if (this.allowPurchase && this.myPlayer.hasResources.guard && this.isGuardAllowed(section, position))
-          this.$emit('wall-clicked', location)
+        
+        if (this.allowPurchase && this.myPlayer.hasResources.guard)
+          this.$emit('wall-clicked', location);
       }
     }
   }

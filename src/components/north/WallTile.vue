@@ -1,7 +1,7 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
-    <li v-for="(guard, p) in guards" :key="`position-${p}`" class="wall-position">
-      <WallPosition :order="p + 1" :guard="guard" @clicked="$emit('wall-clicked', p)" />
+    <li v-for="(guard, p) in guards" :key="`position-${p}-${(guard || {}).ownerId}`" class="wall-position" :class="{ 'enabled': isGuardAllowed(p) }">
+      <WallPosition :order="p + 1" :guard="guard" @clicked="onPositionClicked(p)" />
     </li>
   </ul>
 </template>
@@ -19,22 +19,30 @@
         type: Array,
         default: () => new Array(5).fill(null)
       },
-      enabled: {
-        type: Boolean,
-        default: false
-      },
       myColor: {
         type: String,
         default: 'red'
       }
     },
     computed: {
-      hoverStyle: function() {
-        if (!this.enabled) return {};
-        
+      hoverStyle: function() { 
         return {
           '--color-hover': this.myColor
         }
+      }
+    },
+    methods: {
+      isGuardAllowed: function(position) {
+        if (!this.guards[position] || this.guards[position].ownerId)
+          return false;
+
+        return this.guards
+          .filter((pos, p) => p < position)
+          .every(guard => !!guard && !!guard.ownerId);
+      },
+      onPositionClicked: function(p) {
+        if (this.isGuardAllowed(p))
+          this.$emit('wall-clicked', p);
       }
     }
   }
@@ -55,8 +63,10 @@
     display: flex;
     align-items: center;
 
-    &:hover {
-      box-shadow: 2px 2px 12px 12px var(--color-hover);
+    &.enabled {
+      &:hover {
+        box-shadow: 2px 2px 12px 12px var(--color-hover);
+      }
     }
 
     & + & {

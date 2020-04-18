@@ -99,7 +99,7 @@
           (this.roomState.isSetupPhase && this.myPlayer.hasResources.road) ||
           // Game started - meaning: either its not even my turn, or it is but I have not played yet
           !this.isMyTurn ||
-          !this.roomState.isDiceRolled ||
+          (!this.roomState.isSetupPhase && !this.roomState.isDiceRolled) ||
           (this.myPlayer.mustMoveRobber && this.desiredRobberTile === -1) ||
           this.myPlayer.allowStealingFrom.length > 0 ||
           this.myPlayer.roadBuildingPhase > 0

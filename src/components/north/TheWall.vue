@@ -3,8 +3,8 @@
     <WallTile
       v-for="(sectionStart, w) in wallTiles"
       :key="`wall-${w}`"
+      :section="w"
       :myColor="myColor"
-      :enabled="allowPurchase"
       :guards="wall.slice(sectionStart, sectionStart + 5)"
       @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
     />
@@ -24,15 +24,11 @@
     props: {
       wall: {
         type: Array,
-        default: () => Array(20).fill(null)
+        default: () => Array(20).fill({})
       },
       myColor: {
         type: String,
         default: 'red'
-      },
-      allowPurchase: {
-        type: Boolean,
-        default: false
       }
     },
     created() {
