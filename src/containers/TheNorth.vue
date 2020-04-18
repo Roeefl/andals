@@ -1,7 +1,7 @@
 <template>
   <div class="the-north" :class="{ ready: roomState.isGameReady }">
     <div class="west">
-      <WildlingSpawn :counts="wildlingCounts" />
+      <WildlingSpawn :counts="roomState.spawnCounts" />
     </div>
     <div class="east">
       <WildlingCamps class="wildling-camps" />
@@ -17,12 +17,6 @@
   import WildlingCamps from '@/components/north/WildlingCamps';
   import TheWall from '@/components/north/TheWall';
 
-  const wildlingCounts = {
-    regular: 12,
-    climber: 8,
-    giant: 6
-  };
-
   export default {
     name: 'TheNorth',
     components: {
@@ -33,10 +27,7 @@
     computed: mapState([
       'roomState',
       'myPlayer'
-    ]),
-    created() {
-      this.wildlingCounts = wildlingCounts;
-    }
+    ])
   }
 </script>
 

@@ -570,11 +570,10 @@
           border: 4px dashed black;
 
           &.with-north {
-            // background-image: url('../assets/snowy-trees-sm.png');
-            background: $primary;
-            color: $app-background;
+            background-image: url('../assets/snowy-ground.jpg');
             background-size: unset;
             background-repeat: repeat;
+            color: $app-background;
           }
         }
       }
