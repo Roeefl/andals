@@ -1,21 +1,20 @@
 <template>
   <div v-if="board" class="board" :class="{ ready }">
     <div class="tiles">
-      <div v-for="(row, i) in hexTileMap" :key="`row-${i}`" class="tile-row" :class="[row.type]">
+      <div v-for="(tileRow, rowIndex) in hexTileMap" :key="`row-${rowIndex}`" class="tile-row" :class="[tileRow.type]">
         <HexTile
-          v-for="(tile, j) in row.tiles"
-          :key="`tile-${i}-${j}`"
+          v-for="(tile, colIndex) in tileRow.tiles"
+          :key="`tile-${rowIndex}-${colIndex}`"
           :type="tile"
-          :tile="board[absoluteIndex(i, j)]"
-          @dropped="onRobberDropped(absoluteIndex(i, j))"
+          :tile="board[absoluteIndex(rowIndex, colIndex)]"
+          @dropped="onRobberDropped(absoluteIndex(rowIndex, colIndex))"
         >
           <span v-if="isDeveloperMode" class="tile-index">
-            [{{ i }}, {{ j }}]
+            [{{ rowIndex }}, {{ colIndex }}]
           </span>
           <RoadTile
-            v-for="([row, col]) in [[i * 2, j * 2], [i * 2, j * 2 + 1], [i * 2 + 1, j * 2], [i * 2 + 1, j * 2 + 1]]"
+            v-for="([row, col]) in roadIndices(rowIndex, colIndex)"
             :key="`road-tile-${row}-${col}`"
-            v-if="roadTileMap[row][col]"
             :placement="roadTileTypes[roadTileMap[row][col]]"
             :enabled="allowPurchase && myPlayer.hasResources.road && isRoadAllowed(row, col)"
             @clicked="$emit('tile-clicked', { type: ROAD, row, col })"
@@ -27,9 +26,8 @@
             </span>
           </RoadTile>
           <StructureTile
-            v-for="([row, col]) in [[i, j * 2], [i, j * 2 + 1]]"
+            v-for="([row, col]) in structureIndices(rowIndex, colIndex)"
             :key="`structure-tile-${row}-${col}`"
-            v-if="structureTileMap[row][col]"
             :placement="structureTileTypes[structureTileMap[row][col]]" 
             :enabled="(allowPurchase && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchase && myPlayer.hasResources.city && isCityAllowed(row, col))"
             @clicked="$emit('tile-clicked', { type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
@@ -148,6 +146,20 @@
       this.absoluteIndex = boardService.absoluteIndex;
     },
     methods: {
+      roadIndices: function(row, col) {
+        return [
+          [row * 2, col * 2],
+          [row * 2, col * 2 + 1],
+          [row * 2 + 1, col * 2],
+          [row * 2 + 1, col * 2 + 1]
+        ].filter(([r, c]) => !!roadTileMap[r][c]);
+      },
+      structureIndices: function(row, col) {
+        return [
+          [row, col * 2],
+          [row, col * 2 + 1]
+        ].filter(([r, c]) => !!structureTileMap[r][c]);
+      },
       isRoadAllowed: function(row, col) {
         return isPurchaseAllowedRoad(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.myPlayer.lastStructureBuilt);
       },

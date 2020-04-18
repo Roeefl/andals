@@ -116,7 +116,7 @@
             playVsBots: this.playVsBots,
             autoPickup: this.autoPickup,
             friendlyGameLog: this.friendlyGameLog,
-            botReplacement: this.botReplacement,
+            enableBotReplacement: this.botReplacement,
             ...this.profile
           };
 
