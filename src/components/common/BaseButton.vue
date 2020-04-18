@@ -2,8 +2,11 @@
   <v-btn
     :type="type"
     :color="color"
-    :small="small"
+    :width="width"
+    :height="height"
     :x-small="xs"
+    :small="small"
+    :large="large"
     :x-large="xl"
     :disabled="disabled"
     :rounded="rounded"
@@ -36,11 +39,23 @@
         type: String,
         default: 'primary'
       },
+      width: {
+        type: String,
+        default: undefined
+      },
+      height: {
+        type: String,
+        default: undefined
+      },
+      xs: {
+        type: Boolean,
+        default: false
+      },
       small: {
         type: Boolean,
         default: false
       },
-      xs: {
+      large: {
         type: Boolean,
         default: false
       },
