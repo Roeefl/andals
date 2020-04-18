@@ -4,9 +4,9 @@
       <div v-if="log.type === CHAT_LOG_SIMPLE">
         {{ log.message }}
       </div>
-      <div v-if="log.type === CHAT_LOG_DICE">
+      <div v-if="log.type === CHAT_LOG_DICE" class="player-rolls">
         {{ log.playerName }} rolls:
-        <BaseIcon v-for="(diceValue, i) in log.dice" :key="`dice-${i}`" size="20px" :color="diceColors[`dice${i}`]" :name="`dice-${diceValue}`" />
+        <GameDice :small="true" :dice="log.dice" :enabled="false" />
       </div>
       <div v-if="log.type === CHAT_LOG_LOOT || log.type === CHAT_LOG_DISCARD" class="loot">
         {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collects' : 'discards' }}
@@ -29,19 +29,20 @@
 <script>
   import { mapState } from 'vuex';
 
-  import { resourceCardTypes } from '@/specs/resources';
-  import { diceColors } from '@/specs/dice';
-  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD } from '@/constants';
-
   import MessageList from '@/components/common/MessageList';
   import ResourceCard from '@/components/game/ResourceCard';
+  import GameDice from '@/components/interface/GameDice';
   import BaseIcon from '@/components/common/BaseIcon';
+  
+  import { resourceCardTypes } from '@/specs/resources';
+  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD } from '@/constants';
 
   export default {
     name: 'GameLog',
     components: {
       MessageList,
       ResourceCard,
+      GameDice,
       BaseIcon
     },
     props: {
@@ -55,8 +56,6 @@
     ]),
     created() {
       this.resourceCardTypes = resourceCardTypes;
-      this.diceColors = diceColors;
-
       this.CHAT_LOG_SIMPLE = CHAT_LOG_SIMPLE;
       this.CHAT_LOG_DICE = CHAT_LOG_DICE;
       this.CHAT_LOG_LOOT = CHAT_LOG_LOOT;
@@ -66,6 +65,8 @@
 </script>
 
 <style scoped lang="scss">
+  @import '@/styles/partials';
+  
   .messages-container {
     flex: 1;
     height: 100%;
@@ -91,6 +92,10 @@
           }
         }
       }
+    }
+
+    .player-rolls {
+      display: flex;
     }
   }
 </style>

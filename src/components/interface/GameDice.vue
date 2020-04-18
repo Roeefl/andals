@@ -1,56 +1,51 @@
 <template>
-  <v-dialog
-    :value="true"
-    hide-overlay
-    persistent
-    width="300"
-  >
-    <div class="dice">
-      <div v-for="(diceValue, i) in dice" :key="`dice-${i}-${diceValue}`" class="cube" :class="`cube-${i}`">
-        <BaseIcon size="80px" color="black" :name="`dice-${diceValue}`" />
-      </div>
-    </div>
-  </v-dialog>
+  <div class="game-dice">
+    <BaseButton
+      v-for="(diceValue, d) in dice"
+      :key="`dice-${d}`"
+      :color="diceColors[`dice${d}`]"
+      :iconName="diceValue <= 6 ? `dice-${diceValue}` : undefined"
+      iconColor="black"
+      :clickable="enabled"
+      @click="$emit('clicked')"
+      :iconSize="small ? '24px' : '36px'"
+      :width="small ? '28px' : '56px'"
+      :height="small ? '28px' : '56px'"
+      class="cube"
+    >
+      <span v-if="diceValue > 6">
+        {{ diceValue }}
+      </span>
+    </BaseButton>
+  </div>
 </template>
 
+
 <script>
-  import BaseIcon from '@/components/common/BaseIcon';
-  import { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
+  import BaseButton from '@/components/common/BaseButton';
+  import { diceColors } from '@/specs/dice';
 
   export default {
     name: 'GameDice',
     components: {
-      BaseIcon
+      BaseButton
     },
     props: {
-      type: {
-        type: String,
-        default: ROOM_TYPE_BASE_GAME
+      dice: {
+        type: Array,
+        default: () => [3, 4]
+      },
+      small: {
+        type: Boolean,
+        default: false
+      },
+      enabled: {
+        type: Boolean,
+        default: false
       }
     },
-    data: () => ({
-      dice: [4, 3]
-    }),
-    mounted() {
-      const diceRoller = setInterval(() => {
-        const randomDice1 = Math.floor(Math.random() * 6) + 1;
-        const randomDice2 = Math.floor(Math.random() * 6) + 1;
-        this.dice = [randomDice1, randomDice2];
-
-        if (this.type === ROOM_TYPE_FIRST_MEN) {
-          const wildlingDice = Math.floor(Math.random() * 12) + 1;
-          
-          this.dice = [
-            ...this.dice,
-            wildlingDice
-          ];
-        }
-      }, 50);
-
-      setTimeout(() => {
-        clearInterval(diceRoller);
-        this.$emit('finished', this.dice);
-      }, 2000);
+    created() {
+      this.diceColors = diceColors;
     }
   }
 </script>
@@ -58,17 +53,14 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .dice {
+  .game-dice {
     display: flex;
-
+    
     .cube {
-      width: 50%;
-      height: 150px;
-      border: 1px solid black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: white;
+      min-width: 0;
+      margin-right: $spacer / 3;
+      color: white;
+      font-size: $font-size-md;
     }
   }
 </style>

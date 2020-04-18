@@ -14,19 +14,8 @@
     </div>
     <div class="game-actions">
       <div class="dice">
-        <GameDice v-if="isDisplayDice" :type="roomState.roomType" @finished="$emit('dice-finished', $event)"/>
-        <BaseButton
-          v-for="(diceValue, i) in roomState.dice"
-          :key="i"
-          sm
-          @click="rollDice"
-          :iconName="`dice-${diceValue}`"
-          :color="diceColors[`dice${i}`]"
-          iconSize="50px"
-          iconColor="black"
-          :clickable="isDiceEnabled"
-          class="cube"
-        />
+        <GameDice :dice="roomState.dice" :enabled="isDiceEnabled" @clicked="rollDice" />
+        <RollingDice v-if="isDisplayDice" :type="roomState.roomType" @finished="$emit('dice-finished', $event)"/>
       </div>
       <div class="turn-action">
         <BaseButton v-if="roomState.isGameReady && !myPlayer.mustMoveRobber" color="red" @click="$emit('end-turn')" :clickable="!isEndTurnDisabled">
@@ -65,6 +54,7 @@
   import AppHeader from '@/containers/AppHeader';
   import AvailableLoot from '@/components/interface/AvailableLoot';
   import GameCards from '@/components/interface/GameCards';
+  import RollingDice from '@/components/interface/RollingDice';
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
 
@@ -78,6 +68,7 @@
       AppHeader,
       AvailableLoot,
       GameCards,
+      RollingDice,
       GameDice,
       BaseButton
     },
@@ -201,12 +192,6 @@
         flex: 1;
         display: flex;
         justify-content: center;
-
-        .cube {
-          width: 54px;
-          height: 54px;
-          margin-right: $spacer / 3;
-        }
       }
 
       .turn-action {
