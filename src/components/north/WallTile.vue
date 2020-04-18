@@ -1,12 +1,15 @@
 <template>
-  <div class="wall-tile">
-    <WallPosition v-for="(pos, p) in Array(5).fill(0)" :key="p" :order="p + 1" class="wall-position" />
-  </div>
+  <ul class="wall-tile" :style="hoverStyle">
+    <li v-for="(pos, p) in positions" :key="p" class="wall-position">
+      <WallPosition :order="p + 1" />
+    </li>
+  </ul>
 </template>
 
 <script>
   import WallPosition from '@/components/north/WallPosition';
-  import { hexToRgb } from '@/utils/colors';
+
+  const positions = [0, 1, 2, 3, 4];
 
   export default {
     name: 'WallTile',
@@ -25,6 +28,9 @@
           '--color-hover': this.myColor
         }
       }
+    },
+    created() {
+      this.positions = positions;
     }
   }
 </script>
@@ -37,9 +43,19 @@
     box-shadow: 8px 8px 16px 16px $mountain;
     display: flex;
     width: 100%;
+  }
 
-    .wall-position {
-      width: 20%;
+  .wall-position {
+    width: 20%;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      box-shadow: 2px 2px 12px 12px var(--color-hover);
+    }
+
+    & + & {
+      border-left: 1px solid $mountain;
     }
   }
 </style>

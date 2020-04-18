@@ -1,7 +1,7 @@
 <template>
   <div class="clan-area">
     <div class="clan-symbol">
-      <BaseIcon color="black" :name="clanIcons[clan]" size="30px" />
+      <BaseIcon color="brown" :name="clan.icon" size="30px" />
     </div>
     <div class="clan-camps">
       <BaseButton
@@ -14,33 +14,46 @@
         class="clan-camp"
       />
     </div>
-    <div class="clan-trail" />
-    <div class="clan-clearing" />
+    <div class="clan-trails">
+      <ClanTrail v-for="(trailValues, t) in clan.trails" :key="`trail-${t}`" :value="trailDisplayValue(trailValues)" />
+    </div>
+    <ClanClearing />
   </div>
 </template>
 
 <script>
+  import ClanTrail from '@/components/north/ClanTrail';
+  import ClanClearing from '@/components/north/ClanClearing';
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
-  import { clanIcons, CLAN_RIVER, CLAN_CAVE, CLAN_HORNFOOT } from '@/specs/clans';
 
   const campfires = [6, 8, 10, 12, 14];
 
   export default {
     name: 'ClanArea',
     components: {
+      ClanTrail,
+      ClanClearing,
       BaseButton,
       BaseIcon
     },
     props: {
       clan: {
-        type: String,
+        type: Object,
         required: true
       }
     },
     created() {
-      this.clanIcons = clanIcons;
       this.campfires = campfires;
+    },
+    methods: {
+      trailDisplayValue: function(trailValues) {
+        const separator = ' / ';
+        return trailValues.reduce((acc, value, i) => {
+          acc += `${i > 0 ? separator : ''}${value}`;
+          return acc;
+        }, '');
+      }
     }
   }
 </script>
@@ -56,6 +69,10 @@
     .clan-camps {
       display: flex;
       flex-direction: column;
+    }
+
+    .clan-trails {
+      display: flex;
     }
   }
 </style>

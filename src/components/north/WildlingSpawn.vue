@@ -1,14 +1,15 @@
 <template>
   <div class="wildling-spawn">
-    <fragment v-for="(count, type, index) in wildlings" :key="`type-${index}`">
+    <fragment v-for="(count, type) in counts" :key="`type-${type}`">
       <Wildling v-for="(wildling, w) in Array(count).fill(type)" :key="w" :type="type" class="wildling" />
     </fragment>
   </div>
 </template>
 
 <script>
-  import Wildling from '@/components/pieces/Wildling';
+  // import { shuffle } from 'lodash';
   // import { wildlingIcons, wildlingColors, WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT } from '@/specs/wildlings';
+  import Wildling from '@/components/pieces/Wildling';
 
   export default {
     name: 'WildlingSpawn',
@@ -16,11 +17,11 @@
       Wildling
     },
     props: {
-      wildlings: {
+      counts: {
         type: Object,
         default: () => {}
       }
-    }
+    },
   }
 </script>
 

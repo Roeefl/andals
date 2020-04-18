@@ -46,7 +46,6 @@
   @import '@/styles/partials';
 
   .position-order {
-    border-radius: 999px;
-    border: 1px solid black;
+    color: $mountain;
   }
 </style>

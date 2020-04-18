@@ -31,6 +31,7 @@
 
   .the-wall {
     border: 1px dashed black;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
   }
 </style>

@@ -2,7 +2,9 @@
   <transition name="puff">
     <BaseButton
       icon
-      iconSize="40px"
+      :width="size"
+      :height="size"
+      iconSize="large"
       :iconName="wildlingIcons[type]"
       :iconColor="wildlingColors[type]"
       :clickable="false"
@@ -27,6 +29,10 @@
       type: {
         type: String,
         required: true
+      },
+      size: {
+        type: String,
+        default: '40px'
       }
     },
     created() {

@@ -14,6 +14,7 @@
     "core-js": "^3.6.4",
     "howler": "^2.1.3",
     "invert-color": "^2.0.0",
+    "lodash": "^4.17.15",
     "vue": "^2.6.11",
     "vue-drag-drop": "^1.1.4",
     "vue-fragment": "^1.5.1",

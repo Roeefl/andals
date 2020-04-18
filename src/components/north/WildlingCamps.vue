@@ -1,7 +1,7 @@
 <template>
   <div class="wildling-camps">
-    <div v-for="(section, s) in sections" :key="`section-${s}`" class="wildling-section" :class="{ 'woods': section === WOODS }">
-      <ClanArea v-if="section !== WOODS" :clan="section" />
+    <div v-for="(section, s) in sectionNames" :key="`section-${s}`" class="wildling-section" :class="{ 'woods': section === WOODS }">
+      <ClanArea v-if="section !== WOODS" :clan="clans[section]" />
     </div>
   </div>
 </template>
@@ -9,10 +9,10 @@
 <script>
   import { mapState } from 'vuex';
   import ClanArea from '@/components/north/ClanArea';
-  import { clans } from '@/specs/clans';
+  import { clanNames, clans } from '@/specs/clans';
 
   const WOODS = 'WOODS';
-  const sections = clans.map(clan => [WOODS, clan, WOODS]).flat();
+  const sectionNames = clanNames.map(clan => [WOODS, clan, WOODS]).flat();
 
   export default {
     name: 'WildlingCamps',
@@ -23,7 +23,8 @@
       'roomState'
     ]),
     created() {
-      this.sections = sections;
+      this.clans = clans;
+      this.sectionNames = sectionNames;
       this.WOODS = WOODS;
     }
   }

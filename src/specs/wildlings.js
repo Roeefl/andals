@@ -6,7 +6,7 @@ export const [WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT] = wildlingType
 export const wildlingIcons = {
   regular: 'gavel',
   climber: 'pickaxe',
-  giant: 'snowman'
+  giant: 'football-helmet'
 };
 
 export const wildlingColors = {

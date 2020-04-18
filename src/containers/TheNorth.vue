@@ -1,7 +1,7 @@
 <template>
   <div class="the-north" :class="{ ready: roomState.isGameReady }">
     <div class="west">
-      <WildlingSpawn :wildlings="wildlingsMock" />
+      <WildlingSpawn :counts="wildlingCounts" />
     </div>
     <div class="east">
       <WildlingCamps class="wildling-camps" />
@@ -17,7 +17,7 @@
   import WildlingCamps from '@/components/north/WildlingCamps';
   import TheWall from '@/components/north/TheWall';
 
-  const wildlingsMock = {
+  const wildlingCounts = {
     regular: 12,
     climber: 8,
     giant: 6
@@ -35,7 +35,7 @@
       'myPlayer'
     ]),
     created() {
-      this.wildlingsMock = wildlingsMock;
+      this.wildlingCounts = wildlingCounts;
     }
   }
 </script>
@@ -63,7 +63,7 @@
       flex-direction: column;
 
       .wildling-camps {
-        flex: 3;
+        flex: 4;
       }
 
       .the-wall {
