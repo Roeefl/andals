@@ -39,10 +39,10 @@
               [{{ row }}, {{ col }}]
             </span>
           </StructureTile>
-          <HarborTile :tile="board[absoluteIndex(i, j)]" />
+          <HarborTile :tile="board[absoluteIndex(rowIndex, colIndex)]" />
           <drag :transfer-data="{}">
             <RobberTile
-              v-if="isDisplayRobberTile(i, j)"
+              v-if="isDisplayRobberTile(rowIndex, colIndex)"
               :active="myPlayer.mustMoveRobber"
             />
           </drag>

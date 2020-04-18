@@ -2,12 +2,12 @@
   <div class="app-settings">
     <form class="preferences">
       <BaseSwitch
-        label="Enable Background Music"
+        label="Background Music"
         :value="enableAmbience"
         @flipped="toggleAmbience"
       />
       <BaseSwitch
-        label="Enable Snow"
+        label="In-game Snow"
         :value="enableSnow"
         @flipped="toggleSnow"
       />
@@ -19,6 +19,7 @@
       <BaseSwitch
         label="Use HTML5 Game Engine (Experimental)"
         :value="isUseGameEngine"
+        disabled
         @flipped="toggleUseGameEngine"
       />
     </form>

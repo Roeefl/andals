@@ -3,6 +3,7 @@
     :label="`Enable: ${label}`"
     :input-value="value"
     @change="$emit('flipped')"
+    :disabled="disabled"
   />
 </template>
 
@@ -17,6 +18,10 @@
       label: {
         type: String,
         default: '-'
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     }
   }
