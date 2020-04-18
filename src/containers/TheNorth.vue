@@ -60,7 +60,6 @@
 
   .the-north {
     // opacity: 0.5;
-    height: 400px;
     display: grid;
     grid-template-columns: 35% 65%;
     border: 2px dashed black;

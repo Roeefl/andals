@@ -27,6 +27,7 @@
           v-if="isWithNorth"
           :allowPurchase="allowPurchase"
           @wall-clicked="onGuardClick($event)"
+          class="the-north"
         />
         <GameBoard
           :board="roomState.board"
@@ -43,8 +44,11 @@
         />
       </div>
       <aside class="sidebar">
-        <DraggableWidget>
-          <GameLog :friendly="roomState.friendlyGameLog" class="game-log" />
+        <DraggableWidget v-if="isWithNorth" :level="0" class="breach-marker">
+          <BreachMarker />
+        </DraggableWidget>
+        <DraggableWidget class="game-log">
+          <GameLog :friendly="roomState.friendlyGameLog" />
         </DraggableWidget>
         <DraggableWidget class="game-chat-widget">
           <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
@@ -119,6 +123,8 @@
   import GameLog from '@/containers/GameLog';
   import PlayersList from '@/containers/PlayersList';
 
+  import BreachMarker from '@/components/north/BreachMarker';
+
   import MyDeck from '@/components/interface/MyDeck';
   import TradeDialog from '@/components/interface/TradeDialog';
   import ConfirmMove from '@/components/interface/ConfirmMove';
@@ -183,7 +189,8 @@
       MyDeck,
       TradeDialog,
       OpponentDeck,
-      SelectResource
+      SelectResource,
+      BreachMarker
     },
     data: () => ({
       chatMessages: [],
@@ -572,6 +579,8 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
+  $board-height: 800px;
+
   .base-game {
     padding: 0 $spacer;
     flex: 1;
@@ -597,10 +606,15 @@
         flex-direction: column;
         background: white;
 
+        .the-north {
+          height: $board-height / 2;
+        }
+
         .game-board {
           background-image: url('../assets/ocean.jpg');
           background-size: cover;
           border: 4px dashed black;
+          height: $board-height;
 
           &.with-north {
             background-image: url('../assets/snowy-ground.jpg');
@@ -633,13 +647,13 @@
   }
 
   .game-log {
-    max-height: 40vh;
+    max-height: $board-height / 2;
     overflow-y: auto;
   }
 
   .game-chat-widget {
     position: relative;
-    max-height: 40vh;
+    max-height: $board-height / 2;
     overflow-y: auto;
   }
 </style>

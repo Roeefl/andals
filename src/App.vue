@@ -78,9 +78,9 @@
   #page {
     position: relative;
     flex: 1;
-    // background-image: url('./assets/wood.jpg');
+    // background-image: url('./assets/snowy-ground.jpg');
     // background-size: cover;
-    background: $app-background;
+    background: $primary;
     color: $primary;
   }
 </style>
