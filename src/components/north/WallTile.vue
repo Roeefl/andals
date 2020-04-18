@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import WallPosition from '@/components/tiles/WallPosition';
+  import WallPosition from '@/components/north/WallPosition';
   import { hexToRgb } from '@/utils/colors';
 
   export default {

@@ -94,7 +94,7 @@
         15 * 1000
       );
 
-      this.$store.commit('toggleAmbience');
+      this.$store.commit('toggleAmbience', false);
     },
     destroyed: function() {
       clearInterval(this.autoRefresh);

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import WallTile from '@/components/tiles/WallTile';
+  import WallTile from '@/components/north/WallTile';
 
   const wallTiles = [0, 1, 2, 3];
 

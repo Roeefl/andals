@@ -13,9 +13,9 @@
 <script>
   import { mapState } from 'vuex';
   
-  import WildlingSpawn from '@/components/game/WildlingSpawn';
-  import WildlingCamps from '@/components/game/WildlingCamps';
-  import TheWall from '@/components/game/TheWall';
+  import WildlingSpawn from '@/components/north/WildlingSpawn';
+  import WildlingCamps from '@/components/north/WildlingCamps';
+  import TheWall from '@/components/north/TheWall';
 
   const wildlingsMock = {
     regular: 12,
@@ -45,7 +45,7 @@
 
   .the-north {
     // opacity: 0.5;
-    height: 300px;
+    height: 400px;
     display: grid;
     grid-template-columns: 35% 65%;
     border: 2px dashed black;

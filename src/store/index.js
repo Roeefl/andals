@@ -11,8 +11,8 @@ const initialColor = '#2c3e50';
 
 export default new Vuex.Store({
   state: {
-    enableSnow: true,
-    enableAmbience: localStorage.enableFx || false,
+    enableSnow: localStorage.enableFx || false,
+    enableAmbience: localStorage.enableSound || false,
     isDeveloperMode: localStorage.developerMode || false,
     isUseGameEngine: localStorage.useGameEngine || false,
     profile: {
@@ -43,9 +43,12 @@ export default new Vuex.Store({
       state.enableSnow = !state.enableSnow;
       localStorage.enableFx = state.enableSnow;
     },
-    toggleAmbience(state) {
-      state.enableAmbience = !state.enableAmbience;
-      localStorage.enableSound = state.enableAmbience;
+    toggleAmbience(state, sync = true) {
+      if (state.enableAmbience || localStorage.enableSound)
+        state.enableAmbience = !state.enableAmbience;
+      
+      if (sync)
+        localStorage.enableSound = state.enableAmbience;
     },
     toggleDeveloperMode(state) {
       state.isDeveloperMode = !state.isDeveloperMode;
