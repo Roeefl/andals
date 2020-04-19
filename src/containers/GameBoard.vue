@@ -1,11 +1,11 @@
 <template>
   <div v-if="roomState.board" class="board">
     <div class="tiles">
-      <div v-for="(tileRow, rowIndex) in hexTileMap" :key="`row-${rowIndex}`" class="tile-row" :class="[tileRow.type]">
+      <div v-for="(tileRow, rowIndex) in hexTileMap" :key="`row-${rowIndex}`" class="tile-row" :class="{ 'even': rowIndex % 2 === 0 , 'odd': rowIndex % 2 === 1 }">
         <HexTile
-          v-for="(tile, colIndex) in tileRow.tiles"
+          v-for="(tile, colIndex) in tileRow"
           :key="`tile-${rowIndex}-${colIndex}`"
-          :type="tile"
+          :type="hexTileTypes[tile]"
           :tile="roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)]"
           @dropped="onRobberDropped(absoluteIndex(hexTileMap, rowIndex, colIndex))"
         >
@@ -69,7 +69,7 @@
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
   import { baseGameStructureTilemap, firstMenStructureTilemap } from '@/tilemaps/structures';
 
-  import { roadTileTypes, structureTileTypes } from '@/utils/tileManifest';
+  import {hexTileTypes, roadTileTypes, structureTileTypes } from '@/utils/tileManifest';
 
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
@@ -106,6 +106,7 @@
       this.structureTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameStructureTilemap : firstMenStructureTilemap;
       this.roadTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameRoadTilemap : firstMenRoadTilemap;
 
+      this.hexTileTypes = hexTileTypes;
       this.structureTileTypes = structureTileTypes;
       this.roadTileTypes = roadTileTypes;
 
@@ -123,13 +124,13 @@
           [row * 2, col * 2 + 1],
           [row * 2 + 1, col * 2],
           [row * 2 + 1, col * 2 + 1]
-        ].filter(([r, c]) => !!roadTileMap[r][c]);
+        ].filter(([r, c]) => !!this.roadTileMap[r][c]);
       },
       structureIndices: function(row, col) {
         return [
           [row, col * 2],
           [row, col * 2 + 1]
-        ].filter(([r, c]) => !!structureTileMap[r][c]);
+        ].filter(([r, c]) => !!this.structureTileMap[r][c]);
       },
       isRoadAllowed: function(row, col) {
         return isPurchaseAllowedRoad(this.structureTileMap, this.roadTileMap, this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.roomState.isSetupPhase, this.myPlayer.lastStructureBuilt);
@@ -145,7 +146,7 @@
         this.$emit('robber-dropped', tileIndex);
       },
       isDisplayRobberTile: function(row, col) {
-        const absoluteTileIndex = boardService.absoluteIndex(hexTileMap, row, col);
+        const absoluteTileIndex = boardService.absoluteIndex(this.hexTileMap, row, col);
 
         const isStaticPosition = !this.myPlayer.mustMoveRobber && this.roomState.robberPosition === absoluteTileIndex;
 

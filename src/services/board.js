@@ -50,7 +50,7 @@ class BoardService {
   }
 
   absoluteIndex(tilemap, row, col) {
-    return row * tilemap.length + col;
+    return row * tilemap[0].length + col;
   }
 }
 

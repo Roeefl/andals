@@ -11,9 +11,9 @@ export const baseGameHexTilemap = [
 
 // 5 x 7 === Total of 35 tiles
 export const firstMenHexTilemap = [
-  [0, 0, 1, 1, 1, 1, 0],
+  [0, 1, 1, 1, 1, 0, 0],
   [0, 1, 1, 1, 1, 1, 0],
-  [0, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 0],
   [1, 1, 1, 1, 1, 1, 0],
   [2, 2, 2, 2, 2, 2, 2]
 ];

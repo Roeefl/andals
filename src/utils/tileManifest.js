@@ -1,13 +1,6 @@
 const serverResourceTypes = ['lumber', 'brick', 'sheep', 'wheat', 'ore', 'desert', 'water', 'harborGeneric'];
 export const [LUMBER, BRICK, SHEEP, WHEAT, ORE, DESERT, WATER, HARBOR_GENERIC] = serverResourceTypes;
 
-const tileTypes  = ['spacer', 'resource', 'water'];
-export const [
-  TILE_SPACER,
-  TILE_RESOURCE,
-  TILE_WATER
-] = tileTypes;
-
 export const harborManifest = {
   water: null,
   harborGeneric: '3:1',
@@ -16,6 +9,15 @@ export const harborManifest = {
   sheep: '2:1',
   wheat: '2:1',
   ore: '2:1'
+};
+
+const tileTypes  = ['spacer', 'resource', 'water'];
+export const [TILE_SPACER, TILE_RESOURCE, TILE_WATER] = tileTypes;
+
+export const hexTileTypes = {
+  0: TILE_SPACER,
+  1: TILE_RESOURCE,
+  2: TILE_WATER
 };
 
 export const roadTileTypes = {
