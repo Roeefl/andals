@@ -1,13 +1,13 @@
 <template>
-  <div v-if="board" class="board" :class="{ ready }">
+  <div v-if="roomState.board" class="board">
     <div class="tiles">
       <div v-for="(tileRow, rowIndex) in hexTileMap" :key="`row-${rowIndex}`" class="tile-row" :class="[tileRow.type]">
         <HexTile
           v-for="(tile, colIndex) in tileRow.tiles"
           :key="`tile-${rowIndex}-${colIndex}`"
           :type="tile"
-          :tile="board[absoluteIndex(rowIndex, colIndex)]"
-          @dropped="onRobberDropped(absoluteIndex(rowIndex, colIndex))"
+          :tile="roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)]"
+          @dropped="onRobberDropped(absoluteIndex(hexTileMap, rowIndex, colIndex))"
         >
           <span v-if="isDeveloperMode" class="tile-index">
             [{{ rowIndex }}, {{ colIndex }}]
@@ -32,14 +32,14 @@
             :enabled="(allowPurchase && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchase && myPlayer.hasResources.city && isCityAllowed(row, col))"
             @clicked="$emit('tile-clicked', { type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
             :activeData="activeStructures[row][col] || {}"
-            :harbor="harborAdjacentToStructure(board, row, col, harborPorts)"
+            :harbor="harborAdjacentToStructure(structureTileMap, roomState.board, row, col, roomState.ports)"
             :myColor="myPlayer.color"
           >
             <span v-if="isDeveloperMode" class="structure-index">
               [{{ row }}, {{ col }}]
             </span>
           </StructureTile>
-          <HarborTile :tile="board[absoluteIndex(rowIndex, colIndex)]" />
+          <HarborTile :tile="roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)]" />
           <drag :transfer-data="{}">
             <RobberTile
               v-if="isDisplayRobberTile(rowIndex, colIndex)"
@@ -57,8 +57,7 @@
 
 <script>
   import { mapState } from 'vuex';
-
-  import boardService from '@/services/board';
+  import { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import HexTile from '@/components/tiles/HexTile';
   import RoadTile from '@/components/tiles/RoadTile';
@@ -66,12 +65,15 @@
   import RobberTile from '@/components/tiles/RobberTile';
   import HarborTile from '@/components/tiles/HarborTile';
 
-  import hexTileMap from '@/tilemaps/hexes';
-  import roadTileMap, { types as roadTileTypes } from '@/tilemaps/roads';
-  import structureTileMap, { types as structureTileTypes } from '@/tilemaps/structures';
-  import buildingCosts, { ROAD, SETTLEMENT, CITY } from '@/utils/buildingCosts';
+  import { baseGameHexTilemap, firstMenHexTilemap } from '@/tilemaps/hexes';
+  import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
+  import { baseGameStructureTilemap, firstMenStructureTilemap } from '@/tilemaps/structures';
+
+  import { roadTileTypes, structureTileTypes } from '@/utils/tileManifest';
+
+  import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
-  import { TILE_WATER } from '@/utils/tileManifest';
+  import buildingCosts, { ROAD, SETTLEMENT, CITY } from '@/utils/buildingCosts';
 
   export default {
     name: 'GameBoard',
@@ -83,53 +85,34 @@
       RobberTile
     },
     props: {
-      ready: {
-        type: Boolean,
-        default: false
-      },
-      robberPosition: {
-        type: Number,
-        required: true
-      },
       desiredRobberTile: {
         type: Number,
         required: true
       },
-      isSetupPhase: {
-        type: Boolean,
-        default: false
-      },
       allowPurchase: {
         type: Boolean,
         default: false
-      },
-      board: {
-        type: Array,
-        default: () => []
-      },
-      harborPorts: {
-        type: Array,
-        default: () => [0, 1]
       }
     },
-    computed: {
-      ...mapState([
-        'isDeveloperMode',
-        'activeStructures',
-        'activeRoads',
-        'myPlayer'
-      ])
-    },
+    computed: mapState([
+      'roomState',
+      'isDeveloperMode',
+      'activeStructures',
+      'activeRoads',
+      'myPlayer'
+    ]),
     created() {
-      this.hexTileMap = hexTileMap;
-      this.roadTileMap = roadTileMap;
-      this.roadTileTypes = roadTileTypes;
-      this.structureTileMap = structureTileMap;
+      this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
+      this.structureTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameStructureTilemap : firstMenStructureTilemap;
+      this.roadTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameRoadTilemap : firstMenRoadTilemap;
+
       this.structureTileTypes = structureTileTypes;
+      this.roadTileTypes = roadTileTypes;
+
       this.ROAD = ROAD;
       this.SETTLEMENT = SETTLEMENT;
       this.CITY = CITY;
-      this.TILE_WATER = TILE_WATER;
+
       this.harborAdjacentToStructure = harborAdjacentToStructure;
       this.absoluteIndex = boardService.absoluteIndex;
     },
@@ -149,10 +132,10 @@
         ].filter(([r, c]) => !!structureTileMap[r][c]);
       },
       isRoadAllowed: function(row, col) {
-        return isPurchaseAllowedRoad(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.myPlayer.lastStructureBuilt);
+        return isPurchaseAllowedRoad(this.structureTileMap, this.roadTileMap, this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.roomState.isSetupPhase, this.myPlayer.lastStructureBuilt);
       },
       isSettlementAllowed: function(row, col) {
-        return isPurchaseAllowedSettlement(this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.isSetupPhase, this.board, this.harborPorts);
+        return isPurchaseAllowedSettlement(this.structureTileMap, this.roadTileMap, this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.roomState.isSetupPhase, this.roomState.board, this.roomState.ports);
       },
       isCityAllowed: function(row, col) {
         return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT;
@@ -162,12 +145,12 @@
         this.$emit('robber-dropped', tileIndex);
       },
       isDisplayRobberTile: function(row, col) {
-        const absoluteTileIndex = boardService.absoluteIndex(row, col);
+        const absoluteTileIndex = boardService.absoluteIndex(hexTileMap, row, col);
 
-        const isStaticPosition = !this.myPlayer.mustMoveRobber && this.robberPosition === absoluteTileIndex;
+        const isStaticPosition = !this.myPlayer.mustMoveRobber && this.roomState.robberPosition === absoluteTileIndex;
 
         const dynamicPosition = this.desiredRobberTile === -1
-          ? this.robberPosition
+          ? this.roomState.robberPosition
           : this.desiredRobberTile;
         const isDynamicPosition = this.myPlayer.mustMoveRobber && absoluteTileIndex === dynamicPosition;
 

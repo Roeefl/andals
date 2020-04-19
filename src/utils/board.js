@@ -1,5 +1,3 @@
-import structureTileMap from '@/tilemaps/structures';
-import roadTileMap from '@/tilemaps/roads';
 import { TILE_WATER } from '@/utils/tileManifest';
 
 // @TODO: Find a way to share this method and similar others across server-client - they are identical and currently I need to keep 2 copies
@@ -18,7 +16,7 @@ function hexTileAdjacentStructures(tileRow, tileCol) {
   ];
 };
 
-export function harborAdjacentStructures(tileRow, tileCol, harborPorts = [0, 1]) {
+export function harborAdjacentStructures(structureTileMap, tileRow, tileCol, harborPorts = [0, 1]) {
   const adjacentStructures = hexTileAdjacentStructures(tileRow, tileCol)
     .filter(([sRow, sCol]) => sRow >= 0 && sRow < structureTileMap.length && !!structureTileMap[sRow][sCol]);
 
@@ -49,16 +47,16 @@ function adjacentStructuresToStructure(tileType, row, col) {
   ];
 };
 
-export function harborAdjacentToStructure(board, row, col, harborPorts = [0, 1]) {
+export function harborAdjacentToStructure(structureTileMap, board, row, col, harborPorts = [0, 1]) {
   return board
     .filter(({ type, resource }) => type === TILE_WATER && !!resource)
     .find(({ row: tileRow, col: tileCol }) => {
-      const adjacentStructures = harborAdjacentStructures(tileRow, tileCol, harborPorts);
+      const adjacentStructures = harborAdjacentStructures(structureTileMap, tileRow, tileCol, harborPorts);
       return adjacentStructures.some(([structureRow, structureCol]) => structureRow === row && structureCol === col);
     });
 }
 
-export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, board = [], harborPorts = [0, 1]) {
+export function isPurchaseAllowedSettlement(structureTileMap, roadTileMap, activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, board = [], harborPorts = [0, 1]) {
   if (!isSetupPhase) {
     const isAdjacentToOwnedRoad = activeRoads
       .flat()
@@ -90,7 +88,7 @@ export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySes
   }
 
   // Not allowed to place structure on ports on setup round
-  if (isSetupPhase && harborAdjacentToStructure(board, row, col, harborPorts)) return false;
+  if (isSetupPhase && harborAdjacentToStructure(structureTileMap, board, row, col, harborPorts)) return false;
 
   const isAdjacentToActiveStructures = activeStructures
     .flat()
@@ -106,7 +104,7 @@ export function isPurchaseAllowedSettlement(activeStructures, activeRoads, mySes
   return isAdjacentToActiveStructures.every(isAdjacent => !isAdjacent);
 };
 
-export function isPurchaseAllowedRoad(activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, lastStructureBuilt = null) {
+export function isPurchaseAllowedRoad(structureTileMap, roadTileMap, activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, lastStructureBuilt = null) {
   const allRoads = activeRoads.flat();
 
   // Already owns this road...

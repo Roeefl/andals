@@ -1,74 +1,19 @@
-import {
-  TILE_SPACER,
-  TILE_WATER,
-  TILE_RESOURCE
-} from '@/utils/tileManifest';
+// 7 x 7 === Total of 49 tiles
+export const baseGameHexTilemap = [
+  [0, 2, 2, 2, 2, 0, 0],
+  [0, 2, 1, 1, 1, 2, 0],
+  [2, 1, 1, 1, 1, 2, 0],
+  [2, 1, 1, 1, 1, 1, 2],
+  [2, 1, 1, 1, 1, 2, 0],
+  [0, 2, 1, 1, 1, 2, 0],
+  [0, 2, 2, 2, 2, 0, 0]
+];
 
-const rowTypes = ['even', 'odd'];
-const [ROW_EVEN, ROW_ODD] = rowTypes;
-
-// 7 x 7 === 49 total hex-tiles board
-export default [
-  {
-    type: ROW_EVEN,
-    tiles: [
-      TILE_SPACER,
-      TILE_WATER, TILE_WATER, TILE_WATER, TILE_WATER,
-      TILE_SPACER, TILE_SPACER
-    ]
-  },
-  {
-    type: ROW_ODD,
-    tiles: [
-      TILE_SPACER,
-      TILE_WATER,
-      TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE,
-      TILE_WATER,
-      TILE_SPACER
-    ]
-  },
-  {
-    type: ROW_EVEN,
-    tiles: [
-      TILE_WATER,
-      TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE,
-      TILE_WATER,
-      TILE_SPACER
-    ]
-  },
-  {
-    type: ROW_ODD,
-    tiles: [
-      TILE_WATER,
-      TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE,
-      TILE_WATER
-    ]
-  },
-  {
-    type: ROW_EVEN,
-    tiles: [
-      TILE_WATER,
-      TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE,
-      TILE_WATER,
-      TILE_SPACER
-    ]
-  },
-  {
-    type: ROW_ODD,
-    tiles: [
-      TILE_SPACER,
-      TILE_WATER,
-      TILE_RESOURCE, TILE_RESOURCE, TILE_RESOURCE,
-      TILE_WATER,
-      TILE_SPACER
-    ]
-  },
-  {
-    type: ROW_EVEN,
-    tiles: [
-      TILE_SPACER,
-      TILE_WATER, TILE_WATER, TILE_WATER, TILE_WATER,
-      TILE_SPACER, TILE_SPACER
-    ]
-  }
+// 5 x 7 === Total of 35 tiles
+export const firstMenHexTilemap = [
+  [0, 0, 1, 1, 1, 1, 0],
+  [0, 1, 1, 1, 1, 1, 0],
+  [0, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 0],
+  [2, 2, 2, 2, 2, 2, 2]
 ];

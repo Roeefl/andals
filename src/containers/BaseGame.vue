@@ -30,11 +30,6 @@
           class="the-north"
         />
         <GameBoard
-          :board="roomState.board"
-          :harborPorts="roomState.ports"
-          :robberPosition="roomState.robberPosition || -1"
-          :ready="roomState.isGameReady"
-          :isSetupPhase="roomState.isSetupPhase"
           :allowPurchase="allowPurchase"
           :desiredRobberTile="desiredRobberTile"
           @tile-clicked="onTileClick($event)"
@@ -138,10 +133,7 @@
   import { initialResourceCounts } from '@/specs/resources';
   import { ROAD, GUARD, GAME_CARD } from '@/utils/buildingCosts';
 
-  import {
-    TILE_WATER,
-    HARBOR_GENERIC
-  } from '@/utils/tileManifest';
+  import { HARBOR_GENERIC } from '@/utils/tileManifest';
 
   import {
     MESSAGE_CHAT,

@@ -79,9 +79,9 @@
     }
 
     &.spacer {
-      opacity: 0;
-      // opacity: 1;
-      // background: lightgray;
+      // opacity: 0;
+      opacity: 1;
+      background: lightgray;
     }
 
     &.water {

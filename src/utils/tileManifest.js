@@ -1,12 +1,11 @@
 const serverResourceTypes = ['lumber', 'brick', 'sheep', 'wheat', 'ore', 'desert', 'water', 'harborGeneric'];
 export const [LUMBER, BRICK, SHEEP, WHEAT, ORE, DESERT, WATER, HARBOR_GENERIC] = serverResourceTypes;
 
-const tileTypes  = ['resource', 'water', 'spacer'];
-
+const tileTypes  = ['spacer', 'resource', 'water'];
 export const [
+  TILE_SPACER,
   TILE_RESOURCE,
-  TILE_WATER,
-  TILE_SPACER
+  TILE_WATER
 ] = tileTypes;
 
 export const harborManifest = {
@@ -17,4 +16,17 @@ export const harborManifest = {
   sheep: '2:1',
   wheat: '2:1',
   ore: '2:1'
+};
+
+export const roadTileTypes = {
+  0: 'hide',
+  1: 'top-left',
+  2: 'top-right',
+  3: 'left'
+};
+
+export const structureTileTypes = {
+  0: 'hide',
+  1: 'top', // enables roads: north, south-west, south-east
+  2: 'top-left' // enables roads: south, north-west, north-east
 };
