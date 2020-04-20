@@ -101,7 +101,13 @@
       :isOpen="myPlayer.isDeclaringMonopoly"
       @resource-selected="onMonopolySelected($event)"
     />
-    <BaseOverlay :isOpen="showVictoryScreen" closeText="OKEY COOL FOR HIM" @close="showVictoryScreen = false" />
+    <BaseOverlay :isOpen="!!essentialOverlay">
+      <div class="overlay-content">
+        <h1>
+          {{ essentialOverlay ? essentialOverlay.message : 'NONE' }}
+        </h1>
+      </div>
+    </BaseOverlay>
   </div>
 </template>
 
@@ -202,7 +208,7 @@
         isTradeConfirmed: false
       },
       stealingFrom: {},
-      showVictoryScreen: false
+      essentialOverlay: null
     }),
     async created() {
       if (!this.room) {
@@ -289,9 +295,20 @@
         
         if (this.bankTradeResource) this.evaluateBankTrade();
       },
+      onEssentialBroadcast: function(message) {
+        this.essentialOverlay = {
+          message
+        };
+          
+        setTimeout(
+          () => this.essentialOverlay = null,
+          3000
+        );
+      },
       onBroadcastReceived: function(broadcast) {
         const {
           type,
+          isEssential = false,
           sender,
           senderSessionId,
           message,
@@ -309,11 +326,13 @@
           case MESSAGE_ROLL_DICE:
             const { dice } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_DICE, playerName, dice });
+            if (isEssential) this.onEssentialBroadcast(`${playerName} rolls: ${dice}`);
             break;
 
           case MESSAGE_COLLECT_ALL_LOOT:
             const { loot } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
+            if (isEssential) this.onEssentialBroadcast(`${playerName} collects: ${loot}`);
             break;
 
           case MESSAGE_DISCARD_HALF_DECK:
@@ -329,10 +348,11 @@
           case MESSAGE_GAME_VICTORY:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
             this.$store.commit('victory', playerName);
-            this.showVictoryScreen = true;
+            this.onEssentialBroadcast(`VICTORY! ${playerName} has won the game!`);
             break;
             
           default:
+            if (isEssential) this.onEssentialBroadcast(message);
             break;
         }
       },
@@ -660,5 +680,14 @@
       margin-top: $spacer / 2;
       justify-content: flex-start;
     }
+  }
+
+  .overlay-content {
+    // animation: swing-in-top-fwd 0.3s cubic-bezier(0.550, 0.055, 0.675, 0.190) both;
+    width: 100vw;
+    height: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

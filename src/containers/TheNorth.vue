@@ -32,10 +32,10 @@
   import { mapState } from 'vuex';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
+  import TheWall from '@/components/north/TheWall';
   import WildlingSpawn from '@/components/north/WildlingSpawn';
   import WildlingCamps from '@/components/north/WildlingCamps';
   import WildlingClearing from '@/components/north/WildlingClearing';
-  import TheWall from '@/components/north/TheWall';
   import WildlingToken from '@/components/north/WildlingToken';
 
   import BaseOverlay from '@/components/common/BaseOverlay';
@@ -108,12 +108,17 @@
             const { tokens } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_WILDLING_TOKENS, tokens });
 
-            this.revealedWildlingTokens = tokens;
             setTimeout(
-              () => this.revealedWildlingTokens = null,
+              () => {
+                this.revealedWildlingTokens = tokens;
+                
+                setTimeout(() =>
+                  this.revealedWildlingTokens = null,
+                  3000
+                );
+              },
               3000
             );
-
             break;
 
           default:

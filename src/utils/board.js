@@ -164,7 +164,11 @@ export function isPurchaseAllowedRoad(structureTileMap, roadTileMap, activeStruc
         // road: [6, 7], type: 2 || intersecting roads: [6, 6], [6, 8], [5, 5], [7, 7]
         case 2:
           colOffset = roadRow % 2 === 0 ? 1 : 0;
-          intersections = [[roadRow, roadCol - 1], [roadRow, roadCol + 1], [roadRow - 1, roadCol - 1 + colOffset], [roadRow + 1, roadCol], [roadRow + 1, roadCol + 1]];
+          intersections = [
+            [roadRow, roadCol - 1], [roadRow, roadCol + 1],
+            [roadRow - 1, roadCol - 1 + colOffset], [roadRow - 1, roadCol + colOffset],
+            [roadRow + 1, roadCol], [roadRow + 1, roadCol + 1]
+          ];
           break;
 
         // road: [7, 7], type: 3 || intersecting roads: [6, 6], [6, 7], [8, 5], [8, 6]

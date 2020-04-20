@@ -47,6 +47,8 @@
   .wildling-token {
     position: relative;
     background: $primary;
+    width: 32px;
+    height: 32px;
 
     .wildling-icon {
       position: absolute;

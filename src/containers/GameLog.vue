@@ -100,6 +100,7 @@
 
       .loot {
         display: flex;
+        flex-flow: row wrap;
 
         .resource-type { 
           display: flex;
