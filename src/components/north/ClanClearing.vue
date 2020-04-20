@@ -2,7 +2,7 @@
   <div class="clan-clearing">
     <BaseIcon color="black" name="tent" size="32px" class="clearing-icon" />
     <fragment v-for="(count, type) in counts" :key="`type-${type}`">
-      <Wildling v-for="(wildling, w) in Array(count).fill(type)" :key="w" :type="type" size="20px" class="wildling" />
+      <Wildling v-for="(wildling, w) in Array(count).fill(type)" :key="w" :type="type" :size="30" class="wildling" />
     </fragment>
   </div>
 </template>

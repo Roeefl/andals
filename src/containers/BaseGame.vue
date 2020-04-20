@@ -38,7 +38,7 @@
           :class="{ 'with-north': isWithNorth }"
         />
       </div>
-      <aside class="sidebar">
+      <aside class="sidebar" :class="{ 'compact': isWithNorth }">
         <DraggableWidget v-if="isWithNorth" :level="0" class="breach-marker">
           <BreachMarker />
         </DraggableWidget>
@@ -571,7 +571,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $board-height: 800px;
+  $board-height: 760px;
 
   .base-game {
     padding: 0 $spacer;
@@ -609,6 +609,7 @@
           height: $board-height;
 
           &.with-north {
+            height: $board-height * 0.8;
             background-image: url('../assets/snowy-ground.jpg');
             background-size: unset;
             background-repeat: repeat;
@@ -628,6 +629,24 @@
             margin-top: $spacer;
           }
         }
+
+        .game-log {
+          max-height: $board-height / 2;
+          overflow-y: auto;
+        }
+
+        .game-chat-widget {
+          position: relative;
+          max-height: $board-height / 2;
+          overflow-y: auto;
+        }
+
+        &.compact {
+          .game-log,
+          .game-chat-widget {
+            max-height: $board-height * 0.4;
+          }
+        }
       }
     }
 
@@ -636,16 +655,5 @@
       margin-top: $spacer / 2;
       justify-content: flex-start;
     }
-  }
-
-  .game-log {
-    max-height: $board-height / 2;
-    overflow-y: auto;
-  }
-
-  .game-chat-widget {
-    position: relative;
-    max-height: $board-height / 2;
-    overflow-y: auto;
   }
 </style>
