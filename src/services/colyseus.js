@@ -1,7 +1,10 @@
 import * as Colyseus from 'colyseus.js';
 import localStorage from '@/services/localStorage';
+import axios from 'axios';
 
-const baseUrl = `${process.env.VUE_APP_SERVER_API_URL}${process.env.VUE_APP_SERVER_API_PORT || ''}`;
+const baseColyseusURL = `${process.env.VUE_APP_SERVER_API_URL}${process.env.VUE_APP_SERVER_API_PORT || ''}`;
+
+const baseUrl = process.env.VUE_APP_BASE_URL || 'http://localhost:1337';
 
 export const roomTypes = ['baseGame', 'firstMen'];
 export const [ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN] = roomTypes;
@@ -12,12 +15,13 @@ class ColyseusService {
       isReady: false,
       client: {},
       isJoinedRoom: false,
-      room: null
+      room: null,
+      buildingCosts: {}
     };
   }
 
   async init() {
-    const client = new Colyseus.Client(baseUrl);
+    const client = new Colyseus.Client(baseColyseusURL);
 
     this._.isReady = true;
     this._.client = client;
@@ -31,15 +35,14 @@ class ColyseusService {
     return this._.room;
   }
 
-  async buildingCosts() {
+  async fetchBuildingCosts() {
     const endpoint = 'buildingCosts';
 
-    const data = await axios
+    const { buildingCosts } = await axios
       .get(`${baseUrl}/api/${endpoint}/`)
       .then(({ data }) => data);
 
-    console.log('data: ', data)
-    return data;
+    this._.buildingCosts = buildingCosts;
   }
 
   async createRoom(roomType = ROOM_TYPE_BASE_GAME, options = {}) {

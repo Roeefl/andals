@@ -73,7 +73,7 @@
 
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
-  import buildingCosts, { ROAD, SETTLEMENT, CITY } from '@/utils/buildingCosts';
+  import { ROAD, SETTLEMENT, CITY } from '@/specs/purchases';
 
   export default {
     name: 'GameBoard',
