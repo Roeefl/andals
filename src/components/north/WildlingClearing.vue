@@ -1,9 +1,10 @@
 <template>
   <div class="clan-clearing">
-    <BaseIcon color="black" name="tent" size="32px" class="clearing-icon" />
-    <fragment v-for="(count, type) in counts" :key="`type-${type}`">
+    <BaseIcon color="black" name="tent" size="50px" class="clearing-icon" />
+    <fragment v-for="(count, type) in clearing.counts" :key="`type-${type}`">
       <Wildling v-for="(wildling, w) in Array(count).fill(type)" :key="w" :type="type" :size="30" class="wildling" />
     </fragment>
+    <span v-for="(clan, c) in clearing.clans" :key="`clan-${c}`" />
   </div>
 </template>
 
@@ -11,22 +12,20 @@
   import Wildling from '@/components/pieces/Wildling';
   import BaseIcon from '@/components/common/BaseIcon';
 
-  const countsMock = {
-    regular: 0,
-    climber: 0,
-    giant: 0
-  };
-
   export default {
-    name: 'ClanClearing',
+    name: 'WildlingClearing',
     components: {
       Wildling,
       BaseIcon
     },
     props: {
-      counts: {
+      clearing: {
         type: Object,
-        default: () => countsMock
+        default: () => ({
+          counts: {},
+          trails: [],
+          clans: []
+        })
       }
     }
   }
@@ -36,19 +35,7 @@
   @import '@/styles/partials';
 
   .clan-clearing {
-    width: 100%;
-    height: 50px;
     position: relative;
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-
-    .clearing-icon {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-40%);
-    }
   }
 
   .wildling {

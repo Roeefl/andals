@@ -4,6 +4,11 @@
       <AppHeader />
     </div>
     <div class="game-ui">
+      <div class="building-costs">
+        <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Costs" :width="500">
+          <BuildingCosts />
+        </ChoiceDialog>
+      </div>
       <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" class="available-loot" />
       <GameCards
         :deck="myPlayer.gameCards"
@@ -52,6 +57,8 @@
   import colyseusService from '@/services/colyseus';
 
   import AppHeader from '@/containers/AppHeader';
+  import ChoiceDialog from '@/components/common/ChoiceDialog';
+  import BuildingCosts from '@/components/interface/BuildingCosts';
   import AvailableLoot from '@/components/interface/AvailableLoot';
   import GameCards from '@/components/interface/GameCards';
   import RollingDice from '@/components/interface/RollingDice';
@@ -66,6 +73,8 @@
     name: 'ControlPanel',
     components: {
       AppHeader,
+      ChoiceDialog,
+      BuildingCosts,
       AvailableLoot,
       GameCards,
       RollingDice,
@@ -96,7 +105,7 @@
       isEndTurnDisabled: function() {
         return (
           this.roomState.isTurnOrderPhase ||
-          (this.roomState.isSetupPhase && this.myPlayer.hasResources.road) ||
+          (this.roomState.isSetupPhase && (this.myPlayer.hasResources.road || this.myPlayer.hasResources.settlement || this.myPlayer.hasResources.guard)) ||
           // Game started - meaning: either its not even my turn, or it is but I have not played yet
           !this.isMyTurn ||
           (!this.roomState.isSetupPhase && !this.roomState.isDiceRolled) ||
@@ -169,9 +178,9 @@
 
     .game-ui {
       padding-right: $spacer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 20% 50% 30%;
+      place-items: center center;
 
       .available-loot {
         padding-left: $spacer;

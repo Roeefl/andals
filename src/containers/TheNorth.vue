@@ -5,6 +5,9 @@
     </div>
     <div class="east">
       <WildlingCamps class="wildling-camps" />
+      <div class="wildling-clearings">
+        <WildlingClearing v-for="(clearing, c) in roomState.wildlingClearings" :key="`clearing-${c}`" :clearing="clearing" class="clearing" :class="`clearing-${c}`" />
+      </div>
       <TheWall :myColor="myPlayer.color" :wall="guards" @wall-clicked="onWallClicked($event)" class="the-wall" />
     </div>
     <BaseOverlay :isOpen="!!revealedWildlingTokens">
@@ -31,6 +34,7 @@
 
   import WildlingSpawn from '@/components/north/WildlingSpawn';
   import WildlingCamps from '@/components/north/WildlingCamps';
+  import WildlingClearing from '@/components/north/WildlingClearing';
   import TheWall from '@/components/north/TheWall';
   import WildlingToken from '@/components/north/WildlingToken';
 
@@ -47,6 +51,7 @@
     components: {
       WildlingSpawn,
       WildlingCamps,
+      WildlingClearing,
       TheWall,
       WildlingToken,
       BaseOverlay
@@ -144,6 +149,11 @@
         flex: 4;
       }
 
+      .wildling-clearings {
+        flex: 1;
+        display: flex;
+      }
+
       .the-wall {
         flex: 1;
       }
@@ -170,6 +180,26 @@
 
     & + & {
       margin-left: $spacer * 2;
+    }
+  }
+
+  .clearing {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0 $spacer * 2;
+
+    &.clearing-0,
+    &.clearing-1 {
+      justify-content: flex-start;
+    }
+
+    &.clearing-2,
+    &.clearing-3 {
+      justify-content: flex-end;
     }
   }
 </style>

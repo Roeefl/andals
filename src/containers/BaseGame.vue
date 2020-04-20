@@ -393,6 +393,10 @@
             section,
             position
           });
+
+          if (this.roomState.isSetupPhase)
+            this.finishTurn();
+
           return;
         }
 
@@ -570,7 +574,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $board-height: 760px;
+  $board-height: 750px;
 
   .base-game {
     padding: 0 $spacer;
@@ -598,16 +602,18 @@
         background: white;
 
         .the-north {
-          height: $board-height / 2;
+          height: $board-height * 0.5;
         }
 
         .game-board {
+          padding-top: $spacer * 2;
           background-image: url('../assets/ocean.jpg');
           background-size: cover;
           border: 4px dashed black;
           height: $board-height;
 
           &.with-north {
+            justify-content: flex-end;
             height: $board-height * 0.8;
             background-image: url('../assets/snowy-ground.jpg');
             background-size: unset;

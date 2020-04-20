@@ -24,7 +24,7 @@
     computed: {
       clanTrails: () => colyseusService.clanTrails,
       ...mapState([
-      'roomState'
+        'roomState'
       ])
     },
     created() {
@@ -32,7 +32,7 @@
       this.sectionNames = sectionNames;
       this.WOODS = WOODS;
 
-      console.log(this.clanTrails);
+      // console.log(this.clanTrails);
     }
   }
 </script>

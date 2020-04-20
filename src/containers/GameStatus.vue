@@ -1,10 +1,5 @@
 <template>
   <div class="game-status">
-    <div class="building-costs">
-      <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Building Costs" :width="500">
-        <BuildingCosts />
-      </ChoiceDialog>
-    </div>
     <div class="game-info">
       <div class="bank-resources">
         <BaseIcon name="bank" size="32px" color="white" class="bank-icon" />
@@ -26,18 +21,14 @@
 <script>
   import { mapState } from 'vuex';
 
-  import BuildingCosts from '@/components/interface/BuildingCosts';
   import RoomStats from '@/components/interface/RoomStats';
   import GameCards from '@/components/interface/GameCards';
   import ResourceCounts from '@/components/interface/ResourceCounts';
-  import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
     name: 'GameStatus',
     components: {
-      ChoiceDialog,
-      BuildingCosts,
       RoomStats,
       GameCards,
       ResourceCounts,
@@ -76,11 +67,6 @@
     display: grid;
     grid-template-columns: 20% 60% 20%;
     color: $app-background;
-
-    .building-costs {
-      display: flex;
-      justify-content: center;
-    }
 
     .game-info {
       padding-left: $spacer;

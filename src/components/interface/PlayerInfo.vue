@@ -128,11 +128,11 @@
 
         const style = {
           color: invertColor(playerColor),
-          backgroundColor: `rgba(${rgbPlayerColor}, 0.25)`
+          backgroundColor: `rgba(${rgbPlayerColor}, 0.5)`
         };
 
         if (this.isMe)
-          style.backgroundColor = `rgba(${rgbPlayerColor}, 0.75)`
+          style.backgroundColor = `rgba(${rgbPlayerColor}, 0.9)`
 
         return style;
       }

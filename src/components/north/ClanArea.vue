@@ -19,13 +19,11 @@
     <div class="clan-trails">
       <ClanTrail v-for="(trailValues, t) in trails" :key="`trail-${t}`" :value="trailDisplayValue(trailValues)" />
     </div>
-    <ClanClearing />
   </div>
 </template>
 
 <script>
   import ClanTrail from '@/components/north/ClanTrail';
-  import ClanClearing from '@/components/north/ClanClearing';
   import Wildling from '@/components/pieces/Wildling';
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
@@ -38,7 +36,6 @@
     name: 'ClanArea',
     components: {
       ClanTrail,
-      ClanClearing,
       Wildling,
       BaseButton,
       BaseIcon

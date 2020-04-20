@@ -36,6 +36,7 @@
   .wrapper {
     display: flex;
     justify-content: flex-end;
+    color: $primary;
   }
 
   .room-stats {
