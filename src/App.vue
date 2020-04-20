@@ -83,4 +83,5 @@
     background: $app-background;
     color: $primary;
   }
+
 </style>

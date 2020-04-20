@@ -7,22 +7,49 @@
       <WildlingCamps class="wildling-camps" />
       <TheWall :myColor="myPlayer.color" :wall="guards" @wall-clicked="onWallClicked($event)" class="the-wall" />
     </div>
+    <BaseOverlay :isOpen="!!revealedWildlingTokens">
+      <div class="overlay-content">
+        <h1>
+          The Wildlings Advance
+        </h1>
+        <WildlingToken
+          v-for="(token, t) in revealedWildlingTokens"
+          :key="`token-${t}`"
+          size="50px"
+          :wildling="token.wildlingType"
+          :clan="token.clanType"
+          class="wildling-token"
+        />
+      </div>
+    </BaseOverlay>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex';
-  
+  import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
+
   import WildlingSpawn from '@/components/north/WildlingSpawn';
   import WildlingCamps from '@/components/north/WildlingCamps';
   import TheWall from '@/components/north/TheWall';
+  import WildlingToken from '@/components/north/WildlingToken';
+
+  import BaseOverlay from '@/components/common/BaseOverlay';
+
+  import {
+    MESSAGE_REVEAL_WILDLING_TOKENS,
+    MESSAGE_PLACE_GUARD,
+    CHAT_LOG_WILDLING_TOKENS
+  } from '@/constants';
 
   export default {
     name: 'TheNorth',
     components: {
       WildlingSpawn,
       WildlingCamps,
-      TheWall
+      TheWall,
+      WildlingToken,
+      BaseOverlay
     },
     props: {
       allowPurchase: {
@@ -31,6 +58,7 @@
       }
     },
     computed: {
+      room: () => colyseusService.room,
       guards: function() {
         const { wall = [] } = this.roomState;
 
@@ -51,12 +79,41 @@
         'myPlayer'
       ])
     },
+    data: () => ({
+      revealedWildlingTokens: null
+    }),
+    created() {
+      this.initializeRoom(this.room);
+    },
     methods: {
+      initializeRoom: function(room = this.room) {
+        room.onMessage(this.onBroadcastReceived);
+      },
       onWallClicked: function(location) {
         const { section, position } = location;
         
         if (this.allowPurchase && this.myPlayer.hasResources.guard)
           this.$emit('wall-clicked', location);
+      },
+      onBroadcastReceived: function(broadcast) {
+        const { type } = broadcast;
+
+        switch (type) {
+          case MESSAGE_REVEAL_WILDLING_TOKENS:
+            const { tokens } = broadcast;
+            this.$store.commit('addGameLog', { type: CHAT_LOG_WILDLING_TOKENS, tokens });
+
+            this.revealedWildlingTokens = tokens;
+            setTimeout(
+              () => this.revealedWildlingTokens = null,
+              3000
+            );
+
+            break;
+
+          default:
+            break;
+        }
       }
     }
   }
@@ -90,6 +147,29 @@
       .the-wall {
         flex: 1;
       }
+    }
+  }
+
+  .overlay-content {
+    animation: swing-in-top-fwd 1.2s cubic-bezier(0.550, 0.055, 0.675, 0.190) both;
+    width: 60vw;
+    height: 30vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .revealed-tokens {
+      display: flex;
+    }
+  }
+
+  .wildling-token {
+    width: 100px;
+    height: 100px;
+
+    & + & {
+      margin-left: $spacer * 2;
     }
   }
 </style>

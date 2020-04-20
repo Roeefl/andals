@@ -255,7 +255,6 @@
     },
     methods: {
       initializeRoom: function(room = this.room) {
-      console.log("room", room)
         // Define a series of room lifecycle methods
         room.onStateChange.once(this.initializeState);
         room.onStateChange(this.updateState);

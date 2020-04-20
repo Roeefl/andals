@@ -67,7 +67,7 @@
   import invertColor from 'invert-color';
 
   import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
-  import { pluralTypes as purchaseTypes } from '@/utils/buildingCosts';
+  import { pluralTypes as purchaseTypes } from '@/specs/purchases';
   import { hexToRgb } from '@/utils/colors';
   import { CARD_KNIGHT } from '@/specs/gameCards';
   

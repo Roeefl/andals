@@ -2,11 +2,13 @@
   <v-overlay
     absolute
     :opacity="0.75"
+    :z-index="zIndex"
     :value="isOpen"
   >
-    <BaseButton color="orange lighten-2" @click="$emit('close')">
+    <BaseButton v-if="!!closeText" color="orange lighten-2" @click="$emit('close')">
       {{ closeText }}
     </BaseButton>
+    <slot />
   </v-overlay>
 </template>
 
@@ -23,9 +25,13 @@
         type: Boolean,
         default: false
       },
+      zIndex: {
+        type: Number,
+        default: 100
+      },
       closeText: {
         type: String,
-        default: 'CLOSE'
+        default: null
       }
     }
   }

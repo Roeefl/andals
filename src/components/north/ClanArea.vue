@@ -1,7 +1,7 @@
 <template>
   <div class="clan-area">
     <div class="clan-symbol">
-      <BaseIcon color="brown" :name="clan.icon" size="30px" />
+      <BaseIcon :name="clan.icon" :color="clanColors[clan.name]" size="30px" />
     </div>
     <div class="clan-camps">
       <BaseButton
@@ -30,6 +30,8 @@
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
 
+  import { clanColors } from '@/specs/clans';
+
   const campfires = [20, 16, 12, 8, 4];
 
   export default {
@@ -53,6 +55,7 @@
     },
     created() {
       this.campfires = campfires;
+      this.clanColors = clanColors;
     },
     methods: {
       trailDisplayValue: function(trailValues) {

@@ -1,11 +1,6 @@
 import * as Colyseus from 'colyseus.js';
 import localStorage from '@/services/localStorage';
 
-// const ENDPOINT = process.env.GAME_SERVER_URL || `${window.location.protocol}//${window.location.host}`;
-// const data = await axios
-//   .get(`${ENDPOINT}/colyseus/api/`)
-//   .then(({ data }) => data);
-
 const baseUrl = `${process.env.VUE_APP_SERVER_API_URL}${process.env.VUE_APP_SERVER_API_PORT || ''}`;
 
 export const roomTypes = ['baseGame', 'firstMen'];
@@ -34,6 +29,17 @@ class ColyseusService {
 
   get room() {
     return this._.room;
+  }
+
+  async buildingCosts() {
+    const endpoint = 'buildingCosts';
+
+    const data = await axios
+      .get(`${baseUrl}/api/${endpoint}/`)
+      .then(({ data }) => data);
+
+    console.log('data: ', data)
+    return data;
   }
 
   async createRoom(roomType = ROOM_TYPE_BASE_GAME, options = {}) {

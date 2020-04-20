@@ -1,7 +1,7 @@
 <template>
   <div class="wildling-camps">
     <div v-for="(section, s) in sectionNames" :key="`section-${s}`" class="wildling-section" :class="{ 'woods': section === WOODS }">
-      <ClanArea v-if="section !== WOODS" :clan="clans[section]" :camps="roomState.clanCamps[section].camps" />
+      <ClanArea v-if="section !== WOODS && roomState.clanCamps" :clan="clans[section]" :camps="roomState.clanCamps[section].camps" />
     </div>
   </div>
 </template>

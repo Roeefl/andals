@@ -1,6 +1,6 @@
 <template>
   <MessageList title="Game Log" :messages="gameLog" class="messages-container">
-    <li v-for="(log, i) in gameLog" :key="i" class="log">
+    <li v-for="(log, i) in gameLog" :key="i" class="log" :class="{ 'last-in-round': log.type === CHAT_LOG_SIMPLE && log.message && log.message.toLowerCase().includes('finish') }">
       <div v-if="log.type === CHAT_LOG_SIMPLE">
         {{ log.message }}
       </div>
@@ -22,6 +22,16 @@
           />
         </span>
       </div>
+      <div v-if="log.type === CHAT_LOG_WILDLING_TOKENS" class="wildling-tokens">
+        Wildling Tokens revealed:
+        <WildlingToken
+          v-for="(token, t) in log.tokens"
+          :key="`token-${t}`"
+          :wildling="token.wildlingType"
+          :clan="token.clanType"
+          class="wildling-token"
+        />
+      </div>
     </li>
   </MessageList>
 </template>
@@ -33,9 +43,10 @@
   import ResourceCard from '@/components/game/ResourceCard';
   import GameDice from '@/components/interface/GameDice';
   import BaseIcon from '@/components/common/BaseIcon';
+  import WildlingToken from '@/components/north/WildlingToken';
   
   import { resourceCardTypes } from '@/specs/resources';
-  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD } from '@/constants';
+  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD, CHAT_LOG_WILDLING_TOKENS } from '@/constants';
 
   export default {
     name: 'GameLog',
@@ -43,7 +54,8 @@
       MessageList,
       ResourceCard,
       GameDice,
-      BaseIcon
+      BaseIcon,
+      WildlingToken
     },
     props: {
       friendly: {
@@ -56,10 +68,12 @@
     ]),
     created() {
       this.resourceCardTypes = resourceCardTypes;
+
       this.CHAT_LOG_SIMPLE = CHAT_LOG_SIMPLE;
       this.CHAT_LOG_DICE = CHAT_LOG_DICE;
       this.CHAT_LOG_LOOT = CHAT_LOG_LOOT;
       this.CHAT_LOG_DISCARD = CHAT_LOG_DISCARD;
+      this.CHAT_LOG_WILDLING_TOKENS = CHAT_LOG_WILDLING_TOKENS;
     }
   }
 </script>
@@ -75,9 +89,14 @@
     padding: $spacer / 2;
 
     .log {
-      border-top: 1px solid lightgray;
-      margin: $spacer / 3 0;
-      padding: $spacer / 3 0;
+      margin: $spacer / 5 0;
+      padding: $spacer / 5 0;
+
+      &.last-in-round {
+        margin: $spacer / 2 0;
+        padding: $spacer / 2 0;
+        border-bottom: 1px solid lightgray;
+      }
 
       .loot {
         display: flex;
@@ -96,6 +115,19 @@
 
     .player-rolls {
       display: flex;
+    }
+
+    .wildling-tokens {
+      display: flex;
+    }
+  }
+
+  .wildling-token {
+    width: 30px;
+    height: 30px;
+    
+    & + & {
+      margin-left: $spacer / 2;
     }
   }
 </style>
