@@ -29,6 +29,7 @@
     ]),
     async beforeCreate() {
       await colyseusService.init();
+      await colyseusService.initializeStaticResources();
     },
     watch: {
       enableAmbience: function(enabled, prevEnabled) {

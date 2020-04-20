@@ -17,7 +17,7 @@
       </BaseButton>
     </div>
     <div class="clan-trails">
-      <ClanTrail v-for="(trailValues, t) in clan.trails" :key="`trail-${t}`" :value="trailDisplayValue(trailValues)" />
+      <ClanTrail v-for="(trailValues, t) in trails" :key="`trail-${t}`" :value="trailDisplayValue(trailValues)" />
     </div>
     <ClanClearing />
   </div>
@@ -51,6 +51,10 @@
       camps: {
         type: Array,
         default: () => []
+      },
+      trails: {
+        type: Array,
+        required: true
       }
     },
     created() {

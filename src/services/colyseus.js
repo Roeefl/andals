@@ -1,6 +1,8 @@
 import * as Colyseus from 'colyseus.js';
-import localStorage from '@/services/localStorage';
 import axios from 'axios';
+import localStorage from '@/services/localStorage';
+
+import { initialBuildingCosts } from '@/specs/purchases';
 
 const baseColyseusURL = `${process.env.VUE_APP_SERVER_API_URL}${process.env.VUE_APP_SERVER_API_PORT || ''}`;
 
@@ -16,7 +18,8 @@ class ColyseusService {
       client: {},
       isJoinedRoom: false,
       room: null,
-      buildingCosts: {}
+      buildingCosts: initialBuildingCosts,
+      clanTrails: {}
     };
   }
 
@@ -35,6 +38,11 @@ class ColyseusService {
     return this._.room;
   }
 
+  async initializeStaticResources() {
+    await this.fetchBuildingCosts();
+    await this.fetchClans();
+  }
+
   async fetchBuildingCosts() {
     const endpoint = 'buildingCosts';
 
@@ -47,6 +55,20 @@ class ColyseusService {
 
   get buildingCosts() {
     return this._.buildingCosts;
+  }
+
+  async fetchClans() {
+    const endpoint = 'clans';
+
+    const { clans } = await axios
+      .get(`${baseUrl}/api/${endpoint}/`)
+      .then(({ data }) => data);
+
+    this._.clanTrails = clans;
+  }
+
+  get clanTrails() {
+    return this._.clanTrails;
   }
 
   async createRoom(roomType = ROOM_TYPE_BASE_GAME, options = {}) {

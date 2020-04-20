@@ -9,3 +9,11 @@ export const victoryPointsPerPurchase = {
   guard: '?',
   gameCard: '?'
 };
+
+export const initialBuildingCosts = {
+  road: {},
+  settlement: {},
+  city: {},
+  guard: {},
+  gameCard: {}
+};

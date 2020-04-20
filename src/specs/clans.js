@@ -18,17 +18,15 @@ export const clanColors = {
 export const clans = {
   river: {
     name: CLAN_RIVER,
-    icon: clanIcons.river,
-    trails: [[1, 2], [3]]
+    icon: clanIcons.river
   },
   cave: {
     name: CLAN_CAVE,
-    icon: clanIcons.cave,
-    trails: [[4], [5]]
+    icon: clanIcons.cave
   },
   hornfoot: {
     name: CLAN_HORNFOOT,
-    icon: clanIcons.hornfoot,
-    trails: [[6], [7, 8]]
+    icon: clanIcons.hornfoot
   },
 };
+

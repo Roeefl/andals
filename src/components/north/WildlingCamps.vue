@@ -1,13 +1,15 @@
 <template>
   <div class="wildling-camps">
     <div v-for="(section, s) in sectionNames" :key="`section-${s}`" class="wildling-section" :class="{ 'woods': section === WOODS }">
-      <ClanArea v-if="section !== WOODS && roomState.clanCamps" :clan="clans[section]" :camps="roomState.clanCamps[section].camps" />
+      <ClanArea v-if="section !== WOODS && roomState.clanCamps" :clan="clans[section]" :camps="roomState.clanCamps[section].camps" :trails="clanTrails[section].trails" />
     </div>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex';
+  import colyseusService from '@/services/colyseus';
+
   import ClanArea from '@/components/north/ClanArea';
   import { clanNames, clans } from '@/specs/clans';
 
@@ -19,13 +21,18 @@
     components: {
       ClanArea
     },
-    computed: mapState([
+    computed: {
+      clanTrails: () => colyseusService.clanTrails,
+      ...mapState([
       'roomState'
-    ]),
+      ])
+    },
     created() {
       this.clans = clans;
       this.sectionNames = sectionNames;
       this.WOODS = WOODS;
+
+      console.log(this.clanTrails);
     }
   }
 </script>

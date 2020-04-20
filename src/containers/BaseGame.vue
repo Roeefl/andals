@@ -211,7 +211,6 @@
       }
 
       this.initializeRoom();
-      await colyseusService.fetchBuildingCosts();
     },
     destroyed() {
       this.$store.commit('destroyRoomState');
