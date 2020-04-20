@@ -131,7 +131,7 @@
   import BaseOverlay from '@/components/common/BaseOverlay';
 
   import { initialResourceCounts } from '@/specs/resources';
-  import { ROAD, GUARD, GAME_CARD } from '@/utils/buildingCosts';
+  import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
 
   import { HARBOR_GENERIC } from '@/utils/tileManifest';
 
@@ -211,6 +211,7 @@
       }
 
       this.initializeRoom();
+      await colyseusService.fetchBuildingCosts();
     },
     destroyed() {
       this.$store.commit('destroyRoomState');
