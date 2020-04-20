@@ -22,8 +22,8 @@
 </template>
 
 <script>
+  import colyseusService from '@/services/colyseus';
   import { resourceCardTypes } from '@/specs/resources';
-  import buildingCosts from '@/utils/buildingCosts';
 
   import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';
@@ -48,8 +48,10 @@
         default: false
       }
     },
+    computed: {
+      buildingCosts: () => colyseusService.buildingCosts
+    },
     created() {
-      this.buildingCosts = buildingCosts;
       this.resourceCardTypes = resourceCardTypes;
     }
   }

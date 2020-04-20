@@ -1,13 +1,13 @@
 <template>
   <div class="building-costs">
-    <section class="resource-type" v-for="section in buildingCosts" :key="section.type">
+    <section class="resource-type" v-for="(costs, name) in buildingCosts" :key="name">
       <div class="description">
         <h3 class="purchase-type">
-          <BaseIcon :name="structureIcons[section.type]" size="20px" color="black" />
-          {{ section.type }}
+          <BaseIcon :name="structureIcons[name]" size="20px" color="black" />
+          {{ name }}
         </h3>
         <span class="vp">
-          {{ section.vp }} victory points
+          {{ victoryPointsPerPurchase[name] }} Victory Points
         </span>
       </div>
       <div class="cost">
@@ -15,7 +15,7 @@
           v-for="resource in resourceCardTypes"
           :key="resource"
           :resource="resource"
-          :count="section[resource]"
+          :count="costs[resource]"
         />    
       </div>
     </section>
@@ -31,12 +31,14 @@
 </template>
 
 <script>
+  import colyseusService from '@/services/colyseus';
+  
   import ResourceCard from '@/components/game/ResourceCard';
   import BaseIcon from '@/components/common/BaseIcon';
 
   import { resourceCardTypes } from '@/specs/resources';
-  import buildingCosts from '@/utils/buildingCosts';
   import { structureIcons } from '@/specs/gamePieces';
+  import { victoryPointsPerPurchase } from '@/specs/purchases';
 
   export default {
     name: 'BuildingCosts',
@@ -44,8 +46,11 @@
       ResourceCard,
       BaseIcon
     },
+    computed: {
+      buildingCosts: () => colyseusService.buildingCosts
+    },
     created() {
-      this.buildingCosts = buildingCosts;
+      this.victoryPointsPerPurchase = victoryPointsPerPurchase;
       this.structureIcons = structureIcons;
       this.resourceCardTypes = resourceCardTypes;
     }

@@ -45,6 +45,10 @@ class ColyseusService {
     this._.buildingCosts = buildingCosts;
   }
 
+  get buildingCosts() {
+    return this._.buildingCosts;
+  }
+
   async createRoom(roomType = ROOM_TYPE_BASE_GAME, options = {}) {
     const reservation = await this.client.create(roomType, options);
     return reservation;
