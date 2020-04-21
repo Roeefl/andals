@@ -35,6 +35,9 @@ export default new Vuex.Store({
     },
     gameLog: [],
     alerts: {},
+    essentialOverlay: {
+      isOpen: false
+    },
     justPurchasedGameCard: false,
     gameWinner: null
   },
@@ -200,6 +203,21 @@ export default new Vuex.Store({
     },
     victory(state, playerName) {
       state.gameWinner = playerName;
+    },
+    setEssentialOverlay(state, data = {}) {
+      state.essentialOverlay = {
+        isOpen: true,
+        ...data
+      };
+        
+      setTimeout(
+        () => {
+          state.essentialOverlay = {
+            isOpen: false
+          };
+        },
+        3000
+      );
     }
   },
   actions: {

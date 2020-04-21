@@ -101,13 +101,6 @@
       :isOpen="myPlayer.isDeclaringMonopoly"
       @resource-selected="onMonopolySelected($event)"
     />
-    <BaseOverlay :isOpen="!!essentialOverlay">
-      <div class="overlay-content">
-        <h1>
-          {{ essentialOverlay ? essentialOverlay.message : 'NONE' }}
-        </h1>
-      </div>
-    </BaseOverlay>
   </div>
 </template>
 
@@ -134,7 +127,6 @@
   import SelectResource from '@/components/interface/SelectResource';
 
   import DraggableWidget from '@/components/common/DraggableWidget';
-  import BaseOverlay from '@/components/common/BaseOverlay';
 
   import { initialResourceCounts } from '@/specs/resources';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
@@ -174,7 +166,6 @@
     name: 'BaseGame',
     components: {
       DraggableWidget,
-      BaseOverlay,
       ControlPanel,
       GameStatus,
       GameBoard,
@@ -207,8 +198,7 @@
         tradeCounts: {},
         isTradeConfirmed: false
       },
-      stealingFrom: {},
-      essentialOverlay: null
+      stealingFrom: {}
     }),
     async created() {
       if (!this.room) {
@@ -295,15 +285,8 @@
         
         if (this.bankTradeResource) this.evaluateBankTrade();
       },
-      onEssentialBroadcast: function(message) {
-        this.essentialOverlay = {
-          message
-        };
-          
-        setTimeout(
-          () => this.essentialOverlay = null,
-          3000
-        );
+      onEssentialBroadcast: function(header) {
+        this.$store.commit('setEssentialOverlay', { header });
       },
       onBroadcastReceived: function(broadcast) {
         const {
@@ -680,14 +663,5 @@
       margin-top: $spacer / 2;
       justify-content: flex-start;
     }
-  }
-
-  .overlay-content {
-    // animation: swing-in-top-fwd 0.3s cubic-bezier(0.550, 0.055, 0.675, 0.190) both;
-    width: 100vw;
-    height: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 </style>
