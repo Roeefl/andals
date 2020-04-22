@@ -67,7 +67,7 @@
   }
 
   .road {
-    background: #6D4C41;
+    background: $primary;
     z-index: $zindex-tile-value - 1;
     position: absolute;
     border-radius: 3px;

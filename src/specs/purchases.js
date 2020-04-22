@@ -1,4 +1,5 @@
-export const pluralTypes = ['roads', 'settlements', 'cities', 'gameCards', 'guards'];
+export const pluralTypes = ['roads', 'settlements', 'cities', 'guards'];
+
 export const types = ['road', 'settlement', 'city', 'gameCard', 'guard'];
 export const [ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD] = types;
 

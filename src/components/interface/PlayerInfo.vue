@@ -9,7 +9,8 @@
           v-if="isStarted && !isMe && !waitingTrade"
           icon
           iconName="swap-vertical-circle"
-          iconSize="x-large"
+          iconSize="32px"
+          :iconColor="player.color"
           :clickable="enableTrading"
           @click="$emit('trade-with', player.playerSessionId)"
         />
@@ -18,46 +19,52 @@
           icon
           iconName="hand-okay"
           iconSize="x-large"
+          :iconColor="player.color"
           @click="$emit('steal-from', player.playerSessionId)"
         />
-        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="white" class="longest-road" />
-        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="white" class="largest-army" />
+        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="black" class="longest-road" />
+        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="black" class="largest-army" />
         <BaseIcon v-if="waitingTrade" name="head-dots-horizontal" size="32px" color="red" class="thinking" />
         <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
       </div>
     </div>
     <div class="resources" @click="$emit('deck-clicked')">
-      <div v-for="pieceType in purchaseTypes" :key="pieceType" class="resource">
+      <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="resource">
         <GamePiece 
           showCount
-          :count="pieceType === 'gameCards' ? (player[pieceType].length) : player[pieceType]"
-          :type="pieceType"
-          :color="invertColor(player.color)"
+          :count="player[purchaseType]"
+          :type="purchaseType"
+          :color="player.color"
         />
       </div>
     </div>
     <div class="resources" @click="$emit('deck-clicked')">
       <ResourceCounts :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
     </div>
-    <div class="belongings">
-      <div class="game-cards">
-        <GameCard
-          v-for="(gameCard, index) in (player.gameCards || []).filter(({ type, wasPlayed }) => wasPlayed && type === CARD_KNIGHT)"
-          :key="`${gameCard.type}-${index}`"
-          :type="gameCard.type"
-          wasPlayed
-          :clickable="false"
-          class="game-card"
-        />
+    <div class="player-assets">
+      <div class="belongings">
+        <div class="game-cards">
+          <GameCard
+            v-for="(gameCard, index) in (player.gameCards || [])"
+            :key="`${gameCard.type}-${index}`"
+            :clickable="false"
+            :type="gameCard.type"
+            :wasPlayed="gameCard.wasPlayed"
+            class="game-card"
+          />
+        </div>
+        <div class="owned-harbors">
+          <BaseIcon
+            v-for="(harbor, resource) in player.ownedHarbors"
+            :key="`owned-harbor-${resource}`"
+            v-show="harbor"
+            name="sail-boat"
+            :color="resourceCardColors[resource] || '#3E2723'" size="32px"
+          />
+        </div>
       </div>
-      <div class="owned-harbors">
-        <BaseIcon
-          v-for="(harbor, resource) in player.ownedHarbors"
-          :key="`owned-harbor-${resource}`"
-          v-show="harbor"
-          name="sail-boat"
-          :color="resourceCardColors[resource] || '#3E2723'" size="32px"
-        />
+      <div class="hero-card">
+        {{ player.currentHeroCard.name }}
       </div>
     </div>
   </div>
@@ -78,6 +85,8 @@
   
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
+
+  import tileColors from '@/styles/export.scss';
 
   export default {
     name: 'PlayerInfo.vue',
@@ -116,10 +125,8 @@
       }
     },
     created() {
-      this.invertColor = invertColor;
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;
-      this.CARD_KNIGHT = CARD_KNIGHT;
       this.resourceCardColors = resourceCardColors;
     },
     methods: {
@@ -127,12 +134,12 @@
         const rgbPlayerColor = hexToRgb(playerColor);
 
         const style = {
-          color: invertColor(playerColor),
-          backgroundColor: `rgba(${rgbPlayerColor}, 0.5)`
+          color: playerColor,
+          backgroundColor: tileColors.primary // `rgba(${rgbPlayerColor}, 0.5)`
         };
 
         if (this.isMe)
-          style.backgroundColor = `rgba(${rgbPlayerColor}, 0.9)`
+          style.backgroundColor = tileColors.mountain // `rgba(${rgbPlayerColor}, 0.9)`
 
         return style;
       }
@@ -157,9 +164,9 @@
   .player {
     position: relative;
     padding: $spacer;
-    overflow-y: hidden;
     display: flex;
     flex-direction: column;
+    overflow-y: hidden;
     border-radius: 30px;
 
     .header {
@@ -200,17 +207,33 @@
       }
     }
 
-    .belongings {
-      margin-top: $spacer / 2;
-      display: flex;
-    }
-
-    .game-cards {
+    .player-assets {
       margin-top: $spacer / 2;
       display: flex;
 
-      .game-card {
-        height: 40px;
+      .belongings {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+
+        .game-cards {
+          margin-top: $spacer / 2;
+          display: flex;
+    
+          .game-card {
+            height: 40px;
+          }
+        }
+
+        .owned-harbors {
+          margin-top: $spacer / 2;
+          display: flex;
+        }
+      }
+
+      .hero-card {
+        flex: 1;
+        padding: $spacer / 4;
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
-    <li v-for="(guard, p) in guards" :key="`position-${p}-${(guard || {}).ownerId}`" class="wall-position" :class="{ 'enabled': isGuardAllowed(p) }">
+    <li v-for="(guard, p) in guards" :key="`position-${p}-${(guard || {}).ownerId}`" class="wall-position" :class="{ 'enabled': allowPurchase && isGuardAllowed(p) }">
       <WallPosition :order="p + 1" :guard="guard" @clicked="onPositionClicked(p)" />
     </li>
   </ul>
@@ -22,6 +22,10 @@
       myColor: {
         type: String,
         default: 'red'
+      },
+      allowPurchase: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {

@@ -5,6 +5,7 @@
       :key="`wall-${w}`"
       :section="w"
       :myColor="myColor"
+      :allowPurchase="allowPurchase"
       :guards="wall.slice(sectionStart, sectionStart + 5)"
       @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
     />
@@ -29,6 +30,10 @@
       myColor: {
         type: String,
         default: 'red'
+      },
+      allowPurchase: {
+        type: Boolean,
+        default: false
       }
     },
     created() {

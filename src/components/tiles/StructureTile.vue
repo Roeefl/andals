@@ -2,13 +2,15 @@
   <span class="structure-tile" :class="[placement, { 'enabled': enabled }]" :style="hoverStyle">
     <BaseButton
       icon
+      width="40px"
+      height="44px"
       @click="enabled && $emit('clicked')"
       class="wrapper"
       :class="[activeData.type, { 'disabled': !enabled }]"
       :style="structureStyle"
     >
       <BaseIcon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
-      <BaseIcon v-if="!!activeData.type" size="40px" :color="activeData.color" :name="structureIcons[activeData.type]" />
+      <BaseIcon v-if="!!activeData.type" size="54px" :color="activeData.color" :name="structureIcons[activeData.type]" />
       <slot />
     </BaseButton>
   </span>
@@ -65,8 +67,10 @@
 
         const rgbBackground = hexToRgb(hexBackground);
 
+        if (!!this.activeData.type) return {};
+        
         return {
-          backgroundColor: `rgba(${rgbBackground}, 0.7)`
+          backgroundColor: `rgba(${rgbBackground}, 0.9)`
         };
       }
     },
@@ -96,7 +100,7 @@
 
     &.enabled {
       border-radius: 999px;
-      box-shadow: 1px 1px 4px 4px #E1F5FE;
+      animation: heartbeat 2s cubic-bezier(0.860, 0.000, 0.070, 1.000) infinite both;
 
       &:hover {
         box-shadow: 2px 2px 12px 12px var(--color-hover);
@@ -105,10 +109,9 @@
   }
 
   .wrapper {
-    background: #6D4C41;
-      
     &.settlement {
-      background: white;
+      border-radius: 100px;
+      background: black;
     }
 
     &.city {

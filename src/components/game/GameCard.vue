@@ -5,8 +5,8 @@
         icon
         :xs="small"
         :iconSize="small ? 'medium' : 'x-large'"
-        :iconName="hideIcon ? 'help-box' : gameCardIcons[type]"
-        :iconColor="hideIcon? 'black' : 'white'"
+        :iconName="wasPlayed ? gameCardIcons[type] : 'help-box'"
+        :iconColor="wasPlayed ? 'white' : 'black'"
         :clickable="clickable"
       >
         <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
@@ -41,10 +41,6 @@
         default: true
       },
       wasPlayed: {
-        type: Boolean,
-        default: false
-      },
-      hideIcon: {
         type: Boolean,
         default: false
       },

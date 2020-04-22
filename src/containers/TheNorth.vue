@@ -8,7 +8,7 @@
       <div class="wildling-clearings">
         <WildlingClearing v-for="(clearing, c) in roomState.wildlingClearings" :key="`clearing-${c}`" :clearing="clearing" class="clearing" :class="`clearing-${c}`" />
       </div>
-      <TheWall :myColor="myPlayer.color" :wall="guards" @wall-clicked="onWallClicked($event)" class="the-wall" />
+      <TheWall :myColor="myPlayer.color" :wall="guards" :allowPurchase="allowPurchase" @wall-clicked="onWallClicked($event)" class="the-wall" />
     </div>
   </div>
 </template>
