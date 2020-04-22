@@ -11,7 +11,7 @@
 
   import BaseGame from '@/containers/BaseGame';
   import Snowflakes from '@/components/decor/Snowflakes';
-  import GameOverlay from '@/components/interface/GameOverlayf';
+  import GameOverlay from '@/components/interface/GameOverlay';
 
   export default {
     name: 'GameRoom',

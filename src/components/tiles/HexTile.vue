@@ -1,5 +1,5 @@
 <template>
-  <drop @drop="$emit('dropped')" class="tile" :class="[type, tile.resource]">
+  <drop @drop="$emit('dropped')" class="tile" :class="[type, tile.resource, (tile.type === TILE_WATER && !!tile.resource) ? 'has-harbor' : '']">
     <BaseIcon
       v-if="tile.resource && tile.value"
       :name="resourceCardIcons[tile.resource]"
@@ -42,6 +42,7 @@
     },
     created() {
       this.resourceCardIcons = resourceCardIcons;
+      this.TILE_WATER = TILE_WATER;
     }
   }
 </script>
@@ -79,20 +80,21 @@
     }
 
     &.spacer {
-      opacity: 0;
-      // opacity: 1;
-      // background: lightgray;
+      opacity: 1;
     }
 
     &.water {
       // background: rgba($tile-water, 0.5);
       background: transparent;
-      border-top: 1px solid black;
-      border-bottom: 1px solid black;
 
-      &:before, &:after {
+      &.has-harbor {
         border-top: 1px solid black;
         border-bottom: 1px solid black;
+
+        &:before, &:after {
+          border-top: 1px solid black;
+          border-bottom: 1px solid black;
+        }
       }
     }
 

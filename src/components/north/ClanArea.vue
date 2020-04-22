@@ -5,12 +5,12 @@
     </div>
     <div class="clan-camps">
       <BaseButton
-        v-for="(campfire, c) in campfires"
+        v-for="(campfire, c) in Array(campfires).fill(0)"
         :key="c"
         icon
         iconName="campfire"
         iconColor="red"
-        :iconSize="`${campfire}px`"
+        :iconSize="`${campfire * 6}px`"
         class="clan-camp"
       >
         <Wildling v-if="camps[c]" :type="camps[c]" :size="40" class="wildling" />
@@ -30,8 +30,6 @@
 
   import { clanColors } from '@/specs/clans';
 
-  const campfires = [20, 16, 12, 8, 4];
-
   export default {
     name: 'ClanArea',
     components: {
@@ -45,6 +43,10 @@
         type: Object,
         required: true
       },
+      campfires: {
+        type: Number,
+        default: 4
+      },
       camps: {
         type: Array,
         default: () => []
@@ -55,7 +57,6 @@
       }
     },
     created() {
-      this.campfires = campfires;
       this.clanColors = clanColors;
     },
     methods: {
