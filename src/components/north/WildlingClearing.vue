@@ -1,9 +1,7 @@
 <template>
   <div class="clan-clearing">
     <BaseIcon color="black" name="tent" size="50px" class="clearing-icon" />
-    <fragment v-for="(count, type) in clearing.counts" :key="`type-${type}-${count}`">
-      <Wildling v-for="(wildling, w) in Array(count).fill(type)" :key="`wildling-${w}-${type}`" :type="type" :size="30" class="wildling" />
-    </fragment>
+    <Wildling v-for="(wildling, w) in clearing.wildlings" :key="`wildlign-${wildling.type}-${w}`" :type="type" :size="30" class="wildling" />
     <span v-for="(clan, c) in clearing.clans" :key="`clan-${c}`" />
   </div>
 </template>
@@ -22,7 +20,7 @@
       clearing: {
         type: Object,
         default: () => ({
-          counts: {},
+          wildlings: [],
           trails: [],
           clans: []
         })

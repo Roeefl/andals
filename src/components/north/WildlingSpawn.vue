@@ -7,8 +7,6 @@
 </template>
 
 <script>
-  // import { shuffle } from 'lodash';
-  // import { wildlingIcons, wildlingColors, WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT } from '@/specs/wildlings';
   import Wildling from '@/components/pieces/Wildling';
 
   export default {
