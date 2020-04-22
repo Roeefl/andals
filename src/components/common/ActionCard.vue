@@ -1,22 +1,25 @@
 <template>
   <v-card>
     <v-card-title
+      v-if="title"
       primary-title
       class="headline grey lighten-2"
     >
       {{ title }}
     </v-card-title>
     <slot />
-    <v-divider />
-    <v-card-actions>
-      <BaseButton text v-if="cancel" @click="() => $emit('cancel')">
-        {{ cancelText }}
-      </BaseButton>
-      <v-spacer />
-      <BaseButton text :clickable="approve" @click="() => $emit('approve')">
-        {{ approveText }}
-      </BaseButton>
-    </v-card-actions>
+    <fragment v-if="cancel || approve">
+      <v-divider />
+      <v-card-actions>
+        <BaseButton text v-if="cancel" @click="() => $emit('cancel')">
+          {{ cancelText }}
+        </BaseButton>
+        <v-spacer />
+        <BaseButton text v-if="approve" @click="() => $emit('approve')">
+          {{ approveText }}
+        </BaseButton>
+      </v-card-actions>
+    </fragment>
   </v-card>
 </template>
 

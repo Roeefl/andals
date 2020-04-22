@@ -6,35 +6,43 @@
     </div>
     <section class="lobby-interface">
       <AppHeader />
-      <div class="actions">
-        <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
-          <CustomizeRoom
-            :roomType="roomType"
-            @select-room-type="roomType = $event"
-            :roomTitle="roomTitle"
-            @update-title="roomTitle = $event"
-            :roomMaxPlayers="roomMaxPlayers"
-            @update-max-players="roomMaxPlayers = $event"
-            :playVsBots="playVsBots"
-            @toggle-bots="playVsBots = !playVsBots"
-            :autoPickup="autoPickup"
-            @toggle-auto-pickup="autoPickup = !autoPickup"
-            :friendlyGameLog="friendlyGameLog"
-            @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
-            :botReplacement="botReplacement"
-            @toggle-bot-replacement="botReplacement = !botReplacement"
-          />
-        </ChoiceDialog>
-        <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
-          Refresh List
-        </BaseButton>
-        <ChoiceDialog iconName="wrench" title="Customize Player" buttonText="Customize Player" @approve="saveProfile" @cancel="revertProfile" class="customize-player">
-          <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
-        </ChoiceDialog>
-        <BaseButton iconName="add" @click="reconnect">
-          Reconnect
-        </BaseButton>
-      </div>
+      <ul class="actions">
+        <li class="action-item">
+          <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
+            <CustomizeRoom
+              :roomType="roomType"
+              @select-room-type="roomType = $event"
+              :roomTitle="roomTitle"
+              @update-title="roomTitle = $event"
+              :roomMaxPlayers="roomMaxPlayers"
+              @update-max-players="roomMaxPlayers = $event"
+              :playVsBots="playVsBots"
+              @toggle-bots="playVsBots = !playVsBots"
+              :autoPickup="autoPickup"
+              @toggle-auto-pickup="autoPickup = !autoPickup"
+              :friendlyGameLog="friendlyGameLog"
+              @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
+              :botReplacement="botReplacement"
+              @toggle-bot-replacement="botReplacement = !botReplacement"
+            />
+          </ChoiceDialog>
+        </li>
+        <li class="action-item">
+          <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
+            Refresh List
+          </BaseButton>
+        </li>
+        <li class="action-item">
+          <ChoiceDialog iconName="wrench" title="Customize Player" buttonText="Customize Player" @approve="saveProfile" @cancel="revertProfile" class="customize-player">
+            <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
+          </ChoiceDialog>
+        </li>
+        <li class="action-item">
+          <BaseButton iconName="add" @click="reconnect" class="reconnect">
+            Reconnect
+          </BaseButton>
+        </li>
+      </ul>
       <RoomsList :rooms="rooms" @join="joinRoom($event)" />
     </section>
   </main>
@@ -189,12 +197,16 @@
     .actions {
       display: flex;
 
-      .refresh-list {
+      .action-item {
+        width: 200px;
+        height: 50px;
         margin-left: $spacer;
       }
 
-      .customize-player {
-        margin-left: $spacer * 3;
+      .refresh-list,
+      .reconnect {
+        width: 100%;
+        height: 100%;
       }
     }
   }

@@ -3,9 +3,9 @@
     <BaseButton
       icon
       width="40px"
-      height="44px"
+      height="40px"
       @click="enabled && $emit('clicked')"
-      class="wrapper"
+      class="structure-button"
       :class="[activeData.type, { 'disabled': !enabled }]"
       :style="structureStyle"
     >
@@ -70,7 +70,8 @@
         if (!!this.activeData.type) return {};
         
         return {
-          backgroundColor: `rgba(${rgbBackground}, 0.9)`
+          border: '1px dashed black',
+          backgroundColor: `rgba(${rgbBackground}, 0.4)`
         };
       }
     },
@@ -99,18 +100,20 @@
     }
 
     &.enabled {
-      border-radius: 999px;
-      animation: heartbeat 2s cubic-bezier(0.860, 0.000, 0.070, 1.000) infinite both;
-
-      &:hover {
-        box-shadow: 2px 2px 12px 12px var(--color-hover);
+      .structure-button {
+        animation: heartbeat 2s cubic-bezier(0.860, 0.000, 0.070, 1.000) infinite both;
+        border-radius: 999px;
+          &:hover {
+            background: rgba(black, 1);
+            box-shadow: 2px 2px 12px 12px var(--color-hover);
+          }
       }
     }
   }
 
-  .wrapper {
+  .structure-button {
     &.settlement {
-      border-radius: 100px;
+      // border-radius: 100px;
       background: black;
     }
 

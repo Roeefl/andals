@@ -67,13 +67,13 @@
   }
 
   .road {
-    background: $primary;
+    // background: $primary;
     z-index: $zindex-tile-value - 1;
     position: absolute;
     border-radius: 3px;
     height: $tile-size;
-    width: 16px;
-    border: 2px dashed black;
+    width: 18px;
+    // border: 1px dashed black;
 
     &.enabled {
       // background: transparent;

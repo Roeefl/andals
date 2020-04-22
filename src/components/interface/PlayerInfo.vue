@@ -63,8 +63,13 @@
           />
         </div>
       </div>
-      <div class="hero-card">
-        {{ player.currentHeroCard.name }}
+      <div class="hero-card-wrapper">
+        <ChoiceDialog :width="500" :hasApprove="false" :hasCancel="false" buttonColor="transparent">
+          <template v-slot:activate>
+            <HeroCard thumbnail :card="player.currentHeroCard" class="hero-card" />
+          </template>
+          <HeroCard :card="player.currentHeroCard" />
+        </ChoiceDialog>
       </div>
     </div>
   </div>
@@ -82,7 +87,9 @@
   import ResourceCard from '@/components/game/ResourceCard';
   import GamePiece from '@/components/game/GamePiece';
   import GameCard from '@/components/game/GameCard';
-  
+  import HeroCard from '@/components/game/HeroCard';
+  import ChoiceDialog from '@/components/common/ChoiceDialog';
+
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
 
@@ -95,6 +102,8 @@
       ResourceCard,
       GamePiece,
       GameCard,
+      ChoiceDialog,
+      HeroCard,
       BaseButton,
       BaseIcon
     },
@@ -212,7 +221,7 @@
       display: flex;
 
       .belongings {
-        flex: 2;
+        flex: 3;
         display: flex;
         flex-direction: column;
 
@@ -231,9 +240,15 @@
         }
       }
 
+      .hero-card-wrapper {
+        flex: 2;
+        height: 90px;
+        overflow: hidden;
+      }
+
       .hero-card {
-        flex: 1;
-        padding: $spacer / 4;
+        width: 90px;
+        height: 90px;
       }
     }
   }
