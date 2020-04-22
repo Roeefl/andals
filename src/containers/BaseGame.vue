@@ -40,7 +40,7 @@
       </div>
       <aside class="sidebar" :class="{ 'compact': isWithNorth }">
         <DraggableWidget v-if="isWithNorth" :level="0" class="breach-marker">
-          <BreachMarker />
+          <BreachMarker :wallBreaches="roomState.wallBreaches" />
         </DraggableWidget>
         <DraggableWidget class="game-log">
           <GameLog :friendly="roomState.friendlyGameLog" />
@@ -475,7 +475,7 @@
         const acceptableResourceIndex = tradeCounts.findIndex(([resource, count]) => (
           (this.myPlayer.ownedHarbors[resource] && count === 2) ||
           (this.myPlayer.ownedHarbors[HARBOR_GENERIC] && count === 3) ||
-          count === 4
+          count === this.roomState.bankTradeStandardRate
         ));
 
         if (acceptableResourceIndex < 0) return;

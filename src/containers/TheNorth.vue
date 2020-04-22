@@ -23,9 +23,12 @@
   import WildlingClearing from '@/components/north/WildlingClearing';
 
   import {
-    MESSAGE_REVEAL_WILDLING_TOKENS,
+    MESSAGE_WILDLINGS_REVEAL_TOKENS,
+    MESSAGE_WILDLINGS_ADVANCE_CLEARING,
+    MESSAGE_WILDLINGS_WALL_BATTLE,
     MESSAGE_PLACE_GUARD,
-    CHAT_LOG_WILDLING_TOKENS
+    CHAT_LOG_WILDLING_TOKENS,
+    CHAT_LOG_SIMPLE
   } from '@/constants';
 
   export default {
@@ -79,15 +82,30 @@
       },
       onBroadcastReceived: function(broadcast) {
         const { type } = broadcast;
+        let header = '';
 
         switch (type) {
-          case MESSAGE_REVEAL_WILDLING_TOKENS:
+          case MESSAGE_WILDLINGS_REVEAL_TOKENS:
             const { tokens } = broadcast;
-            const header = 'The Wildlings Advance';
+            header = 'Wildlings Tokens Revealed:';
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_WILDLING_TOKENS, tokens });
             this.$store.commit('setEssentialOverlay', { header, tokens });
             break;
+
+          case MESSAGE_WILDLINGS_ADVANCE_CLEARING:
+            const { wildling } = broadacst;
+            header = `A ${wildling} has advanced to the clearing!`;
+
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, header });
+            this.$store.commit('setEssentialOverlay', { header });
+
+          case MESSAGE_WILDLINGS_WALL_BATTLE:
+            const { invader } = broadcast;
+            header = `A ${invader} has attacked the guards on the wall!`;
+
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, header });
+            this.$store.commit('setEssentialOverlay', { header });
 
           default:
             break;

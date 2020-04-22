@@ -4,7 +4,7 @@
       Wall Breach Tracker
     </h1>
     <div class="tracker">
-      <div v-for="(lvl, l) in levels" :key="l" class="breach-level" :class="{ 'active': l === level }">
+      <div v-for="(lvl, l) in levels" :key="l" class="breach-level" :class="{ 'active': l === wallBreaches }">
         {{ l }}
       </div>
     </div>
@@ -17,7 +17,7 @@
   export default {
     name: 'BreachMarker',
     props: {
-      level: {
+      wallBreaches: {
         type: Number,
         default: 0
       }
