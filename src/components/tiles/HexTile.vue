@@ -7,7 +7,7 @@
       color="black"
       class="resource-icon"
     />
-    <span class="inner value" v-if="tile.value">
+    <span class="inner value" v-if="tile.value" @click="$emit('dropped')">
       {{ tile.value }}
     </span>
     <slot />

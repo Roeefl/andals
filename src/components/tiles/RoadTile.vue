@@ -54,6 +54,18 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
+  @keyframes change-background {
+    0% {
+      background: white;
+    }
+    50% {
+      background: var(--color-hover);
+    }
+    100% {
+      background: transparent;
+    }
+  }
+
   .road {
     background: #6D4C41;
     z-index: $zindex-tile-value - 1;
@@ -65,11 +77,12 @@
 
     &.enabled {
       // background: transparent;
-      box-shadow: 4px 4px 16px 16px #E1F5FE;
+      // box-shadow: 4px 4px 12px 12px #E1F5FE;
+      animation: change-background 2.5s ease infinite;
       
-      &:hover {
-        background: var(--color-hover);
-      }
+      // &:hover {
+      //   background: var(--color-hover);
+      // }
     }
 
     &.left {

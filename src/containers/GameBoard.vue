@@ -46,6 +46,12 @@
               :active="myPlayer.mustMoveRobber"
             />
           </drag>
+          <Wildling
+            v-if="(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy"
+            :type="(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy"
+            :size="40"
+            class="wildling"
+          />
         </HexTile>
       </div>
     </div>
@@ -64,6 +70,7 @@
   import StructureTile from '@/components/tiles/StructureTile';
   import RobberTile from '@/components/tiles/RobberTile';
   import HarborTile from '@/components/tiles/HarborTile';
+  import Wildling from '@/components/pieces/Wildling';
 
   import { baseGameHexTilemap, firstMenHexTilemap } from '@/tilemaps/hexes';
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
@@ -82,7 +89,8 @@
       RoadTile,
       StructureTile,
       HarborTile,
-      RobberTile
+      RobberTile,
+      Wildling
     },
     props: {
       desiredRobberTile: {
@@ -210,5 +218,12 @@
       color: black;
       opacity: 1;
     }
+  }
+
+  .wildling {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: red;
   }
 </style>

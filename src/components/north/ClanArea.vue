@@ -4,17 +4,14 @@
       <BaseIcon :name="clan.icon" :color="clanColors[clan.name]" size="30px" />
     </div>
     <div class="clan-camps">
-      <BaseButton
-        v-for="(campfire, c) in Array(campfires).fill(0)"
+      <div
+        v-for="(campfire, c) in Array(campfires).fill(8)"
         :key="c"
-        icon
-        iconName="campfire"
-        iconColor="red"
-        :iconSize="`${campfire * 6}px`"
         class="clan-camp"
       >
+        <BaseIcon name="campfire" color="red" :size="`${campfire * (campfires - c + 1)}px`" class="campfire-icon" />
         <Wildling v-if="camps[c]" :type="camps[c]" :size="40" class="wildling" />
-      </BaseButton>
+      </div>
     </div>
     <div class="clan-trails">
       <ClanTrail v-for="(trailValues, t) in trails" :key="`trail-${t}`" :value="trailDisplayValue(trailValues)" />
@@ -25,7 +22,6 @@
 <script>
   import ClanTrail from '@/components/north/ClanTrail';
   import Wildling from '@/components/pieces/Wildling';
-  import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
 
   import { clanColors } from '@/specs/clans';
@@ -35,7 +31,6 @@
     components: {
       ClanTrail,
       Wildling,
-      BaseButton,
       BaseIcon
     },
     props: {
@@ -75,19 +70,25 @@
   @import '@/styles/partials';
 
   .clan-area {
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 
     .clan-camps {
+      flex: 1;
       display: flex;
       flex-direction: column-reverse;
-      position: relative;
+
+      .clan-camp {
+        flex: 1;
+        position: relative;
+      }
 
       .wildling {
         position: absolute;
         top: -$spacer / 2;
-        left: $spacer / 2;
+        left: $spacer * 2;
       }
     }
 
