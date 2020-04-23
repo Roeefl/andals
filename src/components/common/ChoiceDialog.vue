@@ -14,7 +14,7 @@
         {{ buttonText }}
       </BaseButton>
     </template>
-    <ActionCard :title="title" :cancel="hasCancel" @cancel="onCancel" :approveText="approveText" :approve="hasApprove" @approve="onApprove">
+    <ActionCard :title="title" :cancel="hasCancel" :cancelText="cancelText" @cancel="onCancel" :approveText="approveText" :approve="hasApprove" @approve="onApprove">
       <slot />
     </ActionCard>
   </v-dialog>
@@ -44,6 +44,10 @@
       hasCancel: {
         type: Boolean,
         default: true
+      },
+      cancelText: {
+        type: String,
+        default: 'Cancel'
       },
       hasApprove: {
         type: Boolean,

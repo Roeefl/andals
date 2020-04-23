@@ -21,7 +21,7 @@
           @display-deck="isDisplayMyDeck = true"
           @trade-with="requestTradeWith($event)"
           @steal-from="stealFrom($event)"
-          @play-hero="onPlayHero"
+          @play-hero="onPlayHeroCard($event)"
         />
       </DraggableWidget>
       <div class="board-area">
@@ -593,10 +593,11 @@
           tileIndex
         });
       },
-      onPlayHero: function() {
+      onPlayHeroCard: function(isDiscard = false) {
         this.room.send({
           type: MESSAGE_PLAY_HERO_CARD,
-          heroType: this.myPlayer.currentHeroCard.type
+          heroType: this.myPlayer.currentHeroCard.type,
+          isDiscard
         });
       }
     }

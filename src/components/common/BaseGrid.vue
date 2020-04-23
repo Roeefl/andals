@@ -7,7 +7,7 @@
     </li>
     <li v-for="(item, i) in items" :key="`item-${i}`" class="grid-item">
       <span v-for="(column, c) in columns" :key="`item-${i}-column-${c}`">
-        {{ item[column.key] || item[column.altKey] }}
+        {{ item[column.key] }}
       </span>
       <BaseButton
         v-for="({ name, emitValue, disabledKey }, a) in itemActions"
@@ -57,7 +57,7 @@ export default {
    .grid-item {
       display: grid;
       grid-template-rows: auto;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       justify-items: center;
       align-items: center;
       background: rgba($primary, 0.7);

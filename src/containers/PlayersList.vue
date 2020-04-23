@@ -5,7 +5,7 @@
         v-for="(player, index) in players"
         :key="renderKey(player)"
         class="player-wrapper"
-        :class="{ 'current-turn': currentTurn === index }"
+        :class="{ 'current-turn': currentTurn === index, 'is-me': player.playerSessionId === myPlayer.playerSessionId }"
       >
         <PlayerInfo
           :player="player"
@@ -13,12 +13,12 @@
           :enableTrading="isGameStarted"
           :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
           :isStarted="isGameReady"
-          :allowStealing="myPlayer.allowStealingFrom.includes(player.playerSessionId)"
+          :allowStealing="myPlayer.allowStealingFrom && myPlayer.allowStealingFrom.includes(player.playerSessionId)"
           @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
           @trade-with="$emit('trade-with', $event)"
           @steal-from="$emit('steal-from', $event)"
-          :canPlayHero="isMyTurn"
-          @play-hero="$emit('play-hero')"
+          :canPlayHeroCard="isMyTurn"
+          @play-hero="$emit('play-hero', $event)"
           class="player"
         />
       </li>
@@ -82,23 +82,31 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-    }
-  }
 
-  .player-wrapper {
-    // flex: 1;
-    overflow-y: hidden;
-    height: 23%;
-    margin-top: $spacer;
-    position: relative;
+      .player-wrapper {
+        // flex: 1;
+        overflow-y: hidden;
+        height: 22%;
+        margin-top: $spacer;
+        position: relative;
+        order: 1;
+        padding: 0 $spacer;
 
-    &.current-turn {
-      box-shadow: 4px 4px 10px 10px lightgreen;
-      // box-shadow: inset 8px 8px 40px 6px rgba(255, 0, 0, 1); 
-    }
+        &.is-me {
+          order: 0;
+          height: 26%;
+          padding: 0;
+        }
 
-    .player {
-      height: 100%;
+        &.current-turn {
+          box-shadow: 4px 4px 10px 10px lightgreen;
+          // box-shadow: inset 8px 8px 40px 6px rgba(255, 0, 0, 1); 
+        }
+
+        .player {
+          height: 100%;
+        }
+      }
     }
   }
 </style>

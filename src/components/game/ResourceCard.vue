@@ -3,8 +3,8 @@
     <v-card max-width="300" @click="clickable && $emit('clicked')" class="resource-card" :class="{ 'clickable': clickable }">
       <BaseButton
         icon
-        :xs="small"
-        :iconSize="small ? 'medium' : 'x-large'"
+        :small="small"
+        :iconSize="small ? '20px' : 'x-large'"
         :iconName="hideIcon ? 'help-box' : resourceCardIcons[resource]"
         :iconColor="hideIcon? 'black' : resourceCardColors[resource]"
         :clickable="clickable"

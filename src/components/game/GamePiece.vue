@@ -1,7 +1,7 @@
 <template>
   <BaseButton icon>
     <BaseIcon
-      size="x-large"
+      :size="size"
       :color="color"
       :name="structureIcons[type]"
     />
@@ -27,6 +27,10 @@
       type: {
         type: String,
         required: true
+      },
+      size: {
+        type: String,
+        default: '24px'
       },
       color: {
         type: String,

@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :style="playerStyle(player.color)">
+  <div class="player" :class="{ 'is-me': isMe }" :style="playerStyle(player.color)">
     <div class="header">
       <div class="nickname">
         {{ player.nickname }}
@@ -35,11 +35,12 @@
           :count="player[purchaseType]"
           :type="purchaseType"
           :color="player.color"
+          :size="isMe ? '30px' : '22px'"
         />
       </div>
     </div>
     <div class="resources" @click="$emit('deck-clicked')">
-      <ResourceCounts :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
+      <ResourceCounts :small="!isMe" :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
     </div>
     <div class="player-assets">
       <div class="belongings">
@@ -67,10 +68,12 @@
         <ChoiceDialog
           :width="500"
           buttonColor="transparent"
-          :hasCancel="false"
-          :hasApprove="isMe && canPlayHero"
-          approveText="Play Hero Card"
-          @approve="$emit('play-hero')"
+          :hasCancel="isMe && canPlayHeroCard"
+          :cancelText="`Play ${player.currentHeroCard.name} and discard it`"
+          @cancel="$emit('play-hero', true)"
+          :hasApprove="isMe && canPlayHeroCard && !player.currentHeroCard.wasPlayed"
+          :approveText="`Play ${player.currentHeroCard.name} and flip it for a subsequent use`"
+          @approve="$emit('play-hero', false)"
         >
           <template v-slot:activate>
             <HeroCard thumbnail :card="player.currentHeroCard" class="hero-card" />
@@ -139,7 +142,7 @@
         type: Boolean,
         default: false
       },
-      canPlayHero: {
+      canPlayHeroCard: {
         type: Boolean,
         default: false  
       }
@@ -153,15 +156,10 @@
       playerStyle: function(playerColor) {
         const rgbPlayerColor = hexToRgb(playerColor);
 
-        const style = {
+        return {
           color: playerColor,
           backgroundColor: tileColors.primary // `rgba(${rgbPlayerColor}, 0.5)`
         };
-
-        if (this.isMe)
-          style.backgroundColor = tileColors.mountain // `rgba(${rgbPlayerColor}, 0.9)`
-
-        return style;
       }
     }
   }
@@ -169,6 +167,8 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
+
+  $hero-size: 86px;
 
   @keyframes slide-in-bck-center {
     0% {
@@ -189,28 +189,32 @@
     overflow-y: hidden;
     border-radius: 30px;
 
+    &.is-me {
+      .header {
+        font-size: $font-size-md;
+        font-weight: 900;
+      }
+    }
+
     .header {
       display: flex;
       align-items: center;
+      font-size: $font-size-sm;
       
       .nickname {
         flex: 2;
-        font-weight: 700;
       }
 
       .status {
         flex: 1;
         display: flex;
         justify-content: flex-end;
+        position: absolute;
+        top: $spacer;
+        right: $spacer;
 
         & > * {
           margin-left: $spacer / 2;
-        }
-
-        .thinking {
-          position: absolute;
-          top: $spacer;
-          right: $spacer;
         }
       }
     }
@@ -253,20 +257,20 @@
 
       .hero-card-wrapper {
         flex: 2;
-        height: 90px;
+        height: $hero-size;
         overflow: hidden;
       }
 
       .hero-card {
-        width: 90px;
-        height: 90px;
+        width: $hero-size;
+        height: $hero-size;
       }
     }
   }
 
   .resource {
     & + & {
-      margin-left: $spacer * 2;
+      margin-left: $spacer;
     }
   }
 

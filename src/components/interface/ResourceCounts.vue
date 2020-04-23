@@ -3,6 +3,7 @@
     <ResourceCard
       v-for="resource in resourceCardTypes"
       :key="resource"
+      :small="small"
       :resource="resource"
       :clickable="clickable"
       :maskCount="hideCounts"
@@ -41,6 +42,10 @@
         default: false
       },
       spaced: {
+        type: Boolean,
+        default: false
+      },
+      small: {
         type: Boolean,
         default: false
       }

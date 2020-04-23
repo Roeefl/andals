@@ -22,9 +22,12 @@
       title: 'Room ID'
     },
     {
+      key: 'name',
+      title: 'Room Type'
+    },
+    {
       key: 'roomTitle',
-      altKey: 'name',
-      title: 'Room Name'
+      title: 'Room Title'
     },
     {
       key: 'clients',
