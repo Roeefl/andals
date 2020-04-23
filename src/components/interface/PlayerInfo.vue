@@ -64,7 +64,14 @@
         </div>
       </div>
       <div class="hero-card-wrapper">
-        <ChoiceDialog :width="500" :hasApprove="false" :hasCancel="false" buttonColor="transparent">
+        <ChoiceDialog
+          :width="500"
+          buttonColor="transparent"
+          :hasCancel="false"
+          :hasApprove="isMe && canPlayHero"
+          approveText="Play Hero Card"
+          @approve="$emit('play-hero')"
+        >
           <template v-slot:activate>
             <HeroCard thumbnail :card="player.currentHeroCard" class="hero-card" />
           </template>
@@ -131,6 +138,10 @@
       allowStealing: {
         type: Boolean,
         default: false
+      },
+      canPlayHero: {
+        type: Boolean,
+        default: false  
       }
     },
     created() {

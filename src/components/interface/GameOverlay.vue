@@ -2,17 +2,20 @@
   <BaseOverlay :isOpen="isOpen">
     <div class="overlay-contents">
       <h1 class="overlay-header">
-        {{ header }}
+        {{ overlay.header }}
       </h1>
-      <div v-if="tokens" class="wildling-tokens">
+      <div v-if="overlay.tokens" class="wildling-tokens">
         <WildlingToken
-          v-for="(token, t) in tokens"
+          v-for="(token, t) in overlay.tokens"
           :key="`token-${t}`"
           :wildling="token.wildlingType"
           :clan="token.clanType"
           size="50px"
           class="wildling-token"
         />
+      </div>
+      <div v-if="overlay.dice" class="player-rolls">
+        <GameDice small :dice="overlay.dice" :enabled="false" />
       </div>
     </div>
   </BaseOverlay>
@@ -21,25 +24,23 @@
 <script>
   import BaseOverlay from '@/components/common/BaseOverlay';
   import WildlingToken from '@/components/north/WildlingToken';
+  import GameDice from '@/components/interface/GameDice';
 
   export default {
     name: 'GameOverlay',
     components: {
       BaseOverlay,
-      WildlingToken
+      WildlingToken,
+      GameDice
     },
     props: {
       isOpen: {
         type: Boolean,
         default: false
       },
-      header: {
-        type: String,
-        default: ''
-      },
-      tokens: {
-        type: Array,
-        default: () => null
+      overlay: {
+        type: Object,
+        required: true
       },
       dice: {
         type: Array,
@@ -71,6 +72,10 @@
         width: 8vw;
         height: 8vh;
       }
+    }
+
+    .player-rolls {
+      display: flex;
     }
   }
 </style>

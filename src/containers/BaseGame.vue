@@ -13,6 +13,7 @@
     <div class="board-container">
       <DraggableWidget class="players-list">
         <PlayersList
+          :isMyTurn="isMyTurn"
           :isGameReady="roomState.isGameReady"
           :isGameStarted="roomState.isGameStarted"
           :currentTurn="roomState.currentTurn"
@@ -20,6 +21,7 @@
           @display-deck="isDisplayMyDeck = true"
           @trade-with="requestTradeWith($event)"
           @steal-from="stealFrom($event)"
+          @play-hero="onPlayHero"
         />
       </DraggableWidget>
       <div class="board-area">
@@ -160,7 +162,8 @@
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
-    CHAT_LOG_DISCARD
+    CHAT_LOG_DISCARD,
+    MESSAGE_PLAY_HERO_CARD
   } from '@/constants';
 
   export default {
@@ -219,7 +222,7 @@
       },
       myPlayerIndex: function() {
         return this.players
-          .findIndex(p => p.playerSessionId === colyseusService.room.sessionId);
+          .findIndex(p => p.playerSessionId === this.room.sessionId);
       },
       isMyTurn: function() {
         return this.roomState.currentTurn === this.myPlayerIndex
@@ -286,8 +289,11 @@
         
         if (this.bankTradeResource) this.evaluateBankTrade();
       },
-      onEssentialBroadcast: function(header) {
-        this.$store.commit('setEssentialOverlay', { header });
+      onEssentialBroadcast: function(header, data) {
+        this.$store.commit('setEssentialOverlay', {
+          ...data,
+          header
+        });
       },
       onBroadcastReceived: function(broadcast) {
         const {
@@ -299,6 +305,9 @@
           playerName
         } = broadcast;
 
+        let essentialHeader = '';
+        let essentialData = {};
+        
         switch (type) {
           case MESSAGE_CHAT:
             this.chatMessages = [
@@ -310,22 +319,29 @@
           case MESSAGE_ROLL_DICE:
             const { dice } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_DICE, playerName, dice });
-            if (isEssential) this.onEssentialBroadcast(`${playerName} rolls: ${dice}`);
+
+            if (isEssential) {
+              essentialHeader = `${playerName} rolls: ${dice}`;
+              essentialData.dice = dice;
+            };
+
             break;
 
           case MESSAGE_COLLECT_ALL_LOOT:
             const { loot } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
-            if (isEssential) this.onEssentialBroadcast(`${playerName} collects: ${loot}`);
+            if (isEssential) essentialHeader = `${playerName} collects: ${loot}`;
             break;
 
           case MESSAGE_DISCARD_HALF_DECK:
             const { discardedCounts } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
+            if (isEssential) essentialHeader = `${playerName} discards: ${discardedCounts}`;
             break;
 
           case MESSAGE_GAME_LOG:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+            if (isEssential) essentialHeader = message;
             // this.$store.commit('addAlert', message);
             break;
 
@@ -336,9 +352,10 @@
             break;
             
           default:
-            if (isEssential) this.onEssentialBroadcast(message);
             break;
         }
+
+        if (isEssential) this.onEssentialBroadcast(essentialHeader, essentialData);
       },
       onRoomError: function(error) {
         console.error(`Room ${this.room.sessionId} encountered error: ${error.message}`);
@@ -349,13 +366,13 @@
       toggleReady: function() {
         this.$store.commit('toggleSelfReady');
         
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_READY,
           message: true
         });
       },
       sendDice: function(dice) {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_ROLL_DICE,
           dice
         });
@@ -392,7 +409,7 @@
         if (type === GUARD) {
           const { section, position } = this.activePurchase;
 
-          colyseusService.room.send({
+          this.room.send({
             type: MESSAGE_PLACE_GUARD,
             section,
             position
@@ -405,7 +422,7 @@
         }
 
         if (type === GAME_CARD) {
-          colyseusService.room.send({
+          this.room.send({
             type: MESSAGE_PURCHASE_GAME_CARD
           });
 
@@ -413,7 +430,7 @@
           return;
         }
         
-        colyseusService.room.send({
+        this.room.send({
           type: type === ROAD ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
           structureType: type === ROAD ? null : type,
           row,
@@ -424,7 +441,7 @@
           this.finishTurn();
       },
       finishTurn: function() {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_FINISH_TURN
         });
 
@@ -433,7 +450,7 @@
       requestTradeWith: function(withWho) {
         if (!this.roomState.isGameStarted) return;
 
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_TRADE_REQUEST,
           withWho
         });
@@ -490,7 +507,7 @@
       requestBankTrade: function() {
         if (!this.bankDummy.isTradeConfirmed) return;
         
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_TRADE_WITH_BANK,
           requestedResource: this.bankTradeResource
         });
@@ -498,7 +515,7 @@
         this.resetBankDummy();
       },
       respondToIncomingTrade: function(isAgreed) {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_TRADE_START_AGREED,
           isAgreed
         });
@@ -506,24 +523,24 @@
       addTradeCard: function(card) {
         const { resource } = card;
         
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_TRADE_ADD_CARD,
           resource
         });
       },
       removeTradeCard: function(resource) {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_TRADE_REMOVE_CARD,
           resource
         });
       },
       refuseTrade: function() {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_TRADE_REFUSE
         });
       },
       confirmTrade: function() {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_TRADE_CONFIRM
         });
       },
@@ -537,7 +554,7 @@
           return acc;
         }, initialResourceCounts);
 
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_DISCARD_HALF_DECK,
           discardedCounts
         });
@@ -545,7 +562,7 @@
       moveRobber: function() {
         if (!this.myPlayer.mustMoveRobber) return;
 
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_MOVE_ROBBER,
           tile: this.desiredRobberTile
         });
@@ -556,7 +573,7 @@
       selectStealCard: function(selectedCard) {
         const { resource } = selectedCard;
 
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_STEAL_CARD,
           stealFrom: this.stealingFrom.playerSessionId,
           resource
@@ -565,15 +582,21 @@
         this.stealingFrom = {};
       },
       onMonopolySelected: function(selectedResource) {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_SELECT_MONOPOLY_RESOURCE,
           selectedResource
         });
       },
       onRemoveWildling: function(tileIndex) {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_WILDLINGS_REMOVE_FROM_TILE,
           tileIndex
+        });
+      },
+      onPlayHero: function() {
+        this.room.send({
+          type: MESSAGE_PLAY_HERO_CARD,
+          heroType: this.myPlayer.currentHeroCard.type
         });
       }
     }

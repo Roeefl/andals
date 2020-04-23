@@ -1,40 +1,59 @@
 <template>
-  <div class="rooms-list">
+  <div class="rooms-list-container">
     <h2 class="header">
       Rooms List
     </h2>
-    <ul>
-      <li v-for="room in rooms" :key="room.roomId" class="room">
-        <span>
-          Room ID: {{ room.roomId }}
-        </span>
-        <span>
-          Room Name: {{ room.roomTitle || room.name }}
-        </span>
-        <span>
-          Players: {{ room.clients }}
-        </span>
-        <BaseButton @click="$emit('join', room.roomId)" :disabled="room.locked">
-          Join Room
-        </BaseButton>
-      </li>
-    </ul>
+    <BaseGrid
+      :columns="gridColumns"
+      :items="rooms"
+      :itemActions="gridActions"
+      @action-clicked="$emit('join', $event)"
+      class="rooms-list"
+    />
   </div>
 </template>
 
 <script>
-  import BaseButton from '@/components/common/BaseButton';
+  import BaseGrid from '@/components/common/BaseGrid';
+
+  const gridColumns = [
+    {
+      key: 'roomId',
+      title: 'Room ID'
+    },
+    {
+      key: 'roomTitle',
+      altKey: 'name',
+      title: 'Room Name'
+    },
+    {
+      key: 'clients',
+      title: 'Current Players'
+    }
+  ];
+
+  const gridActions = [
+    {
+      name: 'Join Room',
+      emitValue: 'roomId',
+      disabledKey: 'locked' 
+    }
+  ];
 
   export default {
     name: 'RoomsList',
     components: {
-      BaseButton
+      BaseGrid
     },
     props: {
       rooms: {
         type: Array,
         default: []
       }
+    },
+    created() {
+      this.gridColumns = gridColumns;
+      this.gridActions = gridActions;
     }
   }
 </script>
@@ -42,14 +61,19 @@
 <style scoped lang="scss">
  @import '@/styles/partials';
 
-  .rooms-list {
-    width: 30%;
+  .rooms-list-container {
+    width: 100%;
     padding: $spacer;
     display: flex;
     flex-direction: column;
 
     .header {
       margin-bottom: $spacer;
+    }
+
+    .rooms-list {
+      width: 70%;
+      font-size: $font-size-md;
     }
   }
 

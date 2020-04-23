@@ -17,6 +17,8 @@
           @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
           @trade-with="$emit('trade-with', $event)"
           @steal-from="$emit('steal-from', $event)"
+          :canPlayHero="isMyTurn"
+          @play-hero="$emit('play-hero')"
           class="player"
         />
       </li>
@@ -49,7 +51,11 @@
       isGameStarted: {
         type: Boolean,
         default: false
-      }
+      },
+      isMyTurn: {
+        type: Boolean,
+        default: false
+      },
     },
     computed: mapState([
       'myPlayer',

@@ -2,7 +2,10 @@
   <main class="game-room">
     <BaseGame />
     <Snowflakes v-if="enableSnow" :count="40" class="snowflakes" />
-    <GameOverlay :isOpen="essentialOverlay.isOpen" :header="essentialOverlay.header" :tokens="essentialOverlay.tokens" />
+    <GameOverlay
+      :isOpen="essentialOverlay.isOpen"
+      :overlay="essentialOverlay"
+    />
   </main>
 </template>
 
