@@ -7,7 +7,8 @@
       :iconSize="`${size}px`"
       :iconName="wildlingIcons[type]"
       :iconColor="wildlingColors[type]"
-      :clickable="false"
+      :clickable="removeable"
+      @click="removeable && $emit('remove')"
       class="wildling"
     />
   </transition>
@@ -33,6 +34,10 @@
       size: {
         type: Number,
         default: '40'
+      },
+      removeable: {
+        type: Boolean,
+        default: false
       }
     },
     created() {

@@ -27,8 +27,10 @@
     MESSAGE_WILDLINGS_ADVANCE_CLEARING,
     MESSAGE_WILDLINGS_WALL_BATTLE,
     MESSAGE_PLACE_GUARD,
+    MESSAGE_PLAY_HERO_CARD,
     CHAT_LOG_WILDLING_TOKENS,
-    CHAT_LOG_SIMPLE
+    CHAT_LOG_SIMPLE,
+    CHAT_LOG_HERO_CARD
   } from '@/constants';
 
   export default {
@@ -105,6 +107,17 @@
             header = `A ${invader} has attacked the guards on the wall!`;
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, header });
+            this.$store.commit('setEssentialOverlay', { header });
+
+          case MESSAGE_PLAY_HERO_CARD:
+            const {
+              playerName,
+              heroCard
+            } = broadcast;
+
+            header = `${playerName} has played ${heroCard.name}`;
+
+            this.$store.commit('addGameLog', { type: CHAT_LOG_HERO_CARD, playerName, heroCard });
             this.$store.commit('setEssentialOverlay', { header });
 
           default:

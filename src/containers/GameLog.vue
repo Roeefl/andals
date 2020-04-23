@@ -32,6 +32,10 @@
           class="wildling-token"
         />
       </div>
+      <div v-if="log.type === CHAT_LOG_HERO_CARD" class="hero-card">
+        {{ log.playerName }} has played
+        <HeroCard thumbnail :card="log.heroCard" />
+      </div>
     </li>
   </MessageList>
 </template>
@@ -44,9 +48,10 @@
   import GameDice from '@/components/interface/GameDice';
   import BaseIcon from '@/components/common/BaseIcon';
   import WildlingToken from '@/components/north/WildlingToken';
+  import HeroCard from '@/components/game/HeroCard';
   
   import { resourceCardTypes } from '@/specs/resources';
-  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD, CHAT_LOG_WILDLING_TOKENS } from '@/constants';
+  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD, CHAT_LOG_WILDLING_TOKENS, CHAT_LOG_HERO_CARD } from '@/constants';
 
   export default {
     name: 'GameLog',
@@ -55,7 +60,8 @@
       ResourceCard,
       GameDice,
       BaseIcon,
-      WildlingToken
+      WildlingToken,
+      HeroCard
     },
     props: {
       friendly: {
@@ -74,6 +80,7 @@
       this.CHAT_LOG_LOOT = CHAT_LOG_LOOT;
       this.CHAT_LOG_DISCARD = CHAT_LOG_DISCARD;
       this.CHAT_LOG_WILDLING_TOKENS = CHAT_LOG_WILDLING_TOKENS;
+      this.CHAT_LOG_HERO_CARD = CHAT_LOG_HERO_CARD;
     }
   }
 </script>

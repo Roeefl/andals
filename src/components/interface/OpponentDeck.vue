@@ -10,7 +10,13 @@
       :approve="!!selectedCard.resource"
       @approve="$emit('steal', selectedCard)"
     >
-      <BaseDeck v-if="opponent.resourceCounts" hideResources :deck="opponent.resourceCounts" @card-clicked="toggleSelectedCard($event)" :selectedCards="[selectedCard]" />
+      <BaseDeck
+        v-if="opponent.resourceCounts"
+        :hideResources="hideResources"
+        :deck="opponent.resourceCounts"
+        @card-clicked="toggleSelectedCard($event)"
+        :selectedCards="[selectedCard]"
+      />
     </ActionCard>
   </v-dialog>
 </template>
@@ -33,6 +39,10 @@
       opponent: {
         type: Object,
         required: true
+      },
+      hideResources: {
+        type: Boolean,
+        default: true
       }
     },
     data: () => ({

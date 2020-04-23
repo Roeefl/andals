@@ -34,6 +34,7 @@
           :desiredRobberTile="desiredRobberTile"
           @tile-clicked="onTileClick($event)"
           @robber-dropped="desiredRobberTile = $event"
+          @remove-wildling="onRemoveWildling($event)"
           class="game-board"
           :class="{ 'with-north': isWithNorth }"
         />
@@ -95,6 +96,7 @@
     <OpponentDeck
       :isOpen="!!stealingFrom.playerSessionId"
       :opponent="stealingFrom"
+      :hideResources="!myPlayer.isVisibleSteal"
       @steal="selectStealCard($event)"
     />
     <SelectResource
@@ -131,8 +133,6 @@
   import { initialResourceCounts } from '@/specs/resources';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
 
-  import { HARBOR_GENERIC } from '@/utils/tileManifest';
-
   import {
     MESSAGE_CHAT,
     MESSAGE_GAME_LOG,
@@ -149,6 +149,7 @@
     MESSAGE_STEAL_CARD,
     MESSAGE_GAME_VICTORY,
     MESSAGE_SELECT_MONOPOLY_RESOURCE,
+    MESSAGE_WILDLINGS_REMOVE_FROM_TILE,
     MESSAGE_TRADE_WITH_BANK,
     MESSAGE_TRADE_REQUEST,
     MESSAGE_TRADE_START_AGREED,
@@ -474,8 +475,7 @@
 
         const acceptableResourceIndex = tradeCounts.findIndex(([resource, count]) => (
           (this.myPlayer.ownedHarbors[resource] && count === 2) ||
-          (this.myPlayer.ownedHarbors[HARBOR_GENERIC] && count === 3) ||
-          count === this.roomState.bankTradeStandardRate
+          count === this.myPlayer.bankTradeRate
         ));
 
         if (acceptableResourceIndex < 0) return;
@@ -568,6 +568,12 @@
         colyseusService.room.send({
           type: MESSAGE_SELECT_MONOPOLY_RESOURCE,
           selectedResource
+        });
+      },
+      onRemoveWildling: function(tileIndex) {
+        colyseusService.room.send({
+          type: MESSAGE_WILDLINGS_REMOVE_FROM_TILE,
+          tileIndex
         });
       }
     }

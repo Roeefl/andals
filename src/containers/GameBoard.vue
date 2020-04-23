@@ -8,6 +8,8 @@
           :type="hexTileTypes[tile]"
           :tile="roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)]"
           @dropped="onRobberDropped(absoluteIndex(hexTileMap, rowIndex, colIndex))"
+          class="hex-tile"
+          :class="{ 'robber-camp': isDisplayRobberTile(rowIndex, colIndex) }"
         >
           <span v-if="isDeveloperMode" class="tile-index">
             [{{ rowIndex }}, {{ colIndex }}]
@@ -50,6 +52,8 @@
             v-if="!!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy"
             :type="(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy.type"
             :size="40"
+            :removeable="myPlayer.heroPrivilege === HERO_CARD_Ygritte"
+            @remove="$emit('remove-wildling', absoluteIndex(hexTileMap, rowIndex, colIndex))"
             class="wildling"
           />
         </HexTile>
@@ -81,6 +85,7 @@
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
   import { ROAD, SETTLEMENT, CITY } from '@/specs/purchases';
+  import { HERO_CARD_Ygritte } from '@/specs/heroCards';
 
   export default {
     name: 'GameBoard',
@@ -121,6 +126,8 @@
       this.ROAD = ROAD;
       this.SETTLEMENT = SETTLEMENT;
       this.CITY = CITY;
+
+      this.HERO_CARD_Ygritte = HERO_CARD_Ygritte;
 
       this.harborAdjacentToStructure = harborAdjacentToStructure;
       this.absoluteIndex = boardService.absoluteIndex;
@@ -164,7 +171,7 @@
         const isDynamicPosition = this.myPlayer.mustMoveRobber && absoluteTileIndex === dynamicPosition;
 
          return isStaticPosition || isDynamicPosition;
-      },
+      }
     }
   }
 </script>
@@ -194,6 +201,12 @@
     &.odd {
       margin-top: $tile-size * -0.85;
       margin-bottom: $tile-size * -0.9
+    }
+
+    .hex-tile {
+      &.robber-camp {
+        background: red;
+      }
     }
 
     .tile-index {
