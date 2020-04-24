@@ -48,6 +48,7 @@
         <DraggableWidget class="game-log">
           <GameLog :friendly="roomState.friendlyGameLog" />
         </DraggableWidget>
+        <v-divider dark />
         <DraggableWidget class="game-chat-widget">
           <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
         </DraggableWidget>
@@ -321,7 +322,7 @@
           case MESSAGE_ROLL_DICE:
             const { dice } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_DICE, playerName, dice });
-
+            
             if (isEssential) {
               essentialHeader = `${playerName} rolls: ${dice}`;
               essentialData.dice = dice;
@@ -609,7 +610,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $board-height: 700px; // 800 px best
+  $board-height: 66vh;
 
   .base-game {
     padding: 0 $spacer;
@@ -641,7 +642,7 @@
         }
 
         .game-board {
-          padding-top: $spacer * 2;
+          padding-top: $spacer / 2;
           background-image: url('../assets/ocean.jpg');
           background-size: cover;
           border: 4px dashed black;
@@ -692,7 +693,6 @@
 
     .game-status {
       height: 70px;
-      margin-top: $spacer / 2;
       justify-content: flex-start;
     }
   }

@@ -16,6 +16,9 @@
       :cards="roomState.heroCards"
       @selected="onSelectHeroCard($event)"
     />
+    <audio ref="wildlingsAudio">
+      <source src="../assets/audio/snow-footsteps.mp3" type="audio/mpeg">
+    </audio>
   </div>
 </template>
 
@@ -102,6 +105,9 @@
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_WILDLING_TOKENS, tokens });
             this.$store.commit('setEssentialOverlay', { header, tokens });
+
+            const { wildlingsAudio } = this.$refs;
+            if (wildlingsAudio) wildlingsAudio.play(); 
             break;
 
           case MESSAGE_WILDLINGS_ADVANCE_CLEARING:
