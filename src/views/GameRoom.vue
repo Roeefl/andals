@@ -1,7 +1,7 @@
 <template>
   <main class="game-room">
     <BaseGame />
-    <Snowflakes v-if="enableSnow" :count="40" class="snowflakes" />
+    <Snowflakes v-if="false" :count="40" class="snowflakes" />
     <GameOverlay
       :isOpen="essentialOverlay.isOpen"
       :overlay="essentialOverlay"
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+  // v-if="enableSnow"
   import { mapState } from 'vuex';
 
   import BaseGame from '@/containers/BaseGame';
@@ -37,7 +38,7 @@
     height: 100%;
     display: flex;
     z-index: 20;
-    padding: $spacer 0;
+    padding: $spacer / 3 0;
 
     & > * {
       z-index: 20;

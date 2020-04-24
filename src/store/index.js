@@ -43,15 +43,19 @@ export default new Vuex.Store({
   },
   mutations: {
     toggleSnow(state) {
-      state.enableSnow = !state.enableSnow;
-      localStorage.enableFx = state.enableSnow;
+      const nextValue = !state.enableSnow;
+
+      state.enableSnow = nextValue;
+      localStorage.enableFx = nextValue;
     },
-    toggleAmbience(state, sync = true) {
-      if (state.enableAmbience || localStorage.enableSound)
-        state.enableAmbience = !state.enableAmbience;
-      
-      if (sync)
-        localStorage.enableSound = state.enableAmbience;
+    toggleAmbience(state) {
+      const nextValue = !state.enableAmbience;
+      localStorage.enableSound = nextValue;
+      state.enableAmbience = nextValue;
+    },
+    startAmbience(state) {
+      if (localStorage.enableSound)
+        state.enableAmbience = true;
     },
     toggleDeveloperMode(state) {
       state.isDeveloperMode = !state.isDeveloperMode;

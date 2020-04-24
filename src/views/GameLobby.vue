@@ -102,7 +102,7 @@
         15 * 1000
       );
 
-      this.$store.commit('toggleAmbience', false);
+      this.$store.commit('startAmbience');
     },
     destroyed: function() {
       clearInterval(this.autoRefresh);
