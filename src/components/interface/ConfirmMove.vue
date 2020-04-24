@@ -5,7 +5,7 @@
     width="400"
   >
    <ActionCard :title="`Confirm Purchase: ${type}`" @cancel="$emit('no')" @approve="$emit('yes')">
-    <div v-if="!isFree">
+    <div v-if="!isFree" class="build-costs">
       Build {{ type }} for:
       <div class="cost">
         <ResourceCard
@@ -17,6 +17,15 @@
         />
       </div>
     </div>
+    <div v-if="isFlexible" class="flexible-purchase">
+      <h3>
+        Flexible Purchase
+      </h3>
+      <h4>
+        Swap out one of the resources with:
+      </h4>
+      <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="selectedResource = $event" :selectedCards="[selectedResource]" class="resources-deck" />
+    </div>
   </ActionCard>
   </v-dialog>
 </template>
@@ -27,12 +36,14 @@
 
   import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';
+  import BaseDeck from '@/components/game/BaseDeck';
 
   export default {
     name: 'ConfirmMove',
     components: {
       ResourceCard,
-      ActionCard
+      ActionCard,
+      BaseDeck
     },
     props: {
       isOpen: {
@@ -50,8 +61,15 @@
       isFlexible: {
         type: Boolean,
         default: false
+      },
+      myPlayer: {
+        type: Object,
+        default: () => {}
       }
     },
+    data: () => ({
+      selectedResource: {}
+    }),
     computed: {
       buildingCosts: () => colyseusService.buildingCosts
     },
@@ -64,7 +82,21 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
+  .build-costs {
+    padding: $spacer;
+  }
+
   .cost {
     display: flex;
+  }
+
+  .flexible-purchase {
+    border-top: 1px solid black;
+    margin: $spacer 0;
+    padding: $spacer;
+  }
+
+  .resources-deck {
+    padding: $spacer;
   }
 </style>
