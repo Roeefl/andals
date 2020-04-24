@@ -63,6 +63,10 @@
     justify-content: center;
     align-items: center;
 
+    .overlay-header {
+      text-transform: uppercase;
+    }
+
     .wildling-tokens {
       width: 30%;
       display: flex;

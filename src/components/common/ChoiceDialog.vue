@@ -14,7 +14,16 @@
         {{ buttonText }}
       </BaseButton>
     </template>
-    <ActionCard :title="title" :cancel="hasCancel" :cancelText="cancelText" @cancel="onCancel" :approveText="approveText" :approve="hasApprove" @approve="onApprove">
+    <ActionCard
+      :title="title"
+      :cancel="hasCancel"
+      :cancelText="cancelText"
+      @cancel="onCancel"
+      :approveText="approveText"
+      :approve="hasApprove"
+      @approve="onApprove"
+      class="action-card"
+    >
       <slot />
     </ActionCard>
   </v-dialog>
@@ -102,5 +111,14 @@
     height: 100% !important;
     min-width: auto !important;
     box-shadow: none;
+  }
+
+  .action-card {
+    display: flex;
+    flex-direction: column;
+
+    .card-action {
+      width: 100%;
+    }
   }
 </style>

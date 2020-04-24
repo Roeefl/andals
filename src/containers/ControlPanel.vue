@@ -11,10 +11,11 @@
       </div>
       <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" class="available-loot" />
       <GameCards
+        visible
         :deck="myPlayer.gameCards"
         :allowed="isGameCardsEnabled"
-         @play-game-card="playGameCard($event)"
-         class="game-cards"
+        @play-game-card="playGameCard($event)"
+        class="game-cards"
       />
     </div>
     <div class="game-actions">

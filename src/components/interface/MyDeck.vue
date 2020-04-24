@@ -20,6 +20,7 @@
           <GamePieces type="guards" :pieces="myPlayer.guards" :color="myPlayer.color" class="pieces" />
           <GameCards
             v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
+            visible
             :deck="myPlayer.gameCards"
             class="game-cards"
           />

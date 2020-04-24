@@ -17,7 +17,7 @@
           @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
           @trade-with="$emit('trade-with', $event)"
           @steal-from="$emit('steal-from', $event)"
-          :canPlayHeroCard="isMyTurn"
+          :isMyTurn="isMyTurn"
           @play-hero="$emit('play-hero', $event)"
           class="player"
         />

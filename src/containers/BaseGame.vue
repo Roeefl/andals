@@ -60,6 +60,7 @@
       :type="activePurchase.type"
       :isOpen="isDisplayConfirmMove"
       :isFree="roomState.isSetupPhase"
+      :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
       @yes="onConfirmPurchase(true)"
       @no="onConfirmPurchase(false)"
     />

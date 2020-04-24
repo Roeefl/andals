@@ -32,9 +32,9 @@
           class="wildling-token"
         />
       </div>
-      <div v-if="log.type === CHAT_LOG_HERO_CARD" class="hero-card">
+      <div v-if="log.type === CHAT_LOG_HERO_CARD" class="played-hero-card">
         {{ log.playerName }} has played
-        <HeroCard thumbnail :card="log.heroCard" />
+        <HeroCard nameOnly :card="log.heroCard" class="hero-card" />
       </div>
     </li>
   </MessageList>
@@ -136,6 +136,14 @@
     
     & + & {
       margin-left: $spacer / 2;
+    }
+  }
+
+  .played-hero-card {
+    display: flex;
+
+    .hero-card {
+      margin-left: $spacer;
     }
   }
 </style>

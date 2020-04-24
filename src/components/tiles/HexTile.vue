@@ -81,6 +81,7 @@
 
     &.spacer {
       opacity: 1;
+      // border: 1px dashed black;
     }
 
     &.water {

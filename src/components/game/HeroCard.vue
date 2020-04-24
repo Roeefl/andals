@@ -1,31 +1,41 @@
 <template>
-  <div class="hero-card">
+  <div class="hero-card" :class="{ 'name-only': nameOnly, 'was-played': card.wasPlayed }">
     <header class="card-header" :class="{ 'highlight': !thumbnail, 'thumbnail': thumbnail }">
       <h3>
         {{ card.name }}
       </h3>
-      <h4 v-if="!thumbnail">
+      <h4 v-if="!thumbnail && !nameOnly">
         {{ card.title }}
       </h4>
     </header>
-    <section class="card-image-wrapper">
+    <section v-if="!nameOnly" class="card-image-wrapper">
       <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
     </section>
-    <section v-if="!thumbnail" class="card-description" :class="{ 'highlight': !thumbnail }">
+    <section v-if="!thumbnail && !nameOnly" class="card-description" :class="{ 'highlight': !thumbnail }">
       {{ card.description }}
     </section>
+    <BaseIcon v-if="thumbnail && card.wasPlayed" name="flip-horizontal" color="white" class="icon-was-played" />
   </div>
 </template>
 
 <script>
+  import BaseIcon from '@/components/common/BaseIcon';
+
   export default {
     name: 'GameCard',
+    components: {
+      BaseIcon
+    },
     props: {
       card: {
         type: Object,
         required: true
       },
       thumbnail: {
+        type: Boolean,
+        default: false
+      },
+      nameOnly: {
         type: Boolean,
         default: false
       }
@@ -41,12 +51,22 @@
   
   .hero-card {
     border-radius: 8px;
+    position: relative;
     padding: $spacer;
     text-align: center;
     background: $app-background;
     color: $primary;
     display: flex;
     flex-direction: column;
+
+    &.name-only {
+      padding: 0;
+      justify-content: center;
+    }
+
+    &.was-played {
+      opacity: 0.8;
+    }
 
     .card-header {
       &.highlight {
@@ -81,6 +101,12 @@
         background: $hero-text-background;
         color: $hero-text-color;
       }
+    }
+
+    .icon-was-played {
+      position: absolute;
+      top: $spacer / 2;
+      right: $spacer * -0.5;
     }
   }
 </style>

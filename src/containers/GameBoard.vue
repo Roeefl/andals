@@ -9,7 +9,7 @@
           :tile="roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)]"
           @dropped="onRobberDropped(absoluteIndex(hexTileMap, rowIndex, colIndex))"
           class="hex-tile"
-          :class="{ 'robber-camp': isDisplayRobberTile(rowIndex, colIndex) }"
+          :class="{ 'robber-camp': rowIndex === 0 && colIndex === 0 }"
         >
           <span v-if="isDeveloperMode" class="tile-index">
             [{{ rowIndex }}, {{ colIndex }}]
@@ -205,7 +205,7 @@
 
     .hex-tile {
       &.robber-camp {
-        background: red;
+        border: 1px dashed red;
       }
     }
 

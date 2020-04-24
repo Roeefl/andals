@@ -10,8 +10,8 @@
     <slot />
     <fragment v-if="cancel || approve">
       <v-divider />
-      <v-card-actions>
-        <BaseButton text v-if="cancel" color="danger" @click="() => $emit('cancel')">
+      <v-card-actions class="card-actions">
+        <BaseButton text v-if="cancel" color="red" @click="() => $emit('cancel')">
           {{ cancelText }}
         </BaseButton>
         <v-spacer />
@@ -55,3 +55,12 @@
     } 
   }
 </script>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  .card-actions {
+    display: flex;
+    flex-flow: row wrap;
+  }
+</style>

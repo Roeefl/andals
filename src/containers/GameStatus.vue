@@ -3,6 +3,9 @@
     <div class="game-info">
       <div class="bank-resources">
         <BaseIcon name="bank" size="32px" color="white" class="bank-icon" />
+        <span class="bank-trade-rate">
+         {{ myPlayer.bankTradeRate }} : 1 
+        </span>
         <ResourceCounts spaced hideCounts :counts="roomState.resourceCounts" @resource-clicked="$emit('bank-trading', $event)" />
         <GameCards
           :count="(roomState.gameCards || []).length"
@@ -65,7 +68,7 @@
     flex: 1;
     height: 100%;
     display: grid;
-    grid-template-columns: 20% 60% 20%;
+    grid-template-columns: 40% 40% 20%;
     color: $app-background;
 
     .game-info {
@@ -77,7 +80,10 @@
         display: flex;
         align-items: center;
 
-        .bank-icon {
+        .bank-trade-rate {
+          font-size: $font-size-md;
+          color: $primary;
+          padding-left: $spacer / 2;
           margin-right: $spacer;
         }
 

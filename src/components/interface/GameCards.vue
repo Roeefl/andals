@@ -4,6 +4,7 @@
       <GameCard
         v-for="(card, index) in deck"
         :key="`${card.type}-${index}`"
+        :visible="visible"
         :type="card.type"
         :clickable="!card.wasPlayed"
         :wasPlayed="card.wasPlayed"
@@ -30,6 +31,10 @@
       allowed: {
         type: Boolean,
         default: false
+      },
+      visible: {
+        type: Boolean,
+        default: false 
       },
       deck: {
         type: Array,

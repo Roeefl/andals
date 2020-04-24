@@ -96,17 +96,17 @@
             break;
 
           case MESSAGE_WILDLINGS_ADVANCE_CLEARING:
-            const { wildling } = broadacst;
+            const { wildling } = broadcast;
             header = `A ${wildling} has advanced to the clearing!`;
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, header });
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
             this.$store.commit('setEssentialOverlay', { header });
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
             const { invader } = broadcast;
-            header = `A ${invader} has attacked the guards on the wall!`;
+            header = `Attack on the wall! ${invader.type} has attacked the guards`;
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, header });
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
             this.$store.commit('setEssentialOverlay', { header });
 
           case MESSAGE_PLAY_HERO_CARD:

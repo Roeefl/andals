@@ -46,6 +46,10 @@
       isFree: {
         type: Boolean,
         default: false
+      },
+      isFlexible: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {

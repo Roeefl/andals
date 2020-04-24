@@ -5,7 +5,7 @@
         icon
         :xs="small"
         :iconSize="small ? 'medium' : 'x-large'"
-        :iconName="wasPlayed ? gameCardIcons[type] : 'help-box'"
+        :iconName="(visible || wasPlayed) ? gameCardIcons[type] : 'help-box'"
         :iconColor="wasPlayed ? 'white' : 'black'"
         :clickable="clickable"
       >
@@ -35,6 +35,10 @@
       type: {
         type: String,
         required: true
+      },
+      visible: {
+        type: Boolean,
+        default: false 
       },
       clickable: {
         type: Boolean,

@@ -48,6 +48,7 @@
           <GameCard
             v-for="(gameCard, index) in (player.gameCards || [])"
             :key="`${gameCard.type}-${index}`"
+            :visible="isMe"
             :clickable="false"
             :type="gameCard.type"
             :wasPlayed="gameCard.wasPlayed"
@@ -68,10 +69,10 @@
         <ChoiceDialog
           :width="500"
           buttonColor="transparent"
-          :hasCancel="isMe && canPlayHeroCard"
+          :hasCancel="isMe && isMyTurn && !player.hasPlayedHeroCard"
           :cancelText="`Play ${player.currentHeroCard.name} and discard it`"
           @cancel="$emit('play-hero', true)"
-          :hasApprove="isMe && canPlayHeroCard && !player.currentHeroCard.wasPlayed"
+          :hasApprove="isMe && isMyTurn && !player.currentHeroCard.wasPlayed && !player.hasPlayedHeroCard"
           :approveText="`Play ${player.currentHeroCard.name} and flip it for a subsequent use`"
           @approve="$emit('play-hero', false)"
         >
@@ -142,7 +143,7 @@
         type: Boolean,
         default: false
       },
-      canPlayHeroCard: {
+      isMyTurn: {
         type: Boolean,
         default: false  
       }
@@ -154,11 +155,13 @@
     },
     methods: {
       playerStyle: function(playerColor) {
-        const rgbPlayerColor = hexToRgb(playerColor);
+        const backgroundRgb = hexToRgb(tileColors.primary);
 
         return {
           color: playerColor,
-          backgroundColor: tileColors.primary // `rgba(${rgbPlayerColor}, 0.5)`
+          backgroundColor: this.isMe
+            ? `rgba(${backgroundRgb}, 0.7)`
+            : tileColors.primary
         };
       }
     }

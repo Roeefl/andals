@@ -24,8 +24,6 @@
   import { structureIcons } from '@/specs/gamePieces';
   import { hexToRgb } from '@/utils/colors';
 
-  const DEFAULT_HEX_BG = '#6D4C41';
-
   export default {
     name: 'StructureTile',
     components: {
@@ -61,17 +59,17 @@
         }
       },
       structureStyle: function() {
-        const hexBackground = (this.harbor && this.harbor.resource) ?
-          resourceCardColors[this.harbor.resource]
-          : DEFAULT_HEX_BG;
+        const hexBackground = (this.harbor && this.harbor.resource)
+          ? resourceCardColors[this.harbor.resource]
+          : this.myColor;
 
         const rgbBackground = hexToRgb(hexBackground);
 
-        if (!!this.activeData.type) return {};
+        if (!!this.activeData.type || !this.enabled) return {};
         
         return {
           border: '1px dashed black',
-          backgroundColor: `rgba(${rgbBackground}, 0.4)`
+          backgroundColor: `rgba(${rgbBackground}, 0.5)`
         };
       }
     },
@@ -103,10 +101,11 @@
       .structure-button {
         animation: heartbeat 2s cubic-bezier(0.860, 0.000, 0.070, 1.000) infinite both;
         border-radius: 999px;
-          &:hover {
-            background: rgba(black, 1);
-            box-shadow: 2px 2px 12px 12px var(--color-hover);
-          }
+
+        &:hover {
+          background: rgba(black, 1);
+          box-shadow: 2px 2px 12px 12px var(--color-hover);
+        }
       }
     }
   }
