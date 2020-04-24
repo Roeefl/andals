@@ -10,6 +10,12 @@
       </div>
       <TheWall :myColor="myPlayer.color" :wall="guards" :allowPurchase="allowPurchase" @wall-clicked="onWallClicked($event)" class="the-wall" />
     </div>
+    <HeroCardSwapper
+      v-if="myPlayer.swappingHeroCard"
+      :isOpen="myPlayer.swappingHeroCard"
+      :cards="roomState.heroCards"
+      @selected="onSelectHeroCard($event)"
+    />
   </div>
 </template>
 
@@ -21,6 +27,7 @@
   import WildlingSpawn from '@/components/north/WildlingSpawn';
   import WildlingCamps from '@/components/north/WildlingCamps';
   import WildlingClearing from '@/components/north/WildlingClearing';
+  import HeroCardSwapper from '@/components/game/HeroCardSwapper';
 
   import {
     MESSAGE_WILDLINGS_REVEAL_TOKENS,
@@ -28,6 +35,7 @@
     MESSAGE_WILDLINGS_WALL_BATTLE,
     MESSAGE_PLACE_GUARD,
     MESSAGE_PLAY_HERO_CARD,
+    MESSAGE_SELECT_HERO_CARD,
     CHAT_LOG_WILDLING_TOKENS,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_HERO_CARD
@@ -39,7 +47,8 @@
       WildlingSpawn,
       WildlingCamps,
       WildlingClearing,
-      TheWall
+      TheWall,
+      HeroCardSwapper
     },
     props: {
       allowPurchase: {
@@ -118,11 +127,17 @@
             header = `${playerName} has played ${heroCard.name}`;
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_HERO_CARD, playerName, heroCard });
-            this.$store.commit('setEssentialOverlay', { header });
+            this.$store.commit('setEssentialOverlay', { header, heroCard });
 
           default:
             break;
         }
+      },
+      onSelectHeroCard: function(heroCard) {
+        this.room.send({
+          type: MESSAGE_SELECT_HERO_CARD,
+          heroType: heroCard.type
+        });
       }
     }
   }

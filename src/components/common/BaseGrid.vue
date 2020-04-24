@@ -25,7 +25,7 @@
 <script> 
   import BaseButton from '@/components/common/BaseButton';
 
-export default {
+  export default {
     name: 'BaseGrid',
     components: {
       BaseButton

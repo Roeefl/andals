@@ -60,6 +60,7 @@
       :type="activePurchase.type"
       :isOpen="isDisplayConfirmMove"
       :isFree="roomState.isSetupPhase"
+      :myPlayer="myPlayer"
       :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
       @yes="onConfirmPurchase(true)"
       @no="onConfirmPurchase(false)"
@@ -608,7 +609,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $board-height: 750px;
+  $board-height: 700px; // 800 px best
 
   .base-game {
     padding: 0 $spacer;

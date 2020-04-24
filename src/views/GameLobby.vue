@@ -88,9 +88,9 @@
       return {
         roomType: ROOM_TYPE_FIRST_MEN,
         roomTitle: `Room ${randomInt}`,
-        roomMaxPlayers: 4,
+        roomMaxPlayers: 2,
         autoRefresh: null,
-        playVsBots: true,
+        playVsBots: false,
         autoPickup: true,
         friendlyGameLog: false,
         botReplacement: true

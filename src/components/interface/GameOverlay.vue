@@ -17,6 +17,9 @@
       <div v-if="overlay.dice" class="player-rolls">
         <GameDice small :dice="overlay.dice" :enabled="false" />
       </div>
+      <div v-if="overlay.heroCard" class="hero-card">
+        <HeroCard thumbnail :card="overlay.heroCard" />
+      </div>
     </div>
   </BaseOverlay>
 </template>
@@ -25,13 +28,15 @@
   import BaseOverlay from '@/components/common/BaseOverlay';
   import WildlingToken from '@/components/north/WildlingToken';
   import GameDice from '@/components/interface/GameDice';
+  import HeroCard from '@/components/game/HeroCard';
 
   export default {
     name: 'GameOverlay',
     components: {
       BaseOverlay,
       WildlingToken,
-      GameDice
+      GameDice,
+      HeroCard
     },
     props: {
       isOpen: {
@@ -80,6 +85,11 @@
 
     .player-rolls {
       display: flex;
+    }
+
+    .hero-card {
+      width: 40vw;
+      height: 50vh;
     }
   }
 </style>
