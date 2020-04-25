@@ -18,6 +18,9 @@
         <GameDice small :dice="overlay.dice" :enabled="false" />
       </div>
       <div v-if="overlay.heroCard" class="hero-card">
+        <h3>
+          {{ overlay.heroCard.ability }}
+        </h3>
         <HeroCard thumbnail :card="overlay.heroCard" />
       </div>
     </div>

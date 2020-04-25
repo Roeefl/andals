@@ -29,12 +29,14 @@
           v-if="isWithNorth"
           :allowPurchase="allowPurchase"
           @wall-clicked="onGuardClick($event)"
+          @kill-guard="onGuardClick($event, true)"
           class="the-north"
         />
         <GameBoard
           :allowPurchase="allowPurchase"
           :desiredRobberTile="desiredRobberTile"
           @tile-clicked="onTileClick($event)"
+          @remove-road="onRemoveRoad($event)"
           @robber-dropped="desiredRobberTile = $event"
           @remove-wildling="onRemoveWildling($event)"
           class="game-board"
@@ -59,12 +61,13 @@
     </DraggableWidget>
     <ConfirmMove
       :type="activePurchase.type"
+      :removing="activePurchase.isRemove"
       :isOpen="isDisplayConfirmMove"
       :isFree="roomState.isSetupPhase"
       :myPlayer="myPlayer"
       :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
       @no="isDisplayConfirmMove = false"
-      @yes="onConfirmPurchase($event)"
+      @yes="onConfirmMove($event)"
     />
     <MyDeck
       :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
@@ -147,7 +150,9 @@
     MESSAGE_FINISH_TURN,
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
+    MESSAGE_REMOVE_ROAD,
     MESSAGE_PLACE_GUARD,
+    MESSAGE_REMOVE_GUARD,
     MESSAGE_PURCHASE_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_MOVE_ROBBER,
@@ -393,23 +398,43 @@
         this.activePurchase = tile;
         this.isDisplayConfirmMove = true;
       },
-      onGuardClick: function(location) {
+      onRemoveRoad: function(roadTile) {
+        this.activePurchase = roadTile;
+        this.activePurchase.isRemove = true;
+
+        this.isDisplayConfirmMove = true;
+      },
+      onGuardClick: function(location, isRemove = false) {
+      console.log("isRemove", isRemove)
+      console.log("location", location)
         const { section, position } = location;
         
         this.activePurchase = {
           type: GUARD,
           section,
-          position
+          position,
+          isRemove
         };
+
         this.isDisplayConfirmMove = true;
       },
-      onConfirmPurchase: function(flexiblePurchase) {
+      onConfirmMove: function(flexiblePurchase) {
         this.isDisplayConfirmMove = false;
 
-        const { type, row, col } = this.activePurchase;
+        const { type, row, col, isRemove = false } = this.activePurchase;
 
         if (type === GUARD) {
           const { section, position } = this.activePurchase;
+
+          if (isRemove) {
+            this.room.send({
+              type: MESSAGE_REMOVE_GUARD,
+              section,
+              position
+            });
+
+            return;
+          }
 
           this.room.send({
             type: MESSAGE_PLACE_GUARD,
@@ -422,7 +447,7 @@
             this.finishTurn();
 
           return;
-        }
+        };
 
         if (type === GAME_CARD) {
           this.room.send({
@@ -430,6 +455,16 @@
           });
 
           this.$store.commit('setJustPurchasedGameCard', true);
+          return;
+        }
+
+        if (isRemove) {
+          this.room.send({
+            type: MESSAGE_REMOVE_ROAD,
+            row,
+            col
+          });
+
           return;
         }
         

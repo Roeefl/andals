@@ -1,8 +1,8 @@
 <template>
   <BaseButton
     icon
-    :disabled="!enabled"
-    @click="$emit('clicked')"
+    :disabled="!enabled && !removeable"
+    @click="onClick"
     class="road"
     :class="[placement, { 'enabled': enabled }]"
     :style="roadStyle"
@@ -37,6 +37,10 @@
         default: function() {
           return {};
         }
+      },
+      removeable: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -46,6 +50,14 @@
           background: this.activeData.color,
           border: this.activeData.color ? '4px inset black' : ''
         }
+      }
+    },
+    methods: {
+      onClick: function() {
+        if (this.removeable)
+          this.$emit('remove');
+        else
+          this.$emit('clicked');
       }
     }
   }

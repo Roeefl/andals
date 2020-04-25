@@ -12,9 +12,9 @@
     >
      <div class="confirm-move">
       <h2>
-        Build {{ type }} for:
+        {{ removing ? 'Remove' : header }} {{ type }}:
       </h2>
-      <div v-if="!isFree">
+      <div v-if="!isFree && !removing">
         <div class="cost">
           <ResourceCard
             v-for="resource in resourceCardTypes"
@@ -64,6 +64,14 @@
       type: {
         type: String,
         required: true
+      },
+      header: {
+        type: String,
+        default: 'Building Costs for'
+      },
+      removing: {
+        type: Boolean,
+        default: false
       },
       isFree: {
         type: Boolean,
@@ -115,7 +123,7 @@
     & > * {
       margin: $spacer / 2 0;
       padding: $spacer / 2 0;
-      border-top: 1px solid black;
+      border-bottom: 1px solid black;
     }
   }
 

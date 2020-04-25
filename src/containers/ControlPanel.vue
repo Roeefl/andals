@@ -112,7 +112,7 @@
           (!this.roomState.isSetupPhase && !this.roomState.isDiceRolled) ||
           (this.myPlayer.mustMoveRobber && this.desiredRobberTile === -1) ||
           this.myPlayer.allowStealingFrom.length > 0 ||
-          this.myPlayer.roadBuildingPhase > 0
+          this.myPlayer.allowFreeRoads > 0
         );
       },
       ...mapState([

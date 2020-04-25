@@ -7,6 +7,9 @@
       <h4 v-if="!thumbnail && !nameOnly">
         {{ card.title }}
       </h4>
+      <h5 v-if="!thumbnail && !nameOnly">
+        {{ card.ability }}
+      </h5>
     </header>
     <section v-if="!nameOnly" class="card-image-wrapper">
       <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />

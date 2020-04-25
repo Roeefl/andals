@@ -26,6 +26,10 @@
       allowPurchase: {
         type: Boolean,
         default: false
+      },
+      allowRemove: {
+        type: Boolean,
+        default: false   
       }
     },
     computed: {
@@ -45,7 +49,7 @@
           .every(guard => !!guard && !!guard.ownerId);
       },
       onPositionClicked: function(p) {
-        if (this.isGuardAllowed(p))
+        if (this.allowRemove || this.isGuardAllowed(p))
           this.$emit('wall-clicked', p);
       }
     }

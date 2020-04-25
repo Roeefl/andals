@@ -6,6 +6,7 @@
       :section="w"
       :myColor="myColor"
       :allowPurchase="allowPurchase"
+      :allowRemove="allowRemove"
       :guards="wall.slice(sectionStart, sectionStart + 5)"
       @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
     />
@@ -34,6 +35,10 @@
       allowPurchase: {
         type: Boolean,
         default: false
+      },
+      allowRemove: {
+        type: Boolean,
+        default: false   
       }
     },
     created() {

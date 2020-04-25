@@ -8,7 +8,14 @@
       <div class="wildling-clearings">
         <WildlingClearing v-for="(clearing, c) in roomState.wildlingClearings" :key="`clearing-${c}`" :clearing="clearing" class="clearing" :class="`clearing-${c}`" />
       </div>
-      <TheWall :myColor="myPlayer.color" :wall="guards" :allowPurchase="allowPurchase" @wall-clicked="onWallClicked($event)" class="the-wall" />
+      <TheWall
+        :myColor="myPlayer.color"
+        :wall="guards"
+        :allowPurchase="allowPurchase"
+        :allowRemove="myPlayer.allowKill === GUARD"
+        @wall-clicked="onWallClicked($event)"
+        class="the-wall"
+      />
     </div>
     <HeroCardSwapper
       v-if="myPlayer.swappingHeroCard"
@@ -42,6 +49,8 @@
     CHAT_LOG_SIMPLE,
     CHAT_LOG_HERO_CARD
   } from '@/constants';
+
+  import { ROAD, GUARD } from '@/specs/purchases';
 
   export default {
     name: 'TheNorth',
@@ -82,6 +91,7 @@
     },
     created() {
       this.initializeRoom(this.room);
+      this.GUARD = GUARD;
     },
     methods: {
       initializeRoom: function(room = this.room) {
@@ -90,8 +100,14 @@
       onWallClicked: function(location) {
         const { section, position } = location;
         
-        if (this.allowPurchase && this.myPlayer.hasResources.guard)
+        if (this.allowPurchase && this.myPlayer.hasResources.guard) {
           this.$emit('wall-clicked', location);
+          return;
+        }
+
+        if (this.myPlayer.allowKill === GUARD) {
+          this.$emit('kill-guard', location);
+        }
       },
       onBroadcastReceived: function(broadcast) {
         const { type } = broadcast;
