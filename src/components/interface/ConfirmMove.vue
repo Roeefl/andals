@@ -2,31 +2,40 @@
   <v-dialog
     :value="isOpen"
     persistent
-    width="400"
+    width="600"
   >
-   <ActionCard :title="`Confirm Purchase: ${type}`" @cancel="$emit('no')" @approve="$emit('yes', isFlexible ? { swapWhich, swapWith: swapWith.resource } : {})">
-    <div v-if="!isFree" class="build-costs">
-      Build {{ type }} for:
-      <div class="cost">
-        <ResourceCard
-          v-for="resource in resourceCardTypes"
-          :key="resource"
-          v-show="buildingCosts[type][resource]"
-          :resource="resource"
-          :count="buildingCosts[type][resource]"
-          :collectable="swapWhich === resource"
-          @clicked="swapWhich = resource"
-        />
+    <ActionCard
+      :title="`Confirm Purchase: ${type}`"
+      @cancel="$emit('no')"
+      :approve="!isFlexible || (!!swapWhich && !!swapWith.resource)"
+      @approve="$emit('yes', isFlexible ? { swapWhich, swapWith: swapWith.resource } : {})"
+    >
+     <div class="confirm-move">
+      <h2>
+        Build {{ type }} for:
+      </h2>
+      <div v-if="!isFree">
+        <div class="cost">
+          <ResourceCard
+            v-for="resource in resourceCardTypes"
+            :key="resource"
+            v-show="buildingCosts[type][resource]"
+            :resource="resource"
+            :count="buildingCosts[type][resource]"
+            :selected="swapWhich === resource"
+            @clicked="onResourceClick(resource)"
+          />
+        </div>
       </div>
-    </div>
-    <div v-if="isFlexible" class="flexible-purchase">
-      <h3>
-        Flexible Purchase
-      </h3>
-      <h4>
-        Swap out one of the resources with:
-      </h4>
-      <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="swapWith = $event" :selectedCards="[swapWith]" class="resources-deck" />
+      <div v-if="isFlexible">
+        <h3>
+          Flexible Purchase Allowed
+        </h3>
+        <h4>
+          Swap out the selected resource with:
+        </h4>
+        <BaseDeck :deck="swappableResources" @card-clicked="swapWith = $event" :selectedCards="[swapWith]" class="resources-deck" />
+      </div>
     </div>
   </ActionCard>
   </v-dialog>
@@ -74,10 +83,23 @@
       swapWith: {},
     }),
     computed: {
-      buildingCosts: () => colyseusService.buildingCosts
+      buildingCosts: () => colyseusService.buildingCosts,
+      swappableResources: function() {
+        return Object.fromEntries(
+          Object
+            .entries(this.myPlayer.resourceCounts)
+            .filter(([resource, count], index) => count > this.buildingCosts[this.type][resource])
+        );
+      }
     },
     created() {
       this.resourceCardTypes = resourceCardTypes;
+    },
+    methods: {
+      onResourceClick: function(resource) {
+        if (this.myPlayer.resourceCounts[resource] === 0)
+          this.swapWhich = resource;
+      }
     }
   }
 </script>
@@ -85,21 +107,23 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .build-costs {
-    padding: $spacer;
+  .confirm-move {
+    display: flex;
+    flex-direction: column;
+    padding: $spacer / 2;
+
+    & > * {
+      margin: $spacer / 2 0;
+      padding: $spacer / 2 0;
+      border-top: 1px solid black;
+    }
   }
 
   .cost {
     display: flex;
   }
-
-  .flexible-purchase {
-    border-top: 1px solid black;
-    margin: $spacer 0;
-    padding: $spacer;
-  }
-
+  
   .resources-deck {
-    padding: $spacer;
+    margin-top: $spacer;
   }
 </style>
