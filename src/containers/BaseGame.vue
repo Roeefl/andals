@@ -63,8 +63,8 @@
       :isFree="roomState.isSetupPhase"
       :myPlayer="myPlayer"
       :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
-      @yes="onConfirmPurchase(true)"
-      @no="onConfirmPurchase(false)"
+      @no="isDisplayConfirmMove = false"
+      @yes="onConfirmPurchase($event)"
     />
     <MyDeck
       :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
@@ -403,9 +403,8 @@
         };
         this.isDisplayConfirmMove = true;
       },
-      onConfirmPurchase: function(approved) {
+      onConfirmPurchase: function(flexiblePurchase) {
         this.isDisplayConfirmMove = false;
-        if (!approved) return;
 
         const { type, row, col } = this.activePurchase;
 
@@ -415,7 +414,8 @@
           this.room.send({
             type: MESSAGE_PLACE_GUARD,
             section,
-            position
+            position,
+            ...flexiblePurchase
           });
 
           if (this.roomState.isSetupPhase)

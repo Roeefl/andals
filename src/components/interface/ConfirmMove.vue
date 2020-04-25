@@ -4,16 +4,18 @@
     persistent
     width="400"
   >
-   <ActionCard :title="`Confirm Purchase: ${type}`" @cancel="$emit('no')" @approve="$emit('yes')">
+   <ActionCard :title="`Confirm Purchase: ${type}`" @cancel="$emit('no')" @approve="$emit('yes', isFlexible ? { swapWhich, swapWith: swapWith.resource } : {})">
     <div v-if="!isFree" class="build-costs">
       Build {{ type }} for:
       <div class="cost">
         <ResourceCard
           v-for="resource in resourceCardTypes"
           :key="resource"
+          v-show="buildingCosts[type][resource]"
           :resource="resource"
           :count="buildingCosts[type][resource]"
-          v-show="buildingCosts[type][resource]"
+          :collectable="swapWhich === resource"
+          @clicked="swapWhich = resource"
         />
       </div>
     </div>
@@ -24,7 +26,7 @@
       <h4>
         Swap out one of the resources with:
       </h4>
-      <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="selectedResource = $event" :selectedCards="[selectedResource]" class="resources-deck" />
+      <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="swapWith = $event" :selectedCards="[swapWith]" class="resources-deck" />
     </div>
   </ActionCard>
   </v-dialog>
@@ -68,7 +70,8 @@
       }
     },
     data: () => ({
-      selectedResource: {}
+      swapWhich: {},
+      swapWith: {},
     }),
     computed: {
       buildingCosts: () => colyseusService.buildingCosts
