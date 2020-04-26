@@ -146,7 +146,7 @@ export default new Vuex.Store({
       ];
 
       const updatedRoads = [
-        ...state.activeRoads
+        ...boardService.initialRoads()
       ];
 
       roomState.roads.forEach(({ ownerId, row, col }) => {

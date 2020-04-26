@@ -6,8 +6,8 @@
       iconName="treasure-chest"
       iconColor="white"
       iconSize="x-large"
-      :clickable="hasAnyLoot"
-      @click="$emit('collect-all')"
+      :clickable="collectAll && hasAnyLoot"
+      @click="collectAll && $emit('collect-all')"
       class="collect-all"
     />
     <ResourceCard
@@ -18,7 +18,7 @@
       :hideCount="!counts[resource]"
       :clickable="counts[resource] > 0"
       :collectable="counts[resource] > 0"
-      @clicked="$emit('collect-all')"
+      @clicked="$emit('collect-resource', resource)"
     />
   </div>
 </template>
@@ -40,6 +40,10 @@
         default: function() {
           return {};
         }
+      },
+      collectAll: {
+        type: Boolean,
+        default: true
       }
     },
     computed: {

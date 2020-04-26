@@ -1,6 +1,6 @@
 <template>
   <div class="the-wall">
-    <WallTile
+    <WallSection
       v-for="(sectionStart, w) in wallTiles"
       :key="`wall-${w}`"
       :section="w"
@@ -9,19 +9,20 @@
       :allowRemove="allowRemove"
       :guards="wall.slice(sectionStart, sectionStart + 5)"
       @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
+      @kill-guard="$emit('kill-guard', { section: w, position: $event })"
     />
   </div>
 </template>
 
 <script>
-  import WallTile from '@/components/north/WallTile';
+  import WallSection from '@/components/north/WallSection';
 
   const wallTiles = [0, 5, 10, 15];
 
   export default {
-    name: 'TheWall',
+    name: 'Wall',
     components: {
-      WallTile
+      WallSection
     },
     props: {
       wall: {

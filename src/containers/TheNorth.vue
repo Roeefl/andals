@@ -4,16 +4,24 @@
       <WildlingSpawn :counts="roomState.spawnCounts" />
     </div>
     <div class="east">
-      <WildlingCamps class="wildling-camps" />
+      <WildlingCamps @remove-wildling="onRemoveWildlingFromCamp($event)" class="wildling-camps" />
       <div class="wildling-clearings">
-        <WildlingClearing v-for="(clearing, c) in roomState.wildlingClearings" :key="`clearing-${c}`" :clearing="clearing" class="clearing" :class="`clearing-${c}`" />
+        <WildlingClearing
+          v-for="(clearing, c) in roomState.wildlingClearings"
+          :key="`clearing-${c}`"
+          :clearing="clearing"
+          @remove-wildling="onRemoveWildlingFromClearing(c, $event)"
+          class="clearing"
+          :class="`clearing-${c}`"
+        />
       </div>
-      <TheWall
+      <Wall
         :myColor="myPlayer.color"
         :wall="guards"
         :allowPurchase="allowPurchase"
         :allowRemove="myPlayer.allowKill === GUARD"
         @wall-clicked="onWallClicked($event)"
+        @kill-guard="onGuardKill($event)"
         class="the-wall"
       />
     </div>
@@ -33,7 +41,7 @@
   import { mapState } from 'vuex';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
-  import TheWall from '@/components/north/TheWall';
+  import Wall from '@/components/north/Wall';
   import WildlingSpawn from '@/components/north/WildlingSpawn';
   import WildlingCamps from '@/components/north/WildlingCamps';
   import WildlingClearing from '@/components/north/WildlingClearing';
@@ -43,6 +51,8 @@
     MESSAGE_WILDLINGS_REVEAL_TOKENS,
     MESSAGE_WILDLINGS_ADVANCE_CLEARING,
     MESSAGE_WILDLINGS_WALL_BATTLE,
+    MESSAGE_WILDLINGS_REMOVE_FROM_CAMP,
+    MESSAGE_WILDLINGS_REMOVE_FROM_CLEARING,
     MESSAGE_PLAY_HERO_CARD,
     MESSAGE_SELECT_HERO_CARD,
     CHAT_LOG_WILDLING_TOKENS,
@@ -51,6 +61,7 @@
   } from '@/constants';
 
   import { ROAD, GUARD } from '@/specs/purchases';
+  import { HERO_CARD_BenjenStark } from '@/specs/heroCards';
 
   export default {
     name: 'TheNorth',
@@ -58,7 +69,7 @@
       WildlingSpawn,
       WildlingCamps,
       WildlingClearing,
-      TheWall,
+      Wall,
       HeroCardSwapper
     },
     props: {
@@ -100,14 +111,15 @@
       onWallClicked: function(location) {
         const { section, position } = location;
         
-        if (this.allowPurchase && this.myPlayer.hasResources.guard) {
+        if (this.allowPurchase && (this.myPlayer.hasResources.guard || this.myPlayer.allowFreeGuard))
           this.$emit('wall-clicked', location);
-          return;
-        }
-
-        if (this.myPlayer.allowKill === GUARD) {
+      },
+      onGuardKill: function(location) {
+      console.log("location", location)
+       const { section, position } = location;
+        
+        if (this.myPlayer.allowKill === GUARD && this.guards[section * 5 + position] && this.guards[section * 5 + position].ownerId !== this.myPlayer.playerSessionId)
           this.$emit('kill-guard', location);
-        }
       },
       onBroadcastReceived: function(broadcast) {
         const { type } = broadcast;
@@ -158,6 +170,26 @@
         this.room.send({
           type: MESSAGE_SELECT_HERO_CARD,
           heroType: heroCard.type
+        });
+      },
+      onRemoveWildlingFromCamp: function(data) {
+        if (!this.myPlayer.heroPrivilege === HERO_CARD_BenjenStark) return;
+
+        const { clanName, campIndex } = data;
+
+        this.room.send({
+          type: MESSAGE_WILDLINGS_REMOVE_FROM_CAMP,
+          clanName,
+          campIndex
+        });
+      },
+      onRemoveWildlingFromClearing: function(clearingIndex, wildlingIndex) {
+        if (!this.myPlayer.heroPrivilege === HERO_CARD_BenjenStark) return;
+        
+        this.room.send({
+          type: MESSAGE_WILDLINGS_REMOVE_FROM_CLEARING,
+          clearingIndex,
+          wildlingIndex
         });
       }
     }

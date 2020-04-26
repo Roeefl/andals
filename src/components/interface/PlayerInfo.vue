@@ -171,7 +171,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $hero-size: 86px;
+  $hero-size: 80px;
 
   @keyframes slide-in-bck-center {
     0% {

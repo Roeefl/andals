@@ -6,8 +6,7 @@
     :iconSize="`${size}px`"
     :iconName="wildlingIcons[type]"
     :iconColor="wildlingColors[type]"
-    :clickable="removeable"
-    @click="removeable && $emit('remove')"
+    @click="$emit('remove')"
     class="wildling"
   />
 </template>
@@ -29,10 +28,6 @@
       size: {
         type: Number,
         default: '40'
-      },
-      removeable: {
-        type: Boolean,
-        default: false
       }
     },
     created() {

@@ -7,14 +7,14 @@
       <h4 v-if="!thumbnail && !nameOnly">
         {{ card.title }}
       </h4>
-      <h5 v-if="!thumbnail && !nameOnly">
-        {{ card.ability }}
-      </h5>
     </header>
     <section v-if="!nameOnly" class="card-image-wrapper">
       <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
     </section>
     <section v-if="!thumbnail && !nameOnly" class="card-description" :class="{ 'highlight': !thumbnail }">
+      <h3 class="card-ability">
+        {{ card.ability }}
+      </h3>
       {{ card.description }}
     </section>
     <BaseIcon v-if="thumbnail && card.wasPlayed" name="flip-horizontal" color="white" class="icon-was-played" />
@@ -99,10 +99,20 @@
 
     .card-description {
       flex: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       &.highlight {
         background: $hero-text-background;
         color: $hero-text-color;
+      }
+
+      .card-ability {
+        margin-top: $spacer / 3;
+        width: 50%;
+        font-style: italic;
+        box-shadow: 0 0 4px 4px $primary;
       }
     }
 

@@ -96,6 +96,7 @@
     padding: $spacer / 2;
 
     .log {
+      max-width: 99%;
       margin: $spacer / 5 0;
       padding: $spacer / 5 0;
 

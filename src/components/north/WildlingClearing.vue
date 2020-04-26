@@ -1,7 +1,14 @@
 <template>
   <div class="clan-clearing">
     <BaseIcon color="black" name="tent" size="50px" class="clearing-icon" />
-    <Wildling v-for="(wildling, w) in clearing.wildlings" :key="`wildling-${wildling.type}-${w}`" :type="wildling.type" :size="30" class="wildling" />
+    <Wildling
+      v-for="(wildling, w) in clearing.wildlings"
+      :key="`wildling-${wildling.type}-${w}`"
+      :type="wildling.type"
+      :size="30"
+      @remove="$emit('remove-wildling', w)"
+      class="wildling"
+    />
     <span v-for="(clan, c) in clearing.clans" :key="`clan-${c}`" />
   </div>
 </template>

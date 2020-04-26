@@ -8,10 +8,10 @@
         :type="card.type"
         :clickable="!card.wasPlayed"
         :wasPlayed="card.wasPlayed"
-        @clicked="$emit('play-game-card', { cardType: card.type, index })"
+        @clicked="$emit('game-card-clicked', { cardType: card.type, index })"
       />
     </div>
-    <GameCard v-else type="knight" :count="count" :clickable="allowed" @clicked="$emit('purchase-card')" />
+    <GameCard v-else type="knight" :count="count" :clickable="allowed" @clicked="$emit('purchase-game-card')" />
   </div>
 </template>
 

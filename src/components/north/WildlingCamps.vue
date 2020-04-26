@@ -7,6 +7,7 @@
         :trails="clanTrails[section].trails"
         :campfires="roomState.clanAreas[section].campfires"
         :camps="roomState.clanAreas[section].camps"
+        @remove-wildling="$emit('remove-wildling', { clanName: clans[section].name, campIndex: $event })"
       />
     </div>
   </div>

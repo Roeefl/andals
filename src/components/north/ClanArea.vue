@@ -10,7 +10,13 @@
         class="clan-camp"
       >
         <BaseIcon name="campfire" color="red" :size="`${campfire * (campfires - c + 1)}px`" class="campfire-icon" />
-        <Wildling v-if="camps[c]" :type="camps[c].type" :size="40" class="wildling" />
+        <Wildling
+          v-if="camps[c]"
+          :type="camps[c].type"
+          :size="40"
+          @remove="$emit('remove-wildling', c)"
+          class="wildling"
+        />
       </div>
     </div>
     <div class="clan-trails">

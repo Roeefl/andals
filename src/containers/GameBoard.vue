@@ -54,8 +54,7 @@
             v-if="!!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy"
             :type="(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy.type"
             :size="40"
-            :removeable="myPlayer.heroPrivilege === HERO_CARD_Ygritte"
-            @remove="$emit('remove-wildling', absoluteIndex(hexTileMap, rowIndex, colIndex))"
+            @remove="myPlayer.heroPrivilege === HERO_CARD_Ygritte && $emit('remove-wildling', absoluteIndex(hexTileMap, rowIndex, colIndex))"
             class="wildling"
           />
         </HexTile>
@@ -82,7 +81,7 @@
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
   import { baseGameStructureTilemap, firstMenStructureTilemap } from '@/tilemaps/structures';
 
-  import {hexTileTypes, roadTileTypes, structureTileTypes } from '@/utils/tileManifest';
+  import { hexTileTypes, roadTileTypes, structureTileTypes } from '@/utils/tileManifest';
 
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';

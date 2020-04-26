@@ -8,7 +8,7 @@
       :title="`${opponent.nickname}'s Deck`"
       :cancel="false"
       :approve="!!selectedCard.resource"
-      @approve="$emit('steal', selectedCard)"
+      @approve="$emit('steal', { selectedCard, selectedGiveCard })"
     >
       <BaseDeck
         v-if="opponent.resourceCounts"
@@ -16,6 +16,12 @@
         :deck="opponent.resourceCounts"
         @card-clicked="toggleSelectedCard($event)"
         :selectedCards="[selectedCard]"
+      />
+      <BaseDeck
+        v-if="giveBack"
+        :deck="myDeck"
+        @card-clicked="selectedGiveCard = $event"
+        :selectedCards="[selectedGiveCard]"
       />
     </ActionCard>
   </v-dialog>
@@ -40,13 +46,22 @@
         type: Object,
         required: true
       },
+      giveBack: {
+        type: Boolean,
+        default: false
+      },
+      myDeck: {
+        type: Object,
+        default: () => {}
+      },
       hideResources: {
         type: Boolean,
         default: true
       }
     },
     data: () => ({
-      selectedCard: {}
+      selectedCard: {},
+      selectedGiveCard: {},
     }),
     methods: {
       toggleSelectedCard: function(card) {

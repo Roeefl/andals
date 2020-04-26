@@ -57,15 +57,18 @@
       </aside>
     </div>
     <DraggableWidget class="game-status">
-      <GameStatus :isMyTurn="isMyTurn" @purchase-card="onGameCardPurchase" @bank-trading="onTradeWithBank($event)" />
+      <GameStatus :isMyTurn="isMyTurn" @purchase-game-card="onGameCardPurchase" @bank-trading="onTradeWithBank($event)" />
     </DraggableWidget>
     <ConfirmMove
       :type="activePurchase.type"
       :removing="activePurchase.isRemove"
+      :header="activePurchase.isRemove ? 'Remove' : undefined"
       :isOpen="isDisplayConfirmMove"
       :isFree="roomState.isSetupPhase"
       :myPlayer="myPlayer"
       :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
+      :selectionCount="myPlayer.isVisiblePurchaseGameCard ? 3 : 0"
+      :gameCards="roomState.gameCards"
       @no="isDisplayConfirmMove = false"
       @yes="onConfirmMove($event)"
     />
@@ -105,6 +108,8 @@
       :isOpen="!!stealingFrom.playerSessionId"
       :opponent="stealingFrom"
       :hideResources="!myPlayer.isVisibleSteal"
+      :giveBack="myPlayer.heroPrivilege === HERO_CARD_JeorMormont"
+      :myDeck="myPlayer.resourceCounts"
       @steal="selectStealCard($event)"
     />
     <SelectResource
@@ -140,6 +145,9 @@
 
   import { initialResourceCounts } from '@/specs/resources';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
+
+  import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
+  import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
 
   import {
     MESSAGE_CHAT,
@@ -212,6 +220,9 @@
       },
       stealingFrom: {}
     }),
+    beforeCreate() {
+      this.HERO_CARD_JeorMormont = HERO_CARD_JeorMormont;
+    },
     async created() {
       if (!this.room) {
         await this.reconnect();
@@ -392,6 +403,7 @@
         this.activePurchase = {
           type: GAME_CARD
         };
+
         this.isDisplayConfirmMove = true;
       },
       onTileClick: function(tile) {
@@ -418,7 +430,7 @@
 
         this.isDisplayConfirmMove = true;
       },
-      onConfirmMove: function(flexiblePurchase) {
+      onConfirmMove: function(additionalData) {
         this.isDisplayConfirmMove = false;
 
         const { type, row, col, isRemove = false } = this.activePurchase;
@@ -440,7 +452,7 @@
             type: MESSAGE_PLACE_GUARD,
             section,
             position,
-            ...flexiblePurchase
+            ...additionalData
           });
 
           if (this.roomState.isSetupPhase)
@@ -451,7 +463,8 @@
 
         if (type === GAME_CARD) {
           this.room.send({
-            type: MESSAGE_PURCHASE_GAME_CARD
+            type: MESSAGE_PURCHASE_GAME_CARD,
+            selectedCardIndex: additionalData.index
           });
 
           this.$store.commit('setJustPurchasedGameCard', true);
@@ -529,6 +542,7 @@
         console.log("tradeCounts", tradeCounts);
 
         const acceptableResourceIndex = tradeCounts.findIndex(([resource, count]) => (
+          (this.myPlayer.heroPrivilege === HERO_CARD_TywinLannister && resource === SHEEP && count === 1) ||
           (this.myPlayer.ownedHarbors[resource] && count === 2) ||
           count === this.myPlayer.bankTradeRate
         ));
@@ -608,13 +622,16 @@
       stealFrom: function(playerSessionId) {
         this.stealingFrom = this.players.find(p => p.playerSessionId === playerSessionId);
       },
-      selectStealCard: function(selectedCard) {
+      selectStealCard: function(cards) {
+        const { selectedCard, selectedGiveCard } = cards;
+
         const { resource } = selectedCard;
 
         this.room.send({
           type: MESSAGE_STEAL_CARD,
           stealFrom: this.stealingFrom.playerSessionId,
-          resource
+          resource,
+          giveBack: (selectedGiveCard || {}).resource
         });
 
         this.stealingFrom = {};

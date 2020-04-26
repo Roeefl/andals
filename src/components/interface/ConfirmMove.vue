@@ -5,16 +5,16 @@
     width="600"
   >
     <ActionCard
-      :title="`Confirm Purchase: ${type}`"
+      :title="`Confirm ${removing ? 'Removal' : 'Purchase'}: ${type}`"
       @cancel="$emit('no')"
-      :approve="!isFlexible || (!!swapWhich && !!swapWith.resource)"
+      :approve="!isFlexible || (!swapWhich && !swapWith.resource) || (!!swapWhich && !!swapWith.resource)"
       @approve="$emit('yes', isFlexible ? { swapWhich, swapWith: swapWith.resource } : {})"
     >
-     <div class="confirm-move">
+     <div v-if="!isFree && !removing" class="confirm-move">
       <h2>
-        {{ removing ? 'Remove' : header }} {{ type }}:
+        {{ header }} {{ type }}
       </h2>
-      <div v-if="!isFree && !removing">
+      <div>
         <div class="cost">
           <ResourceCard
             v-for="resource in resourceCardTypes"
@@ -36,6 +36,14 @@
         </h4>
         <BaseDeck :deck="swappableResources" @card-clicked="swapWith = $event" :selectedCards="[swapWith]" class="resources-deck" />
       </div>
+      <div v-if="type === GAME_CARD && selectionCount > 0">
+        <GameCards
+          visible
+          :deck="gameCards.slice(0, selectionCount)"
+          @game-card-clicked="$emit('yes', $event)"
+          class="game-cards"
+        />
+      </div>
     </div>
   </ActionCard>
   </v-dialog>
@@ -44,17 +52,20 @@
 <script>
   import colyseusService from '@/services/colyseus';
   import { resourceCardTypes } from '@/specs/resources';
+  import { GAME_CARD } from '@/specs/purchases';
 
   import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';
   import BaseDeck from '@/components/game/BaseDeck';
+  import GameCards from '@/components/interface/GameCards';
 
   export default {
     name: 'ConfirmMove',
     components: {
       ResourceCard,
       ActionCard,
-      BaseDeck
+      BaseDeck,
+      GameCards
     },
     props: {
       isOpen: {
@@ -84,6 +95,14 @@
       myPlayer: {
         type: Object,
         default: () => {}
+      },
+      gameCards: {
+        type: Array,
+        default: () => []
+      },
+      selectionCount: {
+        type: Number,
+        default: 0
       }
     },
     data: () => ({
@@ -96,12 +115,14 @@
         return Object.fromEntries(
           Object
             .entries(this.myPlayer.resourceCounts)
-            .filter(([resource, count], index) => count > this.buildingCosts[this.type][resource])
+            .filter(([resource, count]) => count > this.buildingCosts[this.type][resource])
+            .map(([resource, count]) => [resource, count - this.buildingCosts[this.type][resource]])
         );
       }
     },
     created() {
       this.resourceCardTypes = resourceCardTypes;
+      this.GAME_CARD = GAME_CARD;
     },
     methods: {
       onResourceClick: function(resource) {

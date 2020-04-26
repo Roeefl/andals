@@ -14,7 +14,7 @@
   import { structureIcons } from '@/specs/gamePieces';
 
   export default {
-    name: 'WallPosition',
+    name: 'WallSectionPosition',
     components: {
       BaseButton,
       BaseIcon

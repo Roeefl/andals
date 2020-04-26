@@ -91,8 +91,8 @@
     }
 
     .hero-card {
-      width: 40vw;
-      height: 50vh;
+      width: 30vw;
+      height: 40vh;
     }
   }
 </style>

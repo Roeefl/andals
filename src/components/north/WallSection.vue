@@ -1,18 +1,18 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
     <li v-for="(guard, p) in guards" :key="`position-${p}-${(guard || {}).ownerId}`" class="wall-position" :class="{ 'enabled': allowPurchase && isGuardAllowed(p) }">
-      <WallPosition :order="p + 1" :guard="guard" @clicked="onPositionClicked(p)" />
+      <WallSectionPosition :order="p + 1" :guard="guard" @clicked="onPositionClicked(p)" />
     </li>
   </ul>
 </template>
 
 <script>
-  import WallPosition from '@/components/north/WallPosition';
+  import WallSectionPosition from '@/components/north/WallSectionPosition';
 
   export default {
     name: 'WallTile',
     components: {
-      WallPosition
+      WallSectionPosition
     },
     props: {
       guards: {
@@ -41,16 +41,23 @@
     },
     methods: {
       isGuardAllowed: function(position) {
-        if (!this.guards[position] || this.guards[position].ownerId)
-          return false;
+        if (!!this.guards[position].ownerId) return false;
 
         return this.guards
           .filter((pos, p) => p < position)
           .every(guard => !!guard && !!guard.ownerId);
       },
-      onPositionClicked: function(p) {
-        if (this.allowRemove || this.isGuardAllowed(p))
-          this.$emit('wall-clicked', p);
+      hasOpponentGuard: function(position) {
+        return !!this.guards[position].ownerId;
+      },
+      onPositionClicked: function(position) {
+        if (this.isGuardAllowed(position)) {
+          this.$emit('wall-clicked', position);
+          return;
+        }
+
+        if (this.allowRemove && this.hasOpponentGuard(position))
+          this.$emit('kill-guard', position);
       }
     }
   }

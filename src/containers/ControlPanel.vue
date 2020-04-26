@@ -9,12 +9,17 @@
           <BuildingCosts />
         </ChoiceDialog>
       </div>
-      <AvailableLoot :counts="myPlayer.availableLoot" @collect-all="collectAll" class="available-loot" />
+      <AvailableLoot
+        :counts="myPlayer.availableLoot"
+        :collectAll="myPlayer.allowCollectAll"
+        @collect-all="collectAll"
+        @collect-resource="collectResource($event)"
+        class="available-loot"
+      />
       <GameCards
         visible
         :deck="myPlayer.gameCards"
-        :allowed="isGameCardsEnabled"
-        @play-game-card="playGameCard($event)"
+        @game-card-clicked="playGameCard($event)"
         class="game-cards"
       />
     </div>
@@ -66,7 +71,7 @@
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
 
-  import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_PLAY_GAME_CARD } from '@/constants';
+  import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_COLLECT_RESOURCE_LOOT, MESSAGE_PLAY_GAME_CARD } from '@/constants';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
   import { diceColors } from '@/specs/dice';
 
@@ -140,6 +145,12 @@
       collectAll: function() {
         colyseusService.room.send({
           type: MESSAGE_COLLECT_ALL_LOOT
+        });
+      },
+      collectResource: function(resource) {
+        colyseusService.room.send({
+          type: MESSAGE_COLLECT_RESOURCE_LOOT,
+          resource
         });
       },
       playGameCard: function(card) {

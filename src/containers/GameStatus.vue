@@ -10,7 +10,7 @@
         <GameCards
           :count="(roomState.gameCards || []).length"
           :allowed="isCardPurchaseEnabled"
-          @purchase-card="$emit('purchase-card')"
+          @purchase-game-card="$emit('purchase-game-card')"
           class="game-cards"
         />
       </div>
