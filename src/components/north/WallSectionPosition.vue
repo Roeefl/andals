@@ -1,6 +1,8 @@
 <template>
   <BaseButton icon @click="$emit('clicked')">
-    <BaseIcon v-if="guard.ownerId" size="24px" :color="guard.ownerColor" :name="structureIcons.guard" class="icon" />
+    <drag :transfer-data="{ fromSection: guard.wallSection, fromPosition: guard.position }">
+      <BaseIcon v-if="guard.ownerId" size="24px" :color="guard.ownerColor" :name="structureIcons.guard" class="icon" />
+    </drag>
     <span v-if="!guard.ownerId" class="position-order">
       {{ order }}
     </span>

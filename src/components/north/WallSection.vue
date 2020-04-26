@@ -1,7 +1,9 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
     <li v-for="(guard, p) in guards" :key="`position-${p}-${(guard || {}).ownerId}`" class="wall-position" :class="{ 'enabled': allowPurchase && isGuardAllowed(p) }">
-      <WallSectionPosition :order="p + 1" :guard="guard" @clicked="onPositionClicked(p)" />
+      <drop @drop="$emit('relocate-guard', $event)">
+        <WallSectionPosition :order="p + 1" :guard="guard" @clicked="onPositionClicked(p)" />
+      </drop>
     </li>
   </ul>
 </template>

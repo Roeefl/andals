@@ -8,7 +8,7 @@
         {{ card.title }}
       </h4>
     </header>
-    <section v-if="!nameOnly" class="card-image-wrapper">
+    <section v-if="!nameOnly" class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
       <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
     </section>
     <section v-if="!thumbnail && !nameOnly" class="card-description" :class="{ 'highlight': !thumbnail }">
@@ -86,13 +86,17 @@
     }
 
     .card-image-wrapper {
-      height: 80%;
+      height: 50%;
       padding: $spacer / 4;
       display: flex;
       justify-content: center;
 
+      &.thumbnail {
+        height: 80%;
+      }
+
       .card-image {
-        width: 50%;
+        width: 60%;
         height: 100%;
       }
     }

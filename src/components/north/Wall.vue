@@ -1,16 +1,17 @@
 <template>
   <div class="the-wall">
-    <WallSection
-      v-for="(sectionStart, w) in wallTiles"
-      :key="`wall-${w}`"
-      :section="w"
-      :myColor="myColor"
-      :allowPurchase="allowPurchase"
-      :allowRemove="allowRemove"
-      :guards="wall.slice(sectionStart, sectionStart + 5)"
-      @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
-      @kill-guard="$emit('kill-guard', { section: w, position: $event })"
-    />
+      <WallSection
+        v-for="(sectionStart, w) in wallTiles"
+        :key="`wall-${w}`"
+        :section="w"
+        :myColor="myColor"
+        :allowPurchase="allowPurchase"
+        :allowRemove="allowRemove"
+        :guards="wall.slice(sectionStart, sectionStart + 5)"
+        @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
+        @kill-guard="$emit('kill-guard', { section: w, position: $event })"
+        @relocate-guard="$emit('relocate-guard', { ...$event, toSection: w })"
+      />
   </div>
 </template>
 

@@ -22,6 +22,7 @@
         :allowRemove="myPlayer.allowKill === GUARD"
         @wall-clicked="onWallClicked($event)"
         @kill-guard="onGuardKill($event)"
+        @relocate-guard="onGuardRelocate($event)"
         class="the-wall"
       />
     </div>
@@ -55,6 +56,7 @@
     MESSAGE_WILDLINGS_REMOVE_FROM_CLEARING,
     MESSAGE_PLAY_HERO_CARD,
     MESSAGE_SELECT_HERO_CARD,
+    MESSAGE_RELOCATE_GUARD,
     CHAT_LOG_WILDLING_TOKENS,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_HERO_CARD
@@ -114,6 +116,14 @@
         if (this.allowPurchase && (this.myPlayer.hasResources.guard || this.myPlayer.allowFreeGuard))
           this.$emit('wall-clicked', location);
       },
+      onGuardRelocate: function(relocationData) {
+        if (!this.myPlayer.allowGuardRelocate) return;
+
+        this.room.send({
+          type: MESSAGE_RELOCATE_GUARD,
+          ...relocationData
+        });
+      },
       onGuardKill: function(location) {
       console.log("location", location)
        const { section, position } = location;
@@ -143,6 +153,7 @@
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
             this.$store.commit('setEssentialOverlay', { header });
+            break;
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
             const { invader } = broadcast;
@@ -150,6 +161,7 @@
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
             this.$store.commit('setEssentialOverlay', { header });
+            break;
 
           case MESSAGE_PLAY_HERO_CARD:
             const {
@@ -161,6 +173,7 @@
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_HERO_CARD, playerName, heroCard });
             this.$store.commit('setEssentialOverlay', { header, heroCard });
+            break;
 
           default:
             break;

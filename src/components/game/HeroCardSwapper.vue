@@ -2,7 +2,7 @@
   <v-dialog
     :value="isOpen"
     persistent
-    width="800"
+    width="1400"
   >
     <ActionCard
       title="Select your next Hero Card"
@@ -68,8 +68,8 @@
   @import '@/styles/partials';
 
   // @TODO: should be this.cards.length;
-  $cards-count: 3;
-  $first-card-left: 20%;
+  $cards-count: 16;
+  $first-card-left: $spacer * 3;
   $card-distance: 80px;
   $zindex-first-card: 100;
 
@@ -85,7 +85,7 @@
 
   .hero-cards {
     position: relative;
-    height: 500px;
+    height: 600px;
 
     .hero-card-wrapper {
       position: absolute;
@@ -95,7 +95,7 @@
 
       .hero-card {
         width: 280px;
-        height: 420px;
+        height: 520px;
       }
     }
   }

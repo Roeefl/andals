@@ -7,22 +7,34 @@
     <ActionCard
       :title="`${opponent.nickname}'s Deck`"
       :cancel="false"
-      :approve="!!selectedCard.resource"
+      :approve="!!selectedCard.resource && (!giveBack || !!selectedGiveCard.resource)"
       @approve="$emit('steal', { selectedCard, selectedGiveCard })"
     >
-      <BaseDeck
-        v-if="opponent.resourceCounts"
-        :hideResources="hideResources"
-        :deck="opponent.resourceCounts"
-        @card-clicked="toggleSelectedCard($event)"
-        :selectedCards="[selectedCard]"
-      />
-      <BaseDeck
-        v-if="giveBack"
-        :deck="myDeck"
-        @card-clicked="selectedGiveCard = $event"
-        :selectedCards="[selectedGiveCard]"
-      />
+      <div class="opponent-deck-container">
+        <div class="opponent-deck">
+          <h3>
+            {{ `Pick one card from ${opponent.nickname}'s Deck` }}
+          </h3>
+          <BaseDeck
+            v-if="opponent.resourceCounts"
+            :hideResources="hideResources"
+            :deck="opponent.resourceCounts"
+            @card-clicked="toggleSelectedCard($event)"
+            :selectedCards="[selectedCard]"
+          />
+        </div>
+        <div class="my-deck">
+          <h3 v-if="giveBack || true">
+            Give one resource card in exchange:
+          </h3>
+          <BaseDeck
+            v-if="giveBack || true"
+            :deck="myDeck"
+            @card-clicked="selectedGiveCard = $event"
+            :selectedCards="[selectedGiveCard]"
+          />
+        </div>
+      </div>
     </ActionCard>
   </v-dialog>
 </template>
@@ -73,3 +85,22 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  .opponent-deck-container {
+    margin: $spacer / 2;
+    padding: $spacer / 2;
+
+    .opponent-deck {
+      margin-bottom: $spacer;
+    }
+
+    .my-deck {
+      border-top: 1px solid black;
+      margin-top: $spacer;
+      padding-top: $spacer;
+    }
+  }
+</style>

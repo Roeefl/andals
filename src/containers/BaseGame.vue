@@ -520,6 +520,10 @@
       cancelBankTrade: function() {
         this.resetBankDummy();
         this.refuseTrade();
+
+        this.room.send({
+          type: MESSAGE_TRADE_REFUSE
+        });
       },
       onTradeWithBank: function(resource) {
         if (!this.roomState.isGameStarted) return;

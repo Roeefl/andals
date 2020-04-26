@@ -7,10 +7,10 @@
     <ActionCard v-if="!!players[1]" :title="`Trading with ${players[1].nickname}`" :approve="false" :cancelText="cancelText" @cancel="$emit('refuse')">
       <div class="wrapper" :class="{ 'with-chat': !withBank }">
         <div class="trade">
-          <drop class="my-deck" @drop="$emit('remove-card', $event.resource)">
+          <drop @drop="$emit('remove-card', $event.resource)" class="my-deck" >
             <BaseDeck :deck="players[0].resourceCounts" @card-clicked="$emit('add-card', $event)" />
           </drop>
-          <drop v-for="(player, i) in players" :key="renderKey(player)" class="player" @drop="i === 0 && $emit('add-card', $event)">
+          <drop v-for="(player, i) in players" :key="renderKey(player)" @drop="i === 0 && $emit('add-card', $event)" class="player">
             <div class="nickname">
               {{ i === 0 ? 'You are' : `${player.nickname} is` }} offering:
             </div>

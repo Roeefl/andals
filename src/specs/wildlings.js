@@ -14,5 +14,5 @@ export const wildlingColors = {
   regular: tileColors.mountain,
   climber: tileColors.mountain,
   giant: tileColors.secondary,
-  whiteWalker: tileColors.primary
+  whiteWalker: tileColors.secondary
 };
