@@ -18,3 +18,11 @@ export const gameCardColors = {
   yearOfPlenty: cardColors.yearOfPlenty,
   monopoly: cardColors.monopoly
 };
+
+export const firstMenGameCardsTitles = {
+  knight: "Knight",
+  victoryPoint: "Warhorse",
+  roadBuilding: "March Forward",
+  yearOfPlenty: "Winter is Coming",
+  monopoly: "Protector of the Realm"
+};

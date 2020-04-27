@@ -45,15 +45,24 @@
     <div class="player-assets">
       <div class="belongings">
         <div class="game-cards">
-          <GameCard
-            v-for="(gameCard, index) in (player.gameCards || [])"
-            :key="`${gameCard.type}-${index}`"
-            :visible="isMe"
-            :clickable="false"
-            :type="gameCard.type"
-            :wasPlayed="gameCard.wasPlayed"
-            class="game-card"
-          />
+          <ChoiceDialog
+            :width="500"
+            buttonColor="transparent"
+          >
+            <template v-slot:activate>
+              <GameCard
+                v-for="(gameCard, index) in (player.gameCards || [])"
+                :key="`${gameCard.type}-${index}`"
+                :visible="isMe"
+                :type="gameCard.type"
+                :wasPlayed="gameCard.wasPlayed"
+                :clickable="true"
+                @clicked="displayedGameCard = gameCard"
+                class="game-card"
+              />
+            </template>
+            <GameCard full :visible="isMe" :type="displayedGameCard.type" :clickable="false" />
+          </ChoiceDialog>
         </div>
         <div class="owned-harbors">
           <BaseIcon
@@ -148,6 +157,9 @@
         default: false  
       }
     },
+    data: () => ({
+      displayedGameCard: {}
+    }),
     created() {
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;

@@ -1,6 +1,6 @@
 <template>
   <!-- <transition name="puff"> -->
-    <v-card max-width="300" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable }">
+    <v-card max-width="500" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable }">
       <BaseButton
         icon
         :xs="small"
@@ -12,13 +12,19 @@
         <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
         <BaseBadge v-if="!!count" color="black" :content="count" class="card-badge" />
         <BaseBadge v-if="wasPlayed" color="red" content="X" class="card-badge" />
+        <section v-if="full" class="image-wrapper">
+          <h2>
+            {{ firstMenGameCardsTitles[type] }}
+          </h2>
+          <img :src="require(`../../assets/gameCards/${type}.jpg`)" :alt="`Game Card: ${type}`" class="card-image" />
+        </section>
       </BaseButton>
     </v-card>
   <!-- </transition> -->
 </template>
 
 <script>
-  import { gameCardIcons, gameCardColors } from '@/specs/gameCards';
+  import { gameCardIcons, gameCardColors, firstMenGameCardsTitles } from '@/specs/gameCards';
 
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
@@ -59,11 +65,16 @@
       count: {
         type: Number,
         default: 0
+      },
+      full: {
+        type: Boolean,
+        default: false
       }
     },
     created() {
       this.gameCardIcons = gameCardIcons;
       this.gameCardColors = gameCardColors;
+      this.firstMenGameCardsTitles = firstMenGameCardsTitles;
     }
   }
 </script>
