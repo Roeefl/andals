@@ -2,6 +2,7 @@
   <v-app>
     <div id="app" class="app-wrapper">
       <div id="page">
+        <AppHeader id="app-header" />
         <router-view />
       </div>
       <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }" />
@@ -16,11 +17,13 @@
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
 
+  import AppHeader from '@/containers/AppHeader';
   import BaseAlert from '@/components/common/BaseAlert';
   
   export default {
     name: 'App',
     components: {
+      AppHeader,
       BaseAlert
     },
     computed: mapState([
@@ -74,6 +77,14 @@
     .button-icon {
       margin-right: 0;
     }
+  }
+
+  #app-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: $zindex-app-header;
   }
 
   #page {

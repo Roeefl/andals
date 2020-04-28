@@ -1,46 +1,55 @@
 <template>
-  <div class="player" :class="{ 'is-me': isMe }" :style="playerStyle(player.color)">
-    <div class="header">
-      <div class="nickname">
-        {{ player.nickname }}
+  <div class="player" :class="{ 'is-me': isMe, 'is-other': !isMe }" :style="playerStyle(player.color)">
+    <div class="upper">
+      <div class="header">
+        <div class="avatar">
+          <BaseAvatar :alt="player.nickname" :iconColor="player.color" />
+          <span class="nickname">
+            {{ player.nickname }}
+          </span>
+        </div>
+        <div class="status">
+          <BaseChip
+            v-if="!isStarted"
+            :iconName="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'"
+            :iconColor="player.isReady ? 'highlight' : 'error'"
+            :label="player.isReady ? 'Ready' : 'Not Ready'"
+          />
+          <BaseChip
+            v-if="waitingTrade"
+            icoName="head-dots-horizontal-outline"
+            iconSize="32px"
+            iconColor="info"
+            label="Waiting..."
+          />
+          <BaseMenu
+            v-if="isStarted && !isMe"
+            :isForceOpen="allowStealing"
+            :items="opponentActions"
+            @item-clicked="$emit($event, player.playerSessionId)"
+            iconName="skew-more"
+            class="opponent-actions"
+          />
+        </div>
       </div>
-      <div class="status">
-        <BaseButton
-          v-if="isStarted && !isMe && !waitingTrade"
-          icon
-          iconName="swap-vertical-circle"
-          iconSize="32px"
-          :iconColor="player.color"
-          :clickable="enableTrading"
-          @click="$emit('trade-with', player.playerSessionId)"
-        />
-        <BaseButton
-          v-if="allowStealing"
-          icon
-          iconName="hand-okay"
-          iconSize="x-large"
-          :iconColor="player.color"
-          @click="$emit('steal-from', player.playerSessionId)"
-        />
-        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="primary" class="longest-road" />
-        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
-        <BaseIcon v-if="waitingTrade" name="head-dots-horizontal" size="32px" color="info" class="thinking" />
-        <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'highlight' : 'error'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
+      <div class="resources game-pieces" @click="$emit('deck-clicked')">
+        <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="resource">
+          <GamePiece 
+            showCount
+            :count="player[purchaseType]"
+            :type="purchaseType"
+            :color="player.color"
+            :size="isMe ? '30px' : '22px'"
+          />
+        </div>
+        <div class="perks">
+          <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="primary" class="longest-road" />
+          <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
+        </div>
       </div>
-    </div>
-    <div class="resources" @click="$emit('deck-clicked')">
-      <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="resource">
-        <GamePiece 
-          showCount
-          :count="player[purchaseType]"
-          :type="purchaseType"
-          :color="player.color"
-          :size="isMe ? '30px' : '22px'"
-        />
+      <div class="resources" @click="$emit('deck-clicked')">
+        <ResourceCounts :small="!isMe" :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
       </div>
-    </div>
-    <div class="resources" @click="$emit('deck-clicked')">
-      <ResourceCounts :small="!isMe" :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
     </div>
     <div class="player-assets">
       <div class="belongings">
@@ -113,8 +122,28 @@
 
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
+  import BaseAvatar from '@/components/common/BaseAvatar';
+  import BaseChip from '@/components/common/BaseChip';
+  import BaseMenu from '@/components/common/BaseMenu';
 
   import tileColors from '@/styles/export.scss';
+
+  const playerActions = [
+    {
+      name: 'trade',
+      title: 'Request Trade',
+      icon: 'swap-vertical-circle',
+      disabledKey: 'requestTradeDisabled',
+      emit: 'trade-with'
+    },
+    {
+      name: 'steal',
+      title: 'Steal Card',
+      icon: 'hand-okay',
+      disabledKey: 'stealDisabled',
+      emit: 'steal-from'
+    }
+  ];
 
   export default {
     name: 'PlayerInfo.vue',
@@ -126,7 +155,10 @@
       ChoiceDialog,
       HeroCard,
       BaseButton,
-      BaseIcon
+      BaseIcon,
+      BaseAvatar,
+      BaseChip,
+      BaseMenu
     },
     props: {
       player: {
@@ -158,6 +190,22 @@
         default: false  
       }
     },
+    computed: {
+      requestTradeDisabled: function() {
+        return !this.enableTrading || this.waitingTrade;
+      },
+      stealDisabled: function() {
+        return !this.allowStealing;
+      },
+      opponentActions: function() {
+        return playerActions.map(action => {
+          return {
+            ...action,
+            disabled: action.disabledKey && this[action.disabledKey]
+          }
+        });
+      }
+    },
     data: () => ({
       displayedGameCard: {}
     }),
@@ -171,7 +219,7 @@
         const backgroundRgb = hexToRgb(tileColors.primary);
 
         return {
-          color: playerColor,
+          // color: playerColor,
           backgroundColor: this.isMe
             ? `rgba(${backgroundRgb}, 0.7)`
             : tileColors.primary
@@ -198,40 +246,45 @@
   }
 
   .player {
-    position: relative;
-    padding: $spacer;
+    padding: $spacer / 2;
     display: flex;
     flex-direction: column;
     overflow-y: hidden;
     border-radius: 30px;
+    color: $secondary;
 
     &.is-me {
-      .header {
-        font-size: $font-size-md;
-        font-weight: 900;
+      padding: $spacer;
+      
+      .nickname {
+        font-size: $base-font-size * 1.25;
       }
     }
 
-    .header {
+    .upper {
       display: flex;
-      align-items: center;
-      font-size: $font-size-sm;
-      
-      .nickname {
-        flex: 2;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 55% 45%;
+
+      .avatar {
+        height: 30px;
+        display: flex;
+        align-items: center;
+        font-size: $font-size-sm;
+
+        .nickname {
+          @include text-truncate();
+          margin-left: $spacer / 4;
+        }
       }
 
       .status {
-        flex: 1;
-        display: flex;
-        justify-content: flex-end;
-        position: absolute;
-        top: $spacer;
-        right: $spacer;
-
-        & > * {
-          margin-left: $spacer / 2;
-        }
+        justify-self: end;
       }
     }
 
@@ -246,7 +299,7 @@
         }
       }
     }
-
+    
     .player-assets {
       margin-top: $spacer / 2;
       display: flex;
