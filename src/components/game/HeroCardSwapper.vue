@@ -61,7 +61,7 @@
         this.deck.unshift(lastCard);
       },
       swipeTo: function(index) {
-        if (index < 1) return;
+        if (index <= 0) return;
 
         for (let s = 0; s < index; s++) {
           this.swipeRight();
