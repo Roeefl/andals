@@ -2,7 +2,7 @@
   <div class="counts">
     <BaseButton
       xs
-      color="red accent-3"
+      color="success"
       iconName="treasure-chest"
       iconColor="white"
       iconSize="x-large"

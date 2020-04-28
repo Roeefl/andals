@@ -5,7 +5,7 @@
     </div>
     <div class="game-ui">
       <div class="building-costs">
-        <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Costs" :width="500">
+        <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Costs" buttonColor="info" :width="500">
           <BuildingCosts />
         </ChoiceDialog>
       </div>
@@ -34,7 +34,7 @@
         </BaseButton>
         <BaseButton
           v-if="myPlayer.mustMoveRobber"
-          color="pink darken-3"
+          color="primary"
           @click="$emit('move-robber')"
           :clickable="desiredRobberTile > -1 && roomState.robberPosition !== desiredRobberTile"
         >
@@ -42,7 +42,7 @@
         </BaseButton>
         <BaseButton
           v-if="!roomState.isGameReady"
-          :color="isSelfReady ? 'red' : 'green'"
+          :color="isSelfReady ? 'error' : 'highlight'"
           @click="() => $emit('toggle-ready')"
           class="ready"
         >
@@ -193,6 +193,10 @@
       display: grid;
       grid-template-columns: 20% 50% 30%;
       place-items: center center;
+
+      .building-costs {
+        height: 60px;
+      }
 
       .available-loot {
         padding-left: $spacer;

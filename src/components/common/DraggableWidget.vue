@@ -14,7 +14,7 @@
   @import '@/styles/partials';
 
   .widget {
-    background: rgba($app-background, 0.85);
+    background: rgba($secondary, 0.85);
     border-radius: 20px;
     display: flex;
     justify-content: center;

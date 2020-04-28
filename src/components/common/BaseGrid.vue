@@ -60,18 +60,18 @@
       grid-template-columns: repeat(5, 1fr);
       justify-items: center;
       align-items: center;
-      background: rgba($primary, 0.7);
-      color: $app-background;
+      background: rgba($info, 0.7);
+      color: $secondary;
       padding: $spacer;
 
       &.grid-header {
-        background: rgba($mountain, 0.7);
+        background: rgba($success, 0.7);
         color: $primary;
       }
 
       .item-action {
         width: 80%;
       }
-   }
- }
+    }
+  }
 </style>

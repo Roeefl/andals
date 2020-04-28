@@ -1,18 +1,19 @@
 <template>
   <transition name="puff">
-    <v-card max-width="300" @click="clickable && $emit('clicked')" class="resource-card" :class="{ 'clickable': clickable }">
+    <v-card light max-width="300" @click="clickable && $emit('clicked')" class="resource-card" :class="{ 'clickable': clickable }">
       <BaseButton
         icon
+        color="primary"
         :small="small"
         :iconSize="small ? '20px' : 'x-large'"
         :iconName="hideIcon ? 'help-box' : resourceCardIcons[resource]"
-        :iconColor="hideIcon? 'black' : resourceCardColors[resource]"
+        :iconColor="hideIcon? 'secondary' : resourceCardColors[resource]"
         :clickable="clickable"
       >
         <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="maskCount ? '?' : count" class="resource-count" />
-        <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
+        <BaseIcon v-if="selected" name="check-outline" size="x-large" color="highlight" class="selected" />
       </BaseButton>
-      <BaseIcon v-if="collectable" size="x-large" name="sack" color="red" class="collect" />
+      <BaseIcon v-if="collectable" size="x-large" name="sack" color="success" class="collect" />
     </v-card>
   </transition>
 </template>

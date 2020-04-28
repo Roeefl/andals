@@ -57,7 +57,7 @@
     position: relative;
     padding: $spacer;
     text-align: center;
-    background: $app-background;
+    background: $secondary;
     color: $primary;
     display: flex;
     flex-direction: column;

@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <router-link to="/lobby">
-      <BaseButton color="white">
+      <BaseButton color="primary">
         Take me to Lobby
       </BaseButton>
     </router-link>

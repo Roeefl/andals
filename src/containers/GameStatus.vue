@@ -69,7 +69,7 @@
     height: 100%;
     display: grid;
     grid-template-columns: 40% 40% 20%;
-    color: $app-background;
+    color: $secondary;
 
     .game-info {
       padding-left: $spacer;

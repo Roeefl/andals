@@ -50,7 +50,7 @@
 
         &.active {
           background: $primary;
-          color: $app-background;
+          color: $secondary;
         }
       }
     }

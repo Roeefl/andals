@@ -76,7 +76,7 @@
     bottom: 0px;
     left: 0px;
     background: $primary;
-    color: $app-background;
+    color: $secondary;
     z-index: $zindex-chat;
     display: flex;
     align-items: center;

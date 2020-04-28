@@ -3,7 +3,7 @@
     <v-card-title
       v-if="title"
       primary-title
-      class="headline grey lighten-2"
+      class="headline success"
     >
       {{ title }}
     </v-card-title>
@@ -11,11 +11,11 @@
     <fragment v-if="cancel || approve">
       <v-divider />
       <v-card-actions class="card-actions">
-        <BaseButton text v-if="cancel" color="red" @click="() => $emit('cancel')">
+        <BaseButton text v-if="cancel" color="warning" @click="() => $emit('cancel')">
           {{ cancelText }}
         </BaseButton>
         <v-spacer />
-        <BaseButton text v-if="approve" color="success" @click="() => $emit('approve')">
+        <BaseButton text v-if="approve" color="primary" @click="() => $emit('approve')">
           {{ approveText }}
         </BaseButton>
       </v-card-actions>

@@ -22,10 +22,10 @@
           :iconColor="player.color"
           @click="$emit('steal-from', player.playerSessionId)"
         />
-        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="black" class="longest-road" />
-        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="black" class="largest-army" />
-        <BaseIcon v-if="waitingTrade" name="head-dots-horizontal" size="32px" color="red" class="thinking" />
-        <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'green' : 'red'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
+        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="primary" class="longest-road" />
+        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
+        <BaseIcon v-if="waitingTrade" name="head-dots-horizontal" size="32px" color="info" class="thinking" />
+        <BaseIcon v-if="!isStarted" size="x-large" :color="player.isReady ? 'highlight' : 'error'" :name="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'" />
       </div>
     </div>
     <div class="resources" @click="$emit('deck-clicked')">
@@ -46,7 +46,8 @@
       <div class="belongings">
         <div class="game-cards">
           <ChoiceDialog
-            :width="500"
+            :width="400"
+            :hasCancel="false"
             buttonColor="transparent"
           >
             <template v-slot:activate>
@@ -61,7 +62,7 @@
                 class="game-card"
               />
             </template>
-            <GameCard full :visible="isMe" :type="displayedGameCard.type" :clickable="false" />
+            <GameCard full :visible="isMe" :type="displayedGameCard.type" :clickable="false" class="displayed-game-card" />
           </ChoiceDialog>
         </div>
         <div class="owned-harbors">
@@ -70,7 +71,7 @@
             :key="`owned-harbor-${resource}`"
             v-show="harbor"
             name="sail-boat"
-            :color="resourceCardColors[resource] || '#3E2723'" size="32px"
+            :color="resourceCardColors[resource] || 'secondary'" size="32px"
           />
         </div>
       </div>
@@ -297,5 +298,9 @@
     & + & {
       margin-left: $spacer;
     }
+  }
+
+  .displayed-game-card {
+    height: 40vh;
   }
 </style>

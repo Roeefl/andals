@@ -81,8 +81,11 @@
     flex: 1;
     // background-image: url('./assets/snowy-ground.jpg');
     // background-size: cover;
-    background: $app-background;
+    background: $secondary;
     color: $primary;
   }
 
+  a {
+    text-decoration: none;
+  }
 </style>

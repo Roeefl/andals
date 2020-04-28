@@ -710,7 +710,7 @@
             background-image: url('../assets/snowy-ground.jpg');
             background-size: unset;
             background-repeat: repeat;
-            color: $app-background;
+            color: $secondary;
           }
         }
       }

@@ -5,7 +5,7 @@
     :z-index="zIndex"
     :value="isOpen"
   >
-    <BaseButton v-if="!!closeText" color="orange lighten-2" @click="$emit('close')">
+    <BaseButton v-if="!!closeText" color="error" @click="$emit('close')">
       {{ closeText }}
     </BaseButton>
     <slot />

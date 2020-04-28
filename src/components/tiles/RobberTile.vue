@@ -3,7 +3,7 @@
     icon
     :xl="active"
     iconName="guy-fawkes-mask"
-    :iconColor="active ? 'black' : 'deep-orange darken-4'"
+    :iconColor="active ? 'warning' : 'secondary'"
     :iconSize="active ? '64px' : '32px'"
     class="robber"
     :class="{ 'moveable': active }"
