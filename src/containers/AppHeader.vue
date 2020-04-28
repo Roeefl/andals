@@ -1,8 +1,11 @@
 <template>
   <header id="appHeader">
-    <div class="header-item" v-for="item in links" :key="`header-item-${item.to}`">
-      <router-link v-if="!!item.to" :to="item.to">
+    <div v-for="item in links" :key="`header-item-${item.to}`" class="header-item" :class="{ 'home': item.key === 'lobby' }">
+      <router-link v-if="!!item.to" :to="item.to" class="router-link">
         <img v-if="item.img" :src="require(`../assets/${item.img}`)" :alt="item.key" />
+        <h3 v-if="item.title" class="item-title">
+          {{ item.title }}
+        </h3>
       </router-link>
       <ChoiceDialog v-else buttonColor="transparent" :assetName="item.img" title="Preferences" :hasCancel="false">
         <AppSettings />
@@ -19,7 +22,8 @@
     {
       to: '/lobby',
       key: 'lobby',
-      img: 'logo.png'
+      img: 'logo.png',
+      title: 'Firstmen.io'
     },
     {
       key: 'settings',
@@ -54,6 +58,23 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &.home {
+        width: auto;
+        background: unset;
+        margin-right: $spacer * 2;
+      }
+
+      .router-link {
+        display: flex;
+
+        .item-title {
+          margin-left: $spacer;
+          height: 32px;
+          display: flex;
+          align-items: flex-end;
+        }
+      }
     }
   }
 
