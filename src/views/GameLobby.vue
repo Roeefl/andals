@@ -2,7 +2,7 @@
   <main class="game-lobby" id="game-lobby">
     <div class="loader-wrapper">
       <SnowyTown class="game-loader" />
-      <Snowflakes :count="1" class="snowflakes" />
+      <Snowflakes :count="200" class="snowflakes" />
     </div>
     <section class="lobby-interface">
       <ul class="actions">
