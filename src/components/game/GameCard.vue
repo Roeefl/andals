@@ -1,7 +1,8 @@
 <template>
   <!-- <transition name="puff"> -->
-    <v-card max-width="500" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable }">
+    <v-card light max-width="400" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable, 'thumbnail': !full }">
       <BaseButton
+        v-if="!full"
         icon
         :xs="small"
         :iconSize="small ? 'medium' : 'x-large'"
@@ -12,13 +13,15 @@
         <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
         <BaseBadge v-if="!!count" color="black" :content="count" class="card-badge" />
         <BaseBadge v-if="wasPlayed" color="red" content="X" class="card-badge" />
-        <section v-if="full" class="image-wrapper">
-          <h2>
-            {{ firstMenGameCardsTitles[type] }}
-          </h2>
-          <img :src="require(`../../assets/gameCards/${type}.jpg`)" :alt="`Game Card: ${type}`" class="card-image" />
-        </section>
       </BaseButton>
+      <section v-else class="full-card">
+        <h2 class="card-title">
+          {{ firstMenGameCardsTitles[type] }}
+        </h2>
+        <div class="card-image-wrapper">
+          <img :src="require(`../../assets/gameCards/${type}.jpg`)" :alt="`Game Card: ${type}`" class="card-image" />
+        </div>
+      </section>
     </v-card>
   <!-- </transition> -->
 </template>
@@ -83,10 +86,8 @@
   @import '@/styles/partials';
   
   .game-card {
-    height: 50px;
     padding: 0 $spacer / 4;
     position: relative;
-    background: $game-card-knight;
     cursor: auto;
     display: flex;
     justify-content: center;
@@ -94,6 +95,11 @@
     
     &.clickable {
       cursor: pointer;
+    }
+
+    &.thumbnail {
+      height: 50px;
+      background: $game-card-knight;
     }
 
     .card-badge {
@@ -106,6 +112,29 @@
       position: absolute;
       top: 0;
       right: -$spacer;
+    }
+
+    .full-card {
+      height: 100%;
+      padding: $spacer / 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .card-title {
+        background: $game-card-victory-point;
+        width: 100%;
+        text-align: center;
+      }
+
+      .card-image-wrapper {
+        height: 70%;
+
+        .card-image {
+          width: 100%;
+          height: 100%;
+        }
+      }
     }
   }
 </style>
