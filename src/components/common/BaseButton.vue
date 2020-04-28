@@ -100,11 +100,23 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   @import '@/styles/partials';
 
+  // --- <General Button Styling> ---
+  #app {
+    .theme--dark {
+      &.v-btn {
+        &.primary {
+          color: $secondary;
+        }
+      }
+    }
+  }
+  // --- </General Button Styling> ---
+
   .base-button-icon {
-    margin-right: $spacer / 2;
+    margin-right: $spacer;
   }
 
   .non-clickable {
