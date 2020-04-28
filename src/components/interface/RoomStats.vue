@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="room-stats">
       <span>
-        Room Title: {{ roomTitle }}
+        Room Title: {{ room.roomTitle }}
       </span>
       <span>
         Room ID: {{ this.$route.params.roomId  }}
@@ -11,21 +11,31 @@
         Your SessionID is: {{ mySessionId }}
       </span>
     </div>
+    <div class="room-stats">
+      <span v-for="(setting, s) in roomSettings" :key="s">
+        {{ setting }}: {{ room[setting] }}
+      </span>
+    </div>
   </div>
 </template>
 
 <script>
+  const roomSettings = ['autoPickupEnabled', 'friendlyGameLog', 'enableBotReplacement'];
+
   export default {
     name: 'RoomStats',
     props: {
-      roomTitle: {
-        type: String,
-        default: 'ROOM TITLE'
+      room: {
+        type: Object,
+        default: () => {}
       },
       mySessionId: {
         type: String,
         default: '---'
       }
+    },
+    created() {
+      this.roomSettings = roomSettings;
     }
   }
 </script>

@@ -18,7 +18,9 @@
     :class="{ 'non-clickable': !clickable }"
   >
     <BaseIcon v-if="iconName" :color="iconColor" :name="iconName" :size="iconSize" class="base-button-icon" />
-    <slot />
+    <span :class="{ 'spaced-text': spaced }">
+      <slot />
+    </span>
   </v-btn>
 </template>
 
@@ -95,6 +97,10 @@
         type: String,
         default: 'medium'
       },
+      spaced: {
+        type: Boolean,
+        default: false
+      },
       on: Object
     }
   }
@@ -115,8 +121,8 @@
   }
   // --- </General Button Styling> ---
 
-  .base-button-icon {
-    margin-right: $spacer;
+  .spaced-text {
+    margin-left: $spacer;
   }
 
   .non-clickable {

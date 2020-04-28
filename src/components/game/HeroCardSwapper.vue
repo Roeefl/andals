@@ -11,12 +11,12 @@
     >
       <BaseButton icon iconName="arrow-left-box" iconColor="black" @click="swipeLeft" class="arrow arrow-left" />
       <ul class="hero-cards">
-        <li v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" class="hero-card-wrapper">
+        <BaseButton v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" icon @click="swipeTo(c)" class="hero-card-wrapper">
           <HeroCard
             :card="card"
             class="hero-card"
           />
-        </li>
+        </BaseButton>
       </ul>
       <BaseButton icon iconName="arrow-right-box" iconColor="black" @click="swipeRight" class="arrow arrow-right" />
     </ActionCard>
@@ -59,6 +59,13 @@
       swipeRight: function() {
         const lastCard = this.deck.pop();
         this.deck.unshift(lastCard);
+      },
+      swipeTo: function(index) {
+        if (index < 1) return;
+
+        for (let s = 0; s < index; s++) {
+          this.swipeRight();
+        } 
       }
     }
   }

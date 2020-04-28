@@ -15,7 +15,7 @@
           {{ cancelText }}
         </BaseButton>
         <v-spacer />
-        <BaseButton text v-if="approve" color="primary" @click="() => $emit('approve')">
+        <BaseButton text v-if="approve" color="highlight" @click="() => $emit('approve')">
           {{ approveText }}
         </BaseButton>
       </v-card-actions>

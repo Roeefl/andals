@@ -2,10 +2,10 @@
   <main class="game-lobby">
     <div class="loader-wrapper">
       <SnowyTown class="game-loader" />
-      <Snowflakes class="snowflakes" />
+      <Snowflakes :count="30" class="snowflakes" />
     </div>
     <section class="lobby-interface">
-      <AppHeader />
+      <AppHeader class="app-header" />
       <ul class="actions">
         <li class="action-item">
           <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
@@ -28,7 +28,7 @@
           </ChoiceDialog>
         </li>
         <li class="action-item">
-          <BaseButton iconName="refresh-circle" @click="refreshRooms" class="refresh-list">
+          <BaseButton spaced color="primary" iconColor="white" iconName="refresh-circle" iconSize="x-large" @click="refreshRooms" class="refresh-list">
             Refresh List
           </BaseButton>
         </li>
@@ -38,7 +38,7 @@
           </ChoiceDialog>
         </li>
         <li class="action-item">
-          <BaseButton iconName="add" @click="reconnect" class="reconnect">
+          <BaseButton spaced iconName="lan-connect" iconSize="x-large" @click="reconnect" class="reconnect">
             Reconnect
           </BaseButton>
         </li>
@@ -192,6 +192,10 @@
       & > * {
         z-index: 20;
       }
+
+      .app-header {
+        margin-bottom: $spacer;
+      }
     }
 
     .actions {
@@ -224,7 +228,7 @@
     align-items: flex-end;
 
     .game-loader {
-      background: $app-background;
+      background: $secondary;
       width: 100%;
       height: 60%;
     }

@@ -2,7 +2,7 @@
   <div class="app-settings">
     <form class="preferences">
       <BaseSwitch
-        label="Background Music"
+        label="Sound and Background Music"
         :value="enableAmbience"
         @flipped="toggleAmbience"
       />

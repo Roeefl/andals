@@ -5,7 +5,7 @@
         icon
         color="primary"
         :small="small"
-        :iconSize="small ? '20px' : 'x-large'"
+        :iconSize="small ? '16px' : '32px'"
         :iconName="hideIcon ? 'help-box' : resourceCardIcons[resource]"
         :iconColor="hideIcon? 'secondary' : resourceCardColors[resource]"
         :clickable="clickable"

@@ -1,7 +1,7 @@
 <template>
   <div class="customize">
     <form>
-      <input v-model="nickname" placeholder="Choose a nickname..." />
+      <TextField :value="nickname" @input="nickname = $event" label="Choose a nickname" />
       <div>
         <span>
            Choose your in-game player color:
@@ -13,12 +13,14 @@
 </template>
 
 <script>
+  import TextField from '@/components/common/TextField';
   import ColorPicker from '@/components/common/ColorPicker';
   import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'CustomizePlayer',
     components: {
+      TextField,
       ColorPicker,
       BaseButton
     },

@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="room-stats">
-      <RoomStats :roomTitle="roomState.roomTitle" :mySessionId="myPlayer.playerSessionId" />
+      <RoomStats :room="roomState" :mySessionId="myPlayer.playerSessionId" />
     </div>
   </div>
 </template>
@@ -68,7 +68,7 @@
     flex: 1;
     height: 100%;
     display: grid;
-    grid-template-columns: 40% 40% 20%;
+    grid-template-columns: 50% 50%;
     color: $secondary;
 
     .game-info {

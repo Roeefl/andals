@@ -57,7 +57,7 @@
    .grid-item {
       display: grid;
       grid-template-rows: auto;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       justify-items: center;
       align-items: center;
       background: rgba($info, 0.7);

@@ -5,7 +5,7 @@
     </h2>
     <BaseGrid
       :columns="gridColumns"
-      :items="rooms"
+      :items="refinedRooms"
       :itemActions="gridActions"
       @action-clicked="$emit('join', $event)"
       class="rooms-list"
@@ -18,12 +18,12 @@
 
   const gridColumns = [
     {
-      key: 'roomId',
-      title: 'Room ID'
-    },
-    {
       key: 'name',
       title: 'Room Type'
+    },
+    {
+      key: 'roomId',
+      title: 'Room ID'
     },
     {
       key: 'roomTitle',
@@ -32,6 +32,10 @@
     {
       key: 'clients',
       title: 'Current Players'
+    },
+    {
+      key: 'createdAt',
+      title: 'Created At'
     }
   ];
 
@@ -52,6 +56,15 @@
       rooms: {
         type: Array,
         default: []
+      }
+    },
+    computed: {
+      refinedRooms: function() {
+        return this.rooms.map(room => ({
+          ...room,
+          roomTitle: room.metadata.roomTitle,
+          active: new Date(room.createdAt)
+        }))
       }
     },
     created() {
@@ -75,6 +88,8 @@
     }
 
     .rooms-list {
+      max-height: 50vh;
+      overflow-y: auto;
       width: 70%;
       font-size: $font-size-md;
     }
