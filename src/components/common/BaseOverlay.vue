@@ -1,7 +1,7 @@
 <template>
   <v-overlay
     absolute
-    :opacity="0.75"
+    :opacity="opacity"
     :z-index="zIndex"
     :value="isOpen"
   >
@@ -28,6 +28,10 @@
       zIndex: {
         type: Number,
         default: 100
+      },
+      opacity: {
+        type: Number,
+        default: 0.75
       },
       closeText: {
         type: String,
