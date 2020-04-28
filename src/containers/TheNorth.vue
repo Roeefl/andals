@@ -3,7 +3,7 @@
     <div class="west">
       <WildlingSpawn :counts="roomState.spawnCounts" />
     </div>
-    <div class="east">
+    <div class="wall-area">
       <WildlingCamps @remove-wildling="onRemoveWildlingFromCamp($event)" class="wildling-camps" />
       <div class="wildling-clearings">
         <WildlingClearing
@@ -216,9 +216,9 @@
     // opacity: 0.5;
     @include dashed-around();
     display: grid;
-    grid-template-columns: 20% 80%;
+    grid-template-columns: 20% 60% 20%;
 
-    &.ready {
+   &.ready {
       opacity: 1;
     }
 
@@ -226,7 +226,7 @@
       background: white;
     }
 
-    .east {
+    .wall-area {
       display: flex;
       flex-direction: column;
 

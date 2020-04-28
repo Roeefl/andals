@@ -1,5 +1,8 @@
 <template>
   <div v-if="roomState.board" class="board">
+    <div class="trees">
+      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" class="tree" />
+    </div>
     <div class="tiles">
       <div v-for="(tileRow, rowIndex) in hexTileMap" :key="`row-${rowIndex}`" class="tile-row" :class="{ 'even': rowIndex % 2 === 0 , 'odd': rowIndex % 2 === 1 }">
         <HexTile
@@ -60,6 +63,9 @@
         </HexTile>
       </div>
     </div>
+    <div class="trees">
+      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" class="tree" />
+    </div>
   </div>
   <div v-else>
     No board to display
@@ -76,6 +82,8 @@
   import RobberTile from '@/components/tiles/RobberTile';
   import HarborTile from '@/components/tiles/HarborTile';
   import Wildling from '@/components/pieces/Wildling';
+  import Mountains from '@/components/decor/Mountains';
+  import Tree from '@/components/decor/Tree';
 
   import { baseGameHexTilemap, firstMenHexTilemap } from '@/tilemaps/hexes';
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
@@ -96,7 +104,9 @@
       StructureTile,
       HarborTile,
       RobberTile,
-      Wildling
+      Wildling,
+      Mountains,
+      Tree
     },
     props: {
       desiredRobberTile: {
@@ -183,61 +193,73 @@
   // opacity: 0.5;
   
   .board {
-    display: flex;
-    justify-content: center;
-  }
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
 
-  .tiles {
-    display: flex;
-    flex-direction: column;
-  }
+    .trees {
+      display: flex;
+      flex-direction: column;
+      padding-left: $spacer;
 
-  .tile-row {
-    position: relative;
-    
-    &.even {
-      left: $tile-size / 1.1;
-    }
-
-    &.odd {
-      margin-top: $tile-size * -0.85;
-      margin-bottom: $tile-size * -0.9
-    }
-
-    .hex-tile {
-      &.robber-camp {
-        border: 1px dashed red;
+      .tree {
+        margin-top: $spacer * 5;
       }
     }
 
-    .tile-index {
-      transform: rotate(90deg);
-      font-size: $font-size-xs;
-      position: absolute;
-      top: 5px;
-      right: 5px;
+    .tiles {
+      padding-top: $spacer * 1.5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .structure-index {
-      position: absolute;
-      top: 0;
-      right: 0;
-      color: black;
-    }
+    .tile-row {
+      position: relative;
+      
+      &.even {
+        left: $tile-size / 1.1;
+      }
 
-    .road-index {
-      position: absolute;
-      bottom: $spacer / 2;
-      left: $spacer / 2;
-      color: black;
-      opacity: 1;
-    }
-  }
+      &.odd {
+        margin-top: $tile-size * -0.85;
+        margin-bottom: $tile-size * -0.9
+      }
 
-  .wildling {
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: red;
+      .hex-tile {
+        &.robber-camp {
+          border: 1px dashed red;
+        }
+
+        .tile-index {
+          transform: rotate(90deg);
+          font-size: $font-size-xs;
+          position: absolute;
+          top: 5px;
+          right: 5px;
+        }
+
+        .structure-index {
+          position: absolute;
+          top: 0;
+          right: 0;
+          color: black;
+        }
+
+        .road-index {
+          position: absolute;
+          bottom: $spacer / 2;
+          left: $spacer / 2;
+          color: black;
+          opacity: 1;
+        }
+        
+        .wildling {
+          position: absolute;
+          top: 0;
+          right: 0;
+          color: red;
+        }
+      }
+    }
   }
 </style>

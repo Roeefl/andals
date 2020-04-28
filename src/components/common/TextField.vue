@@ -5,6 +5,7 @@
     :dark="dark"
     :label="label"
     :placeholder="placeholder"
+    autocomplete="off"
   />
 </template>
 

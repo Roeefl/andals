@@ -5,7 +5,7 @@
       :color="color"
       :name="structureIcons[type]"
     />
-    <BaseBadge v-if="showCount" color="black" :content="count" />
+    <BaseBadge v-if="showCount" color="secondary" :content="count" />
   </BaseButton>
 </template>
 
@@ -34,7 +34,7 @@
       },
       color: {
         type: String,
-        default: 'black'
+        default: 'secondary'
       },
       showCount: {
         type: Boolean,

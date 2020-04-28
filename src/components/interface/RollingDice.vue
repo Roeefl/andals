@@ -7,7 +7,7 @@
   >
     <div class="dice">
       <div v-for="(diceValue, d) in dice" :key="`dice-${d}-${diceValue}`" class="cube" :class="`cube-${d}`">
-        <BaseIcon v-if="d <= 1" size="80px" color="black" :name="`dice-${diceValue}`" />
+        <BaseIcon v-if="d <= 1" size="80px" color="secondary" :name="`dice-${diceValue}`" />
         <span v-if="d >= 2">
           {{ diceValue }}
         </span>

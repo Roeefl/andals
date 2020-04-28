@@ -1,6 +1,6 @@
 <template>
   <div class="clan-clearing">
-    <BaseIcon color="black" name="tent" size="50px" class="clearing-icon" />
+    <BaseIcon color="secondary" name="tent" size="50px" class="clearing-icon" />
     <Wildling
       v-for="(wildling, w) in clearing.wildlings"
       :key="`wildling-${wildling.type}-${w}`"
@@ -41,7 +41,7 @@
 
   .clan-clearing {
     position: relative;
-    color: black;
+    color: $secondary;
   }
 
   .wildling {

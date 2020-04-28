@@ -3,7 +3,7 @@
     <section class="resource-type" v-for="(costs, name) in buildingCosts" :key="name">
       <div class="description">
         <h3 class="purchase-type">
-          <BaseIcon :name="structureIcons[name]" size="20px" color="black" />
+          <BaseIcon :name="structureIcons[name]" size="20px" color="primary" />
           {{ name }}
         </h3>
         <span class="vp">

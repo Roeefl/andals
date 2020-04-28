@@ -23,7 +23,7 @@
       },
       color: {
         type: String,
-        default: 'black'
+        default: 'secondary'
       }
     }
   }

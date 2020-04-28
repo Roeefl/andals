@@ -9,7 +9,7 @@
       :cancel="false"
       @approve="$emit('selected', deck[0])"
     >
-      <BaseButton icon iconName="arrow-left-box" iconColor="black" @click="swipeLeft" class="arrow arrow-left" />
+      <BaseButton icon iconName="arrow-left-box" iconColor="secondary" @click="swipeLeft" class="arrow arrow-left" />
       <ul class="hero-cards">
         <BaseButton v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" icon @click="swipeTo(c)" class="hero-card-wrapper">
           <HeroCard
@@ -18,7 +18,7 @@
           />
         </BaseButton>
       </ul>
-      <BaseButton icon iconName="arrow-right-box" iconColor="black" @click="swipeRight" class="arrow arrow-right" />
+      <BaseButton icon iconName="arrow-right-box" iconColor="secondary" @click="swipeRight" class="arrow arrow-right" />
     </ActionCard>
   </v-dialog>
 </template>

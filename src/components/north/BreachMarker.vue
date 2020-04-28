@@ -5,7 +5,9 @@
     </h1>
     <div class="tracker">
       <div v-for="(lvl, l) in levels" :key="l" class="breach-level" :class="{ 'active': l === wallBreaches }">
-        {{ l }}
+        <span class="level-number">
+          {{ l }}
+        </span>
       </div>
     </div>
   </div>
@@ -43,14 +45,21 @@
       flex-direction: column;
 
       .breach-level {
-        background: $mountain;
+        background: $primary;
+        color: $secondary;
         display: flex;
         justify-content: center;
+        align-items: center;
         height: 25%;
 
         &.active {
-          background: $primary;
-          color: $secondary;
+          background: $success;
+          color: $primary;
+          font-weight: 900;
+        }
+        
+        .level-number {
+          font-size: $font-size-md;
         }
       }
     }

@@ -6,11 +6,11 @@
       :xs="small"
       :iconSize="small ? 'medium' : 'x-large'"
       :iconName="(visible || wasPlayed) ? gameCardIcons[type] : 'help-box'"
-      :iconColor="wasPlayed ? 'white' : 'black'"
+      :iconColor="wasPlayed ? 'primary' : 'secondary'"
       :clickable="clickable"
     >
       <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
-      <BaseBadge v-if="!!count" color="black" :content="count" class="card-badge" />
+      <BaseBadge v-if="!!count" color="secondary" :content="count" class="card-badge" />
       <BaseBadge v-if="wasPlayed" color="red" content="X" class="card-badge" />
     </BaseButton>
     <section v-else class="full-card">

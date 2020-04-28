@@ -75,8 +75,8 @@
     position: absolute;
     bottom: 0px;
     left: 0px;
-    background: $primary;
-    color: $secondary;
+    background: $success;
+    color: $primary;
     z-index: $zindex-chat;
     display: flex;
     align-items: center;

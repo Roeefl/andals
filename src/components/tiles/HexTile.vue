@@ -4,7 +4,7 @@
       v-if="tile.resource && tile.value"
       :name="resourceCardIcons[tile.resource]"
       size="50px"
-      color="black"
+      color="secondary"
       class="resource-icon"
     />
     <span class="inner value" v-if="tile.value" @click="$emit('dropped')">
@@ -133,7 +133,7 @@
         font-size: $font-size-md;
         border: 2px solid black;
         background: white;
-        color: black;
+        color: $secondary;
         cursor: default;
       }
     }

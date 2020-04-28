@@ -232,7 +232,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $hero-size: 80px;
+  $hero-size: 70px;
 
   @keyframes slide-in-bck-center {
     0% {

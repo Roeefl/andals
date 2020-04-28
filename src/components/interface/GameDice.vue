@@ -5,7 +5,7 @@
       :key="`dice-${d}`"
       :color="diceColors[`dice${d}`]"
       :iconName="d <= 1 ? `dice-${diceValue}` : undefined"
-      iconColor="black"
+      iconColor="secondary"
       :clickable="enabled"
       @click="$emit('clicked')"
       :iconSize="small ? '24px' : '36px'"

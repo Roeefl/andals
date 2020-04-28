@@ -5,7 +5,7 @@
         {{ value }}
       </div>
     </div>
-    <!-- <BaseIcon name="hammer-wrench" color="black" size="64px" class="trail-icon" /> -->
+    <!-- <BaseIcon name="hammer-wrench" color="secondary" size="64px" class="trail-icon" /> -->
   </div>
 </template>
 

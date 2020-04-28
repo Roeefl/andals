@@ -666,7 +666,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $board-height: 66vh;
+  $board-height: 67vh;
 
   .base-game {
     padding: 0 $spacer;
@@ -699,17 +699,17 @@
 
         .game-board {
           @include dashed-around();
-          padding-top: $spacer / 2;
           background-image: url('../assets/ocean.jpg');
           background-size: cover;
           height: $board-height;
 
           &.with-north {
-            justify-content: flex-end;
+            // justify-content: center;
             height: $board-height * 0.8;
-            background-image: url('../assets/snowy-ground.jpg');
+            background-image: unset;
             background-size: unset;
             background-repeat: repeat;
+            background: $primary;
             color: $secondary;
           }
         }

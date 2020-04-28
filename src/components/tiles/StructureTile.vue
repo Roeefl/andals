@@ -111,7 +111,7 @@
   .structure-button {
     &.settlement {
       // border-radius: 100px;
-      background: black;
+      background: $secondary;
     }
 
     &.city {
