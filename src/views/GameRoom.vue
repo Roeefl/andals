@@ -2,7 +2,7 @@
   <main class="game-room">
     <BaseGame />
     <Snowflakes v-if="false" :count="40" class="snowflakes" />
-    <GameOverlay
+    <EssentialOverlay
       :isOpen="essentialOverlay.isOpen"
       :overlay="essentialOverlay"
     />
@@ -15,14 +15,14 @@
 
   import BaseGame from '@/containers/BaseGame';
   import Snowflakes from '@/components/decor/Snowflakes';
-  import GameOverlay from '@/components/interface/GameOverlay';
+  import EssentialOverlay from '@/components/interface/EssentialOverlay';
 
   export default {
     name: 'GameRoom',
     components: {
       BaseGame,
       Snowflakes,
-      GameOverlay
+      EssentialOverlay
     },
     computed: mapState([
       'enableSnow',

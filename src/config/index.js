@@ -1,0 +1,1 @@
+export const ESSENTIAL_OVERLAY_TIMEOUT = 2000;

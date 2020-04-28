@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import colyseusService from '@/services/colyseus';
 import localStorage from '@/services/localStorage';
 import boardService from '@/services/board';
+import { ESSENTIAL_OVERLAY_TIMEOUT } from '../config';
 
 Vue.use(Vuex);
 
@@ -220,7 +221,7 @@ export default new Vuex.Store({
             isOpen: false
           };
         },
-        3000
+        ESSENTIAL_OVERLAY_TIMEOUT
       );
     }
   },
