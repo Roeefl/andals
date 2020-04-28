@@ -698,10 +698,10 @@
         }
 
         .game-board {
+          @include dashed-around();
           padding-top: $spacer / 2;
           background-image: url('../assets/ocean.jpg');
           background-size: cover;
-          border: 4px dashed black;
           height: $board-height;
 
           &.with-north {

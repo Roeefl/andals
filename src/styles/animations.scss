@@ -76,3 +76,15 @@
             animation-timing-function: ease-out;
   }
 }
+
+@keyframes change-background {
+  0% {
+    background: white;
+  }
+  50% {
+    background: var(--color-hover);
+  }
+  100% {
+    background: transparent;
+  }
+}

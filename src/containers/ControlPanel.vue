@@ -1,11 +1,9 @@
 <template>
   <div class="control-panel">
-    <div class="app-header">
-      <AppHeader />
-    </div>
+    <div class="header-filler" />
     <div class="game-ui">
       <div class="building-costs">
-        <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Costs" buttonColor="info" :width="500">
+        <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Building Costs" buttonColor="info" :width="500">
           <BuildingCosts />
         </ChoiceDialog>
       </div>
@@ -62,7 +60,6 @@
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
 
-  import AppHeader from '@/containers/AppHeader';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BuildingCosts from '@/components/interface/BuildingCosts';
   import AvailableLoot from '@/components/interface/AvailableLoot';
@@ -78,7 +75,6 @@
   export default {
     name: 'ControlPanel',
     components: {
-      AppHeader,
       ChoiceDialog,
       BuildingCosts,
       AvailableLoot,
@@ -182,12 +178,6 @@
     display: grid;
     grid-template-columns: 20% 60% 20%;
 
-    .app-header {
-      padding-left: $spacer;
-      display: flex;
-      align-items: center;
-    }
-
     .game-ui {
       padding-right: $spacer;
       display: grid;
@@ -195,7 +185,7 @@
       place-items: center center;
 
       .building-costs {
-        height: 60px;
+        height: 50px;
       }
 
       .available-loot {

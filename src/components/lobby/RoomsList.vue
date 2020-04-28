@@ -1,8 +1,5 @@
 <template>
   <div class="rooms-list-container">
-    <h2 class="header">
-      Rooms List
-    </h2>
     <BaseGrid
       :columns="gridColumns"
       :items="refinedRooms"
@@ -82,10 +79,6 @@
     padding: $spacer;
     display: flex;
     flex-direction: column;
-
-    .header {
-      margin-bottom: $spacer;
-    }
 
     .rooms-list {
       max-height: 50vh;

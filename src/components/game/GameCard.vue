@@ -1,29 +1,27 @@
 <template>
-  <!-- <transition name="puff"> -->
-    <v-card light max-width="400" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable, 'thumbnail': !full }">
-      <BaseButton
-        v-if="!full"
-        icon
-        :xs="small"
-        :iconSize="small ? 'medium' : 'x-large'"
-        :iconName="(visible || wasPlayed) ? gameCardIcons[type] : 'help-box'"
-        :iconColor="wasPlayed ? 'white' : 'black'"
-        :clickable="clickable"
-      >
-        <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
-        <BaseBadge v-if="!!count" color="black" :content="count" class="card-badge" />
-        <BaseBadge v-if="wasPlayed" color="red" content="X" class="card-badge" />
-      </BaseButton>
-      <section v-else class="full-card">
-        <h2 class="card-title">
-          {{ firstMenGameCardsTitles[type] }}
-        </h2>
-        <div class="card-image-wrapper">
-          <img :src="require(`../../assets/gameCards/${type}.jpg`)" :alt="`Game Card: ${type}`" class="card-image" />
-        </div>
-      </section>
-    </v-card>
-  <!-- </transition> -->
+  <v-card light max-width="400" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable, 'thumbnail': !full }">
+    <BaseButton
+      v-if="!full"
+      icon
+      :xs="small"
+      :iconSize="small ? 'medium' : 'x-large'"
+      :iconName="(visible || wasPlayed) ? gameCardIcons[type] : 'help-box'"
+      :iconColor="wasPlayed ? 'white' : 'black'"
+      :clickable="clickable"
+    >
+      <BaseIcon v-if="selected" name="check-outline" size="x-large" color="green" class="selected" />
+      <BaseBadge v-if="!!count" color="black" :content="count" class="card-badge" />
+      <BaseBadge v-if="wasPlayed" color="red" content="X" class="card-badge" />
+    </BaseButton>
+    <section v-else class="full-card">
+      <h2 class="card-title">
+        {{ firstMenGameCardsTitles[type] }}
+      </h2>
+      <div class="card-image-wrapper">
+        <img :src="require(`../../assets/gameCards/${type}.jpg`)" :alt="`Game Card: ${type}`" class="card-image" />
+      </div>
+    </section>
+  </v-card>
 </template>
 
 <script>

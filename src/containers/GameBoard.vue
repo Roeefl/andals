@@ -18,7 +18,7 @@
             v-for="([row, col]) in roadIndices(rowIndex, colIndex)"
             :key="`road-tile-${row}-${col}`"
             :placement="roadTileTypes[roadTileMap[row][col]]"
-            :enabled="allowPurchase && (myPlayer.hasResources.road || myPlayer.allowFreeRoads > 0) && isRoadAllowed(row, col)"
+            :enabled="allowPurchase && (myPlayer.hasResources.road || myPlayer.allowFreeRoads > 0) && isRoadAllowed(row, col) && !activeRoads[row][col].ownerId"
             :removeable="myPlayer.allowRemoveRoad"
             @clicked="$emit('tile-clicked', { type: ROAD, row, col })"
             @remove="$emit('remove-road', { type: ROAD, row, col })"

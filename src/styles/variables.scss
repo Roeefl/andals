@@ -7,6 +7,8 @@ $font-size-xl: $base-font-size * 3;
 
 $spacer: 12px;
 
+$header-height: 80px;
+
 // -- CUSTOMIZED THEME COLORS --
 $primary: #CFD8DC;
 $secondary: #212121;
@@ -17,13 +19,15 @@ $warning: #E57373;
 // --- /CUSTOMIZED THEME COLORS --
 
 $mountain: #493f47;
-$highlighted: #42b983;
+$highlight: #4DB6AC;
 
 $tile-size: 60px;
 $tile-value-size: $tile-size * 0.75;
 
 $zindex-tile-value: 10;
 $zindex-robber: 15;
+$zindex-interface: 20;
+$zindex-app-header: 200;
 
 $board-background: #01579B;
 $tile-water: #2d9cd9;

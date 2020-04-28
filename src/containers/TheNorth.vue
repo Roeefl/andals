@@ -214,9 +214,9 @@
 
   .the-north {
     // opacity: 0.5;
+    @include dashed-around();
     display: grid;
-    grid-template-columns: 35% 65%;
-    border: 2px dashed black;
+    grid-template-columns: 20% 80%;
 
     &.ready {
       opacity: 1;

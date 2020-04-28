@@ -1,5 +1,5 @@
 <template>
-  <main class="game-room">
+  <main id="game-room">
     <BaseGame />
     <Snowflakes v-if="false" :count="40" class="snowflakes" />
     <EssentialOverlay
@@ -34,7 +34,7 @@
 <style scoped lang="scss">
  @import '@/styles/partials';
 
-  .game-room {
+  #game-room {
     height: 100%;
     display: flex;
     z-index: 20;

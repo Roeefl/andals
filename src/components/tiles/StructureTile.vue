@@ -9,7 +9,6 @@
       :class="[activeData.type, { 'disabled': !enabled }]"
       :style="structureStyle"
     >
-      <BaseIcon v-if="!activeData.ownerId" size="24px" color="white" name="circle-outline" class="icon" />
       <BaseIcon v-if="!!activeData.type" size="54px" :color="activeData.color" :name="structureIcons[activeData.type]" />
       <slot />
     </BaseButton>
@@ -68,7 +67,7 @@
         if (!!this.activeData.type || !this.enabled) return {};
         
         return {
-          border: '1px dashed black',
+          border: '1px solid black',
           backgroundColor: `rgba(${rgbBackground}, 0.5)`
         };
       }
@@ -99,11 +98,10 @@
 
     &.enabled {
       .structure-button {
-        animation: heartbeat 2s cubic-bezier(0.860, 0.000, 0.070, 1.000) infinite both;
         border-radius: 999px;
 
         &:hover {
-          background: rgba(black, 1);
+          background: $secondary !important;
           box-shadow: 2px 2px 12px 12px var(--color-hover);
         }
       }

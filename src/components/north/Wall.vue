@@ -53,7 +53,7 @@
   @import '@/styles/partials';
 
   .the-wall {
-    border: 1px dashed black;
+    @include dashed-around();
     display: grid;
     grid-template-columns: repeat(4, 25%);
   }

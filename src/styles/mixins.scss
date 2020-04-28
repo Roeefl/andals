@@ -3,3 +3,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+@mixin dashed-around() {
+  border: 1px dashed black;
+}

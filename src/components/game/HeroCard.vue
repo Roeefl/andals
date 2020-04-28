@@ -1,6 +1,6 @@
 <template>
   <div class="hero-card" :class="{ 'name-only': nameOnly, 'was-played': card.wasPlayed }">
-    <header class="card-header" :class="{ 'highlight': !thumbnail, 'thumbnail': thumbnail }">
+    <header class="card-header" :class="{ 'highlighted-section': !thumbnail, 'thumbnail': thumbnail }">
       <h3>
         {{ card.name }}
       </h3>
@@ -11,7 +11,7 @@
     <section v-if="!nameOnly" class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
       <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
     </section>
-    <section v-if="!thumbnail && !nameOnly" class="card-description" :class="{ 'highlight': !thumbnail }">
+    <section v-if="!thumbnail && !nameOnly" class="card-description" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">
         {{ card.ability }}
       </h3>
@@ -48,9 +48,6 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
-
-  $hero-text-background: #90CAF9;
-  $hero-text-color: black;
   
   .hero-card {
     border-radius: 8px;
@@ -72,9 +69,9 @@
     }
 
     .card-header {
-      &.highlight {
-        background: $hero-text-background;
-        color: $hero-text-color;
+      &.highlighted-section {
+        background: $info;
+        color: $secondary;
       }
 
       &.thumbnail {
@@ -107,9 +104,9 @@
       flex-direction: column;
       align-items: center;
 
-      &.highlight {
-        background: $hero-text-background;
-        color: $hero-text-color;
+      &.highlighted-section {
+        background: $info;
+        color: $secondary;
       }
 
       .card-ability {

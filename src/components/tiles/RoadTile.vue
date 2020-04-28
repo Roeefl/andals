@@ -66,18 +66,6 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  @keyframes change-background {
-    0% {
-      background: white;
-    }
-    50% {
-      background: var(--color-hover);
-    }
-    100% {
-      background: transparent;
-    }
-  }
-
   .road {
     // background: $primary;
     z-index: $zindex-tile-value - 1;

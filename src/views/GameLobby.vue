@@ -1,11 +1,10 @@
 <template>
-  <main class="game-lobby">
+  <main class="game-lobby" id="game-lobby">
     <div class="loader-wrapper">
       <SnowyTown class="game-loader" />
-      <Snowflakes :count="30" class="snowflakes" />
+      <Snowflakes :count="1" class="snowflakes" />
     </div>
     <section class="lobby-interface">
-      <AppHeader class="app-header" />
       <ul class="actions">
         <li class="action-item">
           <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
@@ -43,7 +42,7 @@
           </BaseButton>
         </li>
       </ul>
-      <RoomsList :rooms="rooms" @join="joinRoom($event)" />
+      <RoomsList :rooms="rooms" @join="joinRoom($event)" class="rooms-list" />
     </section>
   </main>
 </template>
@@ -53,7 +52,6 @@
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
   
-  import AppHeader from '@/containers/AppHeader';
   import RoomsList from '@/components/lobby/RoomsList';
   import CustomizePlayer from '@/components/lobby/CustomizePlayer';
   import CustomizeRoom from '@/components/lobby/CustomizeRoom';
@@ -66,7 +64,6 @@
   export default {
     name: 'GameLobby',
     components: {
-      AppHeader,
       RoomsList,
       ChoiceDialog,
       CustomizePlayer,
@@ -185,16 +182,17 @@
     overflow-y: hidden;
 
     .lobby-interface {
-      z-index: 20;
+      z-index: $zindex-interface;
       display: flex;
       flex-direction: column;
+      padding-top: $header-height * 1.5;
 
       & > * {
-        z-index: 20;
+        z-index: $zindex-interface;
       }
 
-      .app-header {
-        margin-bottom: $spacer;
+      .rooms-list {
+        margin-top: $spacer * 1.5;
       }
     }
 
