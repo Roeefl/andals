@@ -4,6 +4,7 @@
       v-if="src"
       :src="src"
       :alt="alt"
+      class="avatar-image"
     >
     <BaseIcon
       v-else
@@ -38,3 +39,15 @@
     } 
   }
 </script>
+
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  $avatar-size: 36px;
+
+  .avatar-image {
+    width: $avatar-size;
+    height: $avatar-size;
+  }
+</style>

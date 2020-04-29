@@ -3,14 +3,15 @@
     <ResourceCard
       v-for="resource in resourceCardTypes"
       :key="resource"
-      :small="small"
+      :small="collapsed"
       :resource="resource"
       :clickable="clickable"
       :maskCount="hideCounts"
-      :count="counts[resource]"
+      :hideCount="collapsed"
+      :count="collapsed ? null : counts[resource]"
       @clicked="$emit('resource-clicked', resource)"
       class="resource-card"
-      :class="{ 'spaced' : spaced }"
+      :class="{ 'spaced' : spaced, 'collapsed': collapsed }"
     />
   </div>
 </template>
@@ -45,7 +46,7 @@
         type: Boolean,
         default: false
       },
-      small: {
+      collapsed: {
         type: Boolean,
         default: false
       }
@@ -67,6 +68,12 @@
     &.spaced {
       & + & {
         margin-left: $spacer * 2;
+      }
+    }
+
+    &.collapsed {
+      & + & {
+        margin-left: -$spacer;
       }
     }
   }

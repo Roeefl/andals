@@ -3,7 +3,7 @@
     <div class="upper">
       <div class="header">
         <div class="avatar">
-          <BaseAvatar :alt="player.nickname" :iconColor="player.color" />
+          <BaseAvatar :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
           <span class="nickname">
             {{ player.nickname }}
           </span>
@@ -32,7 +32,7 @@
           />
         </div>
       </div>
-      <div class="resources game-pieces" @click="$emit('deck-clicked')">
+      <div class="game-pieces" @click="$emit('deck-clicked')">
         <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="resource">
           <GamePiece 
             showCount
@@ -48,7 +48,7 @@
         </div>
       </div>
       <div class="resources" @click="$emit('deck-clicked')">
-        <ResourceCounts :small="!isMe" :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
+        <ResourceCounts :collapsed="!isMe" :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
       </div>
     </div>
     <div class="player-assets">
@@ -261,6 +261,12 @@
       }
     }
 
+    &.is-other {
+      .resources {
+        width: 50px;
+      }
+    }
+
     .upper {
       display: flex;
       flex-direction: column;
@@ -298,6 +304,10 @@
           margin-bottom: $spacer;
         }
       }
+    }
+
+    .game-pieces {
+      display: flex;
     }
     
     .player-assets {

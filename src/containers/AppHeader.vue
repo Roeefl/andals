@@ -21,9 +21,17 @@
           </ChoiceDialog>
         </div>
       </section>
-      <section v-if="!isInGame">
+      <section v-if="!isInGame" class="additional-actions">
         Route: {{ this.$route.name }}
         <BaseButton v-for="(action, a) in actions" :key="a" icon :iconName="action.icon" iconSize="24px" />
+        <BaseButton icon iconName="user" iconSize="24px" @click="$emit('login')" class="login">
+          <span v-if="isLoggedIn">
+            Logged in as {{ nickname }}
+          </span>
+          <span v-else>
+            Log In
+          </span>
+        </BaseButton>
       </section>
     </v-app-bar>
   </v-card>
@@ -65,6 +73,16 @@
       ChoiceDialog,
       BaseButton
     },
+    props: {
+      isLoggedIn: {
+        type: Boolean,
+        default: false
+      },
+      nickname: {
+        type: String,
+        default: null
+      }
+    },
     computed: {
       isInGame: function() {
         return this.$route.name === 'Room';
@@ -96,8 +114,16 @@
     .v-toolbar__content {
       height: $header-height !important;
       overflow-y: hidden;
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 50% 50%;
+
+      .additional-actions {
+        justify-self: end; 
+
+        .login {
+          width: auto !important;
+        }
+      }
     }
 
     &.in-game {
