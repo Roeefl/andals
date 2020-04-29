@@ -7,8 +7,21 @@
       :width="width"
     />
     <div class="content">
-      Game Loading...
+      <span>
+        Game Loading...
+      </span>
     </div>
+    <ul class="players">
+      <li
+        v-for="(player, p) in players"
+        :key="p"
+        class="player"
+      >
+        <span>
+          {{ player.nickname }} is connecting...
+        </span>
+      </li>
+    </ul>
   </BaseOverlay>
 </template>
 
@@ -32,7 +45,11 @@
       width: {
         type: Number,
         default: 7
-      }
+      },
+      players: {
+        type: Array,
+        default: () => []
+      },
     }
   }
 </script>
@@ -55,6 +72,15 @@
     .content {
       font-size: $font-size-lg;
       margin-top: $spacer;
+    }
+
+    .players {
+      display: flex;
+      flex-direction: column;
+
+      .player {
+        padding: 1px;
+      }
     }
   }
 </style>
