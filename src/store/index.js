@@ -7,19 +7,13 @@ import { ESSENTIAL_OVERLAY_TIMEOUT } from '../config';
 
 Vue.use(Vuex);
 
-const initialNickname = 'John Doe';
-const initialColor = '#2c3e50';
-
 export default new Vuex.Store({
   state: {
     enableSnow: localStorage.enableFx || false,
     enableAmbience: localStorage.enableSound || false,
     isDeveloperMode: localStorage.developerMode || false,
     isUseGameEngine: localStorage.useGameEngine || false,
-    profile: {
-      nickname: localStorage.nickname || initialNickname,
-      color: localStorage.color || initialColor
-    },
+    currentUser: {},
     isGameLoading: false,
     isSelfReady: false,
     rooms: [],
@@ -70,30 +64,9 @@ export default new Vuex.Store({
     setJustPurchasedGameCard(state, isPurchased) {
       state.justPurchasedGameCard = isPurchased;
     },
-    updateProfile(state, profile) {
-      // Vue.set(state, 'profile', profile);
-      const { color, nickname } = profile;
-
-      state.profile = {
-        ...state.profile,
-        color,
-        nickname
-      };
-    },
-    syncProfile(state) {
-      const { color, nickname } = state.profile;
-
-      if (color) localStorage.setColor(color);
-      if (nickname) localStorage.setNickname(nickname);
-    },
-    revertProfile(state) {
-      const color = localStorage.color;
-      const nickname = localStorage.nickname;
-
-      state.profile = {
-        color,
-        nickname 
-      };
+    setCurrentUser(state, user) {
+      console.log("setCurrentUser -> user", user)
+      state.currentUser = user;
     },
     setGameLoading(state, isLoading) {
       console.log("setGameLoading -> isLoading", isLoading)

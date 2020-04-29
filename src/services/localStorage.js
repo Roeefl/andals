@@ -1,6 +1,7 @@
 const keys = {
   nickname: 'userNickname',
   color: 'userColor',
+  avatar: 'userAvatar',
   developerMode: 'enableDeveloperMode',
   useGameEngine: 'eneableExperimentalGameEngine',
   lastRoomId: 'lastRoomId',
@@ -38,6 +39,14 @@ class localStorage {
 
   setColor(color) {
     return this.set(keys.color, color);
+  }
+
+  get avatar() {
+    return Number(this.get(keys.avatar));
+  }
+
+  setAvatar(avatar) {
+    return this.set(keys.avatar, avatar);
   }
 
   get developerMode() {

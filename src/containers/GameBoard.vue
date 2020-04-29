@@ -147,7 +147,7 @@
       // give it 1 more sec to render
       setTimeout(() => {
         this.$store.commit('setGameLoading', false);
-      }, 1000);
+      }, 2000);
     },
     methods: {
       roadIndices: function(row, col) {

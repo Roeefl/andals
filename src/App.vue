@@ -2,7 +2,7 @@
   <v-app>
     <div id="app" class="app-wrapper">
       <div id="page">
-        <AppHeader id="app-header" />
+        <AppHeader id="app-header" :isLoggedIn="isLoggedIn" :nickname="(currentUser || {}).nickname" @login="handleLogin" />
         <router-view />
       </div>
       <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }" />
@@ -10,13 +10,14 @@
     <audio ref="ambience">
       <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
     </audio>
-    <GameLoader v-if="isGameLoading" />
+    <GameLoader v-if="isGameLoading" :players="players" />
   </v-app>
 </template>
 
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
+  import firebaseService from '@/services/firebase';
 
   import AppHeader from '@/containers/AppHeader';
   import BaseAlert from '@/components/common/BaseAlert';
@@ -29,11 +30,18 @@
       BaseAlert,
       GameLoader
     },
-    computed: mapState([
-      'enableAmbience',
-      'isGameLoading',
-      'alerts'
-    ]),
+    computed: {
+      isLoggedIn: function() {
+        return !!(this.currentUser && this.currentUser.uid);
+      },
+      ...mapState([
+        'enableAmbience',
+        'isGameLoading',
+        'currentUser',
+        'alerts',
+        'players'
+      ])
+    },
     async beforeCreate() {
       await colyseusService.init();
       await colyseusService.initializeStaticResources();
@@ -45,6 +53,18 @@
       }
     },
     methods: {
+      handleLogin: async function() {
+        console.log("currentUser", this.currentUser);
+
+        const wasLoggedIn = (this.currentUser && this.currentUser.email)
+        
+        const currentUser = wasLoggedIn
+          ? await firebaseService.logout()
+          : await firebaseService.login();
+
+        this.$store.commit('setCurrentUser', currentUser || {});
+        this.$store.commit('addAlert', `You are now logged ${wasLoggedIn ? 'out' : 'in'}`);
+      },
       startAmbience: function() {
         const { ambience } = this.$refs;
 
