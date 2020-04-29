@@ -32,8 +32,21 @@
           </BaseButton>
         </li>
         <li class="action-item">
-          <ChoiceDialog iconName="wrench" title="Customize Player" buttonText="Customize Player" @approve="saveProfile" @cancel="revertProfile" class="customize-player">
-            <CustomizePlayer :storedColor="profile.color" :storedName="profile.nickname" @saved="updateProfile($event)" />
+          <ChoiceDialog
+            iconName="wrench"
+            title="Customize Player"
+            buttonText="Customize Player"
+            @approve="saveUserPreferences"
+            class="customize-player"
+          >
+            <CustomizePlayer
+              :nickname="nickname || currentUser.nickname"
+              @update-nickname="nickname = $event"
+              :color="color || currentUser.color"
+              @update-color="color = $event"
+              :avatar="avatar || currentUser.avatar"
+              @update-avatar="avatar = $event"
+            />
           </ChoiceDialog>
         </li>
         <li class="action-item">
@@ -51,6 +64,7 @@
   import { mapState } from 'vuex'
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
+  import firebaseService from '@/services/firebase';
   
   import RoomsList from '@/components/lobby/RoomsList';
   import CustomizePlayer from '@/components/lobby/CustomizePlayer';
@@ -76,7 +90,7 @@
       this.fetchRooms();
     },
     computed: mapState([
-      'profile',
+      'currentUser',
       'rooms'
     ]),
     data: function() {
@@ -90,7 +104,10 @@
         playVsBots: false,
         autoPickup: true,
         friendlyGameLog: false,
-        botReplacement: true
+        botReplacement: true,
+        nickname: '',
+        color: '',
+        avatar: 0
       };
     },
     mounted() {
@@ -124,7 +141,9 @@
             autoPickup: this.autoPickup,
             friendlyGameLog: this.friendlyGameLog,
             enableBotReplacement: this.botReplacement,
-            ...this.profile
+            nickname: this.currentUser.nickname,
+            color: this.currentUser.color,
+            avatar: this.currentUser.avatar
           };
 
           const room = await colyseusService.createRoom(this.roomType, options);
@@ -139,7 +158,9 @@
       joinRoom: async function(roomId) {
         try {
           const options = {
-            ...this.profile
+            nickname: this.currentUser.nickname,
+            color: this.currentUser.color,
+            avatar: this.currentUser.avatar
           };
 
           const room = await colyseusService.joinById(roomId, options);
@@ -165,14 +186,15 @@
           console.error('reconnect failed:', err);
         }
       },
-      updateProfile: function(updatedProfile) {
-        this.$store.commit('updateProfile', updatedProfile);
-      },
-      saveProfile: function() {
-        this.$store.commit('syncProfile');
-      },
-      revertProfile: function() {
-        this.$store.commit('revertProfile');
+      saveUserPreferences: async function() {
+        if (this.currentUser && this.currentUser.uid) {
+          const updatedUser = await firebaseService.updateProfile(this.nickname, this.color, this.avatar);
+          this.$store.commit('setCurrentUser', updatedUser);
+
+          this.nickname = '';
+          this.color = '';
+          this.avatar = 0;
+        }
       }
     }
   }
