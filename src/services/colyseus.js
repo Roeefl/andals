@@ -5,7 +5,7 @@ import localStorage from '@/services/localStorage';
 import { initialBuildingCosts } from '@/specs/purchases';
 
 const baseColyseusURL = `${process.env.VUE_APP_SERVER_API_URL}${process.env.VUE_APP_SERVER_API_PORT || ''}`;
-const baseUrl = process.env.VUE_APP_BASE_URL || 'http://localhost:3000';
+const baseUrl = process.env.VUE_APP_BASE_URL || 'http://localhost:1337';
 
 export const roomTypes = ['baseGame', 'firstMen'];
 export const [ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN] = roomTypes;
