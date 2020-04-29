@@ -10,6 +10,7 @@
     <audio ref="ambience">
       <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
     </audio>
+    <GameLoader v-if="isGameLoading" />
   </v-app>
 </template>
 
@@ -19,15 +20,18 @@
 
   import AppHeader from '@/containers/AppHeader';
   import BaseAlert from '@/components/common/BaseAlert';
-  
+  import GameLoader from '@/components/interface/GameLoader';
+
   export default {
     name: 'App',
     components: {
       AppHeader,
-      BaseAlert
+      BaseAlert,
+      GameLoader
     },
     computed: mapState([
       'enableAmbience',
+      'isGameLoading',
       'alerts'
     ]),
     async beforeCreate() {

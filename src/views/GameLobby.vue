@@ -115,6 +115,8 @@
       },
       createRoom: async function() {
         try {
+          this.$store.commit('setGameLoading', true);
+          
           const options = {
             roomTitle: this.roomTitle,
             maxPlayers: this.roomMaxPlayers,

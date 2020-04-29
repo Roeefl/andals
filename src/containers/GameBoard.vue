@@ -143,6 +143,12 @@
       this.harborAdjacentToStructure = harborAdjacentToStructure;
       this.absoluteIndex = boardService.absoluteIndex;
     },
+    mounted() {
+      // give it 1 more sec to render
+      setTimeout(() => {
+        this.$store.commit('setGameLoading', false);
+      }, 1000);
+    },
     methods: {
       roadIndices: function(row, col) {
         return [

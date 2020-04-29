@@ -20,6 +20,7 @@ export default new Vuex.Store({
       nickname: localStorage.nickname || initialNickname,
       color: localStorage.color || initialColor
     },
+    isGameLoading: false,
     isSelfReady: false,
     rooms: [],
     // reservations: [],
@@ -93,6 +94,11 @@ export default new Vuex.Store({
         color,
         nickname 
       };
+    },
+    setGameLoading(state, isLoading) {
+      console.log("setGameLoading -> isLoading", isLoading)
+      state.isGameLoading = isLoading;
+      console.log("setGameLoading -> isGameLoading", state.isGameLoading)
     },
     toggleSelfReady(state) {
       state.isSelfReady = !state.isSelfReady;
