@@ -1,7 +1,9 @@
 <template>
   <v-snackbar top v-model="isOpen" :color="color" :timeout="timeout">
-    {{ text }}
-    <BaseButton color="white" text @click="isOpen = false">
+    <span class="content">
+      {{ text }}
+    </span>
+    <BaseButton color="transparent" small text @click="isOpen = false">
       X
     </BaseButton>
   </v-snackbar>
@@ -34,3 +36,11 @@
     }),
   }
 </script>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  .content {
+    font-size: $font-size-md;
+  }
+</style>

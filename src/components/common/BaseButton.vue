@@ -116,6 +116,11 @@
         &.primary {
           color: $secondary;
         }
+
+        // .v-btn__content {
+        //   max-width: 90%;
+        //   white-space: normal;
+        // }
       }
     }
   }

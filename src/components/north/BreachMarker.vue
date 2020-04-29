@@ -59,7 +59,7 @@
         }
         
         .level-number {
-          font-size: $font-size-md;
+          font-size: $font-size-lg;
         }
       }
     }

@@ -7,7 +7,7 @@ import { ESSENTIAL_OVERLAY_TIMEOUT } from '../config';
 
 Vue.use(Vuex);
 
-const initialNickname = 'Jhon Doe';
+const initialNickname = 'John Doe';
 const initialColor = '#2c3e50';
 
 export default new Vuex.Store({

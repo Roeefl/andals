@@ -27,7 +27,7 @@
           </ChoiceDialog>
         </li>
         <li class="action-item">
-          <BaseButton spaced color="primary" iconColor="white" iconName="refresh-circle" iconSize="x-large" @click="refreshRooms" class="refresh-list">
+          <BaseButton spaced color="info" iconColor="white" iconName="refresh-circle" iconSize="x-large" @click="refreshRooms" class="refresh-list">
             Refresh List
           </BaseButton>
         </li>
@@ -37,7 +37,7 @@
           </ChoiceDialog>
         </li>
         <li class="action-item">
-          <BaseButton spaced iconName="lan-connect" iconSize="x-large" @click="reconnect" class="reconnect">
+          <BaseButton spaced color="info" iconName="lan-connect" iconSize="x-large" @click="reconnect" class="reconnect">
             Reconnect
           </BaseButton>
         </li>

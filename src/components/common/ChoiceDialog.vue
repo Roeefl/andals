@@ -48,7 +48,7 @@
       },
       buttonColor: {
         type: String,
-        default: 'primary'
+        default: 'info'
       },
       hasCancel: {
         type: Boolean,

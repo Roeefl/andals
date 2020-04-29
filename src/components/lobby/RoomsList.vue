@@ -84,7 +84,7 @@
       max-height: 50vh;
       overflow-y: auto;
       width: 70%;
-      font-size: $font-size-md;
+      font-size: $font-size-lg;
     }
   }
 

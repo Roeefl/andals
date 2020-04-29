@@ -60,7 +60,7 @@
       min-width: 0;
       margin-right: $spacer / 3;
       color: white;
-      font-size: $font-size-md;
+      font-size: $font-size-lg;
     }
   }
 </style>
