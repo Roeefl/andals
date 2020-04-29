@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "colyseus.js": "^0.12.2",
     "core-js": "^3.6.4",
+    "firebase": "^7.14.2",
     "howler": "^2.1.3",
     "invert-color": "^2.0.0",
     "lodash": "^4.17.15",
