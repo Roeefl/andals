@@ -126,6 +126,7 @@
           };
 
           const room = await colyseusService.createRoom(this.roomType, options);
+          console.log("room", room)
 
           colyseusService.setRoom(room);
           router.push(`/room/${room.id}`);
