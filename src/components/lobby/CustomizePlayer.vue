@@ -1,12 +1,18 @@
 <template>
   <div class="customize">
     <form>
-      <TextField :value="nickname" @input="nickname = $event" label="Choose a nickname" />
+      <TextField :value="nickname" @input="$emit('update-nickname', $event)" label="Choose a nickname" />
+      <div class="avatar">
+        <h3>
+          Select Avatar:
+        </h3>
+        <BaseCarousel :height="300" :images="avatars" :selected="avatar" @selected-image="$emit('update-avatar', $event)" />
+      </div>
       <div>
-        <span>
+        <h3>
            Choose your in-game player color:
-        </span>
-        <ColorPicker :initialColor="color" @update="color = $event" />
+        </h3>
+        <ColorPicker :initialColor="color" @update="$emit('update-color', $event)" />
       </div>
     </form>
   </div>
@@ -16,47 +22,39 @@
   import TextField from '@/components/common/TextField';
   import ColorPicker from '@/components/common/ColorPicker';
   import BaseButton from '@/components/common/BaseButton';
+  import BaseCarousel from '@/components/common/BaseCarousel';
+
+  const avatars = Array(20).fill(0).map((avatar, a)=> ({
+    src: `avatars/${a + 1}.png`
+  }));
 
   export default {
     name: 'CustomizePlayer',
     components: {
       TextField,
       ColorPicker,
-      BaseButton
+      BaseButton,
+      BaseCarousel
     },
     props: {
-      storedName: {
+      nickname: {
         type: String,
         default: 'John Doe'
       },
-      storedColor: {
+      color: {
         type: String,
         default: '#409EFF'
-      }
-    },
-    data: () => ({
-      nickname: '',
-      color: '#409EFF'
-    }),
-     watch: {
-      storedName: function(newName) {
-        if (newName !== this.nickname) this.nickname = newName; // reverted by cancelling the dialog
       },
-      storedColor: function(newColor) {
-        if (newColor !== this.color) this.color = newColor; // reverted by cancelling the dialog
+      avatar: {
+        type: Number,
+        default: 0
       }
     },
     created() {
-      this.nickname = this.storedName;
-      this.color = this.storedColor;
+      this.avatars = avatars;
     },
-    updated() {
-      const updatedProfile = {
-        nickname: this.nickname,
-        color: this.color
-      };
-
-      this.$emit('saved', updatedProfile)
+    mounted() {
+      console.log(this.nickname, this.color, this.avatar);
     }
   }
 </script>
