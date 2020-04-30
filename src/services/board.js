@@ -27,7 +27,6 @@ const initialActiveRoads = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
-
 class BoardService {
   initialStructures() {
     const clonedArr = [];

@@ -9,15 +9,19 @@
       class="app-bar"
     >
       <section class="header-buttons">
-        <div v-for="item in links" :key="`header-item-${item.to}`" class="header-item" :class="{ 'home': item.key === 'lobby' }">
+        <div v-for="item in links" :key="item.key" class="header-item" :class="{ 'home': item.key === 'lobby' }">
           <router-link v-if="!!item.to" :to="item.to" class="router-link">
             <img v-if="item.img" :src="require(`../assets/${item.img}`)" :alt="item.key" />
             <h3 v-if="item.title" class="item-title">
               {{ item.title }}
             </h3>
           </router-link>
-          <ChoiceDialog v-else buttonColor="transparent" iconName="cog" title="Preferences" :hasCancel="false">
+          <ChoiceDialog v-if="item.key === 'settings'" buttonColor="transparent" :iconName="item.icon" title="Preferences" :hasCancel="false">
             <AppSettings />
+          </ChoiceDialog>
+          <ChoiceDialog v-if="item.key === 'console'" buttonColor="transparent" :iconName="item.icon" title="Dev Console" :width="1400" :hasCancel="false">
+            <!-- <DevConsole /> -->
+            <div>Dev Console</div>
           </ChoiceDialog>
         </div>
       </section>
@@ -39,18 +43,24 @@
 
 <script>
   import AppSettings from '@/containers/AppSettings';
+  import DevConsole from '@/containers/DevConsole';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BaseButton from '@/components/common/BaseButton';
 
   const links = [
     {
-      to: '/lobby',
       key: 'lobby',
+      to: '/lobby',
       img: 'logo.png',
       title: 'Firstmen.io'
     },
     {
-      key: 'settings'
+      key: 'settings',
+      icon: 'cog'
+    },
+    {
+      key: 'console',
+      icon: 'console'
     }
   ];
 
@@ -70,6 +80,7 @@
     name: 'AppHeader',
     components: {
       AppSettings,
+      DevConsole,
       ChoiceDialog,
       BaseButton
     },

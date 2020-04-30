@@ -213,6 +213,8 @@
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;
       this.resourceCardColors = resourceCardColors;
+
+      console.log(this.player.currentHeroCard);
     },
     methods: {
       playerStyle: function(playerColor) {

@@ -90,7 +90,6 @@ export default new Vuex.Store({
       ];
     },
     updateRoomState(state, roomState) {
-      console.info("updateRoomState -> updated roomState: ", roomState)
       state.roomState = {
         ...roomState,
         lastUpdated: Date.now()
@@ -162,12 +161,16 @@ export default new Vuex.Store({
         hasResources: {}
       };
 
+      const resetStructures = boardService.initialStructures();
+      console.log("destroyRoomState -> resetStructures", resetStructures)
       state.activeStructures = [
-        ...boardService.initialStructures()
+        ...resetStructures
       ];
 
+      const resetRoads = boardService.initialRoads();
+      console.log("destroyRoomState -> resetRoads", resetRoads)
       state.activeRoads = [
-        ...boardService.initialRoads()
+        ...resetRoads
       ];
     },
     addGameLog(state, log) {
