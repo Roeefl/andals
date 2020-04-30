@@ -682,7 +682,7 @@
 
     .board-container {
       display: grid;
-      grid-template-columns: 300px 1fr 300px;
+      grid-template-columns: 15% 70% 15%;
 
       & > * {
         margin: 0 $spacer / 2;
