@@ -24,11 +24,11 @@
           />
         </div>
         <div class="my-deck">
-          <h3 v-if="giveBack || true">
+          <h3 v-if="giveBack">
             Give one resource card in exchange:
           </h3>
           <BaseDeck
-            v-if="giveBack || true"
+            v-if="giveBack"
             :deck="myDeck"
             @card-clicked="selectedGiveCard = $event"
             :selectedCards="[selectedGiveCard]"
