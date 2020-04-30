@@ -1,5 +1,5 @@
 <template>
-  <div v-if="roomState.board" class="board">
+  <div v-if="roomState.board" class="board" :class="{ 'game-over': roomState.isVictory }">
     <div class="trees">
       <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" class="tree" />
     </div>
@@ -196,11 +196,14 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  // opacity: 0.5;
   
   .board {
     display: grid;
     grid-template-columns: 10% 80% 10%;
+
+    .game-over {
+      opacity: 0.5;
+    }
 
     .trees {
       display: flex;
@@ -263,7 +266,8 @@
           position: absolute;
           top: 0;
           right: 0;
-          color: red;
+          z-index: $zindex-robber + 1;
+          background: $primary;
         }
       }
     }

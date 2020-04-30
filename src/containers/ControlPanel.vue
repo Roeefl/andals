@@ -95,7 +95,7 @@
     },
     computed: {
       isDiceEnabled: function() {
-        return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled;
+        return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled && !this.roomState.isVictory;
       },
       isGameCardsEnabled: function() {
         return(
@@ -113,7 +113,8 @@
           (!this.roomState.isSetupPhase && !this.roomState.isDiceRolled) ||
           (this.myPlayer.mustMoveRobber && this.desiredRobberTile === -1) ||
           this.myPlayer.allowStealingFrom.length > 0 ||
-          this.myPlayer.allowFreeRoads > 0
+          this.myPlayer.allowFreeRoads > 0 ||
+          this.roomState.isVictory
         );
       },
       ...mapState([

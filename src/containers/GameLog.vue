@@ -33,8 +33,9 @@
         />
       </div>
       <div v-if="log.type === CHAT_LOG_HERO_CARD" class="played-hero-card">
-        {{ log.playerName }} has played
-        <HeroCard nameOnly :card="log.heroCard" class="hero-card" />
+        <span class="hero-card">
+          {{ log.playerName }} has played {{ log.heroCard.name }}
+        </span>
       </div>
     </li>
   </MessageList>
@@ -144,7 +145,7 @@
     display: flex;
 
     .hero-card {
-      margin-left: $spacer;
+      background: $error;
     }
   }
 </style>
