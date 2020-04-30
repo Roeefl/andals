@@ -1,17 +1,17 @@
 <template>
-  <div class="hero-card" :class="{ 'name-only': nameOnly, 'was-played': card.wasPlayed }">
+  <div class="hero-card" :class="{ 'was-played': card.wasPlayed }">
     <header class="card-header" :class="{ 'highlighted-section': !thumbnail, 'thumbnail': thumbnail }">
       <h3>
         {{ card.name }}
       </h3>
-      <h4 v-if="!thumbnail && !nameOnly">
+      <h4 v-if="!thumbnail">
         {{ card.title }}
       </h4>
     </header>
-    <section v-if="!nameOnly" class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
+    <section class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
       <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
     </section>
-    <section v-if="!thumbnail && !nameOnly" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
+    <section v-if="!thumbnail" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">
         {{ card.ability }}
       </h3>
@@ -39,10 +39,6 @@
       thumbnail: {
         type: Boolean,
         default: false
-      },
-      nameOnly: {
-        type: Boolean,
-        default: false
       }
     }
   }
@@ -60,11 +56,6 @@
     color: $secondary;
     display: flex;
     flex-direction: column;
-
-    &.name-only {
-      padding: 0;
-      justify-content: center;
-    }
 
     &.was-played {
       opacity: 0.8;
