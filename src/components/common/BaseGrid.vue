@@ -10,10 +10,11 @@
         {{ item[column.key] }}
       </span>
       <BaseButton
-        v-for="({ name, emitValue, disabledKey }, a) in itemActions"
+        v-for="({ key, name, icon, emitValue, isDisabled, disabledKey }, a) in itemActions"
         :key="`item-${i}-action-${a}`"
-        :disabled="item[disabledKey]"
-        @click="$emit('action-clicked', item[emitValue])"
+        :disabled="(isDisabled && isDisabled(item)) || item[disabledKey]"
+        :iconName="icon"
+        @click="$emit(key, item[emitValue])"
         class="item-action"
       >
         {{ name }}
@@ -57,7 +58,7 @@
    .grid-item {
       display: grid;
       grid-template-rows: auto;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(7, 1fr);
       justify-items: center;
       align-items: center;
       background: rgba($info, 0.7);

@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpen" :width="width">
     <template v-slot:activator="{ on }">
-      <BaseButton :on="on" :color="buttonColor" class="activator">
+      <BaseButton :on="on" :color="buttonColor" :disabled="disabled" class="activator">
         <slot name="activate" />
         <BaseIcon
           size="x-large"
@@ -81,6 +81,10 @@
       width: {
         type: Number,
         default: 400
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     data: () => ({

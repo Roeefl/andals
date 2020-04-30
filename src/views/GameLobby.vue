@@ -7,7 +7,7 @@
     <section class="lobby-interface">
       <ul class="actions">
         <li class="action-item">
-          <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" @approve="createRoom" class="create-room">
+          <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" :disabled="!isServerUp" @approve="createRoom" class="create-room">
             <CustomizeRoom
               :roomType="roomType"
               @select-room-type="roomType = $event"
@@ -49,13 +49,8 @@
             />
           </ChoiceDialog>
         </li>
-        <li class="action-item">
-          <BaseButton spaced color="info" iconName="lan-connect" iconSize="x-large" @click="reconnect" class="reconnect">
-            Reconnect
-          </BaseButton>
-        </li>
       </ul>
-      <RoomsList :rooms="rooms" @join="joinRoom($event)" class="rooms-list" />
+      <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
     </section>
   </main>
 </template>
@@ -90,6 +85,7 @@
       this.fetchRooms();
     },
     computed: mapState([
+      'isServerUp',
       'lobbySnowflakes',
       'currentUser',
       'rooms'
@@ -114,7 +110,7 @@
     mounted() {
       this.autoRefresh = setInterval(
         () => this.fetchRooms(),
-        15 * 1000
+        20 * 1000
       );
 
       this.$store.commit('startAmbience');
@@ -124,12 +120,30 @@
     },
     methods: {
       fetchRooms: async function() {
-        const rooms = await colyseusService.listRooms();
-        this.$store.commit('setRooms', rooms);
+        try {
+          const rooms = await colyseusService.listRooms();
+          this.$store.commit('setRooms', rooms);
+          this.$store.commit('setServerStatus', true);
+
+          return true;
+        } catch (err) {
+          this.$store.commit('setServerStatus', false);
+      
+          console.error('Unable to fetch rooms list. Game server might be down');
+          this.$store.commit('addAlert', 'Unable to connect to game server');
+
+          return false;
+        }
       },
       refreshRooms: async function() {
-        await this.fetchRooms();
-        this.$store.commit('addAlert', 'Rooms list refreshed');
+        try {
+          const isSuccess = await this.fetchRooms();
+          if (isSuccess)
+            this.$store.commit('addAlert', 'Rooms list refreshed');
+        } catch (err) {
+          console.error('Unable to fetch rooms list. Game server might be down');
+          this.$store.commit('addAlert', 'Unable to connect to game server');
+        }
       },
       createRoom: async function() {
         try {
@@ -174,7 +188,7 @@
       },
       reconnect: async function(roomId) {
         try {
-          const room = await colyseusService.reconnect();
+          const room = await colyseusService.reconnect(roomId);
 
           if (!room) {
             this.$store.commit('addAlert', 'Unable to reconnect. Sorry.');
@@ -184,7 +198,7 @@
           colyseusService.setRoom(room);
           router.push(`/room/${room.id}`);
         } catch (err) {
-          console.error('reconnect failed:', err);
+          console.error('Reconnect Failed:', err);
         }
       },
       saveUserPreferences: async function() {
@@ -231,8 +245,7 @@
         margin-left: $spacer;
       }
 
-      .refresh-list,
-      .reconnect {
+      .refresh-list {
         width: 100%;
         height: 100%;
       }

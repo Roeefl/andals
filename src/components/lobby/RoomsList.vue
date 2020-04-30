@@ -4,13 +4,15 @@
       :columns="gridColumns"
       :items="refinedRooms"
       :itemActions="gridActions"
-      @action-clicked="$emit('join', $event)"
+      @join="$emit('join', $event)"
+      @reconnect="$emit('reconnect', $event)"
       class="rooms-list"
     />
   </div>
 </template>
 
 <script>
+  import localStorage from '@/services/localStorage';
   import BaseGrid from '@/components/common/BaseGrid';
 
   const gridColumns = [
@@ -38,9 +40,18 @@
 
   const gridActions = [
     {
+      key: 'join',
       name: 'Join Room',
       emitValue: 'roomId',
       disabledKey: 'locked' 
+    },
+    {
+      key: 'reconnect',
+      name: 'Reconnect',
+      // icon: 'lan-connect',
+      emitValue: 'roomId',
+      disabledKey: 'locked',
+      isDisabled: room => room.roomId !== localStorage.lastRoomId
     }
   ];
 
@@ -83,7 +94,7 @@
     .rooms-list {
       max-height: 50vh;
       overflow-y: auto;
-      width: 70%;
+      width: 80%;
       font-size: $font-size-lg;
     }
   }
