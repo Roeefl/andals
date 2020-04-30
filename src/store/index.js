@@ -10,6 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     enableSnow: localStorage.enableFx || false,
+    lobbySnowflakes: 20,
     enableAmbience: localStorage.enableSound || false,
     isDeveloperMode: localStorage.developerMode || false,
     isUseGameEngine: localStorage.useGameEngine || false,
@@ -43,6 +44,9 @@ export default new Vuex.Store({
 
       state.enableSnow = nextValue;
       localStorage.enableFx = nextValue;
+    },
+    setLbbySnowflakes(state, value) {
+      state.lobbySnowflakes = value
     },
     toggleAmbience(state) {
       const nextValue = !state.enableAmbience;
