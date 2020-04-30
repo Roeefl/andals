@@ -86,6 +86,7 @@ class ColyseusService {
       return room;
     } catch (err) {
       console.error('Reconnect Failed', err);
+      return false;
     }
   }
 
@@ -101,7 +102,7 @@ class ColyseusService {
       const rooms = await this.client.getAvailableRooms();
       return rooms;
     } catch (err) {
-      console.error(err);
+      console.error('Game Server is down', err);
     }
   }
 

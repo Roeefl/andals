@@ -14,6 +14,7 @@ export default new Vuex.Store({
     enableAmbience: localStorage.enableSound || false,
     isDeveloperMode: localStorage.developerMode || false,
     isUseGameEngine: localStorage.useGameEngine || false,
+    isServerUp: false,
     currentUser: {},
     isGameLoading: false,
     isSelfReady: false,
@@ -67,6 +68,9 @@ export default new Vuex.Store({
     },
     setJustPurchasedGameCard(state, isPurchased) {
       state.justPurchasedGameCard = isPurchased;
+    },
+    setServerStatus(state, isReady) {
+      state.isServerUp = isReady;
     },
     setCurrentUser(state, user) {
       console.log("setCurrentUser -> user", user)
