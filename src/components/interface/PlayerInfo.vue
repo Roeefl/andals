@@ -10,10 +10,12 @@
         </div>
         <div class="status">
           <BaseChip
-            v-if="!isStarted"
+            v-if="!isGameReady"
             :iconName="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'"
             :iconColor="player.isReady ? 'highlight' : 'error'"
             :label="player.isReady ? 'Ready' : 'Not Ready'"
+            @click="isMe && $emit('toggle-ready')"
+            class="is-ready"
           />
           <BaseChip
             v-if="waitingTrade"
@@ -23,7 +25,7 @@
             label="Waiting..."
           />
           <BaseMenu
-            v-if="isStarted && !isMe"
+            v-if="isGameReady && !isMe"
             :isForceOpen="allowStealing"
             :items="opponentActions"
             @item-clicked="$emit($event, player.playerSessionId)"
@@ -120,7 +122,6 @@
   import HeroCard from '@/components/game/HeroCard';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
 
-  import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
   import BaseAvatar from '@/components/common/BaseAvatar';
   import BaseChip from '@/components/common/BaseChip';
@@ -154,7 +155,6 @@
       GameCard,
       ChoiceDialog,
       HeroCard,
-      BaseButton,
       BaseIcon,
       BaseAvatar,
       BaseChip,
@@ -165,7 +165,7 @@
         type: Object,
         required: true
       },
-      isStarted: {
+      isGameReady: {
         type: Boolean,
         default: false
       },
@@ -291,6 +291,10 @@
 
       .status {
         justify-self: end;
+      
+        .is-ready {
+          cursor: pointer;
+        }
       }
     }
 

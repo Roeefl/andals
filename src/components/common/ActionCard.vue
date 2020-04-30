@@ -11,11 +11,11 @@
     <fragment v-if="cancel || approve">
       <v-divider />
       <v-card-actions class="card-actions">
-        <BaseButton text v-if="cancel" color="warning" @click="() => $emit('cancel')" class="card-action">
+        <BaseButton text v-if="cancel" color="warning" @click="$emit('cancel')" class="card-action">
           {{ cancelText }}
         </BaseButton>
         <v-spacer />
-        <BaseButton text v-if="approve" color="highlight" @click="() => $emit('approve')" class="card-action">
+        <BaseButton text v-if="approve" color="highlight" @click="$emit('approve')" class="card-action">
           {{ approveText }}
         </BaseButton>
       </v-card-actions>

@@ -22,6 +22,7 @@
           @trade-with="requestTradeWith($event)"
           @steal-from="stealFrom($event)"
           @play-hero="onPlayHeroCard($event)"
+          @toggle-ready="toggleReady"
         />
       </DraggableWidget>
       <div class="board-area">

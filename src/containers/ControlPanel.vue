@@ -41,7 +41,7 @@
         <BaseButton
           v-if="!roomState.isGameReady"
           :color="isSelfReady ? 'error' : 'highlight'"
-          @click="() => $emit('toggle-ready')"
+          @click="$emit('toggle-ready')"
           class="ready"
         >
           <span v-if="isSelfReady">

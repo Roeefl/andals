@@ -4,6 +4,7 @@
     :color="color"
     :text-color="textColor"
     @click:close="closeable && close"
+    @click="$emit('click')"
     :outlined="outlined"
     :label="labeled"
     class="base-chip"
