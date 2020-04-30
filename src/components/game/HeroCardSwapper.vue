@@ -9,7 +9,7 @@
       :cancel="false"
       @approve="$emit('selected', deck[0])"
     >
-      <BaseButton icon iconName="arrow-left-box" iconColor="secondary" @click="swipeLeft" class="arrow arrow-left" />
+      <BaseButton icon iconName="arrow-left-box" iconColor="primary" iconSize="60px" @click="swipeLeft" class="arrow arrow-left" />
       <ul class="hero-cards">
         <BaseButton v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" icon @click="swipeTo(c)" class="hero-card-wrapper">
           <HeroCard
@@ -18,7 +18,7 @@
           />
         </BaseButton>
       </ul>
-      <BaseButton icon iconName="arrow-right-box" iconColor="secondary" @click="swipeRight" class="arrow arrow-right" />
+      <BaseButton icon iconName="arrow-right-box" iconColor="primary" iconSize="60px" @click="swipeRight" class="arrow arrow-right" />
     </ActionCard>
   </v-dialog>
 </template>
@@ -53,12 +53,12 @@
     },
     methods: {
       swipeLeft: function() {
-        const firstCard = this.deck.shift();
-        this.deck.push(firstCard);
-      },
-      swipeRight: function() {
         const lastCard = this.deck.pop();
         this.deck.unshift(lastCard);
+      },
+      swipeRight: function() {
+        const firstCard = this.deck.shift();
+        this.deck.push(firstCard);
       },
       swipeTo: function(index) {
         if (index <= 0) return;
@@ -76,7 +76,7 @@
 
   // @TODO: should be this.cards.length;
   $cards-count: 16;
-  $first-card-left: $spacer * 3;
+  $first-card-left: 25%;
   $card-distance: 80px;
   $zindex-first-card: 100;
 
@@ -96,9 +96,14 @@
 
     .hero-card-wrapper {
       position: absolute;
-      top: $spacer * 2;
+      bottom: 85%;
       @include cards($first-card-left);
       animation: slide-in-bck-center 1.4s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+
+      &:hover {
+        z-index: $zindex-first-card + 1;
+        bottom: 90%;
+      }
 
       .hero-card {
         width: 280px;

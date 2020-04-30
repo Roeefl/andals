@@ -11,11 +11,13 @@
     <section v-if="!nameOnly" class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
       <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
     </section>
-    <section v-if="!thumbnail && !nameOnly" class="card-description" :class="{ 'highlighted-section': !thumbnail }">
+    <section v-if="!thumbnail && !nameOnly" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">
         {{ card.ability }}
       </h3>
-      {{ card.description }}
+      <div class="card-description">
+        {{ card.description }}
+      </div>
     </section>
     <BaseIcon v-if="thumbnail && card.wasPlayed" name="flip-horizontal" color="white" class="icon-was-played" />
   </div>
@@ -54,8 +56,8 @@
     position: relative;
     padding: $spacer;
     text-align: center;
-    background: $secondary;
-    color: $primary;
+    background: $primary;
+    color: $secondary;
     display: flex;
     flex-direction: column;
 
@@ -98,11 +100,12 @@
       }
     }
 
-    .card-description {
+    .card-info {
       flex: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
+      white-space: normal;
 
       &.highlighted-section {
         background: $info;
@@ -111,9 +114,15 @@
 
       .card-ability {
         margin-top: $spacer / 3;
-        width: 50%;
+        width: 100%;
         font-style: italic;
-        box-shadow: 0 0 4px 4px $primary;
+        box-shadow: 0 0 4px 4px $secondary;
+      }
+
+      .card-description {
+        flex: 1;
+        display: flex;
+        align-items: center;
       }
     }
 

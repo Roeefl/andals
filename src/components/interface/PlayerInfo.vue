@@ -213,8 +213,6 @@
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;
       this.resourceCardColors = resourceCardColors;
-
-      console.log(this.player.currentHeroCard);
     },
     methods: {
       playerStyle: function(playerColor) {
@@ -349,6 +347,8 @@
       .hero-card {
         width: $hero-size;
         height: $hero-size;
+        background: $secondary;
+        color: $primary;
       }
     }
   }
