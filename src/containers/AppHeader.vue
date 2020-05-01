@@ -28,10 +28,12 @@
         <BaseButton v-for="(action, a) in actions" :key="a" icon :iconName="action.icon" iconSize="24px" />
         <div class="profile-section">
           <BaseMenu
+            buttonColor="secondary"
+            iconColor="primary"
+            iconName="account-circle"
+            :buttonText="nickname"
             :items="profileActions"
             @item-clicked="$emit($event)"
-            :buttonText="nickname"
-            iconName="account-circle"
           />
         </div>
       </section>

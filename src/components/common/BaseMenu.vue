@@ -80,7 +80,7 @@
   @import '@/styles/partials';
 
   .v-menu__content {
-    z-index: $zindex-app-header + 1 !important;
+    z-index: 1000 !important;
     margin-top: 2px;
   }
 
