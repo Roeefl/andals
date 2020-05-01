@@ -37,6 +37,11 @@
           {{ log.playerName }} has played {{ log.heroCard.name }}
         </span>
       </div>
+      <div v-if="log.type === CHAT_LOG_GAME_CARD" class="played-game-card">
+        <span class="game-card">
+          {{ log.playerName }} has played {{ log.cardType }}
+        </span>
+      </div>
     </li>
   </MessageList>
 </template>
@@ -52,7 +57,7 @@
   import HeroCard from '@/components/game/HeroCard';
   
   import { resourceCardTypes } from '@/specs/resources';
-  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD, CHAT_LOG_WILDLING_TOKENS, CHAT_LOG_HERO_CARD } from '@/constants';
+  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD, CHAT_LOG_WILDLING_TOKENS, CHAT_LOG_HERO_CARD, CHAT_LOG_GAME_CARD} from '@/constants';
 
   export default {
     name: 'GameLog',
@@ -82,6 +87,7 @@
       this.CHAT_LOG_DISCARD = CHAT_LOG_DISCARD;
       this.CHAT_LOG_WILDLING_TOKENS = CHAT_LOG_WILDLING_TOKENS;
       this.CHAT_LOG_HERO_CARD = CHAT_LOG_HERO_CARD;
+      this.CHAT_LOG_GAME_CARD = CHAT_LOG_GAME_CARD;
     }
   }
 </script>

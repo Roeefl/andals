@@ -3,7 +3,8 @@
     <v-card-title
       v-if="title"
       primary-title
-      class="headline success"
+      class="headline"
+      :style="{ background: titleColor }"
     >
       {{ title }}
     </v-card-title>
@@ -35,6 +36,10 @@
       title: {
         type: String,
         default: 'Card Title'
+      },
+      titleColor: {
+        type: String,
+        default: 'success'
       },
       cancel: {
         type: Boolean,

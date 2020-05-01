@@ -24,7 +24,7 @@
       },
       color: {
         type: String,
-        default: ''
+        default: 'error'
       },
       timeout: {
         type: Number,

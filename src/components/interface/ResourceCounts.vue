@@ -3,8 +3,8 @@
     <ResourceCard
       v-for="resource in resourceCardTypes"
       :key="resource"
-      :small="collapsed"
       :resource="resource"
+      :small="collapsed"
       :clickable="clickable"
       :maskCount="hideCounts"
       :hideCount="collapsed"
@@ -62,6 +62,7 @@
 
   .counts {
     display: flex;
+    align-items: center;
   }
 
   .resource-card {

@@ -1,5 +1,5 @@
 <template>
-  <v-card light max-width="400" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable, 'thumbnail': !full }">
+  <v-card light max-width="400" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable, 'thumbnail': !full }" :style="cardStyle">
     <BaseButton
       v-if="!full"
       icon
@@ -20,12 +20,15 @@
       <div class="card-image-wrapper">
         <img :src="require(`../../assets/gameCards/${type}.jpg`)" :alt="`Game Card: ${type}`" class="card-image" />
       </div>
+      <div class="card-description">
+        {{ firstMenGameCardsDescriptions[type] }}
+      </div>
     </section>
   </v-card>
 </template>
 
 <script>
-  import { gameCardIcons, gameCardColors, firstMenGameCardsTitles } from '@/specs/gameCards';
+  import { gameCardIcons, gameCardColors, firstMenGameCardsTitles, firstMenGameCardsDescriptions } from '@/specs/gameCards';
 
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
@@ -72,10 +75,20 @@
         default: false
       }
     },
+    computed: {
+      cardStyle: function() {
+        if (!this.visible || this.full) return {};
+        
+        return {
+          backgroundColor: gameCardColors[this.type]
+        };
+      }
+    },
     created() {
       this.gameCardIcons = gameCardIcons;
       this.gameCardColors = gameCardColors;
       this.firstMenGameCardsTitles = firstMenGameCardsTitles;
+      this.firstMenGameCardsDescriptions = firstMenGameCardsDescriptions;
     }
   }
 </script>
@@ -97,7 +110,7 @@
 
     &.thumbnail {
       height: 50px;
-      background: $game-card-knight;
+      background: $highlight;
     }
 
     .card-badge {
@@ -132,6 +145,12 @@
           width: 100%;
           height: 100%;
         }
+      }
+
+      .card-description {
+        flex: 1;
+        display: flex;
+        align-items: center;
       }
     }
   }
