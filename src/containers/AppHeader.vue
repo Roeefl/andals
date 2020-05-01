@@ -52,7 +52,7 @@
       key: 'lobby',
       to: '/lobby',
       img: 'logo.png',
-      title: 'Firstmen.io'
+      title: 'Lobby'
     },
     {
       key: 'settings',
@@ -112,6 +112,21 @@
   .app-header {
     height: $header-height;
 
+    &.in-game {
+      width: 15% !important;
+      box-shadow: none !important;
+
+      .app-bar {
+        box-shadow: none !important;
+        padding: 0;
+      }
+
+      .v-toolbar__content { 
+        display: flex;
+        justify-content: center;
+      }
+    }
+
     .app-bar {
       color: $primary;
       padding: $spacer;
@@ -134,16 +149,6 @@
         .login {
           width: auto !important;
         }
-      }
-    }
-
-    &.in-game {
-      width: 20vw !important;
-      box-shadow: none !important;
-
-      .app-bar {
-        box-shadow: none !important;
-        padding: 0;
       }
     }
   }
@@ -169,6 +174,7 @@
         height: 32px;
         display: flex;
         align-items: flex-end;
+        text-decoration: underline;
       }
     }
   }
@@ -176,6 +182,15 @@
   .header-item {
     & + & {
       margin-left: $spacer / 2;
+    }
+  }
+
+
+  .app-header {
+    &.in-game {
+      .header-item {
+        margin-left: 0;
+      }
     }
   }
 </style>

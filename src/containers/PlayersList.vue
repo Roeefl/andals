@@ -20,6 +20,7 @@
           @steal-from="$emit('steal-from', $event)"
           :isMyTurn="isMyTurn"
           @play-hero="$emit('play-hero', $event)"
+          @play-card="playGameCard($event)"
           class="player"
         />
       </li>
@@ -60,7 +61,8 @@
     },
     computed: mapState([
       'myPlayer',
-      'players'
+      'players',
+      'justPurchasedGameCard'
     ]),
     methods: {
       renderKey(player) {
@@ -69,6 +71,15 @@
         const gamePieces = player.roads + player.settlements + player.cities + player.guards;
 
         return `${player.playerSessionId}-${player.isReady}-${totalLoot}-${resourceCounts}-${gamePieces}-${(player.currentHeroCard || {}).name}`;
+      },
+      playGameCard: function(gameCard) {
+        const lastCardIndex = this.myPlayer.gameCards.length - 1;
+        if (this.justPurchasedGameCard && gameCard.index === lastCardIndex) {
+          this.$store.commit('addAlert', 'You cannot play a development card on the same round you purchased it');
+          return;
+        };
+
+        this.$emit('play-card', gameCard);
       }
     }
   }

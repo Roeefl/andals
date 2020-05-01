@@ -56,25 +56,16 @@
     <div class="player-assets">
       <div class="belongings">
         <div class="game-cards">
-          <ChoiceDialog
-            :width="400"
-            :hasCancel="false"
-            buttonColor="transparent"
-          >
-            <template v-slot:activate>
-              <GameCard
-                v-for="(gameCard, index) in (player.gameCards || [])"
-                :key="`${gameCard.type}-${index}`"
-                :visible="isMe"
-                :type="gameCard.type"
-                :wasPlayed="gameCard.wasPlayed"
-                :clickable="true"
-                @clicked="displayedGameCard = gameCard"
-                class="game-card"
-              />
-            </template>
-            <GameCard full :visible="isMe" :type="displayedGameCard.type" :clickable="false" class="displayed-game-card" />
-          </ChoiceDialog>
+          <GameCard
+            v-for="(gameCard, index) in (player.gameCards || [])"
+            :key="`${gameCard.type}-${index}`"
+            :visible="isMe"
+            :type="gameCard.type"
+            :wasPlayed="gameCard.wasPlayed"
+            :clickable="true"
+            @clicked="displayedGameCard = isMe ? { ...gameCard, index } : {}"
+            class="game-card"
+          />
         </div>
         <div class="owned-harbors">
           <BaseIcon
@@ -104,6 +95,14 @@
         </ChoiceDialog>
       </div>
     </div>
+    <GameCardDialog
+      v-if="!!displayedGameCard.type"
+      :isOpen="!!displayedGameCard.type"
+      :type="displayedGameCard.type"
+      :playAllowed="playGameCardAllowed"
+      @dismiss="displayedGameCard = {}"
+      @play="playGameCard"
+    />
   </div>
 </template>
 
@@ -113,7 +112,7 @@
   import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
   import { pluralTypes as purchaseTypes } from '@/specs/purchases';
   import { hexToRgb } from '@/utils/colors';
-  import { CARD_KNIGHT } from '@/specs/gameCards';
+  import { CARD_VICTORY_POINT } from '@/specs/gameCards';
   
   import ResourceCounts from '@/components/interface/ResourceCounts';
   import ResourceCard from '@/components/game/ResourceCard';
@@ -121,6 +120,7 @@
   import GameCard from '@/components/game/GameCard';
   import HeroCard from '@/components/game/HeroCard';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
+  import GameCardDialog from '@/components/interface/GameCardDialog';
 
   import BaseIcon from '@/components/common/BaseIcon';
   import BaseAvatar from '@/components/common/BaseAvatar';
@@ -154,6 +154,7 @@
       GamePiece,
       GameCard,
       ChoiceDialog,
+      GameCardDialog,
       HeroCard,
       BaseIcon,
       BaseAvatar,
@@ -190,7 +191,18 @@
         default: false  
       }
     },
+    data: () => ({
+      displayedGameCard: {}
+    }),
     computed: {
+      playGameCardAllowed: function() {
+        return (
+          this.isMyTurn &&
+          this.isMe && 
+          !this.player.hasPlayedGameCard &&
+          this.displayedGameCard.type && this.displayedGameCard.type !== CARD_VICTORY_POINT
+        );
+      },
       requestTradeDisabled: function() {
         return !this.enableTrading || this.waitingTrade;
       },
@@ -206,9 +218,6 @@
         });
       }
     },
-    data: () => ({
-      displayedGameCard: {}
-    }),
     created() {
       this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;
@@ -226,6 +235,12 @@
             ? tileColors.primary
             : playerColor
         };
+      },
+      playGameCard: function() {
+        if (!this.isMe) return;
+        
+        this.$emit('play-card', this.displayedGameCard);
+        this.displayedGameCard = {};
       }
     }
   }
@@ -330,7 +345,7 @@
           display: flex;
     
           .game-card {
-            height: 40px;
+            height: 50px;
           }
         }
 
@@ -371,7 +386,9 @@
     }
   }
 
-  .displayed-game-card {
-    height: 40vh;
+  .game-card {
+    & + & {
+      margin-left: $spacer / 2;
+    }
   }
 </style>

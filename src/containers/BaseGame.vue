@@ -24,6 +24,7 @@
           @trade-with="requestTradeWith($event)"
           @steal-from="stealFrom($event)"
           @play-hero="onPlayHeroCard($event)"
+          @play-card="onPlayGameCard($event)"
           @toggle-ready="toggleReady"
         />
       </DraggableWidget>
@@ -165,6 +166,7 @@
     MESSAGE_PLACE_GUARD,
     MESSAGE_REMOVE_GUARD,
     MESSAGE_PURCHASE_GAME_CARD,
+    MESSAGE_PLAY_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_MOVE_ROBBER,
     MESSAGE_STEAL_CARD,
@@ -182,6 +184,7 @@
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
     CHAT_LOG_DISCARD,
+    CHAT_LOG_GAME_CARD,
     MESSAGE_PLAY_HERO_CARD
   } from '@/constants';
 
@@ -372,6 +375,14 @@
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
             this.$store.commit('victory', playerName);
             this.onEssentialBroadcast(`VICTORY! ${playerName} has won the game!`);
+            break;
+
+          case MESSAGE_PLAY_GAME_CARD:
+            const { cardType } = broadcast;
+            header = `${playerName} has played ${cardType}`;
+
+            this.$store.commit('addGameLog', { type: CHAT_LOG_GAME_CARD, playerName, cardType });
+            this.$store.commit('setEssentialOverlay', { header, cardType });
             break;
             
           default:
@@ -661,6 +672,13 @@
           type: MESSAGE_PLAY_HERO_CARD,
           heroType: this.myPlayer.currentHeroCard.type,
           isDiscard
+        });
+      },
+      onPlayGameCard: function(gameCard) {
+        colyseusService.room.send({
+          type: MESSAGE_PLAY_GAME_CARD,
+          cardType: gameCard.type,
+          cardIndex: gameCard.index
         });
       }
     }
