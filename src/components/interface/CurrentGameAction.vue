@@ -2,23 +2,39 @@
 
 <template>
   <div class="container">
-    <div class="base">
-      {{ currentPlayer.nickname }} is:
+    <div v-if="!roomState || !roomState.isGameReady" class="action-wrapper">
+      Game Setting Up
     </div>
-    <div v-if="!roomState.isDiceRolled">
-      rolling the dice
+    <div v-else-if="roomState.isTurnOrderPhase" class="action-wrapper">
+      Setting up up turn order
     </div>
-    <div v-else-if="currentPlayer.mustMoveRobber">
-      moving the robber
+    <div v-else-if="roomState.isSetupPhase" class="action-wrapper">
+      <div class="base">
+        {{ currentPlayer.nickname }} is placing a
+      </div>
+      <div v-for="(value, key) in currentPlayer.hasResources" :key="key" v-show="value">
+        {{ key }}
+      </div>
     </div>
-    <div v-else-if="currentPlayer.allowStealingFrom.length > 0">
-      stealing a card
-    </div>
-    <div v-else-if="currentPlayer.allowFreeRoads > 0">
-      building {{ currentPlayer.allowFreeRoads }} free roads
-    </div>
-    <div v-else>
-      thinking
+    <div v-else class="action-wrapper">
+      <div class="base">
+        {{ currentPlayer.nickname }} is:
+      </div>
+      <div v-if="!roomState.isDiceRolled">
+        rolling the dice
+      </div>
+      <div v-else-if="currentPlayer.mustMoveRobber">
+        moving the robber
+      </div>
+      <div v-else-if="currentPlayer.allowStealingFrom.length > 0">
+        stealing a card
+      </div>
+      <div v-else-if="currentPlayer.allowFreeRoads > 0">
+        building {{ currentPlayer.allowFreeRoads }} free roads
+      </div>
+      <div v-else>
+        thinking
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +50,7 @@
     },
     computed: {
       currentPlayer: function() {
+        if (!this.players.length) return {};
         return this.players[this.roomState.currentTurn];
       },
       ...mapState([
@@ -55,8 +72,12 @@
     background: $primary;
     color: $secondary;
 
+    .action-wrapper {
+      display: flex;
+    }
+
     .base {
-      margin-right: $spacer;
+      margin-right: $spacer / 2;
     }
   }
 </style>

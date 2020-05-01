@@ -3,7 +3,7 @@
     <v-card-title
       v-if="title"
       primary-title
-      class="headline"
+      class="headline success"
       :style="{ background: titleColor }"
     >
       {{ title }}
