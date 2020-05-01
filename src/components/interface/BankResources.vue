@@ -18,6 +18,7 @@
       v-else
       spaced
       hideCounts
+      :clickable="roomState.isGameStarted && isMyTurn"
       :counts="roomState.resourceCounts"
       @resource-clicked="$emit('bank-trading', $event)"
     />

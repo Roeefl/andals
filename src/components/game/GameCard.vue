@@ -110,7 +110,7 @@
 
     &.thumbnail {
       height: 50px;
-      background: $highlight;
+      background: $primary;
     }
 
     .card-badge {

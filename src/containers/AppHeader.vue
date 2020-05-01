@@ -16,12 +16,10 @@
               {{ item.title }}
             </h3>
           </router-link>
-          <ChoiceDialog v-if="item.key === 'settings'" buttonColor="transparent" :iconName="item.icon" title="Preferences" :hasCancel="false">
-            <AppSettings />
-          </ChoiceDialog>
-          <ChoiceDialog v-if="item.key === 'console'" buttonColor="transparent" :iconName="item.icon" title="Dev Console" :width="1400" :hasCancel="false">
-            <!-- <DevConsole /> -->
-            <div>Dev Console</div>
+          <ChoiceDialog v-else buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor" :title="item.title" :hasCancel="false" :width="item.width">
+            <AppSettings v-if="item.key === 'settings'" />
+            <div v-if="item.key === 'console'" /> <!-- <DevConsole /> -->
+            <BuildingCosts v-if="item.key === 'buildingCosts'"/>
           </ChoiceDialog>
         </div>
       </section>
@@ -45,22 +43,33 @@
   import AppSettings from '@/containers/AppSettings';
   import DevConsole from '@/containers/DevConsole';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
+  import BuildingCosts from '@/components/interface/BuildingCosts';
   import BaseButton from '@/components/common/BaseButton';
 
   const links = [
     {
       key: 'lobby',
       to: '/lobby',
-      img: 'logo.png',
-      title: 'Lobby'
+      img: 'logo.png'
     },
     {
       key: 'settings',
-      icon: 'cog'
+      icon: 'cog',
+      width: 420,
+      title: 'Preferences'
     },
     {
       key: 'console',
-      icon: 'console'
+      icon: 'console',
+      width: 1400,
+      title: 'Developer Console'
+    },
+    {
+      key: 'buildingCosts',
+      icon: 'cash-multiple',
+      width: 520,
+      title: 'Building Costs',
+      iconColor: 'error'
     }
   ];
 
@@ -82,6 +91,7 @@
       AppSettings,
       DevConsole,
       ChoiceDialog,
+      BuildingCosts,
       BaseButton
     },
     props: {
@@ -175,6 +185,7 @@
         display: flex;
         align-items: flex-end;
         text-decoration: underline;
+        font-size: $font-size-sm;
       }
     }
   }

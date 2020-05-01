@@ -5,7 +5,7 @@
         <slot name="activate" />
         <BaseIcon
           size="x-large"
-          color="white"
+          :color="iconColor"
           :name="iconName"
           v-if="iconName"
           class="icon"
@@ -49,6 +49,10 @@
       buttonColor: {
         type: String,
         default: 'info'
+      },
+      iconColor: {
+        type: String,
+        default: 'white'
       },
       hasCancel: {
         type: Boolean,

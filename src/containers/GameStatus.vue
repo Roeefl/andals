@@ -1,5 +1,8 @@
 <template>
   <div class="game-status">
+    <div class="filler">
+      -
+    </div>
     <div class="room-stats">
       <RoomStats :room="roomState" :mySessionId="myPlayer.playerSessionId" />
     </div>
@@ -30,6 +33,6 @@
     height: 100%;
     color: $secondary;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
 </style>
