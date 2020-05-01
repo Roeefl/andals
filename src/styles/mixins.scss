@@ -7,3 +7,8 @@
 @mixin dashed-around() {
   border: 1px dashed black;
 }
+
+@mixin board-layout() {
+  display: grid;
+  grid-template-columns: 15% 70% 15%;
+}

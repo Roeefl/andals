@@ -216,13 +216,15 @@
     },
     methods: {
       playerStyle: function(playerColor) {
-        const backgroundRgb = hexToRgb(tileColors.primary);
+        const backgroundRgb = hexToRgb(tileColors.info);
 
         return {
-          // color: playerColor,
           backgroundColor: this.isMe
-            ? `rgba(${backgroundRgb}, 0.7)`
-            : tileColors.primary
+            ? `rgba(${backgroundRgb}, 0.4)`
+            : `rgba(${backgroundRgb}, 0.7)`,
+          color: this.isMe
+            ? tileColors.primary
+            : playerColor
         };
       }
     }
@@ -255,7 +257,7 @@
 
     &.is-me {
       padding: $spacer;
-      
+
       .nickname {
         font-size: $base-font-size * 1.25;
       }

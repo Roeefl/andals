@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="game-cards">
     <div v-if="!!deck" class="deck">
       <GameCard
         v-for="(card, index) in deck"
@@ -47,7 +47,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .wrapper {
+  .game-cards {
     display: flex;
   
     .deck {

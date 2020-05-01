@@ -8,6 +8,8 @@
         @dice-finished="sendDice($event)"
         @end-turn="finishTurn"
         @move-robber="moveRobber"
+        @purchase-game-card="onGameCardPurchase"
+        @bank-trade="onTradeWithBank($event)"
       />
     </DraggableWidget>
     <div class="board-container">
@@ -58,7 +60,7 @@
       </aside>
     </div>
     <DraggableWidget class="game-status">
-      <GameStatus :isMyTurn="isMyTurn" @purchase-game-card="onGameCardPurchase" @bank-trading="onTradeWithBank($event)" />
+      <GameStatus />
     </DraggableWidget>
     <ConfirmMove
       :type="activePurchase.type"
@@ -305,6 +307,7 @@
         this.$store.commit('updateRoomState', initialRoomState);
       },
       updateState: function(updatedRoomState) {
+      console.log("updatedRoomState", updatedRoomState)
         this.$store.commit('updateRoomState', updatedRoomState);
         
         if (this.bankTradeResource) this.evaluateBankTrade();
@@ -682,8 +685,7 @@
     }
 
     .board-container {
-      display: grid;
-      grid-template-columns: 15% 70% 15%;
+      @include board-layout();
 
       & > * {
         margin: 0 $spacer / 2;
@@ -750,7 +752,6 @@
 
     .game-status {
       height: 70px;
-      justify-content: flex-start;
     }
   }
 </style>
