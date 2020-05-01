@@ -2,11 +2,7 @@
   <div class="control-panel">
     <div class="app-header-gap" />
     <div class="game-ui">
-      <div class="building-costs">
-        <ChoiceDialog iconName="wrench" title="Building Costs" buttonText="Building Costs" buttonColor="info" :width="500">
-          <BuildingCosts />
-        </ChoiceDialog>
-      </div>
+      <CurrentGameAction  />
       <BankResources
         :isMyTurn="isMyTurn"
         @bank-trading="$emit('bank-trade', $event)"
@@ -56,8 +52,7 @@
   import colyseusService from '@/services/colyseus';
 
   import BankResources from '@/components/interface/BankResources';
-  import ChoiceDialog from '@/components/common/ChoiceDialog';
-  import BuildingCosts from '@/components/interface/BuildingCosts';
+  import CurrentGameAction from '@/components/interface/CurrentGameAction';
   import RollingDice from '@/components/interface/RollingDice';
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
@@ -69,8 +64,7 @@
     name: 'ControlPanel',
     components: {
       BankResources,
-      ChoiceDialog,
-      BuildingCosts,
+      CurrentGameAction,
       RollingDice,
       GameDice,
       BaseButton
@@ -103,6 +97,7 @@
         );
       },
       ...mapState([
+        'players',
         'roomState',
         'myPlayer',
         'isSelfReady'
@@ -148,12 +143,8 @@
     .game-ui {
       padding-right: $spacer;
       display: grid;
-      grid-template-columns: 20% 80%;
-      place-items: center center;
-
-      .building-costs {
-        height: 50px;
-      }
+      grid-template-columns: 30% 70%;
+      align-items: center;
 
       .bank-resources {
         justify-self: end;

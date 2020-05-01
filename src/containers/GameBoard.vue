@@ -171,7 +171,7 @@
         return isPurchaseAllowedSettlement(this.structureTileMap, this.roadTileMap, this.activeStructures, this.activeRoads, this.myPlayer.playerSessionId, row, col, this.roomState.isSetupPhase, this.roomState.board, this.roomState.ports);
       },
       isCityAllowed: function(row, col) {
-        return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT;
+        return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT && this.activeStructures[row][col].ownerId === this.myPlayer.playerSessionId;
       },
       onRobberDropped: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
