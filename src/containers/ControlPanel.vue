@@ -7,17 +7,13 @@
           <BuildingCosts />
         </ChoiceDialog>
       </div>
-      <AvailableLoot
-        :counts="myPlayer.availableLoot"
-        :collectAll="myPlayer.allowCollectAll"
-        @collect-all="collectAll"
-        @collect-resource="collectResource($event)"
-        class="available-loot"
-      />
       <BankResources
         :isMyTurn="isMyTurn"
-        @purchase-game-card="$emit('purchase-game-card')"
         @bank-trading="$emit('bank-trade', $event)"
+        @collect-all="onCollectAllLoot"
+        @collect-resource="collectResource($event)"
+        @purchase-game-card="$emit('purchase-game-card')"
+        class="bank-resources"
       />
     </div>
     <div class="game-actions">
@@ -62,7 +58,6 @@
   import BankResources from '@/components/interface/BankResources';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BuildingCosts from '@/components/interface/BuildingCosts';
-  import AvailableLoot from '@/components/interface/AvailableLoot';
   import RollingDice from '@/components/interface/RollingDice';
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
@@ -76,7 +71,6 @@
       BankResources,
       ChoiceDialog,
       BuildingCosts,
-      AvailableLoot,
       RollingDice,
       GameDice,
       BaseButton
@@ -129,7 +123,7 @@
           3000
         );
       },
-      collectAll: function() {
+      onCollectAllLoot: function() {
         colyseusService.room.send({
           type: MESSAGE_COLLECT_ALL_LOOT
         });
@@ -154,15 +148,16 @@
     .game-ui {
       padding-right: $spacer;
       display: grid;
-      grid-template-columns: 16% 42% 42%;
+      grid-template-columns: 20% 80%;
       place-items: center center;
 
       .building-costs {
         height: 50px;
       }
 
-      .available-loot {
-        padding-left: $spacer;
+      .bank-resources {
+        justify-self: end;
+        margin-right: $spacer * 2;
       }
     }
 

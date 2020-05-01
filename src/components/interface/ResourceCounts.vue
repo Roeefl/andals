@@ -5,9 +5,10 @@
       :key="resource"
       :resource="resource"
       :small="collapsed"
-      :clickable="clickable"
       :maskCount="hideCounts"
-      :hideCount="collapsed"
+      :clickable="clickable || (collectable && counts[resource] > 0)"
+      :collectable="collectable && counts[resource] > 0"
+      :hideCount="collapsed || (collectable && !counts[resource])"
       :count="collapsed ? null : counts[resource]"
       @clicked="$emit('resource-clicked', resource)"
       class="resource-card"
@@ -47,6 +48,10 @@
         default: false
       },
       collapsed: {
+        type: Boolean,
+        default: false
+      },
+      collectable: {
         type: Boolean,
         default: false
       }

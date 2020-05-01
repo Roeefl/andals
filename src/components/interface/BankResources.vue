@@ -1,10 +1,36 @@
 <template>
   <div class="bank-resources">
-    <BaseIcon name="bank" size="32px" color="white" />
-    <div class="bank-trade-rate">
-      {{ myPlayer.bankTradeRate }} : 1 
+    <div class="bank-trade">
+      <BaseIcon name="bank" size="32px" color="white" />
+      <div class="bank-trade-rate">
+        {{ myPlayer.bankTradeRate }} : 1 
+      </div>
     </div>
-    <ResourceCounts spaced hideCounts :counts="roomState.resourceCounts" @resource-clicked="$emit('bank-trading', $event)" />
+    <ResourceCounts
+      v-if="sumValues(myPlayer.availableLoot) > 0"
+      spaced
+      collectable
+      :clickable="false"
+      :counts="myPlayer.availableLoot"
+      @resource-clicked="$emit('collect-resource', $event)"
+    />
+    <ResourceCounts
+      v-else
+      spaced
+      hideCounts
+      :counts="roomState.resourceCounts"
+      @resource-clicked="$emit('bank-trading', $event)"
+    />
+    <BaseButton
+      xs
+      color="success"
+      iconName="treasure-chest"
+      iconColor="white"
+      iconSize="x-large"
+      :clickable="myPlayer.allowCollectAll && sumValues(myPlayer.availableLoot) > 0"
+      @click="myPlayer.allowCollectAll && $emit('collect-all')"
+      class="collect-all"
+    />
     <GameCards
       :count="(roomState.gameCards || []).length"
       :allowed="isCardPurchaseEnabled"
@@ -16,9 +42,11 @@
 
 <script>
   import { mapState } from 'vuex';
+  import { sumValues } from '@/utils/objects';
 
   import GameCards from '@/components/interface/GameCards';
   import ResourceCounts from '@/components/interface/ResourceCounts';
+  import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
@@ -26,6 +54,7 @@
     components: {
       GameCards,
       ResourceCounts,
+      BaseButton,
       BaseIcon
     },
     props: {
@@ -48,6 +77,9 @@
         'roomState',
         'myPlayer'
       ])
+    },
+    created() {
+      this.sumValues = sumValues;
     }
   }
 </script>
@@ -59,11 +91,23 @@
     display: flex;
     align-items: center;
 
-    .bank-trade-rate {
-      font-size: $font-size-md;
-      color: $primary;
-      padding-left: $spacer / 2;
+    .bank-trade {
+      border-bottom: 1px solid $primary;
+      display: flex;
       margin-right: $spacer;
+
+      .bank-trade-rate {
+        font-size: $font-size-md;
+        color: $primary;
+        padding-left: $spacer / 2;
+        margin-right: $spacer;
+      }
+    }
+
+    .collect-all {
+      margin-left: $spacer;
+      width: 100px;
+      height: 50px;
     }
 
     .game-cards {
