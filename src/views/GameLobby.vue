@@ -31,24 +31,6 @@
             Refresh List
           </BaseButton>
         </li>
-        <li class="action-item">
-          <ChoiceDialog
-            iconName="wrench"
-            title="Customize Player"
-            buttonText="Customize Player"
-            @approve="saveUserPreferences"
-            class="customize-player"
-          >
-            <CustomizePlayer
-              :nickname="nickname || currentUser.nickname"
-              @update-nickname="nickname = $event"
-              :color="color || currentUser.color"
-              @update-color="color = $event"
-              :avatar="avatar || currentUser.avatar"
-              @update-avatar="avatar = $event"
-            />
-          </ChoiceDialog>
-        </li>
       </ul>
       <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
     </section>
@@ -56,13 +38,12 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState } from 'vuex';
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
   import firebaseService from '@/services/firebase';
   
   import RoomsList from '@/components/lobby/RoomsList';
-  import CustomizePlayer from '@/components/lobby/CustomizePlayer';
   import CustomizeRoom from '@/components/lobby/CustomizeRoom';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BaseButton from '@/components/common/BaseButton';
@@ -75,7 +56,6 @@
     components: {
       RoomsList,
       ChoiceDialog,
-      CustomizePlayer,
       CustomizeRoom,
       BaseButton,
       SnowyTown,
@@ -101,10 +81,7 @@
         playVsBots: false,
         autoPickup: true,
         friendlyGameLog: false,
-        botReplacement: true,
-        nickname: '',
-        color: '',
-        avatar: 0
+        botReplacement: true
       };
     },
     mounted() {
@@ -199,16 +176,6 @@
           router.push(`/room/${room.id}`);
         } catch (err) {
           console.error('Reconnect Failed:', err);
-        }
-      },
-      saveUserPreferences: async function() {
-        if (this.currentUser && this.currentUser.uid) {
-          const updatedUser = await firebaseService.updateProfile(this.nickname, this.color, this.avatar);
-          this.$store.commit('setCurrentUser', updatedUser);
-
-          this.nickname = '';
-          this.color = '';
-          this.avatar = 0;
         }
       }
     }

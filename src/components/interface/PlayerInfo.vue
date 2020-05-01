@@ -30,7 +30,6 @@
             :items="opponentActions"
             @item-clicked="$emit($event, player.playerSessionId)"
             iconName="skew-more"
-            class="opponent-actions"
           />
         </div>
       </div>

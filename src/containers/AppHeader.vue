@@ -26,14 +26,14 @@
       <section v-if="!isInGame" class="additional-actions">
         Route: {{ this.$route.name }}
         <BaseButton v-for="(action, a) in actions" :key="a" icon :iconName="action.icon" iconSize="24px" />
-        <BaseButton icon iconName="user" iconSize="24px" @click="$emit('login')" class="login">
-          <span v-if="isLoggedIn">
-            Logged in as {{ nickname }}
-          </span>
-          <span v-else>
-            Log In
-          </span>
-        </BaseButton>
+        <div class="profile-section">
+          <BaseMenu
+            :items="profileActions"
+            @item-clicked="$emit($event)"
+            :buttonText="nickname"
+            iconName="account-circle"
+          />
+        </div>
       </section>
     </v-app-bar>
   </v-card>
@@ -45,6 +45,7 @@
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BuildingCosts from '@/components/interface/BuildingCosts';
   import BaseButton from '@/components/common/BaseButton';
+  import BaseMenu from '@/components/common/BaseMenu';
 
   const links = [
     {
@@ -80,9 +81,9 @@
     {
       icon: 'heart'
     },
-    {
+ /*    {
       icon: 'dots-vertical'
-    }
+    } */
   ];
 
   export default {
@@ -92,7 +93,8 @@
       DevConsole,
       ChoiceDialog,
       BuildingCosts,
-      BaseButton
+      BaseButton,
+      BaseMenu
     },
     props: {
       isLoggedIn: {
@@ -107,6 +109,23 @@
     computed: {
       isInGame: function() {
         return this.$route.name === 'Room';
+      },
+      profileActions: function() {
+        return [
+          {
+            name: 'customize',
+            title: 'Customize Player',
+            icon: 'wrench',
+            emit: 'customize-player',
+            disabled: !this.isLoggedIn
+          },
+          {
+            name: 'login',
+            title: this.isLoggedIn ? 'Log Out' : 'Log In',
+            icon: this.isLoggedIn ? 'logout' : 'login',
+            emit: 'login'
+          }
+        ]
       }
     },
     created() {
@@ -155,9 +174,10 @@
 
       .additional-actions {
         justify-self: end; 
+        display: flex;
 
-        .login {
-          width: auto !important;
+        .profile-section {
+          margin-left: $spacer * 2;
         }
       }
     }

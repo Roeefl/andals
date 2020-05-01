@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card :color="color">
     <v-card-title
       v-if="title"
       primary-title
@@ -36,6 +36,10 @@
       title: {
         type: String,
         default: 'Card Title'
+      },
+      color: {
+        type: String,
+        default: 'secondary'
       },
       titleColor: {
         type: String,

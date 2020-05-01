@@ -2,7 +2,13 @@
   <v-app>
     <div id="app" class="app-wrapper">
       <div id="page">
-        <AppHeader id="app-header" :isLoggedIn="isLoggedIn" :nickname="(currentUser || {}).nickname" @login="handleLogin" />
+        <AppHeader
+          id="app-header"
+          :isLoggedIn="isLoggedIn"
+          :nickname="(currentUser || {}).nickname"
+          @login="handleLogin"
+          @customize-player="isDisplayCustomizePlayer = true"
+        />
         <router-view />
       </div>
       <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }" />
@@ -11,6 +17,11 @@
       <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
     </audio>
     <GameLoader v-if="isGameLoading" :players="players" />
+    <CustomizePlayer
+      v-if="isDisplayCustomizePlayer"
+      :isOpen="isDisplayCustomizePlayer"
+      @close="isDisplayCustomizePlayer = false"
+    />
   </v-app>
 </template>
 
@@ -22,14 +33,19 @@
   import AppHeader from '@/containers/AppHeader';
   import BaseAlert from '@/components/common/BaseAlert';
   import GameLoader from '@/components/interface/GameLoader';
+  import CustomizePlayer from '@/components/lobby/CustomizePlayer';
 
   export default {
     name: 'App',
     components: {
       AppHeader,
       BaseAlert,
-      GameLoader
+      GameLoader,
+      CustomizePlayer
     },
+    data: () => ({
+      isDisplayCustomizePlayer: false
+    }),
     computed: {
       isLoggedIn: function() {
         return !!(this.currentUser && this.currentUser.uid);

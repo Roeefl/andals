@@ -1,5 +1,5 @@
 <template>
-  <v-menu :open-on-hover="isHover" :value="isForceOpen ? true : undefined" offset-y bottom>
+  <v-menu :open-on-hover="isHover" :value="isForceOpen ? true : undefined" :offset-y="isVertical" :offset-x="!isVertical" bottom>
     <template v-slot:activator="{ on }">
       <BaseButton :on="on" :color="buttonColor" class="activator">
         <BaseIcon
@@ -11,7 +11,7 @@
         {{ buttonText }}
       </BaseButton>
     </template>
-    <v-list>
+    <v-list color="primary">
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
@@ -24,7 +24,7 @@
           v-if="item.icon"
           :name="item.icon"
           size="large"
-          color="primary"
+          color="secondary"
           class="menu-item-icon"
         />
         <v-list-item-title class="menu-item-title">
@@ -49,6 +49,10 @@
       items: {
         type: Array,
         required: true
+      },
+      isVertical: {
+        type: Boolean,
+        default: true
       },
       isHover: {
         type: Boolean,
@@ -78,12 +82,17 @@
   }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   @import '@/styles/partials';
+
+  .v-menu__content {
+    z-index: $zindex-app-header + 1 !important;
+    margin-top: 2px;
+  }
 
   .base-menu-item {
     .menu-item-title {
-      color: $primary;
+      color: $secondary;
     }
     
     &.disabled {

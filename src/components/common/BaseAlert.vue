@@ -24,7 +24,7 @@
       },
       color: {
         type: String,
-        default: 'error'
+        default: 'light-green darken-3'
       },
       timeout: {
         type: Number,
