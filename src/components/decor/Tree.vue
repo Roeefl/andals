@@ -1,9 +1,28 @@
 <template>
-  <div class="tree">
+  <div class="tree" :style="treeStyle">
     <div class="tree-bottom" />
     <div class="tree-top" />
   </div>
 </template>
+
+<script>
+  export default {
+    name: 'Tree',
+    props: {
+      color: {
+        type: String,
+        default: 'gray'
+      }
+    },
+    computed: {
+      treeStyle: function() { 
+        return {
+          '--leaf-color': this.color
+        }
+      }
+    }
+  }
+</script>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
@@ -22,7 +41,7 @@
       position: absolute;
       width: 0;
       height: 0;
-      border-bottom: 30px solid gray;
+      border-bottom: 30px solid var(--leaf-color);
       border-right: 30px solid transparent;
     }
 
@@ -48,7 +67,7 @@
         position: absolute;
         width: 0;
         height: 0;
-        border-bottom: 33px solid gray;
+        border-bottom: 33px solid var(--leaf-color);
         border-right: 33px solid transparent;
       }
     }
@@ -66,7 +85,7 @@
         position: absolute;
         width: 0;
         height: 0;
-        border-bottom: 21px solid gray;
+        border-bottom: 21px solid var(--leaf-color);
         border-right: 21px solid transparent;
       }
     }
