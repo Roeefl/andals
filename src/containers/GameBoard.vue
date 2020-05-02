@@ -10,7 +10,6 @@
           :key="`tile-${rowIndex}-${colIndex}`"
           :type="hexTileTypes[tile]"
           :tile="roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)]"
-          @dropped="onRobberDropped(absoluteIndex(hexTileMap, rowIndex, colIndex))"
           class="hex-tile"
           :class="{ 'robber-camp': rowIndex === 0 && colIndex === 0 }"
         >
@@ -47,12 +46,10 @@
             </span>
           </StructureTile>
           <HarborTile :tile="roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)]" />
-          <drag :transfer-data="{}">
-            <RobberTile
-              v-if="isDisplayRobberTile(rowIndex, colIndex)"
-              :active="myPlayer.mustMoveRobber"
-            />
-          </drag>
+          <RobberTile
+            v-if="isDisplayRobberTile(rowIndex, colIndex)"
+            :active="myPlayer.mustMoveRobber"
+          />
           <Wildling
             v-if="!!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy"
             :type="(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy.type"
@@ -60,6 +57,22 @@
             @remove="myPlayer.heroPrivilege === HERO_CARD_Ygritte && $emit('remove-wildling', absoluteIndex(hexTileMap, rowIndex, colIndex))"
             class="wildling"
           />
+        <BaseOverlay
+          v-if="myPlayer.mustMoveRobber && !!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)].resource)"
+          isOpen
+          :isFullScreen="false"
+          :opacity="0"
+          class="move-robber-overlay"
+        >
+          <BaseButton
+            icon
+            iconName="hand-pointing-down"
+            iconSize="80px"
+            iconColor="warning"
+            @click="onMoveRobber(absoluteIndex(hexTileMap, rowIndex, colIndex))"
+            class="move-robber"
+          />
+        </BaseOverlay>
         </HexTile>
       </div>
     </div>
@@ -84,6 +97,8 @@
   import Wildling from '@/components/pieces/Wildling';
   import Mountains from '@/components/decor/Mountains';
   import Tree from '@/components/decor/Tree';
+  import BaseOverlay from '@/components/common/BaseOverlay';
+  import BaseButton from '@/components/common/BaseButton';
 
   import { baseGameHexTilemap, firstMenHexTilemap } from '@/tilemaps/hexes';
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
@@ -106,7 +121,9 @@
       RobberTile,
       Wildling,
       Mountains,
-      Tree
+      Tree,
+      BaseOverlay,
+      BaseButton
     },
     props: {
       allowPurchase: {
@@ -170,9 +187,9 @@
       isCityAllowed: function(row, col) {
         return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT && this.activeStructures[row][col].ownerId === this.myPlayer.playerSessionId;
       },
-      onRobberDropped: function(tileIndex) {
+      onMoveRobber: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
-        this.$emit('robber-dropped', tileIndex);
+        this.$emit('robber-moved', tileIndex);
       },
       isDisplayRobberTile: function(row, col) {
         const absoluteTileIndex = boardService.absoluteIndex(this.hexTileMap, row, col);
@@ -193,7 +210,10 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  
+  .move-robber-overlay {
+    opacity: 0;
+  }
+
   .board {
     display: grid;
     grid-template-columns: 10% 80% 10%;
@@ -236,6 +256,12 @@
           border: 1px dashed red;
         }
 
+        &:hover {
+          .move-robber-overlay {
+            opacity: 1;
+          }
+        }
+
         .tile-index {
           transform: rotate(90deg);
           font-size: $font-size-xs;
@@ -269,4 +295,9 @@
       }
     }
   }
+
+  // .move-robber {
+  //   -webkit-animation: wobble-hor-bottom 4s cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite both;
+  //   animation: wobble-hor-bottom 4s cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite both;
+  // }
 </style>

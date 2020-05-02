@@ -3,11 +3,11 @@
     <BaseButton
       v-for="(diceValue, d) in dice"
       :key="`dice-${d}`"
-      color="primary"
+      color="secondary"
       :width="small ? '28px' : '56px'"
       :height="small ? '28px' : '56px'"
       :iconName="d < 2 ? `dice-${diceValue}` : `numeric-${diceValue}-box-outline`"
-      :iconSize="small ? '24px' : '36px'"
+      :iconSize="small ? '24px' : '56px'"
       :iconColor="diceColors[`dice${d}`]"
       :clickable="enabled"
       @click="$emit('clicked')"
