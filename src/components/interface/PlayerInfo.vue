@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :class="{ 'is-me': isMe, 'is-other': !isMe }" :style="playerStyle(player.color)">
+  <div class="player" :style="playerStyle(player.color)">
     <div class="upper">
       <div class="header">
         <div class="avatar">
@@ -33,7 +33,7 @@
           />
         </div>
       </div>
-      <div class="game-pieces" @click="$emit('deck-clicked')">
+      <div v-if="isMe" class="game-pieces" @click="$emit('deck-clicked')">
         <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="resource">
           <GamePiece 
             showCount
@@ -268,20 +268,7 @@
     overflow-y: hidden;
     border-radius: 30px;
     color: $secondary;
-
-    &.is-me {
-      padding: $spacer;
-
-      .nickname {
-        font-size: $base-font-size * 1.25;
-      }
-    }
-
-    &.is-other {
-      .resources {
-        width: 50px;
-      }
-    }
+    padding: $spacer;
 
     .upper {
       display: flex;
@@ -301,6 +288,7 @@
 
         .nickname {
           @include text-truncate();
+          font-size: $font-size-md;
           margin-left: $spacer / 4;
         }
       }
