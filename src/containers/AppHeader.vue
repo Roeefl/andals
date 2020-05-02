@@ -16,7 +16,7 @@
               {{ item.title }}
             </h3>
           </router-link>
-          <ChoiceDialog v-else buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor || 'secondary'" :title="item.title" :hasCancel="false" :width="item.width">
+          <ChoiceDialog v-else buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor || (isInGame ? 'primary' : 'success')" :title="item.title" :hasCancel="false" :width="item.width">
             <AppSettings v-if="item.key === 'settings'" />
             <div v-if="item.key === 'console'" /> <!-- <DevConsole /> -->
             <BuildingCosts v-if="item.key === 'buildingCosts'"/>
@@ -76,7 +76,7 @@
       icon: 'tools',
       width: 520,
       title: 'Building Costs',
-      iconColor: 'success'
+      iconColor: 'error'
     }
   ];
 

@@ -27,7 +27,15 @@
     computed: mapState([
       'enableSnow',
       'essentialOverlay'
-    ])
+    ]),
+    async beforeRouteLeave (to, from, next) {
+      try {
+        const approved = await this.$dialog.confirm('Are you sure you want to leave this game?');
+        next();
+      } catch (refused) {
+        next(false);
+      }
+    }
   }
 </script>
 
