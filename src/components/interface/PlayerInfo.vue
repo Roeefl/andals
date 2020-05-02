@@ -26,7 +26,6 @@
             />
             <BaseMenu
               v-if="isGameReady && !isMe"
-              :isForceOpen="allowStealing"
               :items="opponentActions"
               @item-clicked="$emit($event, player.playerSessionId)"
               iconName="skew-more"
@@ -120,6 +119,9 @@
       @dismiss="displayedGameCard = {}"
       @play="playGameCard"
     />
+    <BaseOverlay v-if="allowStealing" :isOpen="allowStealing" :isFullScreen="false">
+      <BaseButton icon iconName="hand-okay" iconSize="60px" iconColor="warning" @click="$emit('steal-from', player.playerSessionId)" class="steal-button" />
+    </BaseOverlay>
   </div>
 </template>
 
@@ -143,6 +145,8 @@
   import BaseAvatar from '@/components/common/BaseAvatar';
   import BaseChip from '@/components/common/BaseChip';
   import BaseMenu from '@/components/common/BaseMenu';
+  import BaseOverlay from '@/components/common/BaseOverlay';
+  import BaseButton from '@/components/common/BaseButton';
 
   import tileColors from '@/styles/export.scss';
 
@@ -176,7 +180,9 @@
       BaseIcon,
       BaseAvatar,
       BaseChip,
-      BaseMenu
+      BaseMenu,
+      BaseOverlay,
+      BaseButton
     },
     props: {
       player: {
@@ -382,16 +388,17 @@
           flex-flow: row wrap;
           max-width: auto;
           overflow-x: unset;
+          padding-left: $spacer / 2;
         }
 
         .player-assets {
           .hero-card-wrapper {
-            height: $hero-size * 2;
+            height: $hero-size * 1.75;
           }
   
           .hero-card {
-            width: $hero-size * 2;
-            height: $hero-size * 2;
+            width: $hero-size * 1.75;
+            height: $hero-size * 1.75;
           }
         }
       }
@@ -422,5 +429,10 @@
     & + & {
       margin-left: $spacer / 2;
     }
+  }
+
+  .steal-button {
+    -webkit-animation: wobble-hor-bottom 4s cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite both;
+    animation: wobble-hor-bottom 4s cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite both;
   }
 </style>

@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="container">
     <div v-if="!roomState || !roomState.isGameReady" class="action-wrapper">

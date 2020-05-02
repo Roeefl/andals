@@ -2,7 +2,6 @@
   <div class="control-panel">
     <div class="app-header-gap" />
     <div class="game-ui">
-      <CurrentGameAction  />
       <BankResources
         :isMyTurn="isMyTurn"
         @bank-trading="$emit('bank-trade', $event)"
@@ -11,8 +10,7 @@
         @purchase-game-card="$emit('purchase-game-card')"
         class="bank-resources"
       />
-    </div>
-    <div class="game-actions">
+      <CurrentGameAction class="game-action" />
     </div>
   </div>
 </template>
@@ -58,24 +56,25 @@
 
   .control-panel {
     flex: 1;
-    @include board-layout();
+    display: grid;
+    grid-template-columns: 15% 85%;
 
     .game-ui {
       padding-right: $spacer;
       display: grid;
-      grid-template-columns: 30% 70%;
+      grid-template-columns: 60% 40%;
       align-items: center;
 
       .bank-resources {
-        justify-self: end;
-        margin-right: $spacer * 2;
+        margin-left: $spacer * 2;
       }
-    }
-
-    .game-actions {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      
+      .game-action {
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
   }
 </style>

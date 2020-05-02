@@ -1,8 +1,8 @@
 <template>
   <div class="breach-marker">
-    <h1>
+    <h2>
       Wall Breach Tracker
-    </h1>
+    </h2>
     <div class="tracker">
       <div v-for="(lvl, l) in levels" :key="l" class="breach-level" :class="{ 'active': l === wallBreaches }">
         <span class="level-number">
