@@ -36,7 +36,7 @@
           :allowPurchase="allowPurchase"
           @tile-clicked="onTileClick($event)"
           @remove-road="onRemoveRoad($event)"
-          @robber-dropped="$store.commit('setDesiredRobberTile', $event)"
+          @robber-moved="$store.commit('setDesiredRobberTile', $event)"
           @remove-wildling="onRemoveWildling($event)"
           class="game-board"
           :class="{ 'with-north': isWithNorth }"
@@ -546,6 +546,7 @@
           ...this.bankDummy.tradeCounts,
           [resource]: 1
         };
+        
         this.bankDummy = {
           ...this.bankDummy,
           tradeCounts: updateBankDummyTradeCounts
@@ -555,10 +556,10 @@
         this.bankDummy.isTradeConfirmed = false;
 
         const tradeCounts = Object.entries(this.myPlayer.tradeCounts);
-        console.log("tradeCounts", tradeCounts);
+        console.log("tradeCounts", tradeCounts, this.myPlayer.heroPrivilege);
 
         const acceptableResourceIndex = tradeCounts.findIndex(([resource, count]) => (
-          (this.myPlayer.heroPrivilege === HERO_CARD_TywinLannister && resource === SHEEP && count === 1) ||
+          (this.myPlayer.heroPrivilege === HERO_CARD_TywinLannister && this.bankTradeResource === SHEEP && count === 1) ||
           (this.myPlayer.ownedHarbors[resource] && count === 2) ||
           count === this.myPlayer.bankTradeRate
         ));
