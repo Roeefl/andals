@@ -139,4 +139,39 @@
   a {
     text-decoration: none;
   }
+
+  .dg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .dg-content-cont {
+      position: static;
+
+      .dg-main-content {
+        background: $secondary;
+        color: $primary;
+        border: 1px solid $primary;
+
+        .dg-content-body {
+          border-bottom: 0;
+        }
+
+        .dg-btn--ok {
+          background: $success;
+          color: $primary;
+          border: 0;
+        }
+
+        .dg-btn--cancel {
+          background: $warning;
+          border: 0;
+        }
+        
+        // .dg-btn-loader .dg-circle {
+        //   background-color: green;
+        // }
+      }
+    }
+  }
 </style>
