@@ -2,7 +2,7 @@
   <v-card class="app-header overflow-hidden" :class="{ 'in-game': isInGame }">
     <v-app-bar
       absolute
-      :color="isInGame ? 'transparent' : 'success'"
+      :color="isInGame ? 'transparent' : 'primary'"
       shrink-on-scroll
       prominent
       scroll-target="#page"
@@ -16,15 +16,19 @@
               {{ item.title }}
             </h3>
           </router-link>
-          <ChoiceDialog v-else buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor" :title="item.title" :hasCancel="false" :width="item.width">
+          <ChoiceDialog v-else buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor || 'secondary'" :title="item.title" :hasCancel="false" :width="item.width">
             <AppSettings v-if="item.key === 'settings'" />
             <div v-if="item.key === 'console'" /> <!-- <DevConsole /> -->
             <BuildingCosts v-if="item.key === 'buildingCosts'"/>
           </ChoiceDialog>
         </div>
       </section>
+      <section v-if="!isInGame" class="current-route">
+        <h2>
+          {{ this.$route.name }}
+        </h2>
+      </section>
       <section v-if="!isInGame" class="additional-actions">
-        Route: {{ this.$route.name }}
         <BaseButton v-for="(action, a) in actions" :key="a" icon :iconName="action.icon" iconSize="24px" />
         <div class="profile-section">
           <BaseMenu
@@ -69,20 +73,20 @@
     },
     {
       key: 'buildingCosts',
-      icon: 'cash-multiple',
+      icon: 'tools',
       width: 520,
       title: 'Building Costs',
-      iconColor: 'error'
+      iconColor: 'success'
     }
   ];
 
   const actions = [
-    {
-      icon: 'magnify'
-    },
-    {
-      icon: 'heart'
-    },
+    // {
+    //   icon: 'magnify'
+    // },
+    // {
+    //   icon: 'heart'
+    // },
  /*    {
       icon: 'dots-vertical'
     } */
@@ -149,7 +153,6 @@
 
       .app-bar {
         box-shadow: none !important;
-        padding: 0;
       }
 
       .v-toolbar__content { 
@@ -159,9 +162,9 @@
     }
 
     .app-bar {
-      color: $primary;
-      padding: $spacer;
+      color: $secondary;
       height: $header-height !important;
+      padding: 0;
 
       .header-buttons {
         display: flex;
@@ -169,10 +172,16 @@
     }
 
     .v-toolbar__content {
+      padding: 0 $spacer * 2;
       height: $header-height !important;
       overflow-y: hidden;
       display: grid;
-      grid-template-columns: 50% 50%;
+      grid-template-columns: 45% 10% 45%;
+      align-items: center !important;
+
+      .current-route {
+        justify-self: center;
+      }
 
       .additional-actions {
         justify-self: end; 
