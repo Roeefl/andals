@@ -1,23 +1,14 @@
 <template>
-  <BaseButton
-    icon
-    :xl="active"
-    iconName="guy-fawkes-mask"
-    :iconColor="active ? 'warning' : 'secondary'"
-    :iconSize="active ? '64px' : '32px'"
-    class="robber"
-    :class="{ 'moveable': active }"
+  <img
+    :src="require('../../assets/pieces/robber.svg')"
+    alt="Robber"
+    class="robber-tile"
   />
 </template>
 
 <script>
-  import BaseButton from '@/components/common/BaseButton';
-
   export default {
     name: 'RobberTile',
-    components: {
-      BaseButton
-    },
     props: {
       active: {
         type: Boolean,
@@ -30,16 +21,11 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .robber {
+  .robber-tile {
     transform: rotate(90deg);
+    z-index: $zindex-robber;
     position: absolute;
     top: $tile-size * 1.1;
     right: $tile-size * 0.35;
-    z-index: $zindex-robber;
-    cursor: default;
-
-    &.moveable {
-      cursor: -webkit-drag;
-    }
   }
 </style>
