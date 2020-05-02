@@ -11,7 +11,10 @@
     >
       <form class="customize">
         <div class="inputs">
-          <TextField :value="nickname" @input="nickname = $event" label="Choose a nickname" />
+          <h3>
+            Choose your nickname:
+          </h3>
+          <TextField :value="nickname" @input="nickname = $event" :label="null" class="nickname" />
         </div>
         <div class="avatar">
           <h3>
@@ -19,11 +22,11 @@
           </h3>
           <BaseCarousel :height="300" :images="avatars" :selected="avatar" @selected-image="avatar = $event" />
         </div>
-        <div>
+        <div class="choose-color">
           <h3>
             Choose your in-game player color:
           </h3>
-          <ColorPicker :initialColor="color" @update="color = $event" />
+          <ColorPicker :initialColor="color" @update="color = $event" class="color-picker" />
         </div>
       </form>
     </ActionCard>
@@ -93,13 +96,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: $spacer;
 
-    .inputs {
+    & > * {
       width: 100%;
     }
 
-    .avatar {
-      width: 100%;
+    .nickname {
+      width: 75%;
+    }
+    
+    .color-picker {
+      margin: $spacer auto;
     }
   }
 </style>

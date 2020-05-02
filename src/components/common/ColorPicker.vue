@@ -1,5 +1,5 @@
 <template>
-  <v-color-picker v-model="color" @update:color="$emit('update', color)" />
+  <v-color-picker mode="rgb" v-model="color" @update:color="$emit('update', color)" />
 </template>
 
 <script>
