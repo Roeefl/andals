@@ -26,7 +26,7 @@
       <div v-else-if="currentPlayer.mustMoveRobber">
         moving the robber
       </div>
-      <div v-else-if="currentPlayer.allowStealingFrom.length > 0">
+      <div v-else-if="currentPlayer.allowStealingFrom && currentPlayer.allowStealingFrom.length > 0">
         stealing a card
       </div>
       <div v-else-if="currentPlayer.allowFreeRoads > 0">

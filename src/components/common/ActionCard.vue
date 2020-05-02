@@ -12,11 +12,10 @@
     <fragment v-if="cancel || approve">
       <v-divider />
       <v-card-actions class="card-actions">
-        <BaseButton text v-if="cancel" color="primary" @click="$emit('cancel')" class="card-action">
+        <BaseButton text v-if="cancel" :color="cancelColor" @click="$emit('cancel')" class="card-action">
           {{ cancelText }}
         </BaseButton>
-        <v-spacer />
-        <BaseButton text v-if="approve" color="highlight" @click="$emit('approve')" class="card-action">
+        <BaseButton text v-if="approve" :color="approveColor" @click="$emit('approve')" class="card-action">
           {{ approveText }}
         </BaseButton>
       </v-card-actions>
@@ -49,6 +48,10 @@
         type: Boolean,
         default: true
       },
+      cancelColor: {
+        type: String,
+        default: 'primary'
+      },
       cancelText: {
         type: String,
         default: 'Cancel'
@@ -56,6 +59,10 @@
       approve: {
         type: Boolean,
         default: true
+      },
+      approveColor: {
+        type: String,
+        default: 'highlight'
       },
       approveText: {
         type: String,
@@ -70,7 +77,7 @@
 
   .card-actions {
     display: grid;
-    grid-template-columns: 40% 20% 40%;
+    grid-template-columns: 50% 50%;
 
     // .card-action {
     //   height: 60px;

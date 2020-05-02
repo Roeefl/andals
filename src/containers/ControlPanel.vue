@@ -58,7 +58,6 @@
   import BaseButton from '@/components/common/BaseButton';
 
   import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_COLLECT_RESOURCE_LOOT } from '@/constants';
-  import { diceColors } from '@/specs/dice';
 
   export default {
     name: 'ControlPanel',
@@ -106,9 +105,6 @@
     data: () => ({
       isDisplayDice: false
     }),
-    created() {
-      this.diceColors = diceColors;
-    },
     methods: {
       rollDice: function() {
         this.isDisplayDice = true;
@@ -161,6 +157,7 @@
         flex: 1;
         display: flex;
         justify-content: center;
+        background: $primary;
       }
 
       .turn-action {

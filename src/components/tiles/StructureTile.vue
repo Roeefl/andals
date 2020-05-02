@@ -100,6 +100,10 @@
       .structure-button {
         border-radius: 999px;
 
+        &.settlement {
+          animation: heartbeat 2s ease-in-out infinite;
+        }
+
         &:hover {
           background: $secondary !important;
           box-shadow: 2px 2px 12px 12px var(--color-hover);

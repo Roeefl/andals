@@ -90,13 +90,15 @@
       </div>
       <div class="hero-card-wrapper">
         <ChoiceDialog
-          :width="500"
+          :width="600"
           buttonColor="transparent"
           :hasCancel="isMe && isMyTurn && !player.hasPlayedHeroCard"
-          :cancelText="`Play ${player.currentHeroCard.name} and discard it`"
+          cancelColor="warning"
+          :cancelText="`Play and discard`"
           @cancel="$emit('play-hero', true)"
           :hasApprove="isMe && isMyTurn && !player.currentHeroCard.wasPlayed && !player.hasPlayedHeroCard"
-          :approveText="`Play ${player.currentHeroCard.name} and flip it for a subsequent use`"
+          approveColor="error"
+          :approveText="`Play and flip for a subsequent use`"
           @approve="$emit('play-hero', false)"
         >
           <template v-slot:activate>

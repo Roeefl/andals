@@ -17,9 +17,11 @@
     <ActionCard
       :title="title"
       :cancel="hasCancel"
+      :cancelColor="cancelColor"
       :cancelText="cancelText"
       @cancel="onCancel"
       :approveText="approveText"
+      :approveColor="approveColor"
       :approve="hasApprove"
       @approve="onApprove"
       class="action-card"
@@ -58,6 +60,10 @@
         type: Boolean,
         default: true
       },
+      cancelColor: {
+        type: String,
+        default: undefined,
+      },
       cancelText: {
         type: String,
         default: 'Cancel'
@@ -65,6 +71,10 @@
       hasApprove: {
         type: Boolean,
         default: true
+      },
+      approveColor: {
+        type: String,
+        default: undefined,
       },
       approveText: {
         type: String,
