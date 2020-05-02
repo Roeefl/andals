@@ -73,10 +73,10 @@
     },
     {
       key: 'buildingCosts',
-      icon: 'tools',
+      icon: 'city',
       width: 520,
       title: 'Building Costs',
-      iconColor: 'error'
+      iconColor: 'highlight'
     }
   ];
 

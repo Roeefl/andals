@@ -12,7 +12,7 @@
     <fragment v-if="cancel || approve">
       <v-divider />
       <v-card-actions class="card-actions">
-        <BaseButton text v-if="cancel" color="error" @click="$emit('cancel')" class="card-action">
+        <BaseButton text v-if="cancel" color="primary" @click="$emit('cancel')" class="card-action">
           {{ cancelText }}
         </BaseButton>
         <v-spacer />

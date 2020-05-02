@@ -1,5 +1,5 @@
 <template>
-  <v-color-picker mode="rgb" v-model="color" @update:color="$emit('update', color)" />
+  <v-color-picker hide-mode-switch :hide-canvas="hideCanvas" v-model="color" @update:color="$emit('update', color)" />
 </template>
 
 <script>
@@ -11,6 +11,10 @@
       initialColor: {
         type: String,
         default: defaultColor
+      },
+      hideCanvas: {
+        type: Boolean,
+        default: true
       }
     },
     data: function() {

@@ -1,5 +1,5 @@
 <template>
-  <div class="player" :style="playerStyle(player.color)">
+  <div class="player" :class="{ 'is-me': isMe}" :style="playerStyle(player.color)">
     <div class="upper">
       <div class="header">
         <div class="avatar">
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div v-if="isMe" class="game-pieces" @click="$emit('deck-clicked')">
-        <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="resource">
+        <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="game-piece">
           <GamePiece 
             showCount
             :count="player[purchaseType]"
@@ -48,8 +48,20 @@
           <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
         </div>
       </div>
-      <div class="resources" @click="$emit('deck-clicked')">
-        <ResourceCounts :collapsed="!isMe" :counts="player.resourceCounts" :hideCounts="!isMe" :clickable="isMe" />
+      <div @click="$emit('deck-clicked')" class="resource-cards">
+        <fragment v-for="resource in resourceCardTypes" :key="`resource-${resource}`" v-show="player.resourceCounts && player.resourceCounts[resource] > 0">
+          <ResourceCard
+            v-for="(resourceCard, index) in Array((player.resourceCounts || {})[resource]).fill(resource)"
+            :key="`card-${resource}-${index}`"
+            :resource="resource"
+            small
+            hideCount
+            :hideIcon="!isMe"
+            :clickable="isMe"
+            class="resource-card"
+            :class="{ 'my-resource-card': isMe }"
+          />
+        </fragment>
       </div>
     </div>
     <div class="player-assets">
@@ -113,7 +125,6 @@
   import { hexToRgb } from '@/utils/colors';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
   
-  import ResourceCounts from '@/components/interface/ResourceCounts';
   import ResourceCard from '@/components/game/ResourceCard';
   import GamePiece from '@/components/game/GamePiece';
   import GameCard from '@/components/game/GameCard';
@@ -148,7 +159,6 @@
   export default {
     name: 'PlayerInfo.vue',
     components: {
-      ResourceCounts,
       ResourceCard,
       GamePiece,
       GameCard,
@@ -302,15 +312,17 @@
       }
     }
 
-    .resources {
+    .resource-cards {
       display: flex;
+      max-width: 220px;
+      overflow-x: hidden;
+    }
 
-      .resource {
-        display: flex;
-
-        .name {
-          margin-bottom: $spacer;
-        }
+    &.is-me {
+      .resource-cards {
+        flex-flow: row wrap;
+        max-width: auto;
+        overflow-x: unset;
       }
     }
 
@@ -357,9 +369,9 @@
     }
   }
 
-  .resource {
+  .game-piece {
     & + & {
-      margin-left: $spacer;
+      margin-left: $spacer * 1.5;
     }
   }
 
@@ -369,7 +381,11 @@
     }
 
     & + & {
-      margin-left: $spacer;
+      margin-left: $spacer * -1;
+    }
+
+    &.my-resource-card {
+      margin-left: $spacer * -0.5;
     }
   }
 
