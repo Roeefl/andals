@@ -13,22 +13,15 @@
       />
     </div>
     <div class="game-actions">
-      <div class="dice">
-        <GameDice :dice="roomState.dice" :enabled="isDiceEnabled" @clicked="rollDice" />
-        <RollingDice v-if="isDisplayDice" :type="roomState.roomType" @finished="$emit('dice-finished', $event)"/>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
 
   import BankResources from '@/components/interface/BankResources';
   import CurrentGameAction from '@/components/interface/CurrentGameAction';
-  import RollingDice from '@/components/interface/RollingDice';
-  import GameDice from '@/components/interface/GameDice';
 
   import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_COLLECT_RESOURCE_LOOT } from '@/constants';
 
@@ -36,9 +29,7 @@
     name: 'ControlPanel',
     components: {
       BankResources,
-      CurrentGameAction,
-      RollingDice,
-      GameDice
+      CurrentGameAction
     },
     props: {
       isMyTurn: {
@@ -46,27 +37,7 @@
         default: false
       }
     },
-    computed: {
-      isDiceEnabled: function() {
-        return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled && !this.roomState.isVictory;
-      },
-      ...mapState([
-        'players',
-        'roomState'
-      ])
-    },
-    data: () => ({
-      isDisplayDice: false
-    }),
     methods: {
-      rollDice: function() {
-        this.isDisplayDice = true;
-
-        setTimeout(
-          () => this.isDisplayDice = false,
-          3000
-        );
-      },
       onCollectAllLoot: function() {
         colyseusService.room.send({
           type: MESSAGE_COLLECT_ALL_LOOT
@@ -105,13 +76,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-
-      .dice {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        background: $primary;
-      }
     }
   }
 </style>

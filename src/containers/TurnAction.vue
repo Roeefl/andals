@@ -1,28 +1,44 @@
 <template>
   <div class="turn-action">
-    <BaseButton v-if="roomState.isGameReady && !myPlayer.mustMoveRobber" color="red" @click="finishTurn" :clickable="!isEndTurnDisabled">
-      Finish My Turn
-    </BaseButton>
-    <BaseButton
-      v-if="myPlayer.mustMoveRobber"
-      color="primary"
-      @click="moveRobber"
-      :clickable="desiredRobberTile > -1 && roomState.robberPosition !== desiredRobberTile"
-    >
-      Move Robber
-    </BaseButton>
-    <BaseButton
-      v-if="!roomState.isGameReady"
-      :color="isSelfReady ? 'error' : 'highlight'"
-      @click="$emit('toggle-ready')"
-    >
-      <span v-if="isSelfReady">
-        Not Ready
-      </span>
-      <span v-else>
-        Ready!
-      </span>
-    </BaseButton>
+    <div v-if="isWaitingForDiceRoll" class="dice">
+      <GameDice :dice="roomState.dice" @clicked="rollDice" enabled />
+    </div>
+    <fragment v-else>
+      <BaseButton
+        v-if="roomState.isGameReady && !myPlayer.mustMoveRobber"
+        color="red"
+        :width="buttonWidth"
+        :height="buttonHeight"
+        @click="finishTurn"
+        :clickable="!isEndTurnDisabled"
+      >
+        Finish My Turn
+      </BaseButton>
+      <BaseButton
+        v-if="myPlayer.mustMoveRobber"
+        color="primary"
+        :width="buttonWidth"
+        :height="buttonHeight"
+        @click="moveRobber"
+        :clickable="desiredRobberTile > -1 && roomState.robberPosition !== desiredRobberTile"
+      >
+        Move Robber
+      </BaseButton>
+      <BaseButton
+        v-if="!roomState.isGameReady"
+        :color="isSelfReady ? 'error' : '#558B2F'"
+        :width="buttonWidth"
+        :height="buttonHeight"
+        @click="$emit('toggle-ready')"
+      >
+        <span v-if="isSelfReady">
+          Not Ready
+        </span>
+        <span v-else>
+          I am Ready!
+        </span>
+      </BaseButton>
+    </fragment>
   </div>
 </template>
 
@@ -30,6 +46,7 @@
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
 
+  import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
 
   import {
@@ -40,12 +57,21 @@
   export default {
     name: 'TurnAction',
     components: {
+      GameDice,
       BaseButton
     },
     props: {
       isMyTurn: {
         type: Boolean,
         default: false  
+      },
+      buttonWidth: {
+        type: String,
+        default: '160px'
+      },
+      buttonHeight: {
+        type: String,
+        default: '80px'
       }
     },
     computed: {
@@ -61,6 +87,9 @@
           this.roomState.isVictory
         );
       },
+      isWaitingForDiceRoll: function() {
+        return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled && !this.roomState.isVictory;
+      },
       ...mapState([
         'roomState',
         'myPlayer',
@@ -69,12 +98,13 @@
       ])
     },
     methods: {
-      finishTurn: function() {
-        colyseusService.room.send({
-          type: MESSAGE_FINISH_TURN
-        });
+      rollDice: function() {
+        this.$store.commit('setRollingDice', true);
 
-        this.$store.commit('setJustPurchasedGameCard', false);
+        setTimeout(
+          () => this.$store.commit('setRollingDice', false),
+          3000
+        );
       },
       moveRobber: function() {
         if (!this.myPlayer.mustMoveRobber) return;
@@ -83,6 +113,13 @@
           type: MESSAGE_MOVE_ROBBER,
           tile: this.desiredRobberTile
         });
+      },
+      finishTurn: function() {
+        colyseusService.room.send({
+          type: MESSAGE_FINISH_TURN
+        });
+
+        this.$store.commit('setJustPurchasedGameCard', false);
       },
     }
   }
@@ -93,5 +130,11 @@
 
   .turn-action {
     display: flex;
+
+    .dice {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
   }
 </style>

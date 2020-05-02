@@ -36,6 +36,7 @@ export default new Vuex.Store({
       hasResources: {}
     },
     desiredRobberTile: -1,
+    isRollingDice: false,
     gameLog: [],
     alerts: {},
     essentialOverlay: {
@@ -91,6 +92,9 @@ export default new Vuex.Store({
     },
     setDesiredRobberTile(state, tile) {
       state.desiredRobberTile = tile;
+    },
+    setRollingDice(state, isRolling) {
+      state.isRollingDice = isRolling;
     },
     setRooms(state, rooms) {
       state.rooms = [

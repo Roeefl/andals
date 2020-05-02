@@ -359,14 +359,14 @@
     
     .turn-action {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
+      margin-bottom: $spacer / 2;
     }
 
     &.is-me {
       .upper {
         .header {
           margin-bottom: $spacer / 2;
-          display: flex;
 
           .avatar {
             height: 60px;

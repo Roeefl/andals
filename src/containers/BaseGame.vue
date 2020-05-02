@@ -4,7 +4,6 @@
       <ControlPanel
         :isMyTurn="isMyTurn"
         @toggle-ready="toggleReady"
-        @dice-finished="sendDice($event)"
         @purchase-game-card="onGameCardPurchase"
         @bank-trade="onTradeWithBank($event)"
       />
@@ -116,6 +115,7 @@
       :isOpen="myPlayer.isDeclaringMonopoly"
       @resource-selected="onMonopolySelected($event)"
     />
+    <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" />
   </div>
 </template>
 
@@ -140,6 +140,7 @@
   import ConfirmTrade from '@/components/interface/ConfirmTrade';
   import OpponentDeck from '@/components/interface/OpponentDeck';
   import SelectResource from '@/components/interface/SelectResource';
+  import RollingDice from '@/components/interface/RollingDice';
 
   import DraggableWidget from '@/components/common/DraggableWidget';
 
@@ -199,6 +200,7 @@
       MyDeck,
       TradeDialog,
       OpponentDeck,
+      RollingDice,
       SelectResource,
       BreachMarker
     },
@@ -268,6 +270,7 @@
         'myPlayer',
         'roomState',
         'players',
+        'isRollingDice',
         'desiredRobberTile',
         'gameWinner'
       ])
