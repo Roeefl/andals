@@ -109,10 +109,6 @@
       Tree
     },
     props: {
-      desiredRobberTile: {
-        type: Number,
-        required: true
-      },
       allowPurchase: {
         type: Boolean,
         default: false
@@ -123,7 +119,8 @@
       'isDeveloperMode',
       'activeStructures',
       'activeRoads',
-      'myPlayer'
+      'myPlayer',
+      'desiredRobberTile'
     ]),
     created() {
       this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;

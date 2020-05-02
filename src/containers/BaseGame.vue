@@ -3,11 +3,8 @@
     <DraggableWidget class="control-panel">
       <ControlPanel
         :isMyTurn="isMyTurn"
-        :desiredRobberTile="desiredRobberTile"
         @toggle-ready="toggleReady"
         @dice-finished="sendDice($event)"
-        @end-turn="finishTurn"
-        @move-robber="moveRobber"
         @purchase-game-card="onGameCardPurchase"
         @bank-trade="onTradeWithBank($event)"
       />
@@ -38,10 +35,9 @@
         />
         <GameBoard
           :allowPurchase="allowPurchase"
-          :desiredRobberTile="desiredRobberTile"
           @tile-clicked="onTileClick($event)"
           @remove-road="onRemoveRoad($event)"
-          @robber-dropped="desiredRobberTile = $event"
+          @robber-dropped="$store.commit('setDesiredRobberTile', $event)"
           @remove-wildling="onRemoveWildling($event)"
           class="game-board"
           :class="{ 'with-north': isWithNorth }"
@@ -168,7 +164,6 @@
     MESSAGE_PURCHASE_GAME_CARD,
     MESSAGE_PLAY_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
-    MESSAGE_MOVE_ROBBER,
     MESSAGE_STEAL_CARD,
     MESSAGE_GAME_VICTORY,
     MESSAGE_SELECT_MONOPOLY_RESOURCE,
@@ -216,7 +211,6 @@
       },
       waitingTradeWith: null,
       bankTradeResource: null,
-      desiredRobberTile: -1,
       bankDummy: {
         nickname: 'Bank',
         playerSessionId: '-bank-',
@@ -271,10 +265,10 @@
         ];
       },
       ...mapState([
-        'isSelfReady',
         'myPlayer',
         'roomState',
         'players',
+        'desiredRobberTile',
         'gameWinner'
       ])
     },
@@ -628,14 +622,6 @@
         this.room.send({
           type: MESSAGE_DISCARD_HALF_DECK,
           discardedCounts
-        });
-      },
-      moveRobber: function() {
-        if (!this.myPlayer.mustMoveRobber) return;
-
-        this.room.send({
-          type: MESSAGE_MOVE_ROBBER,
-          tile: this.desiredRobberTile
         });
       },
       stealFrom: function(playerSessionId) {

@@ -31,6 +31,7 @@ export default new Vuex.Store({
     myPlayer: {
       hasResources: {}
     },
+    desiredRobberTile: -1,
     gameLog: [],
     alerts: {},
     essentialOverlay: {
@@ -83,6 +84,9 @@ export default new Vuex.Store({
     },
     toggleSelfReady(state) {
       state.isSelfReady = !state.isSelfReady;
+    },
+    setDesiredRobberTile(state, tile) {
+      state.desiredRobberTile = tile;
     },
     setRooms(state, rooms) {
       state.rooms = [

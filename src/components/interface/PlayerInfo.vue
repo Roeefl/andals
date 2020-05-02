@@ -108,6 +108,9 @@
         </ChoiceDialog>
       </div>
     </div>
+    <div v-if="isMe" class="turn-action">
+      <TurnAction :isGameReady="isGameReady" :myPlayer="player" :isMyTurn="isMyTurn" @toggle-ready="$emit('toggle-ready')" />
+    </div>
     <GameCardDialog
       v-if="!!displayedGameCard.type"
       :isOpen="!!displayedGameCard.type"
@@ -127,6 +130,7 @@
   import { hexToRgb } from '@/utils/colors';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
   
+  import TurnAction from '@/containers/TurnAction';
   import ResourceCard from '@/components/game/ResourceCard';
   import GamePiece from '@/components/game/GamePiece';
   import GameCard from '@/components/game/GameCard';
@@ -163,6 +167,7 @@
     components: {
       ResourceCard,
       GamePiece,
+      TurnAction,
       GameCard,
       ChoiceDialog,
       GameCardDialog,
@@ -187,7 +192,7 @@
       },
       enableTrading: {
         type: Boolean,
-        default: true
+        default: false
       },
       waitingTrade: {
         type: Boolean,
@@ -368,6 +373,10 @@
         background: $secondary;
         color: $primary;
       }
+    }
+
+    .turn-action {
+      display: flex;
     }
   }
 
