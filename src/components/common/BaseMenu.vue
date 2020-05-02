@@ -1,7 +1,7 @@
 <template>
   <v-menu :open-on-hover="isHover" :value="isForceOpen ? true : undefined" :offset-y="isVertical" :offset-x="!isVertical" bottom>
     <template v-slot:activator="{ on }">
-      <BaseButton spaced :on="on" :color="buttonColor" iconSize="x-large" :iconName="iconName" :iconColor="iconColor" class="activator">
+      <BaseButton spaced :small="small" :on="on" :color="buttonColor" iconSize="24px" :iconName="iconName" :iconColor="iconColor" class="activator">
         {{ buttonText }}
       </BaseButton>
     </template>
@@ -59,6 +59,10 @@
       buttonColor: {
         type: String,
         default: 'primary'
+      },
+      small: {
+        type: Boolean,
+        default: false 
       },
       buttonText: {
         type: String,

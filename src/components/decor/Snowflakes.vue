@@ -21,27 +21,6 @@
 
   $snowflake-size: 7px;
   $snowflake-color: white;
-  
-  @keyframes snowflakes-fall {
-    0% {
-      top: 0;
-    }
-    100% {
-      top: 105%;
-    }
-  }
-
-  @keyframes snowflakes-shake {
-    0% {
-      transform: translateX(0px);
-    }
-    50% {
-      transform: translateX(80px);
-    }
-    100% {
-      transform: translateX(0px);
-    }
-  }
 
   @mixin all-snowflakes() {
     @for $s from 0 to $count {

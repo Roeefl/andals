@@ -9,7 +9,7 @@
         <GameDice :small="true" :dice="log.dice" :enabled="false" />
       </div>
       <div v-if="log.type === CHAT_LOG_LOOT || log.type === CHAT_LOG_DISCARD" class="loot">
-        {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collects' : 'discards' }}
+        {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collected' : 'discarded' }}
         <span v-for="resource in resourceCardTypes" :key="resource" v-show="log.loot[resource]" class="resource-type">
           <ResourceCard
             v-for="(card, i) in Array(log.loot[resource]).fill(resource)"

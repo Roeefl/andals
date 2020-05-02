@@ -11,6 +11,7 @@
     >
       <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="maskCount ? '?' : count" class="resource-count" />
       <BaseIcon v-if="selected" name="check-outline" size="x-large" color="highlight" class="selected" />
+      <BaseIcon v-if="recentLoot" name="plus-box-multiple-outline" size="30px" color="highlight" class="selected" />
     </BaseButton>
     <BaseIcon v-if="collectable" size="x-large" name="sack" color="success" class="collect" />
   </v-card>
@@ -66,6 +67,10 @@
       selected: {
         type: Boolean,
         default: false
+      },
+      recentLoot: {
+        type: Boolean,
+        default: false
       }
     },
     created() {
@@ -77,19 +82,6 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
-
-  @keyframes puff-out-center {
-    0% {
-      transform: scale(1);
-      filter: blur(0px);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(2);
-      filter: blur(4px);
-      opacity: 0;
-    }
-  }
 
   .puff-leave-active {
     animation: puff-out-center 2s cubic-bezier(0.190, 1.000, 0.220, 1.000) both;

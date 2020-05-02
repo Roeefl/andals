@@ -113,7 +113,7 @@
       left: random(100)+vw;
       width: $size;
       height: $size;
-      animation-delay: random(5)+s;
+      animation-delay: random(5) + s;
     }
   }
 

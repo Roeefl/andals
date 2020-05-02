@@ -164,3 +164,68 @@
   }
 }
 
+/**
+ * ----------------------------------------
+ * Snowflakes-related Animations
+ * ----------------------------------------
+ */
+@keyframes snowflakes-fall {
+  0% {
+    top: 0;
+  }
+  100% {
+    top: 105%;
+  }
+}
+
+@keyframes snowflakes-shake {
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(80px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+
+/**
+ * ----------------------------------------
+ * Animation slide-up-and-fade-out
+ * ----------------------------------------
+ */
+ @-webkit-keyframes slide-up-and-fade-out {
+  0% {
+    opacity: 1;
+    bottom: -200px;
+  }
+  100% {
+    opacity: 0.4;
+    bottom: 60%;
+  }
+}
+@keyframes slide-up-and-fade-out {
+  0% {
+    opacity: 1;
+    bottom: -200px
+  }
+  100% {
+    opacity: 0.4;
+    bottom: 60%;
+  }
+}
+
+@keyframes puff-out-center {
+  0% {
+    transform: scale(1);
+    filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    filter: blur(4px);
+    opacity: 0;
+  }
+}

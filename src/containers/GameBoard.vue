@@ -253,7 +253,8 @@
 
       .hex-tile {
         &.robber-camp {
-          border: 1px dashed red;
+          border: 0;
+          // border: 1px dashed red;
         }
 
         &:hover {
