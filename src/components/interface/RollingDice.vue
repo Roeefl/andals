@@ -1,29 +1,32 @@
 <template>
-  <v-dialog
-    :value="true"
-    hide-overlay
-    persistent
-    width="500"
-  >
-    <div class="dice">
-      <div v-for="(diceValue, d) in dice" :key="`dice-${d}-${diceValue}`" class="cube" :class="`cube-${d}`">
-        <BaseIcon v-if="d <= 1" size="80px" color="secondary" :name="`dice-${diceValue}`" />
-        <span v-if="d >= 2">
-          {{ diceValue }}
-        </span>
-      </div>
+  <BaseOverlay :isOpen="true">
+    <div class="dice-container">
+      <BaseButton
+        v-for="(diceValue, d) in dice"
+        :key="`dice-${d}-${diceValue}`"
+        color="transparent"
+        :iconName="d < 2 ? `dice-${diceValue}` : `numeric-${diceValue}-box-outline`"
+        iconSize="120px"
+        :iconColor="diceColors[`dice${d}`]"
+        width="120px"
+        height="120px"
+        class="dice"
+      />
     </div>
-  </v-dialog>
+  </BaseOverlay>
 </template>
 
 <script>
-  import BaseIcon from '@/components/common/BaseIcon';
+  import BaseOverlay from '@/components/common/BaseOverlay';
+  import BaseButton from '@/components/common/BaseButton';
   import { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
+  import { diceColors } from '@/specs/dice';
 
   export default {
     name: 'RollingDice',
     components: {
-      BaseIcon
+      BaseOverlay,
+      BaseButton
     },
     props: {
       type: {
@@ -34,6 +37,9 @@
     data: () => ({
       dice: [4, 3]
     }),
+    created() {
+      this.diceColors = diceColors;
+    },
     mounted() {
       const diceRoller = setInterval(() => {
         const randomDice1 = Math.floor(Math.random() * 6) + 1;
@@ -61,17 +67,18 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .dice {
-    display: flex;
+  $dice-size: 160px;
 
-    .cube {
-      width: 50%;
-      height: 150px;
-      border: 1px solid black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: white;
+  .dice-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: $secondary;
+  }
+
+  .dice {
+    & + & {
+      margin-left: $spacer;
     }
   }
 </style>

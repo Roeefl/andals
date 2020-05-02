@@ -3,20 +3,16 @@
     <BaseButton
       v-for="(diceValue, d) in dice"
       :key="`dice-${d}`"
-      :color="diceColors[`dice${d}`]"
-      :iconName="d <= 1 ? `dice-${diceValue}` : undefined"
-      iconColor="secondary"
-      :clickable="enabled"
-      @click="$emit('clicked')"
-      :iconSize="small ? '24px' : '36px'"
+      color="transparent"
       :width="small ? '28px' : '56px'"
       :height="small ? '28px' : '56px'"
-      class="cube"
-    >
-      <span v-if="d >= 2">
-        {{ diceValue }}
-      </span>
-    </BaseButton>
+      :iconName="d < 2 ? `dice-${diceValue}` : `numeric-${diceValue}-box-outline`"
+      :iconSize="small ? '24px' : '36px'"
+      :iconColor="diceColors[`dice${d}`]"
+      :clickable="enabled"
+      @click="$emit('clicked')"
+      class="dice"
+    />
   </div>
 </template>
 
@@ -56,7 +52,7 @@
   .game-dice {
     display: flex;
     
-    .cube {
+    .dice {
       min-width: 0;
       margin-right: $spacer / 3;
       color: white;
