@@ -39,6 +39,7 @@ export default new Vuex.Store({
     isRollingDice: false,
     gameLog: [],
     alerts: {},
+    recentLoot: {},
     essentialOverlay: {
       isOpen: false
     },
@@ -207,6 +208,23 @@ export default new Vuex.Store({
 
         state.alerts = updatedAlerts;
       }, 3000);
+    },
+    addRecentLoot(state, resourceCard) {
+      const lootKey = `resource-${Date.now()}`;
+
+      state.recentLoot = {
+        ...state.recentLoot,
+        [lootKey]: resourceCard
+      };
+      
+      setTimeout(() => {
+        const updatedLoot = {
+          ...state.recentLoot
+        };
+        delete updatedLoot[lootKey];
+
+        state.recentLoot = updatedLoot;
+      }, 5000);
     },
     victory(state, playerName) {
       state.gameWinner = playerName;

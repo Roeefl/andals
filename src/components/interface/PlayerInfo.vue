@@ -26,9 +26,11 @@
             />
             <BaseMenu
               v-if="isGameReady && !isMe"
+              small
+              buttonColor="primary"
+              iconName="skew-more"
               :items="opponentActions"
               @item-clicked="$emit($event, player.playerSessionId)"
-              iconName="skew-more"
             />
           </div>
         </div>
@@ -272,8 +274,7 @@
       position: relative;
 
       .header {
-        display: grid;
-        grid-template-columns: 55% 45%;
+        display: flex;
 
         .avatar {
           height: 30px;
@@ -290,8 +291,10 @@
         }
 
         .status {
-          justify-self: end;
-        
+          position: absolute;
+          right: 0;
+          top: 0;
+          
           .is-ready {
             cursor: pointer;
           }
@@ -386,6 +389,8 @@
         }
         
         .resource-cards {
+          max-height: 100px;
+          overflow-y: hidden;
           flex-flow: row wrap;
           max-width: auto;
           overflow-x: unset;

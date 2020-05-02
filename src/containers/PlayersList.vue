@@ -40,6 +40,15 @@
       @play-hero="playHeroCard($event)"
       @close="displayedHeroCard = {}"
     />
+    <ResourceCard
+      v-for="(card, key, index) in recentLoot"
+      :key="`${key}-${index}`"
+      :resource="card.resource"
+      :count="card.count"
+      :clickable="false"
+      class="recent-loot-card"
+      :class="`recent-loot-card-${index}`"
+    />
   </div>
 </template>
 
@@ -47,12 +56,14 @@
   import { mapState } from 'vuex';
   import PlayerInfo from '@/components/interface/PlayerInfo';
   import HeroCardDialog from '@/components/interface/HeroCardDialog';
+  import ResourceCard from '@/components/game/ResourceCard';
 
   export default {
     name: 'PlayersList',
     components: {
       PlayerInfo,
-      HeroCardDialog
+      HeroCardDialog,
+      ResourceCard
     },
     props: {
       currentTurn: {
@@ -87,7 +98,8 @@
       ...mapState([
         'myPlayer',
         'players',
-        'justPurchasedGameCard'
+        'justPurchasedGameCard',
+        'recentLoot'
       ])
     },
     methods: {
@@ -161,6 +173,36 @@
         margin: 0 $spacer / 2;
         padding: $spacer / 2;
       }
+    }
+  }
+
+  // @mixin recent-loot-cards() {
+  //   @for $t from 0 to 10 {
+  //     &:nth-child(#{$t + 1}) {
+  //       animation-delay: #{$t + 1}s;
+  //     }
+  //   }
+  // }
+
+  .recent-loot-card {
+    width: 160px;
+    height: 240px;
+    position: absolute;
+    left: 15%;
+    -webkit-animation: slide-up-and-fade-out 5s ease both;
+    animation: slide-up-and-fade-out 5s ease both;
+    // @include recent-loot-cards();
+
+    &.recent-loot-card-1 {
+      animation-delay: 1s;
+    }
+
+    &.recent-loot-card-2 {
+      animation-delay: 2s;
+    }
+
+    &.recent-loot-card-3 {
+      animation-delay: 3s;
     }
   }
 </style>

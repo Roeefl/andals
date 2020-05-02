@@ -156,6 +156,7 @@
     MESSAGE_READY,
     MESSAGE_ROLL_DICE,
     MESSAGE_COLLECT_ALL_LOOT,
+    MESSAGE_COLLECT_RESOURCE_LOOT,
     MESSAGE_FINISH_TURN,
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
@@ -351,9 +352,30 @@
             break;
 
           case MESSAGE_COLLECT_ALL_LOOT:
-            const { loot } = broadcast;
+            const { playerSessionId, loot } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
+            
             if (isEssential) essentialHeader = `${playerName} collects: ${loot}`;
+
+            if (playerSessionId === this.myPlayer.playerSessionId) {
+              Object
+                .entries(loot)
+                .filter(([resource, count]) => count > 0)
+                .forEach(([resource, count]) => this.$store.commit('addRecentLoot', { resource, count }));
+            }
+            break;
+          
+          case MESSAGE_COLLECT_RESOURCE_LOOT:
+            const { resource } = broadcast;
+
+            const lootCounts = {
+              [resource]: 1
+            };
+            this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, lootCounts });
+
+            if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
+              this.$store.commit('addRecentLoot', { resource, count });
+            
             break;
 
           case MESSAGE_DISCARD_HALF_DECK:
