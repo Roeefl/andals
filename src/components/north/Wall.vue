@@ -3,7 +3,6 @@
     <WallSection
       v-for="(wallSection, w) in wallSections"
       :key="renderKey(wallSection, w)"
-      :section="w"
       :guards="wallSection"
       :myColor="myColor"
       :allowPurchase="allowPurchase"
@@ -17,8 +16,7 @@
 
 <script>
   import WallSection from '@/components/north/WallSection';
-
-  const wallTiles = [0, 5, 10, 15];
+  import { wallSectionsCount } from '@/specs/wall';
 
   export default {
     name: 'Wall',
@@ -26,9 +24,9 @@
       WallSection
     },
     props: {
-      wall: {
+      guards: {
         type: Array,
-        default: () => Array(20).fill({})
+        default: () => []
       },
       myColor: {
         type: String,
@@ -45,7 +43,8 @@
     },
     computed: {
       wallSections: function() {
-        return wallTiles.map(sectionStart => this.wall.slice(sectionStart, sectionStart + 5));
+        return Array(wallSectionsCount).fill(0)
+          .map((x, sectionIndex) => this.guards.filter(guard => guard.section === sectionIndex));
       }
     },
     created() {
@@ -54,7 +53,7 @@
     methods: {
       renderKey(wallSection, sectionIndex) {
         const allOwnerIds = wallSection
-          .map(guard => (guard || {}).ownerId)
+          .map(guard => guard.ownerId)
           .join('-');
 
         return `wall-${sectionIndex}-${allOwnerIds}`;

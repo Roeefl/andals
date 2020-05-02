@@ -17,7 +17,7 @@
       </div>
       <Wall
         :myColor="myPlayer.color"
-        :wall="guards"
+        :guards="guards"
         :allowPurchase="allowPurchase"
         :allowRemove="myPlayer.allowKill === GUARD"
         @wall-clicked="onWallClicked($event)"
@@ -87,9 +87,9 @@
 
         return (wall || [])
           .map(guard => {
-            if (!guard.ownerId) return guard;
+            const owner = this.players.find(({ playerSessionId }) => playerSessionId === guard.ownerId);
+            if (!owner) return guard;
 
-            const owner = this.players.find(({ playerSessionId }) => playerSessionId === guard.ownerId) || {};
             return {
               ...guard,
               ownerColor: owner.color
@@ -125,10 +125,15 @@
         });
       },
       onGuardKill: function(location) {
-      console.log("location", location)
-       const { section, position } = location;
+        if (!this.myPlayer.allowKill || this.myPlayer.allowKill !== GUARD) return;
         
-        if (this.myPlayer.allowKill === GUARD && this.guards[section * 5 + position] && this.guards[section * 5 + position].ownerId !== this.myPlayer.playerSessionId)
+        console.log("onGuardKill -> location", location)
+        const { section, position } = location;
+
+        const killedGuard = this.roomState.wall
+          .find(guard => guard.section === section && guard.position === position);
+
+        if (killedGuard && killedGuard.ownerId !== this.myPlayer.playerSessionId)
           this.$emit('kill-guard', location);
       },
       onBroadcastReceived: function(broadcast) {

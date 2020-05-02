@@ -1,15 +1,20 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
-    <li v-for="(guard, p) in guards" :key="`position-${p}-${(guard || {}).ownerId}`" class="wall-position" :class="{ 'enabled': allowPurchase && isGuardAllowed(p) }">
+    <li v-for="position in positions" :key="position" class="wall-position" :class="{ 'enabled': allowPurchase && isBuildGuardAllowed(position) }">
       <drop @drop="$emit('relocate-guard', $event)">
-        <WallSectionPosition :order="p + 1" :guard="guard" @clicked="onPositionClicked(p)" />
+        <WallSectionPosition :order="position + 1" :guard="guards.find(guard => guard.position === position)" @clicked="onPositionClicked(position)" />
       </drop>
     </li>
   </ul>
 </template>
 
 <script>
+// -${guard.ownerId}
+
   import WallSectionPosition from '@/components/north/WallSectionPosition';
+  import { wallSectionSize } from '@/specs/wall';
+
+  const positions = new Array(wallSectionSize).fill(0).map((x, positionIndex) => positionIndex);
 
   export default {
     name: 'WallTile',
@@ -19,7 +24,7 @@
     props: {
       guards: {
         type: Array,
-        default: () => new Array(5).fill(null)
+        default: () => []
       },
       myColor: {
         type: String,
@@ -41,19 +46,23 @@
         }
       }
     },
+    created() {
+      this.positions = positions;
+    },
     methods: {
-      isGuardAllowed: function(position) {
-        if (!!this.guards[position].ownerId) return false;
+      isBuildGuardAllowed: function(position) {
+        const guardAtPosition = this.guards.find(guard => guard.position === p);
+        if (guardAtPosition) return false;
 
-        return this.guards
-          .filter((pos, p) => p < position)
-          .every(guard => !!guard && !!guard.ownerId);
+        return positions
+          .filter(p => p < position)
+          .every(p => !!(this.guards.find(guard => guard.position === p)));
       },
       hasOpponentGuard: function(position) {
-        return !!this.guards[position].ownerId;
+        return !!(this.guards.find(guard => guard.position === position));
       },
       onPositionClicked: function(position) {
-        if (this.isGuardAllowed(position)) {
+        if (this.isBuildGuardAllowed(position)) {
           this.$emit('wall-clicked', position);
           return;
         }
