@@ -18,13 +18,8 @@
 </template>
 
 <script>
-  import BaseImage from '@/components/common/BaseImage';
-
   export default {
     name: 'BaseCarousel',
-    components: {
-      BaseImage
-    },
     props: {
       cycle: {
         type: Boolean,

@@ -16,11 +16,11 @@
       </BaseButton>
       <BaseButton
         v-if="myPlayer.mustMoveRobber"
-        color="primary"
+        color="warning"
         :width="buttonWidth"
         :height="buttonHeight"
         @click="moveRobber"
-        :clickable="desiredRobberTile > -1 && roomState.robberPosition !== desiredRobberTile"
+        :clickable="isLegalRobberMove"
       >
         Move Robber
       </BaseButton>
@@ -67,11 +67,11 @@
       },
       buttonWidth: {
         type: String,
-        default: '160px'
+        default: '140px'
       },
       buttonHeight: {
         type: String,
-        default: '80px'
+        default: '60px'
       }
     },
     computed: {
@@ -89,6 +89,9 @@
       },
       isWaitingForDiceRoll: function() {
         return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled && !this.roomState.isVictory;
+      },
+      isLegalRobberMove: function() {
+        return this.desiredRobberTile > -1 && this.roomState.robberPosition !== this.desiredRobberTile && !!(this.roomState.board[this.desiredRobberTile].resource)
       },
       ...mapState([
         'roomState',

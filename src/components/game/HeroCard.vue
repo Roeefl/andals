@@ -28,7 +28,7 @@
     props: {
       card: {
         type: Object,
-        default: () => {}
+        required: true
       },
       thumbnail: {
         type: Boolean,
@@ -36,7 +36,7 @@
       }
     },
     updated() {
-      console.log(this.card);
+      console.log(this.card.name);
     }
   }
 </script>

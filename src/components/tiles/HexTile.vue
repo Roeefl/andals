@@ -1,5 +1,5 @@
 <template>
-  <drop @drop="$emit('dropped')" class="tile" :class="[type, tile.resource, (tile.type === TILE_WATER && !!tile.resource) ? 'has-harbor' : '']">
+  <div class="tile" :class="[type, tile.resource, (tile.type === TILE_WATER && !!tile.resource) ? 'has-harbor' : '']">
     <BaseIcon
       v-if="tile.resource && tile.value"
       :name="resourceCardIcons[tile.resource]"
@@ -11,7 +11,7 @@
       {{ tile.value }}
     </span>
     <slot />
-  </drop>
+  </div>
 </template>
 
 <script>

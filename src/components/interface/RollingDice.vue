@@ -20,8 +20,8 @@
   import BaseOverlay from '@/components/common/BaseOverlay';
   import BaseButton from '@/components/common/BaseButton';
   import { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
-  import { diceColors } from '@/specs/dice';
-
+  import { diceColors, WILDLING_DICE_MAX } from '@/specs/dice';
+  
   export default {
     name: 'RollingDice',
     components: {
@@ -47,7 +47,7 @@
         this.dice = [randomDice1, randomDice2];
 
         if (this.type === ROOM_TYPE_FIRST_MEN) {
-          const wildlingDice = Math.floor(Math.random() * 12) + 1;
+          const wildlingDice = Math.floor(Math.random() * WILDLING_DICE_MAX) + 1;
           
           this.dice = [
             ...this.dice,

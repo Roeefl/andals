@@ -16,7 +16,7 @@
       },
       aspectRatio: {
         type: Number,
-        default: 1.7
+        default: 1
       },
       maxWidth: {
         type: Number,
