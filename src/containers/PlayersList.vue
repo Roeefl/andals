@@ -1,30 +1,37 @@
 <template>
   <div class="players-wrapper">
-    <ul class="players">
+    <ul class="other-players">
       <li
-        v-for="(player, index) in players"
+        v-for="(player, index) in players.filter(player => player.playerSessionId !== myPlayer.playerSessionId)"
         :key="renderKey(player)"
         class="player-wrapper"
-        :class="{ 'current-turn': currentTurn === index, 'is-me': player.playerSessionId === myPlayer.playerSessionId }"
+        :class="{ 'current-turn': currentTurn === index }"
       >
         <PlayerInfo
           :player="player"
-          :isMe="player.playerSessionId === myPlayer.playerSessionId"
           :enableTrading="isGameStarted"
-          :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
           :isGameReady="isGameReady"
+          :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
           :allowStealing="myPlayer.allowStealingFrom && myPlayer.allowStealingFrom.includes(player.playerSessionId)"
-          @toggle-ready="$emit('toggle-ready')"
-          @deck-clicked="player.playerSessionId === myPlayer.playerSessionId && $emit('display-deck')"
           @trade-with="$emit('trade-with', $event)"
           @steal-from="$emit('steal-from', $event)"
-          :isMyTurn="isMyTurn"
-          @play-hero="$emit('play-hero', $event)"
-          @play-card="playGameCard($event)"
           class="player"
         />
       </li>
     </ul>
+    <div class="player-wrapper is-me" :class="{ 'current-turn': currentTurn === myPlayerIndex }">
+      <PlayerInfo
+        :player="myPlayer"
+        isMe
+        :isGameReady="isGameReady"
+        :isMyTurn="isMyTurn"
+        @toggle-ready="$emit('toggle-ready')"
+        @deck-clicked="$emit('display-deck')"
+        @play-hero="$emit('play-hero', $event)"
+        @play-card="playGameCard($event)"
+        class="player"
+      />
+    </div>
   </div>
 </template>
 
@@ -57,13 +64,19 @@
       isMyTurn: {
         type: Boolean,
         default: false
-      },
+      }
     },
-    computed: mapState([
-      'myPlayer',
-      'players',
-      'justPurchasedGameCard'
-    ]),
+    computed: {
+      myPlayerIndex: function() {
+        return this.players
+          .findIndex(player => player.playerSessionId === this.myPlayer.playerSessionId);
+      },
+      ...mapState([
+        'myPlayer',
+        'players',
+        'justPurchasedGameCard'
+      ])
+    },
     methods: {
       renderKey(player) {
         const totalLoot = Object.values(player.availableLoot).reduce((r1, r2) => r1 + r2, 0);
@@ -90,36 +103,45 @@
 
   .players-wrapper {
     height: 100%;
-    padding-left: $spacer / 2;
     
-    .players {
-      height: 100%;
+    .other-players {
+      height: 50%;
       display: flex;
       flex-direction: column;
+    }
 
-      .player-wrapper {
-        // flex: 1;
-        overflow-y: hidden;
-        height: 22%;
-        margin-top: $spacer;
-        position: relative;
-        order: 1;
-        padding: 0 $spacer;
+    .player-wrapper {
+      flex: 1;
+      overflow-y: hidden;
+      margin-top: $spacer;
+      position: relative;
+      display: flex;
+      // transition: position 100ms ease-in-out;
 
-        &.is-me {
-          order: 0;
-          height: 26%;
-          padding: 0;
-        }
+      &.is-me {
+        height: 50%;
 
-        &.current-turn {
-          box-shadow: 4px 4px 10px 10px lightgreen;
-          // box-shadow: inset 8px 8px 40px 6px rgba(255, 0, 0, 1); 
-        }
+        // &:hover {
+        //   position: absolute;
+        //   bottom: $spacer * 2;
+        //   left: $spacer;
+        //   background: $secondary;
+        //   border: 1px solid black;
+        //   width: 25vw;
+        //   // height: 47vh;
+        //   z-index: 230;
+        // }
+      }
 
-        .player {
-          height: 100%;
-        }
+      &.current-turn {
+        box-shadow: 4px 4px 10px 10px lightgreen;
+        // box-shadow: inset 8px 8px 40px 6px rgba(255, 0, 0, 1); 
+      }
+
+      .player {
+        flex: 1;
+        margin: 0 $spacer / 2;
+        padding: $spacer / 2;
       }
     }
   }

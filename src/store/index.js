@@ -29,6 +29,10 @@ export default new Vuex.Store({
     ],
     players: [],
     myPlayer: {
+      color: 'primary',
+      nickname: 'Loading...',
+      avatar: 1,
+      resourceCounts: {},
       hasResources: {}
     },
     desiredRobberTile: -1,

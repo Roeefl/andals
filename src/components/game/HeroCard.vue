@@ -27,7 +27,7 @@
   import BaseIcon from '@/components/common/BaseIcon';
 
   export default {
-    name: 'GameCard',
+    name: 'HeroCard',
     components: {
       BaseIcon
     },
