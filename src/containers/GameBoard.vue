@@ -58,7 +58,7 @@
             class="wildling"
           />
         <BaseOverlay
-          v-if="myPlayer.mustMoveRobber && !!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)].resource)"
+          v-if="myPlayer.mustMoveRobber && !!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)].value)"
           isOpen
           :isFullScreen="false"
           :opacity="0"
