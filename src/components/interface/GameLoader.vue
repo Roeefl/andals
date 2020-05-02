@@ -1,5 +1,5 @@
 <template>
-  <BaseOverlay :isOpen="true" class="game-loader">
+  <BaseOverlay :isOpen="true">
     <v-progress-circular
       indeterminate
       :color="color"
@@ -57,30 +57,17 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .game-loader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+  .content {
+    font-size: $font-size-lg;
+    margin-top: $spacer;
+  }
+
+  .players {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
 
-    .content {
-      font-size: $font-size-lg;
-      margin-top: $spacer;
-    }
-
-    .players {
-      display: flex;
-      flex-direction: column;
-
-      .player {
-        padding: 1px;
-      }
+    .player {
+      padding: 1px;
     }
   }
 </style>
