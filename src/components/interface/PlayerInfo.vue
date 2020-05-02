@@ -86,25 +86,11 @@
               />
             </div>
           </div>
-          <div class="hero-card-wrapper">
-            <ChoiceDialog
-              v-if="player.currentHeroCard"
-              :width="600"
-              buttonColor="transparent"
-              :hasCancel="isMe && isMyTurn && !player.hasPlayedHeroCard"
-              cancelColor="warning"
-              :cancelText="`Play and discard`"
-              @cancel="$emit('play-hero', true)"
-              :hasApprove="isMe && isMyTurn && !player.currentHeroCard.wasPlayed && !player.hasPlayedHeroCard"
-              approveColor="error"
-              :approveText="`Play and flip for a subsequent use`"
-              @approve="$emit('play-hero', false)"
-            >
-              <template v-slot:activate>
-                <HeroCard thumbnail :card="player.currentHeroCard" class="hero-card" />
-              </template>
-              <HeroCard :card="player.currentHeroCard" />
-            </ChoiceDialog>
+          <div class="hero-card-wrapper" :class="{ 'was-played': player.currentHeroCard.wasPlayed }">
+            <BaseButton color="transparent" height="auto" @click="$emit('display-hero-card', player.currentHeroCard)" class="hero-card-button">
+              <HeroCard thumbnail :card="player.currentHeroCard || {}" class="hero-card" />
+            </BaseButton>
+            <BaseIcon v-if="player.currentHeroCard.wasPlayed" name="circle-half-full" size="36px" color="primary" class="icon-was-played" />
           </div>
         </div>
       </div>
@@ -119,7 +105,7 @@
       @dismiss="displayedGameCard = {}"
       @play="playGameCard"
     />
-    <BaseOverlay v-if="allowStealing" :isOpen="allowStealing" :isFullScreen="false">
+    <BaseOverlay v-if="allowStealing" :isOpen="allowStealing" :isFullScreen="false" :opacity="0.6">
       <BaseButton icon iconName="hand-okay" iconSize="60px" iconColor="warning" @click="$emit('steal-from', player.playerSessionId)" class="steal-button" />
     </BaseOverlay>
   </div>
@@ -138,7 +124,6 @@
   import GamePiece from '@/components/game/GamePiece';
   import GameCard from '@/components/game/GameCard';
   import HeroCard from '@/components/game/HeroCard';
-  import ChoiceDialog from '@/components/common/ChoiceDialog';
   import GameCardDialog from '@/components/interface/GameCardDialog';
 
   import BaseIcon from '@/components/common/BaseIcon';
@@ -174,7 +159,6 @@
       GamePiece,
       TurnAction,
       GameCard,
-      ChoiceDialog,
       GameCardDialog,
       HeroCard,
       BaseIcon,
@@ -329,7 +313,7 @@
         display: flex;
 
         .belongings {
-          flex: 3;
+          flex: 1;
           display: flex;
           flex-direction: column;
 
@@ -349,9 +333,26 @@
         }
 
         .hero-card-wrapper {
-          flex: 2;
+          flex: 1;
           height: $hero-size;
           overflow: hidden;
+          position: relative;
+          display: flex;
+          justify-content: flex-end;
+
+          &.was-played {
+            opacity: 0.75;
+          }
+
+          .hero-card-button {
+            padding: 0;
+          }
+
+          .icon-was-played {
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
         }
 
         .hero-card {
@@ -407,7 +408,7 @@
 
   .game-piece {
     & + & {
-      margin-left: $spacer * 1.5;
+      margin-left: $spacer * 0.5;
     }
   }
 

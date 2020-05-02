@@ -1,15 +1,15 @@
 <template>
-  <div class="hero-card" :class="{ 'was-played': card.wasPlayed }">
+  <div class="hero-card">
     <header class="card-header" :class="{ 'highlighted-section': !thumbnail, 'thumbnail': thumbnail }">
       <h3>
         {{ card.name }}
       </h3>
-      <h4 v-if="!thumbnail">
+      <h4 v-if="!thumbnail" class="card-title">
         {{ card.title }}
       </h4>
     </header>
     <section class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
-      <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
+      <img v-if="card.type" :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
     </section>
     <section v-if="!thumbnail" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">
@@ -19,27 +19,24 @@
         {{ card.description }}
       </div>
     </section>
-    <BaseIcon v-if="thumbnail && card.wasPlayed" name="flip-horizontal" color="white" class="icon-was-played" />
   </div>
 </template>
 
 <script>
-  import BaseIcon from '@/components/common/BaseIcon';
-
   export default {
     name: 'HeroCard',
-    components: {
-      BaseIcon
-    },
     props: {
       card: {
         type: Object,
-        required: true
+        default: () => {}
       },
       thumbnail: {
         type: Boolean,
         default: false
       }
+    },
+    updated() {
+      console.log(this.card);
     }
   }
 </script>
@@ -57,14 +54,10 @@
     display: flex;
     flex-direction: column;
 
-    &.was-played {
-      opacity: 0.8;
-    }
-
     .card-header {
       &.highlighted-section {
-        background: $info;
-        color: $secondary;
+        background: $error;
+        color: $primary;
       }
 
       &.thumbnail {
@@ -99,8 +92,8 @@
       white-space: normal;
 
       &.highlighted-section {
-        background: $info;
-        color: $secondary;
+        background: $error;
+        color: $primary;
       }
 
       .card-ability {
@@ -117,10 +110,8 @@
       }
     }
 
-    .icon-was-played {
-      position: absolute;
-      top: $spacer / 2;
-      right: $spacer * -0.5;
+    .card-title {
+      position: relative;
     }
   }
 </style>

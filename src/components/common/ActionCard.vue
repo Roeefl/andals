@@ -3,19 +3,20 @@
     <v-card-title
       v-if="title"
       primary-title
-      class="headline success"
-      :style="{ background: titleColor }"
+      class="headline card-headline"
+      :class="titleColor"
     >
       {{ title }}
+      <BaseButton v-if="closeButton" icon iconName="close-box" class="close-button" iconSize="30px" @click="$emit('close')" />
     </v-card-title>
     <slot />
     <fragment v-if="cancel || approve">
       <v-divider />
       <v-card-actions class="card-actions">
-        <BaseButton text v-if="cancel" :color="cancelColor" @click="$emit('cancel')" class="card-action">
+        <BaseButton v-if="cancel" text :color="cancelColor" @click="$emit('cancel')" class="card-action">
           {{ cancelText }}
         </BaseButton>
-        <BaseButton text v-if="approve" :color="approveColor" @click="$emit('approve')" class="card-action">
+        <BaseButton v-if="approve" text :color="approveColor" @click="$emit('approve')" class="card-action">
           {{ approveText }}
         </BaseButton>
       </v-card-actions>
@@ -67,6 +68,10 @@
       approveText: {
         type: String,
         default: 'Confirm'
+      },
+      closeButton: {
+        type: Boolean,
+        default: false
       }
     } 
   }
@@ -74,6 +79,10 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
+
+  .card-headline {
+    justify-content: space-between;
+  }
 
   .card-actions {
     display: grid;

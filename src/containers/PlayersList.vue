@@ -15,6 +15,7 @@
           :allowStealing="myPlayer.allowStealingFrom && myPlayer.allowStealingFrom.includes(player.playerSessionId)"
           @trade-with="$emit('trade-with', $event)"
           @steal-from="$emit('steal-from', $event)"
+          @display-hero-card="displayedHeroCard = $event"
           class="player"
         />
       </li>
@@ -27,22 +28,31 @@
         :isMyTurn="isMyTurn"
         @toggle-ready="$emit('toggle-ready')"
         @deck-clicked="$emit('display-deck')"
-        @play-hero="$emit('play-hero', $event)"
         @play-card="playGameCard($event)"
+        @display-hero-card="displayedHeroCard = $event"
         class="player"
       />
     </div>
+    <HeroCardDialog
+      :isOpen="!!displayedHeroCard.type"
+      :card="displayedHeroCard"
+      :playAllowed="displayedHeroCard.type === myPlayer.currentHeroCard.type && isMyTurn && !myPlayer.hasPlayedHeroCard"
+      @play-hero="playHeroCard($event)"
+      @close="displayedHeroCard = {}"
+    />
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex';
   import PlayerInfo from '@/components/interface/PlayerInfo';
+  import HeroCardDialog from '@/components/interface/HeroCardDialog';
 
   export default {
     name: 'PlayersList',
     components: {
       PlayerInfo,
+      HeroCardDialog
     },
     props: {
       currentTurn: {
@@ -66,6 +76,9 @@
         default: false
       }
     },
+    data: () => ({
+      displayedHeroCard: {}
+    }),
     computed: {
       myPlayerIndex: function() {
         return this.players
@@ -93,6 +106,10 @@
         };
 
         this.$emit('play-card', gameCard);
+      },
+      playHeroCard: function(heroCard) {
+        this.displayedHeroCard = {};
+        this.$emit('play-hero', heroCard);
       }
     }
   }
@@ -103,6 +120,7 @@
 
   .players-wrapper {
     height: 100%;
+    width: 100%;
     
     .other-players {
       height: 50%;
