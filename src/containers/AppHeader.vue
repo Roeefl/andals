@@ -9,9 +9,10 @@
       class="app-bar"
     >
       <section class="header-buttons">
-        <div v-for="item in links" :key="item.key" class="header-item" :class="{ 'home': item.key === 'lobby' }">
+        <div v-for="item in links" :key="item.key" class="header-item" :class="{ 'home': item.key === 'lobby' && !isInGame }">
           <router-link v-if="!!item.to" :to="item.to" class="router-link">
-            <img v-if="item.img" :src="require(`../assets/${item.img}`)" :alt="item.key" />
+            <img v-if="item.img && !isInGame" :src="require(`../assets/${item.img}`)" :alt="item.key" />
+            <BaseButton v-else icon :iconName="item.icon" iconSize="24px" />
             <h3 v-if="item.title" class="item-title">
               {{ item.title }}
             </h3>
@@ -57,7 +58,8 @@
     {
       key: 'lobby',
       to: '/lobby',
-      img: 'logo.png'
+      img: 'logo.png',
+      icon: 'door-open'
     },
     {
       key: 'settings',
