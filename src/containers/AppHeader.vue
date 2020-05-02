@@ -2,7 +2,7 @@
   <v-card class="app-header overflow-hidden" :class="{ 'in-game': isInGame }">
     <v-app-bar
       absolute
-      :color="isInGame ? 'transparent' : 'primary'"
+      color="transparent"
       shrink-on-scroll
       prominent
       scroll-target="#page"
@@ -146,6 +146,7 @@
 
   .app-header {
     height: $header-height;
+    background: transparent !important;
 
     &.in-game {
       width: 15% !important;

@@ -4,6 +4,7 @@
       <SnowyTown class="game-loader" />
       <Snowflakes :count="lobbySnowflakes" class="snowflakes" />
     </div>
+    <div class="header-fallback" />
     <section class="lobby-interface">
       <ul class="actions">
         <li class="action-item">
@@ -188,11 +189,16 @@
   .game-lobby {
     overflow-y: hidden;
 
+    .header-fallback {
+      height: $header-height;
+      background: $primary;
+      margin-bottom: $spacer * 2;
+    }
+
     .lobby-interface {
       z-index: $zindex-interface;
       display: flex;
       flex-direction: column;
-      padding-top: $header-height * 1.5;
 
       & > * {
         z-index: $zindex-interface;
