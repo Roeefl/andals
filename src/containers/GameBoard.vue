@@ -1,7 +1,7 @@
 <template>
   <div v-if="roomState.board" class="board" :class="{ 'game-over': roomState.isVictory }">
     <div class="trees">
-      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" color="green" class="tree" />
+      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
     </div>
     <div class="tiles">
       <div v-for="(tileRow, rowIndex) in hexTileMap" :key="`row-${rowIndex}`" class="tile-row" :class="{ 'even': rowIndex % 2 === 0 , 'odd': rowIndex % 2 === 1 }">
@@ -64,7 +64,7 @@
       </div>
     </div>
     <div class="trees">
-      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" color="green" class="tree" />
+      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
     </div>
   </div>
   <div v-else>

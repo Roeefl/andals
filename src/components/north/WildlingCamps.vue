@@ -1,6 +1,6 @@
 <template>
   <div class="wildling-camps">
-    <div v-for="(section, s) in sectionNames" :key="`section-${s}`" class="wildling-section" :class="{ 'woods': section === WOODS }">
+    <div v-for="(section, s) in sectionNames" :key="`section-${s}`" class="wildling-section">
       <ClanArea
         v-if="section !== WOODS && roomState.clanAreas"
         :clan="clans[section]"
@@ -9,6 +9,9 @@
         :camps="roomState.clanAreas[section].camps"
         @remove-wildling="$emit('remove-wildling', { clanName: clans[section].name, campIndex: $event })"
       />
+      <div v-if="section === WOODS" class="trees">
+        <Tree v-for="(tree, t) in Array(44).fill(0)" :key="t" :size="12" leftColor="#90A4AE" rightColor="green" class="tree" />
+      </div>
     </div>
   </div>
 </template>
@@ -16,9 +19,10 @@
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
+  import { clanNames, clans } from '@/specs/clans';
 
   import ClanArea from '@/components/north/ClanArea';
-  import { clanNames, clans } from '@/specs/clans';
+  import Tree from '@/components/decor/Tree';
 
   const WOODS = 'WOODS';
   const sectionNames = clanNames.map(clan => [WOODS, clan, WOODS]).flat();
@@ -26,7 +30,8 @@
   export default {
     name: 'WildlingCamps',
     components: {
-      ClanArea
+      ClanArea,
+      Tree
     },
     computed: {
       clanTrails: () => colyseusService.clanTrails,
@@ -52,12 +57,13 @@
 
     .wildling-section {
       flex: 1;
+    }
 
-      &.woods {
-        background-image: url('../../assets/snowy-trees-sm.png');
-        background-repeat: repeat;
-        // background-clip: content-box;
-      }
+    .trees {
+      padding-top: $spacer * 2;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: $spacer * 0.7;
     }
   }
 </style>

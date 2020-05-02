@@ -9,7 +9,15 @@
   export default {
     name: 'Tree',
     props: {
-      color: {
+      size: {
+        type: Number,
+        default: 30
+      },
+      leftColor: {
+        type: String,
+        default: 'white',
+      },
+      rightColor: {
         type: String,
         default: 'gray'
       }
@@ -17,7 +25,9 @@
     computed: {
       treeStyle: function() { 
         return {
-          '--leaf-color': this.color
+          '--left-color': this.leftColor,
+          '--right-color': this.rightColor,
+          '--tree-size': `${this.size}px`
         }
       }
     }
@@ -28,47 +38,49 @@
   @import '@/styles/partials';
 
   .tree {
+    position: relative;
     display: inline-block;
     width: 0;
     height: 0;
-    border-bottom: 30px solid white;
-    border-left: 30px solid transparent;
-    position: relative;
-    bottom: 28px;
+    border-bottom: var(--tree-size) solid var(--left-color);
+    border-left: var(--tree-size) solid transparent;
+    bottom: var(--tree-size);
 
     &::before {
       content: '';
       position: absolute;
       width: 0;
       height: 0;
-      border-bottom: 30px solid var(--leaf-color);
-      border-right: 30px solid transparent;
+      border-bottom: var(--tree-size) solid var(--right-color);
+      border-right: var(--tree-size) solid transparent;
     }
 
+    // Trunk
     &::after {
       content: '';
       position: absolute;
-      width: 9px;
-      height: 12px;
+      width: calc(var(--tree-size) * 0.3);
+      height: calc(var(--tree-size) * 0.4);
       background: gray;
-      top: 42px; left: -5px;
+      top: calc(var(--tree-size) * 1.35);
+      left: calc(var(--tree-size) * -0.17);
     }
 
     .tree-bottom {
       position: absolute;
       width: 0;
       height: 0;
-      border-bottom: 33px solid white;
-      border-left: 33px solid transparent;
-      margin: 12px -33px;
+      border-bottom: var(--tree-size) solid var(--left-color);
+      border-left: calc(var(--tree-size) * 1.1) solid transparent;
+      margin: calc(var(--tree-size) * 0.4) calc(var(--tree-size) * -1.1);
 
       &::before {
         content: '';
         position: absolute;
         width: 0;
         height: 0;
-        border-bottom: 33px solid var(--leaf-color);
-        border-right: 33px solid transparent;
+        border-bottom: var(--tree-size) solid var(--right-color);
+        border-right: calc(var(--tree-size) * 1.1) solid transparent;
       }
     }
 
@@ -76,17 +88,17 @@
       position: absolute;
       width: 0;
       height: 0;
-      border-bottom: 21px solid white;
-      border-left: 21px solid transparent;
-      margin: -9px -21px;
+      border-bottom: calc(var(--tree-size) * 0.7) solid var(--left-color);
+      border-left: calc(var(--tree-size) * 0.7) solid transparent;
+      margin: calc(var(--tree-size) * -0.3) calc(var(--tree-size) * -0.7);
 
       &::before {
         content: '';
         position: absolute;
         width: 0;
         height: 0;
-        border-bottom: 21px solid var(--leaf-color);
-        border-right: 21px solid transparent;
+        border-bottom: calc(var(--tree-size) * 0.7) solid var(--right-color);
+        border-right: calc(var(--tree-size) * 0.7) solid transparent;
       }
     }
   }
