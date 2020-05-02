@@ -47,9 +47,6 @@
           .map((x, sectionIndex) => this.guards.filter(guard => guard.section === sectionIndex));
       }
     },
-    created() {
-      this.wallTiles = wallTiles;
-    },
     methods: {
       renderKey(wallSection, sectionIndex) {
         const allOwnerIds = wallSection

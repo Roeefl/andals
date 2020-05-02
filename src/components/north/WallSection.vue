@@ -2,7 +2,7 @@
   <ul class="wall-tile" :style="hoverStyle">
     <li v-for="position in positions" :key="position" class="wall-position" :class="{ 'enabled': allowPurchase && isBuildGuardAllowed(position) }">
       <drop @drop="$emit('relocate-guard', $event)">
-        <WallSectionPosition :order="position + 1" :guard="guards.find(guard => guard.position === position)" @clicked="onPositionClicked(position)" />
+        <WallSectionPosition :position="position" :guard="guards.find(guard => guard.position === position)" @clicked="onPositionClicked(position)" />
       </drop>
     </li>
   </ul>
@@ -17,7 +17,7 @@
   const positions = new Array(wallSectionSize).fill(0).map((x, positionIndex) => positionIndex);
 
   export default {
-    name: 'WallTile',
+    name: 'WallSection',
     components: {
       WallSectionPosition
     },
@@ -51,7 +51,7 @@
     },
     methods: {
       isBuildGuardAllowed: function(position) {
-        const guardAtPosition = this.guards.find(guard => guard.position === p);
+        const guardAtPosition = this.guards.find(guard => guard.position === position);
         if (guardAtPosition) return false;
 
         return positions
