@@ -139,7 +139,6 @@
 
   import DraggableWidget from '@/components/common/DraggableWidget';
 
-  import { initialResourceCounts } from '@/specs/resources';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
   import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
@@ -372,7 +371,7 @@
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, lootCounts });
 
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
-              this.$store.commit('addRecentLoot', { resource, count });
+              this.$store.commit('addRecentLoot', { resource, count: 1 });
             
             break;
 
@@ -392,6 +391,16 @@
               if (broadcast[flag])
                 essentialData[flag] = true;
             });
+            break;
+
+          case MESSAGE_STEAL_CARD:
+            const { stoleFrom, stolenResource } = broadcast;
+
+            const message = `${playerName} has stolen a resource card from ${stoleFrom}`;
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+            
+            if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
+              this.$store.commit('addRecentLoot', { resource: stolenResource, count: 1 });
             break;
 
           case MESSAGE_TURN_ORDER:
