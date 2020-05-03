@@ -64,7 +64,7 @@
   } from '@/constants';
 
   import { ROAD, GUARD } from '@/specs/purchases';
-  import { HERO_CARD_BenjenStark } from '@/specs/heroCards';
+  import { isAllowNorthWildlingsRemove } from '@/utils/heroes';
   import { WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT } from '@/specs/wildlings';
 
   export default {
@@ -139,13 +139,19 @@
           this.$emit('kill-guard', location);
       },
       onBroadcastReceived: function(broadcast) {
-        const { type } = broadcast;
+        const {
+          type,
+          isEssential = false
+        } = broadcast;
+
         let header = '';
 
         switch (type) {
           case MESSAGE_PLACE_GUARD:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: broadcast.message });
-            this.$store.commit('setEssentialOverlay', { header: broadcast.message, guardPurchased: true });
+            
+            if (isEssential)
+              this.$store.commit('setEssentialOverlay', { header: broadcast.message, guardPurchased: true });
             break;
 
           case MESSAGE_WILDLINGS_REVEAL_TOKENS:
@@ -208,7 +214,7 @@
         });
       },
       onRemoveWildlingFromCamp: function(data) {
-        if (!this.myPlayer.heroPrivilege === HERO_CARD_BenjenStark) return;
+        if (!isAllowNorthWildlingsRemove(this.myPlayer)) return;
 
         const { clanName, campIndex } = data;
 
@@ -219,7 +225,7 @@
         });
       },
       onRemoveWildlingFromClearing: function(clearingIndex, wildlingIndex) {
-        if (!this.myPlayer.heroPrivilege === HERO_CARD_BenjenStark) return;
+        if (!isAllowNorthWildlingsRemove(this.myPlayer)) return;
         
         this.room.send({
           type: MESSAGE_WILDLINGS_REMOVE_FROM_CLEARING,

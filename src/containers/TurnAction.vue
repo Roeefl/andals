@@ -45,6 +45,7 @@
 <script>
   import { mapState } from 'vuex';
   import colyseusService from '@/services/colyseus';
+  import { isAllowRobberReset } from '@/utils/heroes';
 
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
@@ -53,7 +54,7 @@
     MESSAGE_FINISH_TURN,
     MESSAGE_MOVE_ROBBER
   } from '@/constants';
-
+  
   export default {
     name: 'TurnAction',
     components: {
@@ -91,7 +92,11 @@
         return !this.roomState.isSetupPhase && this.isMyTurn && !this.roomState.isDiceRolled && !this.roomState.isVictory;
       },
       isLegalRobberMove: function() {
-        return this.desiredRobberTile > -1 && this.roomState.robberPosition !== this.desiredRobberTile && !!(this.roomState.board[this.desiredRobberTile].resource)
+        return (
+          this.desiredRobberTile >= 0 &&
+          this.roomState.robberPosition !== this.desiredRobberTile &&
+          (isAllowRobberReset(this.myPlayer) || !!(this.roomState.board[this.desiredRobberTile].resource))
+        );
       },
       ...mapState([
         'roomState',
