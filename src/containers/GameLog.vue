@@ -10,7 +10,7 @@
       </div>
       <div v-if="log.type === CHAT_LOG_LOOT || log.type === CHAT_LOG_DISCARD" class="loot">
         {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collected' : 'discarded' }}
-        <span v-for="resource in resourceCardTypes" :key="resource" v-show="log.loot[resource]" class="resource-type">
+        <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="log.loot[resource]">
           <ResourceCard
             v-for="(card, i) in Array(log.loot[resource]).fill(resource)"
             :key="`card-${i}`"
@@ -20,7 +20,7 @@
             :resource="resource"
             class="resource"
           />
-        </span>
+        </fragment>
       </div>
       <div v-if="log.type === CHAT_LOG_WILDLING_TOKENS" class="wildling-tokens">
         Wildling Tokens revealed:
@@ -102,6 +102,7 @@
     flex-direction: column;
     padding: $spacer / 2;
     font-size: $font-size-md;
+    max-width: 99%;
 
     .log {
       max-width: 95%;
@@ -118,14 +119,10 @@
         display: flex;
         flex-flow: row wrap;
 
-        .resource-type { 
-          display: flex;
-
-          .resource {
-            width: 24px;
-            height: 24px;
-            margin-left: $spacer / 2;
-          }
+        .resource {
+          width: 24px;
+          height: 24px;
+          margin-left: $spacer / 2;
         }
       }
     }

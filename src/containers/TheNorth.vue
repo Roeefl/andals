@@ -57,6 +57,7 @@
     MESSAGE_PLAY_HERO_CARD,
     MESSAGE_SELECT_HERO_CARD,
     MESSAGE_RELOCATE_GUARD,
+    MESSAGE_PLACE_GUARD,
     CHAT_LOG_WILDLING_TOKENS,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_HERO_CARD
@@ -64,6 +65,7 @@
 
   import { ROAD, GUARD } from '@/specs/purchases';
   import { HERO_CARD_BenjenStark } from '@/specs/heroCards';
+  import { WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT } from '@/specs/wildlings';
 
   export default {
     name: 'TheNorth',
@@ -141,6 +143,11 @@
         let header = '';
 
         switch (type) {
+          case MESSAGE_PLACE_GUARD:
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: broadcast.message });
+            this.$store.commit('setEssentialOverlay', { header: broadcast.message, guardPurchased: true });
+            break;
+
           case MESSAGE_WILDLINGS_REVEAL_TOKENS:
             const { tokens } = broadcast;
             header = 'Wildlings Tokens Revealed:';
@@ -154,7 +161,7 @@
 
           case MESSAGE_WILDLINGS_ADVANCE_CLEARING:
             const { wildling } = broadcast;
-            header = `A ${wildling} has advanced to the clearing!`;
+            header = `A ${wildling.type} has advanced to the clearing!`;
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
             this.$store.commit('setEssentialOverlay', { header });
@@ -162,10 +169,20 @@
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
             const { invader } = broadcast;
-            header = `Attack on the wall! ${invader.type} has attacked the guards`;
+
+            let guardsKilled = 0;
+            if (invader.type === WILDLING_REGULAR) {
+              header = 'Attack on the wall! The wildlings have overthrown the guards and invaded Westeros';
+              guardsKilled = 1;
+            } else if (invader.type === WILDLING_CLIMBER) {
+              header = 'A wildling has climbed the wall!';
+            } else if (invader.type === WILDLING_GIANT) {
+              header = 'Attack on the wall! A giant has killed a guard';
+              guardsKilled = 1;
+            };
 
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
-            this.$store.commit('setEssentialOverlay', { header });
+            this.$store.commit('setEssentialOverlay', { header, guardsKilled, wildlingType: invader.type });
             break;
 
           case MESSAGE_PLAY_HERO_CARD:
