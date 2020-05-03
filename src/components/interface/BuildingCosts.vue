@@ -23,12 +23,15 @@
       <div v-else class="cost">
         <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="costs[resource] > 0">
           <ResourceCard
-            v-for="(resourceCard, index) in Array(costs[resource]).fill(resource)"
+            v-for="(resourceCard, index) in Array(costs[resource] || 0).fill(resource)"
             :key="`card-${resource}-${index}`"
             :resource="resource"
             small
             hideCount
+            :color="counts[resource] > 0 ? 'green lighten-1' : 'white'"
+            :iconColor="counts[resource] > 0 ? 'white' : null"
             class="resource-card"
+            :class="{ 'mini-card': !full }"
           />
         </fragment>
       </div>
@@ -68,6 +71,10 @@
       color: {
         type: String,
         default: 'primary'
+      },
+      counts: {
+        type: Object,
+        default: () => {}
       }
     },
     computed: {
@@ -127,7 +134,8 @@
     padding: $spacer / 3 0;
   }
 
-  .resource-card {
-    height: 16px;
+  .mini-card {
+    width: 30px;
+    height: 30px;
   }
 </style>

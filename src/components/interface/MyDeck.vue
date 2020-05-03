@@ -29,7 +29,7 @@
           class="close-deck"
         />
         <div class="deck-contents">
-          <BuildingCosts :full="false" color="secondary" class="building-costs" />
+          <BuildingCosts :full="false" :counts="myPlayer.resourceCounts" color="secondary" class="building-costs" />
           <div class="resources-container">
             <div v-if="myPlayer.mustDiscardHalfDeck" class="discard">
               <h2 class="discard-header">
@@ -124,6 +124,7 @@
           acc[resource]++;
           return acc;
         }, initialResourceCounts);
+        console.log("discardedCounts", discardedCounts)
 
         colyseusService.room.send({
           type: MESSAGE_DISCARD_HALF_DECK,
@@ -144,6 +145,7 @@
 
     .deck-contents {
       height: 200px;
+      padding: 0 $spacer;
       display: grid;
       grid-gap: $spacer;
       grid-template-columns: 25% 45% 15%;
