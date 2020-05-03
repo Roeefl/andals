@@ -154,6 +154,10 @@
       width: 15% !important;
       box-shadow: none !important;
 
+      @include lg-down() {
+        width: 20% !important;
+      }
+
       .app-bar {
         box-shadow: none !important;
       }

@@ -134,11 +134,23 @@
   .players-wrapper {
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @include md-down() {
+      flex-direction: row;
+    }
     
     .other-players {
-      height: 50%;
       display: flex;
       flex-direction: column;
+      height: 50%;
+
+      @include md-down() {
+        flex-direction: row;
+        flex: 1;
+        height: 100%;
+      }
     }
 
     .player-wrapper {
@@ -150,9 +162,18 @@
       display: flex;
       // transition: position 100ms ease-in-out;
 
+      @include md-down() {
+        max-height: unset;
+        height: 100%;
+      }
+
       &.is-me {
         height: 50%;
         max-height: unset;
+
+        @include md-down() {
+          height: 100%;
+        }
 
         // &:hover {
         //   position: absolute;

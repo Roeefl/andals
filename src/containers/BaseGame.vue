@@ -48,7 +48,7 @@
         <DraggableWidget class="game-log">
           <GameLog :friendly="roomState.friendlyGameLog" />
         </DraggableWidget>
-        <v-divider dark />
+        <v-divider dark class="divider" />
         <DraggableWidget class="game-chat-widget">
           <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
         </DraggableWidget>
@@ -735,6 +735,15 @@
           "players board"
       }
 
+      @include md-down() {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: 
+          "sidebar"
+          "board"
+          "players"
+      }
+
       & > * {
         margin: 0 $spacer / 2;
       }
@@ -790,7 +799,12 @@
         .game-log {
           max-height: $board-height / 2;
           overflow-y: auto;
-
+        }
+        
+        .divider {
+          @include lg-down() {
+            display: none;
+          }
         }
 
         .game-chat-widget {
@@ -803,6 +817,11 @@
           .game-log,
           .game-chat-widget {
             max-height: $board-height * 0.4;
+
+            @include lg-down() {
+              max-height: unset;
+              height: 30vh;
+            }
           }
         }
       }
@@ -811,11 +830,19 @@
         @include lg-down() {
           grid-area: players;
         }
+
+        @include md-down() {
+          height: 20vh;
+        }
       }
     }
 
     .game-status {
       height: 70px;
+
+      @include lg-down() {
+        margin-top: $spacer * 1.5;
+      }
     }
   }
 </style>

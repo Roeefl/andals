@@ -59,11 +59,19 @@
     display: grid;
     grid-template-columns: 15% 85%;
 
+    @include lg-down() {
+      grid-template-columns: 20% 80%;
+    }
+
     .game-ui {
       padding-right: $spacer;
       display: grid;
       grid-template-columns: 60% 40%;
       align-items: center;
+
+      @include md-down() {
+        grid-template-columns: 70% 30%;
+      }
 
       .bank-resources {
         margin-left: $spacer * 2;
