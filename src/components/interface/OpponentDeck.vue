@@ -2,13 +2,13 @@
   <v-dialog
     width="800"
     :value="isOpen"
-    @click:outside="$emit('cancel')"
+    @click:outside="onCancel"
   >
     <ActionCard
       :title="`${opponent.nickname}'s Deck`"
       :approve="!!selectedCard.resource && (!giveBack || !!selectedGiveCard.resource)"
-      @approve="$emit('steal', { selectedCard, selectedGiveCard })"
-      @cancel="$emit('cancel')"
+      @approve="onConfirm"
+      @cancel="onCancel"
     >
       <div class="opponent-deck-container">
         <div class="opponent-deck">
@@ -81,6 +81,18 @@
         
         const isTheSameCard = this.selectedCard.index === index && this.selectedCard.resource === resource;
         this.selectedCard = isTheSameCard ? {} : card;
+      },
+      onDestroy: function() {
+        this.selectedCard = {};
+        this.selectedGiveCard = {};
+      },
+      onCancel: function() {
+        this.$emit('cancel');
+        this.onDestroy();
+      },
+      onConfirm: function() {
+        this.$emit('steal', { selectedCard: this.selectedCard, selectedGiveCard: this.selectedGiveCard });
+        this.onDestroy();
       }
     }
   }

@@ -2,13 +2,13 @@
   <v-dialog
     width="600"
     :value="isOpen"
-    @click:outside="$emit('no')"
+    @click:outside="onCancel"
   >
     <ActionCard
       :title="`Confirm ${removing ? 'Removal' : 'Purchase'}: ${type}`"
-      @cancel="$emit('no')"
+      @cancel="onCancel"
       :approve="!isFlexible || (!swapWhich && !swapWith.resource) || (!!swapWhich && !!swapWith.resource)"
-      @approve="$emit('yes', isFlexible ? { swapWhich, swapWith: swapWith.resource } : {})"
+      @approve="onConfirm"
     >
      <div v-if="!isFree && !removing" class="confirm-move">
       <h2>
@@ -128,6 +128,18 @@
       onResourceClick: function(resource) {
         if (this.myPlayer.resourceCounts[resource] === 0)
           this.swapWhich = resource;
+      },
+      onDestroy: function() {
+        this.swapWhich = {};
+        this.swapWith = {};
+      },
+      onCancel: function() {
+        this.onDestroy();
+        this.$emit('no');
+      },
+      onConfirm: function() {
+        this.$emit('yes', this.isFlexible ? { swapWhich: this.swapWhich, swapWith: sthis.wapWith.resource } : {});
+        this.onDestroy();
       }
     }
   }
