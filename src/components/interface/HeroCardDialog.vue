@@ -14,7 +14,7 @@
       approveColor="highlight"
       @approve="$emit('play-hero', false)"
     >
-      <div class="dialog-content">
+      <div v-if="!!card" class="dialog-content">
         <HeroCard :card="card" class="hero-card" />
       </div>
     </ActionCard>

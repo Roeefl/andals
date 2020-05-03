@@ -201,13 +201,9 @@
     opacity: 1;
     bottom: -300px;
   }
-  50% {
-    opacity: 1;
-    bottom: 10%;
-  }
   100% {
-    opacity: 0;
-    bottom: 33%;
+    opacity: 0.5;
+    bottom: 30%;
   }
 }
 @keyframes slide-up-and-fade-out {
@@ -215,13 +211,9 @@
     opacity: 1;
     bottom: -300px
   }
-  50% {
-    opacity: 1;
-    bottom: 10%;
-  }
   100% {
-    opacity: 0;
-    bottom: 33%;
+    opacity: 0.5;
+    bottom: 30%;
   }
 }
 

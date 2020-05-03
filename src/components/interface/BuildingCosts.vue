@@ -1,16 +1,18 @@
 <template>
   <div class="building-costs">
-    <section class="resource-type" v-for="(costs, name) in buildingCosts" :key="name">
+    <section v-for="(costs, name) in buildingCosts" :key="name" class="resource-type" :class="{ 'full': full }">
       <div class="description">
         <h3 class="purchase-type">
-          <BaseIcon :name="structureIcons[name]" size="20px" color="primary" />
-          {{ name }}
+          <BaseIcon :name="structureIcons[name]" size="20px" :color="color" />
+          <span v-if="full">
+            {{ name }}
+          </span>
         </h3>
-        <span class="vp">
+        <span v-if="full" class="vp">
           {{ victoryPointsPerPurchase[name] }} Victory Points
         </span>
       </div>
-      <div class="cost">
+      <div v-if="full" class="cost">
         <ResourceCard
           v-for="resource in resourceCardTypes"
           :key="resource"
@@ -18,8 +20,20 @@
           :count="costs[resource]"
         />    
       </div>
+      <div v-else class="cost">
+        <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="costs[resource] > 0">
+          <ResourceCard
+            v-for="(resourceCard, index) in Array(costs[resource]).fill(resource)"
+            :key="`card-${resource}-${index}`"
+            :resource="resource"
+            small
+            hideCount
+            class="resource-card"
+          />
+        </fragment>
+      </div>
     </section>
-    <footer>
+    <footer v-if="full">
       <h5 class="paragraph">
         A city replaces an already-built settlement.
       </h5>
@@ -46,6 +60,16 @@
       ResourceCard,
       BaseIcon
     },
+    props: {
+      full: {
+        type: Boolean,
+        default: true
+      },
+      color: {
+        type: String,
+        default: 'primary'
+      }
+    },
     computed: {
       buildingCosts: () => colyseusService.buildingCosts
     },
@@ -64,12 +88,18 @@
     padding: $spacer / 2;
 
     .resource-type {
-      display: grid;
-      grid-template-columns: 40% 60%;
+      display: flex;
+      align-items: center;
+      height: 20%;
 
-      border-bottom: 1px solid gray;
-      margin: $spacer / 2 0;
-      padding: $spacer / 2 0;
+      &.full {
+        display: grid;
+        grid-template-columns: 40% 60%;
+        height: auto;
+        margin: $spacer / 2 0;
+        padding: $spacer / 2 0;
+        border-bottom: 1px solid gray;
+      }
 
       .description {
         display: flex;
@@ -95,5 +125,9 @@
     font-size: $font-size-sm;
     margin: $spacer / 3 0;
     padding: $spacer / 3 0;
+  }
+
+  .resource-card {
+    height: 16px;
   }
 </style>

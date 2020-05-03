@@ -1,6 +1,6 @@
 <template>
   <div class="hero-card">
-    <header class="card-header" :class="{ 'highlighted-section': !thumbnail, 'thumbnail': thumbnail }">
+    <header v-if="card.type" class="card-header" :class="{ 'highlighted-section': !thumbnail, 'thumbnail': thumbnail }">
       <h3>
         {{ card.name }}
       </h3>
@@ -9,9 +9,9 @@
       </h4>
     </header>
     <section class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
-      <img v-if="card.type" :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.title}`" class="card-image" />
+      <img v-if="card.type" :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.type}`" class="card-image" />
     </section>
-    <section v-if="!thumbnail" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
+    <section v-if="!thumbnail && card.type" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">
         {{ heroSpecs[card.type].ability }}
       </h3>

@@ -11,40 +11,35 @@
     >
       My Deck
     </BaseButton>
-    <v-bottom-sheet light :value="displayDeck" width="70%" @click:outside="$store.commit('closeMyDeck')" :persistent="myPlayer.mustDiscardHalfDeck">
-      <v-sheet class="text-center" height="200px">
-        <h2>
-          {{ myPlayer.mustDiscardHalfDeck ? `Discard ${discardCardsNeeded} Cards` : null }}
-        </h2>
-        <v-btn
-          text
-          color="error"
+    <v-bottom-sheet light :value="displayDeck" width="68%" @click:outside="$store.commit('closeMyDeck')" :persistent="myPlayer.mustDiscardHalfDeck">
+      <v-sheet class="deck-sheet">
+        <BaseButton
+          icon
+          iconName="arrow-down-bold-box"
+          iconColor="secondary"
+          iconSize="40px"
           :disabled="myPlayer.mustDiscardHalfDeck"
           @click="$store.commit('closeMyDeck')"
-          class="mt-6"
-        >
-          Close
-        </v-btn>
-        <v-btn
-          v-if="myPlayer.mustDiscardHalfDeck"
-          text
-          color="success"
-          :disalbed="selectedCards.length !== discardCardsNeeded"
-          @click="onDiscard" 
-          class="mt-6"
-        >
-          Discard
-        </v-btn>
-        <div class="wrapper">
+          class="close-deck"
+        />
+        <div v-if="myPlayer.mustDiscardHalfDeck">
+          <h2>
+            Discard {{ discardCardsNeeded }} Cards
+          </h2>
+          <BaseButton
+            icon
+            iconName="discard"
+            iconColor="success"
+            iconSize="40px"
+            :disabled="selectedCards.length !== discardCardsNeeded"
+            @click="onDiscard" 
+          >
+            Discard
+          </BaseButton>
+        </div>
+        <div class="deck-contents">
+          <BuildingCosts :full="false" color="secondary" class="building-costs" />
           <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
-          <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="pieces">
-            <GamePiece 
-              size="30px"
-              :type="purchaseType"
-              :count="myPlayer[purchaseType]"
-              :color="myPlayer.color"
-            />
-          </div>
           <GameCards
             v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
             visible
@@ -62,10 +57,11 @@
   import colyseusService from '@/services/colyseus';
 
   import BaseDeck from '@/components/game/BaseDeck';
+  import BuildingCosts from '@/components/interface/BuildingCosts';
   import GameCards from '@/components/interface/GameCards';
-  import GamePiece from '@/components/game/GamePiece';
   import BaseButton from '@/components/common/BaseButton';
   import { pluralTypes as purchaseTypes } from '@/specs/purchases';
+  import { initialResourceCounts } from '@/specs/resources';
 
   import { MESSAGE_DISCARD_HALF_DECK } from '@/constants';
 
@@ -73,8 +69,8 @@
     name: 'MyDeck',
     components: {
       BaseDeck,
+      BuildingCosts,
       GameCards,
-      GamePiece,
       BaseButton
     },
     data: () => ({
@@ -135,33 +131,46 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .wrapper {
-    display: flex;
+  .deck-sheet {
+    position: relative;
 
-    .resources-deck {
-      padding: $spacer;
+    .deck-contents {
+      height: 200px;
+      display: grid;
+      grid-gap: $spacer;
+      grid-template-columns: 25% 45% 15%;
+
+      .resources-deck {
+        padding: $spacer;
+      }
+
+      .building-costs {
+        height: 200px;
+      }
+
+      .game-cards {
+        border-left: 1px solid lightgray;
+      }
     }
   }
 
-  .pieces {
-    padding: $spacer / 2;
-    margin: $spacer / 2;
-  }
-
-  .game-cards {
-    padding: $spacer / 2;
-    margin: $spacer / 2;
-    border-top: 1px solid lightgray;
-  }
-
-  .open-my-deck {
-    transition: all 5ms ease-in-out;
-    position: fixed;
+  %toggle-button {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+  }
+
+  .open-my-deck {
+    position: fixed;
+    @extend %toggle-button;
+    transition: all 5ms ease-in-out;
     font-size: $font-size-lg;
     opacity: 1;
     animation: fade-in 2s linear ease-in-out;
+  }
+
+  .close-deck {
+    position: absolute;
+    @extend %toggle-button;
   }
 </style>
