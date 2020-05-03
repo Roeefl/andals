@@ -1,5 +1,5 @@
 <template>
-  <BaseOverlay :isOpen="isOpen">
+  <BaseOverlay :isOpen="isOpen" :opacity="0.85">
     <div class="overlay-contents">
       <h1 class="overlay-header">
         {{ overlay.header }}
@@ -14,8 +14,16 @@
           class="wildling-token"
         />
       </div>
-      <div v-if="overlay.dice" class="player-rolls">
-        <GameDice small :dice="overlay.dice" :enabled="false" />
+      <div class="game-phase">
+        <GameAsset
+          v-for="(gamePhase, g) in gamePhases.filter(phase => overlay[phase])"
+          :key="g"
+          type="phases"
+          :asset="phaseToAssetName[gamePhase]"
+        />
+      </div>
+      <div v-if="overlay.isRobber" class="robber">
+        <GameAsset type="pieces" asset="robber" />
       </div>
       <div v-if="overlay.heroCard" class="hero-card">
         <h2>
@@ -35,14 +43,15 @@
 <script>
   import BaseOverlay from '@/components/common/BaseOverlay';
   import WildlingToken from '@/components/north/WildlingToken';
-  import GameDice from '@/components/interface/GameDice';
+  import GameAsset from '@/components/game/GameAsset';
+  import { gamePhases, phaseToAssetName } from '@/specs/gamePhases';
 
   export default {
     name: 'EssentialOverlay',
     components: {
       BaseOverlay,
       WildlingToken,
-      GameDice
+      GameAsset
     },
     props: {
       isOpen: {
@@ -52,11 +61,11 @@
       overlay: {
         type: Object,
         required: true
-      },
-      dice: {
-        type: Array,
-        default: () => null
-      },
+      }
+    },
+    created() {
+      this.gamePhases = gamePhases;
+      this.phaseToAssetName = phaseToAssetName;
     }
   }
 </script>
