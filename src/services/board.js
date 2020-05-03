@@ -1,51 +1,21 @@
-// 7 rows x 14 columns
-const initialActiveStructures = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-];
 
-// 14 rows x 14 columns
-const initialActiveRoads = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-];
+const initialActiveStructuresRows = 7;
+const initialActiveStructuresColumns = 14;
+
+const initialActiveRoadsRows = 14;
+const initialActiveRoadsColumns = 14;
 
 class BoardService {
   initialStructures() {
-    const clonedArr = [];
-
-    initialActiveStructures.forEach(row => clonedArr.push([
-      ...row
-    ]));
-
-    return clonedArr;
+    return new Array(initialActiveStructuresRows)
+      .fill(0)
+      .map(row => new Array(initialActiveStructuresColumns).fill(0))
   }
 
   initialRoads() {
-    const clonedArr = [];
-
-    initialActiveRoads.forEach(row => clonedArr.push([
-      ...row
-    ]));
-
-    return clonedArr;
+    return new Array(initialActiveRoadsRows)
+      .fill(0)
+      .map(row => new Array(initialActiveRoadsColumns).fill(0))
   }
 
   absoluteIndex(tilemap, row, col) {
