@@ -783,22 +783,31 @@
         display: flex;
         flex-direction: column;
 
-        @include lg-down() {
-          grid-area: sidebar;
-          flex-direction: row;
+        @include xl() {
+          & > * {
+            flex: 1;
+
+            &:last-of-type {
+              margin-top: $spacer;
+            }
+          }
         }
 
-        & > * {
-          flex: 1;
+        @include lg-down() {
+          grid-area: sidebar;
+          display: grid;
+          grid-gap: 1%;
+          grid-template-columns: 20% 40% 40%;
+        }
 
-          &:last-of-type {
-            margin-top: $spacer;
-          }
+        .breach-marker {
+          justify-content: flex-start;
         }
 
         .game-log {
           max-height: $board-height / 2;
           overflow-y: auto;
+          justify-content: flex-start;
         }
         
         .divider {

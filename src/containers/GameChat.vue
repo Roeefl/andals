@@ -80,6 +80,7 @@
     z-index: $zindex-chat;
     display: flex;
     align-items: center;
+    width: 90%;
 
     & > * {
       margin: 0 $spacer;

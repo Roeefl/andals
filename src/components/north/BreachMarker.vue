@@ -40,6 +40,7 @@
     padding-bottom: $spacer;
 
     .tracker {
+      width: 100%;
       flex: 1;
       display: flex;
       flex-direction: column;
