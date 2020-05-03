@@ -199,21 +199,30 @@
  @-webkit-keyframes slide-up-and-fade-out {
   0% {
     opacity: 1;
-    bottom: -200px;
+    bottom: -300px;
   }
   100% {
-    opacity: 0.4;
-    bottom: 60%;
+    opacity: 0;
+    bottom: 33%;
   }
 }
 @keyframes slide-up-and-fade-out {
   0% {
     opacity: 1;
-    bottom: -200px
+    bottom: -300px
   }
   100% {
-    opacity: 0.4;
-    bottom: 60%;
+    opacity: 0;
+    bottom: 33%;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -228,4 +237,22 @@
     filter: blur(4px);
     opacity: 0;
   }
+}
+
+@-webkit-keyframes conditional-open {
+  from { transform: scaleY(0) }
+  to { transform: scaleY(1) }
+}
+@keyframes conditional-open {
+  from { transform: scaleY(0) }
+  to { transform: scaleY(1) }
+}
+
+@-webkit-keyframes conditional-close {
+  from { transform: scaleY(1) }
+  to { transform: scaleY(0) }
+}
+@keyframes conditional-close {
+  from { transform: scaleY(1) }
+  to { transform: scaleY(0) }
 }
