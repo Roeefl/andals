@@ -51,11 +51,9 @@
             :active="myPlayer.mustMoveRobber"
           />
           <Countdown
-            v-if="isDisplayRobberTile(rowIndex, colIndex) && countdown >= 0"
-            :maxValue="5"
-            :value="countdown"
-            @increment="countdown--"
-            @end="onConfirmRobber"
+            v-if="countdownTile === absoluteIndex(hexTileMap, rowIndex, colIndex)"
+            :initialValue="5"
+            @finished="onConfirmRobber"
             class="countdown"
           />
           <Wildling
@@ -151,7 +149,7 @@
       'desiredRobberTile'
     ]),
     data: () => ({
-      countdown: -1
+      countdownTile: -1
     }),
     created() {
       this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
@@ -205,13 +203,13 @@
       onMoveRobber: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
         this.$emit('robber-moved', tileIndex);
-        this.countdown = 5;
+
+        this.countdownTile = tileIndex;
       },
       onConfirmRobber: function() {
-      console.log("onConfirmRobber")
         if (!this.myPlayer.mustMoveRobber) return;
         this.$emit('robber-confirmed');
-        this.countdown = -1;
+        this.countdownTile = -1;
       },
       isDisplayRobberTile: function(row, col) {
         const absoluteTileIndex = boardService.absoluteIndex(this.hexTileMap, row, col);
@@ -326,7 +324,7 @@
   }
 
   .countdown {
-    position: fixed;
+    position: absolute;
     bottom: -$spacer * 2;
     left: $spacer * 3;
   }

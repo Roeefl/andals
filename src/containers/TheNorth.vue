@@ -8,7 +8,7 @@
       <div class="wildling-clearings">
         <WildlingClearing
           v-for="(clearing, c) in roomState.wildlingClearings"
-          :key="`clearing-${c}`"
+          :key="`clearing-${c}-${clearing.wildlings}`"
           :clearing="clearing"
           @remove-wildling="onRemoveWildlingFromClearing(c, $event)"
           class="clearing"
