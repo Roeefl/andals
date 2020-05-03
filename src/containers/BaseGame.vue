@@ -141,13 +141,14 @@
 
   import { initialResourceCounts } from '@/specs/resources';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
-
   import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
+  import { gamePhases } from '@/specs/gamePhases';
 
   import {
     MESSAGE_CHAT,
     MESSAGE_GAME_LOG,
+    MESSAGE_TURN_ORDER,
     MESSAGE_READY,
     MESSAGE_ROLL_DICE,
     MESSAGE_COLLECT_ALL_LOOT,
@@ -340,8 +341,8 @@
             this.$store.commit('addGameLog', { type: CHAT_LOG_DICE, playerName, dice });
             
             if (isEssential) {
-              essentialHeader = `${playerName} rolls: ${dice}`;
-              essentialData.dice = dice;
+              essentialHeader = `${playerName} rolled a 7`;
+              essentialData.isRobber = true;
             };
 
             if (this.myPlayer.mustDiscardHalfDeck)
@@ -384,9 +385,20 @@
 
           case MESSAGE_GAME_LOG:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
-            
-            // isEssential here means it's a finish-turn message - so if it's my turn now, pop up my deck
-            if (isEssential && this.isMyTurn && this.roomState.isGameStarted)
+
+            if (isEssential)
+              essentialHeader = message;
+
+            gamePhases.forEach(flag => {
+              if (broadcast[flag])
+                essentialData[flag] = true;
+            });
+            break;
+
+          case MESSAGE_TURN_ORDER:
+            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+
+            if (this.roomState.isGameStarted && this.isMyTurn)
               this.$store.commit('openMyDeck');
             break;
 

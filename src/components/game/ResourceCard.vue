@@ -4,15 +4,15 @@
       icon
       color="primary"
       :small="small"
-      :iconSize="small ? '16px' : '32px'"
+      :iconSize="small ? '16px' : (recentLoot ? '100px' : '32px')"
       :iconName="hideIcon ? 'help-box' : resourceCardIcons[resource]"
       :iconColor="hideIcon? 'secondary' : resourceCardColors[resource]"
       :clickable="clickable"
     >
       <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="maskCount ? '?' : count" class="resource-count" />
       <BaseIcon v-if="selected" name="check-outline" size="x-large" color="highlight" class="selected" />
-      <BaseIcon v-if="recentLoot" name="plus-box-multiple-outline" size="30px" color="highlight" class="selected" />
     </BaseButton>
+    <BaseIcon v-if="recentLoot" name="plus-one" size="60px" :color="resourceCardColors[resource]" class="recent-loot" />
     <BaseIcon v-if="collectable" size="x-large" name="sack" color="success" class="collect" />
   </v-card>
 </template>
@@ -121,5 +121,11 @@
     position: absolute;
     top: 0;
     right: -$spacer;
+  }
+
+  .recent-loot {
+    position: absolute;
+    top: $spacer * -3;
+    left: 30%;
   }
 </style>

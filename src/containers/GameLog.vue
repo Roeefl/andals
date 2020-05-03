@@ -101,9 +101,10 @@
     display: flex;
     flex-direction: column;
     padding: $spacer / 2;
+    font-size: $font-size-md;
 
     .log {
-      max-width: 99%;
+      max-width: 95%;
       margin: $spacer / 5 0;
       padding: $spacer / 5 0;
 

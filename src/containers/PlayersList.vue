@@ -43,6 +43,7 @@
     <ResourceCard
       v-for="(card, key, index) in recentLoot"
       :key="`${key}-${index}`"
+      recentLoot
       :resource="card.resource"
       :count="card.count"
       :clickable="false"
@@ -191,8 +192,8 @@
     height: 240px;
     position: absolute;
     left: 15%;
-    -webkit-animation: slide-up-and-fade-out 7s ease both;
-    animation: slide-up-and-fade-out 7s ease both;
+    -webkit-animation: slide-up-and-fade-out 6s ease both;
+    animation: slide-up-and-fade-out 6s ease both;
     // @include recent-loot-cards();
 
     &.recent-loot-card-1 {
