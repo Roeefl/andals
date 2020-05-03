@@ -1,7 +1,7 @@
 <template>
   <div class="wildling-spawn">
     <fragment v-for="(count, type) in counts" :key="`type-${type}`">
-      <Wildling v-for="(wildling, w) in Array(count).fill(type)" :key="w" :type="type" :size="16" class="wildling" />
+      <Wildling v-for="(wildling, w) in Array(count || 0).fill(type)" :key="w" :type="type" :size="16" class="wildling" />
     </fragment>
   </div>
 </template>

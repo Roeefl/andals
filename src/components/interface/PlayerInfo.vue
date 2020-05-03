@@ -51,7 +51,7 @@
       <div @click="$emit('deck-clicked')" class="resource-cards">
         <fragment v-for="resource in resourceCardTypes" :key="`resource-${resource}`" v-show="player.resourceCounts && player.resourceCounts[resource] > 0">
           <ResourceCard
-            v-for="(resourceCard, index) in Array((player.resourceCounts || {})[resource]).fill(resource)"
+            v-for="(resourceCard, index) in Array((player.resourceCounts || {})[resource] || 0).fill(resource)"
             :key="`card-${resource}-${index}`"
             :resource="resource"
             small

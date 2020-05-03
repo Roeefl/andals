@@ -2,7 +2,7 @@
   <div class="deck">
     <div v-for="resource in resourceCardTypes" :key="resource" v-show="deck[resource]" class="resource-type">
       <drag
-        v-for="(card, index) in Array(deck[resource]).fill(resource)"
+        v-for="(card, index) in Array(deck[resource] || 0).fill(resource)"
         :key="`card-${resource}-${index}`"
         :transfer-data="{ resource, index }"
         class="resource-card"

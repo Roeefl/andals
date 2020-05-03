@@ -17,7 +17,7 @@
             <div class="trade-cards">
               <div v-for="resource in resourceCardTypes" :key="resource" v-show="player.tradeCounts && player.tradeCounts[resource]" class="resource-type">
                 <drag 
-                  v-for="(card, c) in Array(player.tradeCounts && player.tradeCounts[resource] > 0 ? player.tradeCounts[resource] : 0).fill(resource)"
+                  v-for="(card, c) in Array(player.tradeCounts ? (player.tradeCounts[resource] || 0) : 0).fill(resource)"
                   :key="`card-${c}`"
                   :transfer-data="{ resource }"
                   class="resource-card"
