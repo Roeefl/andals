@@ -6,9 +6,9 @@
   >
     <ActionCard
       :title="`${opponent.nickname}'s Deck`"
-      :cancel="false"
       :approve="!!selectedCard.resource && (!giveBack || !!selectedGiveCard.resource)"
       @approve="$emit('steal', { selectedCard, selectedGiveCard })"
+      @cancel="$emit('cancel')"
     >
       <div class="opponent-deck-container">
         <div class="opponent-deck">

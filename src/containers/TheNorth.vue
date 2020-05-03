@@ -26,7 +26,7 @@
         class="the-wall"
       />
     </div>
-    <HeroCardSwapper
+    <CardSwapper
       v-if="myPlayer.swappingHeroCard"
       :isOpen="myPlayer.swappingHeroCard"
       :cards="roomState.heroCards"
@@ -46,7 +46,7 @@
   import WildlingSpawn from '@/components/north/WildlingSpawn';
   import WildlingCamps from '@/components/north/WildlingCamps';
   import WildlingClearing from '@/components/north/WildlingClearing';
-  import HeroCardSwapper from '@/components/game/HeroCardSwapper';
+  import CardSwapper from '@/components/interface/CardSwapper';
 
   import {
     MESSAGE_WILDLINGS_REVEAL_TOKENS,
@@ -72,7 +72,7 @@
       WildlingCamps,
       WildlingClearing,
       Wall,
-      HeroCardSwapper
+      CardSwapper
     },
     props: {
       allowPurchase: {

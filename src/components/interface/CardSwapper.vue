@@ -29,7 +29,7 @@
   import BaseButton from '@/components/common/BaseButton';
 
   export default {
-    name: 'HeroCardSwapper',
+    name: 'CardSwapper',
     components: {
       ActionCard,
       HeroCard,
@@ -75,8 +75,8 @@
   @import '@/styles/partials';
 
   // @TODO: should be this.cards.length;
-  $cards-count: 16;
-  $first-card-left: 25%;
+  $cards-count: 12;
+  $first-card-left: 18%;
   $card-distance: 80px;
   $zindex-first-card: 100;
 
@@ -84,7 +84,7 @@
     @for $c from 0 to $cards-count {
       &:nth-child(#{$c + 1}) {
         left: calc(#{$start} + #{$card-distance * $c});
-        transform: translate(-#{$c * 0}rem, #{$c * 0}rem) rotate(#{(60 / $cards-count) * $c}deg);
+        // transform: translate(-#{$c * 0}rem, #{$c * 0}rem) rotate(#{(60 / $cards-count) * $c}deg);
         z-index: $zindex-first-card - $c;
       }
     }
@@ -95,10 +95,10 @@
     height: 600px;
 
     .hero-card-wrapper {
+      // animation: slide-in-bck-center 1.4s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
       position: absolute;
       bottom: 85%;
       @include cards($first-card-left);
-      animation: slide-in-bck-center 1.4s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
 
       &:hover {
         z-index: $zindex-first-card + 1;
