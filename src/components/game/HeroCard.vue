@@ -5,7 +5,7 @@
         {{ card.name }}
       </h3>
       <h4 v-if="!thumbnail" class="card-title">
-        {{ card.title }}
+        {{ heroSpecs[card.type].title }}
       </h4>
     </header>
     <section class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
@@ -13,16 +13,18 @@
     </section>
     <section v-if="!thumbnail" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">
-        {{ card.ability }}
+        {{ heroSpecs[card.type].ability }}
       </h3>
       <div class="card-description">
-        {{ card.description }}
+        {{ heroSpecs[card.type].description }}
       </div>
     </section>
   </div>
 </template>
 
 <script>
+  import { heroSpecs } from '@/specs/heroCards';
+
   export default {
     name: 'HeroCard',
     props: {
@@ -35,8 +37,8 @@
         default: false
       }
     },
-    updated() {
-      console.log(this.card.name);
+    created() {
+      this.heroSpecs = heroSpecs;
     }
   }
 </script>
