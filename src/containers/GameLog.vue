@@ -12,7 +12,7 @@
         {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collected' : 'discarded' }}
         <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="log.loot[resource]">
           <ResourceCard
-            v-for="(card, i) in Array(log.loot[resource]).fill(resource)"
+            v-for="(card, i) in Array(log.loot[resource] || 0).fill(resource)"
             :key="`card-${i}`"
             small
             hideCount
