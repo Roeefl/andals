@@ -11,7 +11,13 @@
     >
       My Deck
     </BaseButton>
-    <v-bottom-sheet light :value="displayDeck" width="68%" @click:outside="$store.commit('closeMyDeck')" :persistent="myPlayer.mustDiscardHalfDeck">
+    <v-bottom-sheet
+      light
+      :value="displayDeck"
+      width="68%"
+      @click:outside="!myPlayer.mustDiscardHalfDeck && $store.commit('closeMyDeck')"
+      :persistent="myPlayer.mustDiscardHalfDeck"
+    >
       <v-sheet class="deck-sheet">
         <BaseButton
           icon
@@ -22,24 +28,26 @@
           @click="$store.commit('closeMyDeck')"
           class="close-deck"
         />
-        <div v-if="myPlayer.mustDiscardHalfDeck">
-          <h2>
-            Discard {{ discardCardsNeeded }} Cards
-          </h2>
-          <BaseButton
-            icon
-            iconName="discard"
-            iconColor="success"
-            iconSize="40px"
-            :disabled="selectedCards.length !== discardCardsNeeded"
-            @click="onDiscard" 
-          >
-            Discard
-          </BaseButton>
-        </div>
         <div class="deck-contents">
           <BuildingCosts :full="false" color="secondary" class="building-costs" />
-          <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
+          <div class="resources-container">
+            <div v-if="myPlayer.mustDiscardHalfDeck" class="discard">
+              <h2 class="discard-header">
+                Discard {{ discardCardsNeeded }} Cards
+              </h2>
+              <BaseButton
+                color="error"
+                iconName="checkbox-marked-circle-outline"
+                iconColor="primary"
+                iconSize="32px"
+                :clickable="selectedCards.length === discardCardsNeeded"
+                @click="onDiscard" 
+              >
+                Discard
+              </BaseButton>
+            </div>
+            <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
+          </div>
           <GameCards
             v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
             visible
@@ -146,6 +154,20 @@
 
       .building-costs {
         height: 200px;
+      }
+
+      .resources-container {
+        display: flex;
+        flex-direction: column;
+
+        .discard {
+          display: flex;
+          align-items: center;
+          
+          .discard-header {
+            margin-right: $spacer * 2;
+          }
+        }
       }
 
       .game-cards {
