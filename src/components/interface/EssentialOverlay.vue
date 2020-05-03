@@ -5,12 +5,18 @@
         {{ overlay.header }}
       </h1>
       <div v-if="overlay.tokens" class="wildling-tokens">
-        <GameAsset
-          v-for="(wildling, w) in overlay.tokens"
-          :key="w"
-          type="wildlings"
-          :asset="wildling.wildlingType"
+        <WildlingToken
+          v-for="(token, t) in overlay.tokens"
+          :key="`token-${t}`"
+          :wildling="token.wildlingType"
+          :clan="token.clanType"
+          size="50px"
+          class="wildling-token"
         />
+      </div>
+      <div v-if="overlay.guardsKilled" class="guards-killed">
+        <GameAsset v-if="overlay.wildlingType" type="wildlings" :asset="overlay.wildlingType" />
+        <GameAsset type="events" asset="guard-killed" />
       </div>
       <div class="game-phase">
         <GameAsset
@@ -84,7 +90,14 @@
     }
 
     .wildling-tokens {
+      width: 40%;
       display: flex;
+      justify-content: space-between;
+
+      .wildling-token {
+        width: 8vw;
+        height: 8vh;
+      }
     }
 
     .player-rolls {

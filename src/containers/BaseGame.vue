@@ -366,10 +366,7 @@
           case MESSAGE_COLLECT_RESOURCE_LOOT:
             const { resource } = broadcast;
 
-            const lootCounts = {
-              [resource]: 1
-            };
-            this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, lootCounts });
+            this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot: { [resource]: 1 } });
 
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
               this.$store.commit('addRecentLoot', { resource, count: 1 });
