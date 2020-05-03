@@ -26,8 +26,8 @@
         isMe
         :isGameReady="isGameReady"
         :isMyTurn="isMyTurn"
+        @deck-clicked="$store.commit('openMyDeck')"
         @toggle-ready="$emit('toggle-ready')"
-        @deck-clicked="$emit('display-deck')"
         @play-card="playGameCard($event)"
         @display-hero-card="displayedHeroCard = $event"
         class="player"
@@ -36,7 +36,7 @@
     <HeroCardDialog
       :isOpen="!!displayedHeroCard.type"
       :card="displayedHeroCard"
-      :playAllowed="displayedHeroCard.type === myPlayer.currentHeroCard.type && isMyTurn && !myPlayer.hasPlayedHeroCard"
+      :playAllowed="displayedHeroCard.type === (myPlayer.currentHeroCard || {}).type && isMyTurn && !myPlayer.hasPlayedHeroCard"
       @play-hero="playHeroCard($event)"
       @close="displayedHeroCard = {}"
     />
@@ -142,6 +142,7 @@
 
     .player-wrapper {
       flex: 1;
+      max-height: 200px;
       overflow-y: hidden;
       margin-top: $spacer;
       position: relative;
@@ -150,6 +151,7 @@
 
       &.is-me {
         height: 50%;
+        max-height: unset;
 
         // &:hover {
         //   position: absolute;
@@ -189,8 +191,8 @@
     height: 240px;
     position: absolute;
     left: 15%;
-    -webkit-animation: slide-up-and-fade-out 5s ease both;
-    animation: slide-up-and-fade-out 5s ease both;
+    -webkit-animation: slide-up-and-fade-out 7s ease both;
+    animation: slide-up-and-fade-out 7s ease both;
     // @include recent-loot-cards();
 
     &.recent-loot-card-1 {

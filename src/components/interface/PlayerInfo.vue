@@ -37,7 +37,6 @@
         <div v-if="isMe" class="game-pieces" @click="$emit('deck-clicked')">
           <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="game-piece">
             <GamePiece 
-              showCount
               :count="player[purchaseType]"
               :type="purchaseType"
               :color="player.color"

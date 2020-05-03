@@ -38,7 +38,7 @@
       },
       showCount: {
         type: Boolean,
-        default: false
+        default: true
       },
       count: {
         type: Number,

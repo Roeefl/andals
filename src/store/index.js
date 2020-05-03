@@ -18,6 +18,7 @@ export default new Vuex.Store({
     currentUser: {},
     isGameLoading: false,
     isSelfReady: false,
+    displayDeck: false,
     rooms: [],
     // reservations: [],
     roomState: {},
@@ -33,7 +34,8 @@ export default new Vuex.Store({
       nickname: 'Loading...',
       avatar: 1,
       resourceCounts: {},
-      hasResources: {}
+      hasResources: {},
+      currentHeroCard: {}
     },
     desiredRobberTile: -1,
     isRollingDice: false,
@@ -87,6 +89,12 @@ export default new Vuex.Store({
       console.log("setGameLoading -> isLoading", isLoading)
       state.isGameLoading = isLoading;
       console.log("setGameLoading -> isGameLoading", state.isGameLoading)
+    },
+    openMyDeck(state) {
+      state.displayDeck = true;
+    },
+    closeMyDeck(state) {
+      state.displayDeck = false;
     },
     toggleSelfReady(state) {
       state.isSelfReady = !state.isSelfReady;

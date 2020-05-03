@@ -1,58 +1,66 @@
 <template>
-  <v-dialog
-    :value="isOpen"
-    persistent
-    width="800"
-  >
-    <ActionCard
-      :title="myPlayer.mustDiscardHalfDeck ? `Discard ${discardCardsNeeded} Cards` : 'My Deck'"
-      :cancel="!myPlayer.mustDiscardHalfDeck"
-      @cancel="$emit('close')"
-      :approve="!myPlayer.mustDiscardHalfDeck || selectedCards.length === discardCardsNeeded"
-      @approve="onApproveDiscard"
-    >
+  <v-bottom-sheet light :value="displayDeck" width="50%" @click:outside="$store.commit('closeMyDeck')" :persistent="myPlayer.mustDiscardHalfDeck">
+    <v-sheet class="text-center" height="400px">
+      <h2>
+        {{ myPlayer.mustDiscardHalfDeck ? `Discard ${discardCardsNeeded} Cards` : 'My Deck' }}
+      </h2>
+      <v-btn
+        text
+        color="error"
+        :disabled="myPlayer.mustDiscardHalfDeck"
+        @click="$store.commit('closeMyDeck')"
+        class="mt-6"
+      >
+        Close
+      </v-btn>
+      <v-btn
+        v-if="myPlayer.mustDiscardHalfDeck"
+        text
+        color="success"
+        :disalbed="selectedCards.length !== discardCardsNeeded"
+        @click="onDiscard" 
+        class="mt-6"
+      >
+        Discard
+      </v-btn>
       <div class="wrapper">
         <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
-        <fragment v-if="!myPlayer.mustDiscardHalfDeck">
-          <GamePieces type="road" :pieces="myPlayer.roads" :color="myPlayer.color" class="pieces" />
-          <GamePieces type="settlement" :pieces="myPlayer.settlements" :color="myPlayer.color" class="pieces" />
-          <GamePieces type="cities" :pieces="myPlayer.cities" :color="myPlayer.color" class="pieces" />
-          <GamePieces type="guards" :pieces="myPlayer.guards" :color="myPlayer.color" class="pieces" />
-          <GameCards
-            v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
-            visible
-            :deck="myPlayer.gameCards"
-            class="game-cards"
+        <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="pieces">
+          <GamePiece 
+            size="30px"
+            :type="purchaseType"
+            :count="myPlayer[purchaseType]"
+            :color="myPlayer.color"
           />
-        </fragment>
+        </div>
+        <GameCards
+          v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
+          visible
+          :deck="myPlayer.gameCards"
+          class="game-cards"
+        />
       </div>
-    </ActionCard>
-  </v-dialog>
+    </v-sheet>
+  </v-bottom-sheet>
 </template>
 
 <script>
-  import ActionCard from '@/components/common/ActionCard';
+  import { mapState } from 'vuex';
+  import colyseusService from '@/services/colyseus';
+
   import BaseDeck from '@/components/game/BaseDeck';
   import GameCards from '@/components/interface/GameCards';
-  import GamePieces from '@/components/interface/GamePieces';
+  import GamePiece from '@/components/game/GamePiece';
+  import { pluralTypes as purchaseTypes } from '@/specs/purchases';
+
+  import { MESSAGE_DISCARD_HALF_DECK } from '@/constants';
 
   export default {
     name: 'MyDeck',
     components: {
-      ActionCard,
       BaseDeck,
       GameCards,
-      GamePieces
-    },
-    props: {
-      isOpen: {
-        type: Boolean,
-        default: false
-      },
-      myPlayer: {
-        type: Object,
-        default: () => {}
-      }
+      GamePiece
     },
     data: () => ({
       selectedCards: []
@@ -64,7 +72,14 @@
           .reduce((r1, r2) => r1 + r2, 0);
 
         return Math.floor(totalCards / 2);
-      }
+      },
+      ...mapState([
+        'myPlayer',
+        'displayDeck'
+      ])
+    },
+    created() {
+      this.purchaseTypes = purchaseTypes;
     },
     methods: {
       toggleCardSelection: function(card) {
@@ -81,8 +96,21 @@
             card
           ];
       },
-      onApproveDiscard: function() {
-        this.$emit('approve', this.selectedCards);
+      onDiscard: function() {
+        this.$store.commit('closeMyDeck');
+
+        if (!this.myPlayer.mustDiscardHalfDeck) return;
+
+        const discardedCounts = this.selectedCards.reduce((acc, { resource }) => {
+          acc[resource]++;
+          return acc;
+        }, initialResourceCounts);
+
+        colyseusService.room.send({
+          type: MESSAGE_DISCARD_HALF_DECK,
+          discardedCounts
+        });
+
         this.selectedCards = [];
       }
     }

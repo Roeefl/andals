@@ -16,7 +16,6 @@
           :isGameStarted="roomState.isGameStarted"
           :currentTurn="roomState.currentTurn"
           :waitingTradeWith="waitingTradeWith"
-          @display-deck="isDisplayMyDeck = true"
           @trade-with="requestTradeWith($event)"
           @steal-from="stealFrom($event)"
           @play-hero="onPlayHeroCard($event)"
@@ -71,12 +70,7 @@
       @no="isDisplayConfirmMove = false"
       @yes="onConfirmMove($event)"
     />
-    <MyDeck
-      :isOpen="isDisplayMyDeck || myPlayer.mustDiscardHalfDeck"
-      :myPlayer="myPlayer"
-      @close="closeDeck"
-      @approve="closeDeck($event)"
-    />
+    <MyDeck />
     <ConfirmTrade
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
@@ -110,6 +104,7 @@
       :giveBack="myPlayer.heroPrivilege === HERO_CARD_JeorMormont"
       :myDeck="myPlayer.resourceCounts"
       @steal="selectStealCard($event)"
+      @cancel="stealingFrom = {}"
     />
     <SelectResource
       :isOpen="myPlayer.isDeclaringMonopoly"
@@ -208,7 +203,6 @@
     data: () => ({
       chatMessages: [],
       isDisplayConfirmMove: false,
-      isDisplayMyDeck: false,
       activePurchase: {
         type: ROAD
       },
@@ -308,10 +302,11 @@
         this.$store.commit('updateRoomState', initialRoomState);
       },
       updateState: function(updatedRoomState) {
-      console.log("updatedRoomState", updatedRoomState)
+        console.log('BasesGame -> updateState -> updatedRoomState | ', updatedRoomState);
         this.$store.commit('updateRoomState', updatedRoomState);
         
-        if (this.bankTradeResource) this.evaluateBankTrade();
+        if (this.bankTradeResource)
+          this.evaluateBankTrade();
       },
       onEssentialBroadcast: function(header, data) {
         this.$store.commit('setEssentialOverlay', {
@@ -348,6 +343,9 @@
               essentialHeader = `${playerName} rolls: ${dice}`;
               essentialData.dice = dice;
             };
+
+            if (this.myPlayer.mustDiscardHalfDeck)
+              this.$store.commit('openMyDeck');
 
             break;
 
@@ -386,8 +384,10 @@
 
           case MESSAGE_GAME_LOG:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
-            if (isEssential) essentialHeader = message;
-            // this.$store.commit('addAlert', message);
+            
+            // isEssential here means it's a finish-turn message - so if it's my turn now, pop up my deck
+            if (isEssential && this.isMyTurn && this.roomState.isGameStarted)
+              this.$store.commit('openMyDeck');
             break;
 
           case MESSAGE_GAME_VICTORY:
@@ -633,21 +633,6 @@
       confirmTrade: function() {
         this.room.send({
           type: MESSAGE_TRADE_CONFIRM
-        });
-      },
-      closeDeck: function(selectedCards) {
-        this.isDisplayMyDeck = false;
-
-        if (!this.myPlayer.mustDiscardHalfDeck) return;
-
-        const discardedCounts = selectedCards.reduce((acc, { resource }) => {
-          acc[resource]++;
-          return acc;
-        }, initialResourceCounts);
-
-        this.room.send({
-          type: MESSAGE_DISCARD_HALF_DECK,
-          discardedCounts
         });
       },
       stealFrom: function(playerSessionId) {

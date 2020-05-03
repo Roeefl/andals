@@ -1,6 +1,6 @@
 <template>
   <div class="pieces">
-    <GamePiece v-for="(piece, i) in pieces" :key="i" :type="type" :color="color" />
+    <GamePiece v-for="(piece, i) in pieces" :key="i" :type="type" :color="color" :showCount="false" />
   </div>
 </template>
 
