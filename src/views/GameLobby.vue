@@ -79,7 +79,7 @@
         roomTitle: `Room ${randomInt}`,
         roomMaxPlayers: 2,
         autoRefresh: null,
-        playVsBots: false,
+        playVsBots: true,
         autoPickup: true,
         friendlyGameLog: false,
         botReplacement: true
