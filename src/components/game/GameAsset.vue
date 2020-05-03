@@ -2,7 +2,7 @@
   <img
     :src="require(`../../assets/${type}/${asset}.svg`)"
     :alt="asset"
-    class="game-asset"
+    :style="{ width, height, color }"
   />
 </template>
 
@@ -18,15 +18,18 @@
         type: String,
         default: 'robber'
       },
+      width: {
+        type: String,
+        default: '240px'
+      },
+      height: {
+        type: String,
+        default: '240px'
+      },
+      color: {
+        type: String,
+        default: 'black'
+      }
     }
   }
 </script>
-
-<style scoped lang="scss">
- @import '@/styles/partials';
-
-  .game-asset {
-    width: 240px;
-    height: 240px;
-  }
-</style>

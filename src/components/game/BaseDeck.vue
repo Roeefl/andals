@@ -25,7 +25,7 @@
   import ResourceCard from '@/components/game/ResourceCard';
 
   export default {
-    name: 'Deck',
+    name: 'BaseDeck',
     components: {
       ResourceCard
     },

@@ -14,6 +14,9 @@
           class="wildling-token"
         />
       </div>
+      <div v-if="overlay.guardPurchased" class="guard-purchased">
+        <GameAsset type="events" asset="guard-purchased" />
+      </div>
       <div v-if="overlay.guardsKilled" class="guards-killed">
         <GameAsset v-if="overlay.wildlingType" type="wildlings" :asset="overlay.wildlingType" />
         <GameAsset type="events" asset="guard-killed" />
@@ -90,13 +93,13 @@
     }
 
     .wildling-tokens {
-      width: 40%;
+      width: 30vw;
       display: flex;
       justify-content: space-between;
 
       .wildling-token {
-        width: 8vw;
-        height: 8vh;
+        width: 10vw;
+        height: 10vh;
       }
     }
 
