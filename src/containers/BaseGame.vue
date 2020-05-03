@@ -347,7 +347,6 @@
 
             if (this.myPlayer.mustDiscardHalfDeck)
               this.$store.commit('openMyDeck');
-
             break;
 
           case MESSAGE_COLLECT_ALL_LOOT:
@@ -398,8 +397,8 @@
           case MESSAGE_TURN_ORDER:
             this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
 
-            if (this.roomState.isGameStarted && this.isMyTurn)
-              this.$store.commit('openMyDeck');
+            // if (this.roomState.isGameStarted && this.isMyTurn)
+            //   this.$store.commit('openMyDeck');
             break;
 
           case MESSAGE_GAME_VICTORY:

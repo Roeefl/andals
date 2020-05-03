@@ -183,13 +183,11 @@ export default new Vuex.Store({
       };
 
       const resetStructures = boardService.initialStructures();
-      console.log("destroyRoomState -> resetStructures", resetStructures)
       state.activeStructures = [
         ...resetStructures
       ];
 
       const resetRoads = boardService.initialRoads();
-      console.log("destroyRoomState -> resetRoads", resetRoads)
       state.activeRoads = [
         ...resetRoads
       ];

@@ -1,8 +1,8 @@
 <template>
   <v-dialog
-    :value="isOpen"
-    persistent
     width="600"
+    :value="isOpen"
+    @click:outside="$emit('no')"
   >
     <ActionCard
       :title="`Confirm ${removing ? 'Removal' : 'Purchase'}: ${type}`"

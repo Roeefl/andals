@@ -1,8 +1,8 @@
 <template>
   <v-dialog
     :value="isOpen"
-    persistent
     width="400"
+    @click:outside="$emit('close')"
   >
     <ActionCard
       title="Customize Player"

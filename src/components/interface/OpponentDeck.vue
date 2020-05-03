@@ -1,8 +1,8 @@
 <template>
   <v-dialog
-    :value="isOpen"
-    persistent
     width="800"
+    :value="isOpen"
+    @click:outside="$emit('cancel')"
   >
     <ActionCard
       :title="`${opponent.nickname}'s Deck`"

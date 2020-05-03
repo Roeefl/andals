@@ -201,6 +201,10 @@
     opacity: 1;
     bottom: -300px;
   }
+  50% {
+    opacity: 1;
+    bottom: 10%;
+  }
   100% {
     opacity: 0;
     bottom: 33%;
@@ -210,6 +214,10 @@
   0% {
     opacity: 1;
     bottom: -300px
+  }
+  50% {
+    opacity: 1;
+    bottom: 10%;
   }
   100% {
     opacity: 0;

@@ -1,8 +1,8 @@
 <template>
   <v-dialog
-    :value="isOpen"
-    persistent
     width="400"
+    :value="isOpen"
+    @click:outside="$emit('dismiss')"
   >
     <ActionCard
       :title="firstMenGameCardsTitles[type]"

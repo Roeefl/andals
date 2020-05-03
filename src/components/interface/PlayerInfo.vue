@@ -2,7 +2,7 @@
   <div class="player" :class="{ 'is-me': isMe}" :style="playerStyle(player.color)">
       <div class="upper">
         <div class="header">
-          <div class="avatar">
+          <div v-if="player.avatar" class="avatar">
             <BaseAvatar :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
             <span class="nickname">
               {{ player.nickname }}
@@ -87,11 +87,11 @@
               />
             </div>
           </div>
-          <div class="hero-card-wrapper" :class="{ 'was-played': player.currentHeroCard.wasPlayed }">
+          <div class="hero-card-wrapper" :class="{ 'was-played': (player.currentHeroCard || {}).wasPlayed }">
             <BaseButton color="transparent" height="auto" @click="$emit('display-hero-card', player.currentHeroCard)" class="hero-card-button">
               <HeroCard thumbnail :card="player.currentHeroCard || {}" class="hero-card" />
             </BaseButton>
-            <BaseIcon v-if="player.currentHeroCard.wasPlayed" name="circle-half-full" size="36px" color="primary" class="icon-was-played" />
+            <BaseIcon v-if="(player.currentHeroCard || {}).wasPlayed" name="circle-half-full" size="36px" color="primary" class="icon-was-played" />
           </div>
         </div>
       </div>
