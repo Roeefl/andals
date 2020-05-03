@@ -50,6 +50,14 @@
             v-if="isDisplayRobberTile(rowIndex, colIndex)"
             :active="myPlayer.mustMoveRobber"
           />
+          <Countdown
+            v-if="isDisplayRobberTile(rowIndex, colIndex) && countdown >= 0"
+            :maxValue="5"
+            :value="countdown"
+            @increment="countdown--"
+            @end="onConfirmRobber"
+            class="countdown"
+          />
           <Wildling
             v-if="!!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy"
             :type="(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy.type"
@@ -57,22 +65,21 @@
             @remove="myPlayer.heroPrivilege === HERO_CARD_Ygritte && $emit('remove-wildling', absoluteIndex(hexTileMap, rowIndex, colIndex))"
             class="wildling"
           />
-        <BaseOverlay
-          v-if="myPlayer.mustMoveRobber && !!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)].value)"
-          isOpen
-          :isFullScreen="false"
-          :opacity="0"
-          class="move-robber-overlay"
-        >
-          <BaseButton
-            icon
-            iconName="hand-pointing-down"
-            iconSize="80px"
-            iconColor="warning"
-            @click="onMoveRobber(absoluteIndex(hexTileMap, rowIndex, colIndex))"
-            class="move-robber"
-          />
-        </BaseOverlay>
+          <BaseOverlay
+            v-if="myPlayer.mustMoveRobber && (myPlayer.heroPrivilege !== HERO_CARD_QhorinHalfhand || (rowIndex === 0 && colIndex === 0)) && (myPlayer.heroPrivilege === HERO_CARD_QhorinHalfhand || !!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)].value))"
+            isOpen
+            :isFullScreen="false"
+            :opacity="0"
+            class="move-robber-overlay"
+          >
+            <BaseButton
+              icon
+              @click="onMoveRobber(absoluteIndex(hexTileMap, rowIndex, colIndex))"
+              class="move-robber"
+            >
+              <GameAsset type="pieces" asset="robber" width="60px" height="60px" />
+            </BaseButton>
+          </BaseOverlay>
         </HexTile>
       </div>
     </div>
@@ -99,6 +106,8 @@
   import Tree from '@/components/decor/Tree';
   import BaseOverlay from '@/components/common/BaseOverlay';
   import BaseButton from '@/components/common/BaseButton';
+  import GameAsset from '@/components/game/GameAsset';
+  import Countdown from '@/components/common/Countdown';
 
   import { baseGameHexTilemap, firstMenHexTilemap } from '@/tilemaps/hexes';
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
@@ -109,7 +118,7 @@
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
   import { ROAD, SETTLEMENT, CITY } from '@/specs/purchases';
-  import { HERO_CARD_Ygritte } from '@/specs/heroCards';
+  import { HERO_CARD_Ygritte, HERO_CARD_QhorinHalfhand } from '@/specs/heroCards';
 
   export default {
     name: 'GameBoard',
@@ -123,7 +132,9 @@
       Mountains,
       Tree,
       BaseOverlay,
-      BaseButton
+      BaseButton,
+      GameAsset,
+      Countdown
     },
     props: {
       allowPurchase: {
@@ -139,6 +150,9 @@
       'myPlayer',
       'desiredRobberTile'
     ]),
+    data: () => ({
+      countdown: -1
+    }),
     created() {
       this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
       this.structureTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameStructureTilemap : firstMenStructureTilemap;
@@ -153,6 +167,7 @@
       this.CITY = CITY;
 
       this.HERO_CARD_Ygritte = HERO_CARD_Ygritte;
+      this.HERO_CARD_QhorinHalfhand = HERO_CARD_QhorinHalfhand;
 
       this.harborAdjacentToStructure = harborAdjacentToStructure;
       this.absoluteIndex = boardService.absoluteIndex;
@@ -190,6 +205,13 @@
       onMoveRobber: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
         this.$emit('robber-moved', tileIndex);
+        this.countdown = 5;
+      },
+      onConfirmRobber: function() {
+      console.log("onConfirmRobber")
+        if (!this.myPlayer.mustMoveRobber) return;
+        this.$emit('robber-confirmed');
+        this.countdown = -1;
       },
       isDisplayRobberTile: function(row, col) {
         const absoluteTileIndex = boardService.absoluteIndex(this.hexTileMap, row, col);
@@ -254,7 +276,7 @@
       .hex-tile {
         &.robber-camp {
           border: 0;
-          // border: 1px dashed red;
+          border: 1px dashed red;
         }
 
         &:hover {
@@ -295,6 +317,18 @@
         }
       }
     }
+  }
+
+  .move-robber {
+    width: $tile-size * 1.6;
+    height: $tile-size * 1.6;
+    transform: rotate(90deg);
+  }
+
+  .countdown {
+    position: fixed;
+    bottom: -$spacer * 2;
+    left: $spacer * 3;
   }
 
   // .move-robber {

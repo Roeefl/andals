@@ -213,20 +213,20 @@
     height: 240px;
     position: absolute;
     left: 15%;
-    -webkit-animation: slide-up-and-fade-out 6s ease both;
-    animation: slide-up-and-fade-out 6s ease both;
+    -webkit-animation: slide-up-and-fade-out 5s ease both;
+    animation: slide-up-and-fade-out 5s ease both;
     // @include recent-loot-cards();
 
     &.recent-loot-card-1 {
-      animation-delay: 1s;
+      animation-delay: 0.5s;
     }
 
     &.recent-loot-card-2 {
-      animation-delay: 2s;
+      animation-delay: 1s;
     }
 
     &.recent-loot-card-3 {
-      animation-delay: 3s;
+      animation-delay: 1.5s;
     }
   }
 </style>

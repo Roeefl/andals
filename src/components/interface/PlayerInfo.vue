@@ -48,10 +48,11 @@
           <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
         </div>
       </div>
-      <div @click="$emit('deck-clicked')" class="resource-cards">
-        <fragment v-for="resource in resourceCardTypes" :key="`resource-${resource}`" v-show="player.resourceCounts && player.resourceCounts[resource] > 0">
+      <div v-if="player.resourceCounts" @click="$emit('deck-clicked')" class="resource-cards">
+        <fragment v-for="resource in resourceCardTypes" :key="`resource-${resource}`">
+          <!-- .filter(resource => player.resourceCounts[resource] > 0) -->
           <ResourceCard
-            v-for="(resourceCard, index) in Array((player.resourceCounts || {})[resource] || 0).fill(resource)"
+            v-for="(resourceCard, index) in Array(player.resourceCounts[resource]).fill(resource)"
             :key="`card-${resource}-${index}`"
             :resource="resource"
             small

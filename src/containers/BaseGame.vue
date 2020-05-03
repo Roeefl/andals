@@ -36,6 +36,7 @@
           @tile-clicked="onTileClick($event)"
           @remove-road="onRemoveRoad($event)"
           @robber-moved="$store.commit('setDesiredRobberTile', $event)"
+          @robber-confirmed="onRobberConfirmed"
           @remove-wildling="onRemoveWildling($event)"
           class="game-board"
           :class="{ 'with-north': isWithNorth }"
@@ -172,6 +173,7 @@
     MESSAGE_TRADE_REMOVE_CARD,
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
+    MESSAGE_MOVE_ROBBER,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
@@ -693,10 +695,16 @@
         });
       },
       onPlayGameCard: function(gameCard) {
-        colyseusService.room.send({
+        this.room.send({
           type: MESSAGE_PLAY_GAME_CARD,
           cardType: gameCard.type,
           cardIndex: gameCard.index
+        });
+      },
+      onRobberConfirmed: function() {
+        this.room.send({
+          type: MESSAGE_MOVE_ROBBER,
+          tile: this.desiredRobberTile
         });
       }
     }
