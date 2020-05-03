@@ -45,11 +45,11 @@
   #game-room {
     height: 100%;
     display: flex;
-    z-index: 20;
+    z-index: $zindex-interface;
     padding: $spacer / 3 0;
 
     & > * {
-      z-index: 20;
+      z-index: $zindex-interface;
     }
   }
 

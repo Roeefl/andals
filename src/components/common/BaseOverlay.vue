@@ -57,7 +57,7 @@
     align-items: center;
 
     &.full-screen {      
-      z-index: 1000;
+      z-index: $zindex-screen-overlay;
       top: 0;
       left: 0;
       width: 100vw;

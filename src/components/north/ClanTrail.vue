@@ -37,7 +37,7 @@
   }
 
   .trail-symbol {
-    z-index: 20;
+    z-index: $zindex-interface;
     width: 0;
     height: 0;
     border: $symbol-size solid transparent;
@@ -60,7 +60,7 @@
 
   .trail-value {
     width: 32px;
-    z-index: 30;
+    z-index: $zindex-interface + 1;
     font-weight: 700;
     position: absolute;
     top: $spacer;
@@ -72,6 +72,6 @@
     position: absolute;
     top: -$spacer * 1.25;
     left: 0;
-    z-index: 10;
+    z-index: $zindex-interface - 1;
   }
 </style>

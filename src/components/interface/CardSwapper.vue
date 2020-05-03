@@ -115,7 +115,7 @@
   .arrow {
     position: absolute;
     top: 45%;
-    z-index: 1000;
+    z-index: $zindex-navigation;
 
     &.arrow-right {
       right: 0;

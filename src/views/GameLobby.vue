@@ -226,7 +226,7 @@
   }
 
   .loader-wrapper {
-    z-index: 10;
+    z-index: $zindex-overlay-wrapper;
     overflow-y: hidden;
     position: absolute;
     top: 0;

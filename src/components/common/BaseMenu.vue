@@ -84,7 +84,7 @@
   @import '@/styles/partials';
 
   .v-menu__content {
-    z-index: 1000 !important;
+    z-index: $zindex-screen-overlay !important;
     margin-top: 2px;
   }
 

@@ -47,7 +47,7 @@
     .snowflake {
       position: absolute;
       top: -1000px;
-      z-index: 9999;
+      z-index: $zindex-decor-overlay;
       width: $snowflake-size;
       height: $snowflake-size;
       border-radius: 100%;
