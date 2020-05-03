@@ -352,7 +352,8 @@
             const { playerSessionId, loot } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
             
-            if (isEssential) essentialHeader = `${playerName} collects: ${loot}`;
+            if (isEssential)
+              essentialHeader = `${playerName} collects: ${loot}`;
 
             if (playerSessionId === this.myPlayer.playerSessionId) {
               Object
@@ -378,7 +379,9 @@
           case MESSAGE_DISCARD_HALF_DECK:
             const { discardedCounts } = broadcast;
             this.$store.commit('addGameLog', { type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
-            if (isEssential) essentialHeader = `${playerName} discards: ${discardedCounts}`;
+            
+            if (isEssential)
+              essentialHeader = `${playerName} discards: ${discardedCounts}`;
             break;
 
           case MESSAGE_GAME_LOG:
@@ -391,16 +394,17 @@
               if (broadcast[flag])
                 essentialData[flag] = true;
             });
+            
             break;
 
           case MESSAGE_STEAL_CARD:
             const { stoleFrom, stolenResource } = broadcast;
 
-            const message = `${playerName} has stolen a resource card from ${stoleFrom}`;
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+            // const message = `${playerName} has stolen a resource card from ${stoleFrom}`;
+            // this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
             
-            if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
-              this.$store.commit('addRecentLoot', { resource: stolenResource, count: 1 });
+            // if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
+            //   this.$store.commit('addRecentLoot', { resource: stolenResource, count: 1 });
             break;
 
           case MESSAGE_TURN_ORDER:
@@ -704,6 +708,7 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
+  @import '~vuetify/src/styles/styles.sass';
 
   $board-height: 67vh;
 
@@ -722,6 +727,14 @@
     .board-container {
       @include board-layout();
 
+      @include lg-down() {
+        grid-template-columns: 15% 85%;
+        grid-template-rows: auto;
+        grid-template-areas: 
+          "sidebar sidebar"
+          "players board"
+      }
+
       & > * {
         margin: 0 $spacer / 2;
       }
@@ -730,6 +743,10 @@
         display: flex;
         flex-direction: column;
         background: white;
+
+        @include lg-down() {
+          grid-area: board;
+        }
 
         .the-north {
           height: $board-height * 0.5;
@@ -743,7 +760,7 @@
 
           &.with-north {
             // justify-content: center;
-            height: $board-height * 0.8;
+            height: $board-height * 0.9;
             background-image: unset;
             background-size: unset;
             background-repeat: repeat;
@@ -757,6 +774,11 @@
         display: flex;
         flex-direction: column;
 
+        @include lg-down() {
+          grid-area: sidebar;
+          flex-direction: row;
+        }
+
         & > * {
           flex: 1;
 
@@ -768,6 +790,7 @@
         .game-log {
           max-height: $board-height / 2;
           overflow-y: auto;
+
         }
 
         .game-chat-widget {
@@ -781,6 +804,12 @@
           .game-chat-widget {
             max-height: $board-height * 0.4;
           }
+        }
+      }
+
+      .players-list {
+        @include lg-down() {
+          grid-area: players;
         }
       }
     }
