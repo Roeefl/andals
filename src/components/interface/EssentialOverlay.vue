@@ -5,13 +5,11 @@
         {{ overlay.header }}
       </h1>
       <div v-if="overlay.tokens" class="wildling-tokens">
-        <WildlingToken
-          v-for="(token, t) in overlay.tokens"
-          :key="`token-${t}`"
-          :wildling="token.wildlingType"
-          :clan="token.clanType"
-          size="50px"
-          class="wildling-token"
+        <GameAsset
+          v-for="(wildling, w) in overlay.tokens"
+          :key="w"
+          type="wildlings"
+          :asset="wildling.wildlingType"
         />
       </div>
       <div class="game-phase">
@@ -86,14 +84,7 @@
     }
 
     .wildling-tokens {
-      width: 30%;
       display: flex;
-      justify-content: space-between;
-
-      .wildling-token {
-        width: 8vw;
-        height: 8vh;
-      }
     }
 
     .player-rolls {
