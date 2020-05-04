@@ -28,8 +28,8 @@
             :resource="resource"
             small
             hideCount
-            :color="counts[resource] > 0 ? 'green lighten-1' : 'white'"
-            :iconColor="counts[resource] > 0 ? 'white' : null"
+            :color="counts[resource] >= costs[resource] ? 'green lighten-1' : 'white'"
+            :iconColor="counts[resource] >= costs[resource] ? 'white' : null"
             class="resource-card"
             :class="{ 'mini-card': !full }"
           />
@@ -53,7 +53,7 @@
   import ResourceCard from '@/components/game/ResourceCard';
   import BaseIcon from '@/components/common/BaseIcon';
 
-  import { resourceCardTypes } from '@/specs/resources';
+  import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
   import { structureIcons } from '@/specs/gamePieces';
   import { victoryPointsPerPurchase } from '@/specs/purchases';
 
@@ -84,6 +84,7 @@
       this.victoryPointsPerPurchase = victoryPointsPerPurchase;
       this.structureIcons = structureIcons;
       this.resourceCardTypes = resourceCardTypes;
+      this.resourceCardColors = resourceCardColors;
     }
   }
 </script>

@@ -1,12 +1,12 @@
 <template>
-  <v-card light max-width="300" @click="clickable && $emit('clicked')" class="resource-card" :class="{ 'clickable': clickable }">
+  <v-card light :color="color" max-width="300" @click="clickable && $emit('clicked')" class="resource-card" :class="{ 'clickable': clickable }">
     <BaseButton
       icon
       color="primary"
       :small="small"
       :iconSize="small ? '16px' : (recentLoot ? '100px' : '32px')"
       :iconName="hideIcon ? 'help-box' : resourceCardIcons[resource]"
-      :iconColor="hideIcon? 'secondary' : resourceCardColors[resource]"
+      :iconColor="iconColor || (hideIcon ? 'secondary' : resourceCardColors[resource])"
       :clickable="clickable"
     >
       <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="maskCount ? '?' : count" class="resource-count" />
@@ -39,6 +39,14 @@
       count: {
         type: [Number, String],
         default: 0
+      },
+      color: {
+        type: String,
+        default: 'white'
+      },
+      iconColor: {
+        type: String,
+        default: null
       },
       clickable: {
         type: Boolean,

@@ -34,7 +34,6 @@
     />
     <GameCards
       :count="(roomState.gameCards || []).length"
-      :allowed="isCardPurchaseEnabled"
       @purchase-game-card="$emit('purchase-game-card')"
       class="game-cards"
     />
@@ -64,21 +63,10 @@
         default: false
       },
     },
-    computed: {
-      isCardPurchaseEnabled: function() {
-        return (
-          this.isMyTurn &&
-          !this.roomState.isSetupPhase &&
-          this.roomState.isDiceRolled &&
-          this.myPlayer.hasResources.gameCard &&
-          !this.myPlayer.mustMoveRobber
-        );
-      },
-      ...mapState([
-        'roomState',
-        'myPlayer'
-      ])
-    },
+    computed: mapState([
+      'roomState',
+      'myPlayer'
+    ]),
     created() {
       this.sumValues = sumValues;
     }

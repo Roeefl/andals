@@ -3,7 +3,7 @@
     <div class="upper">
       <div class="header">
         <div class="avatar">
-          <BaseAvatar v-if="player.avatar" :size="32" :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
+          <BaseAvatar v-if="player.avatar" :size="64" :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
           <span class="nickname">
             {{ player.nickname }}
           </span>
@@ -237,6 +237,7 @@
         const backgroundRgb = hexToRgb(tileColors.info);
 
         return {
+          '--player-color': playerColor,
           backgroundColor: this.isMe
             ? `rgba(${backgroundRgb}, 0.4)`
             : `rgba(${backgroundRgb}, 0.7)`,
@@ -266,6 +267,7 @@
     justify-content: space-between;
     overflow-y: hidden;
     border-radius: 30px;
+    border: 4px solid $primary;
     color: $secondary;
 
     @include md-down() {
@@ -281,13 +283,15 @@
         display: flex;
 
         .avatar {
-          height: 30px;
+          height: 70px;
           display: flex;
           align-items: center;
           font-size: $font-size-sm;
 
           .nickname {
             // max-width: 90%;
+            // color: $primary;
+            font-weight: bold;
             @include text-truncate();
             font-size: $font-size-md;
             margin-left: $spacer / 4;
@@ -296,8 +300,8 @@
 
         .status {
           position: absolute;
-          right: 0;
-          top: 0;
+          right: $spacer / 4;
+          top: $spacer / -4;
           
           .is-ready {
             cursor: pointer;
@@ -380,7 +384,7 @@
     &.is-me {
       .upper {
         .header {
-          margin-bottom: $spacer / 2;
+          margin-bottom: $spacer;
 
           .avatar {
             padding-top: $spacer * 2;

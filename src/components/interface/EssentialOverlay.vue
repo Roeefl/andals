@@ -5,7 +5,7 @@
         {{ overlay.header }}
       </h1>
       <h2 v-if="overlay.guardsKilled">
-        {{ guardsKilled }} guards were killed!
+        {{ overlay.guardsKilled }} guards were killed!
       </h2>
       <div v-if="overlay.tokens" class="wildling-tokens">
         <WildlingToken
@@ -33,7 +33,7 @@
         />
       </div>
       <div v-if="overlay.isRobber" class="robber">
-        <GameAsset type="pieces" asset="robber" />
+        <GameAsset type="pieces" asset="robber" color="red" />
       </div>
       <div v-if="overlay.heroCard" class="hero-card">
         <h2>
