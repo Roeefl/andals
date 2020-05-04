@@ -1,5 +1,5 @@
 <template>
-  <div class="deck">
+  <div class="deck" :class="{ 'collapsed': collapsed }">
     <div v-for="resource in resourceCardTypes" :key="resource" v-show="deck[resource]" class="resource-type">
       <drag
         v-for="(card, index) in Array(deck[resource] || 0).fill(resource)"
@@ -43,7 +43,11 @@
       hideResources: {
         type: Boolean,
         default: false
-      }
+      },
+      collapsed: {
+        type: Boolean,
+        default: false
+      },
     },
     created() {
       this.resourceCardTypes = resourceCardTypes;
@@ -57,13 +61,23 @@
   .deck {
     display: flex;
     padding-left: $spacer;
-  }
 
-  .resource-type { 
-    display: flex;
-  }
+    .resource-type { 
+      display: flex;
 
-  .resource-card {
-    margin-right: $spacer / 2;
+      .resource-card {
+        margin-right: $spacer / 2;
+      }
+    }
+
+    &.collapsed {
+      .resource-card {
+        margin-right: 0;
+        
+        & + & {
+          margin-left: -$spacer;
+        }
+      }
+    }
   }
 </style>

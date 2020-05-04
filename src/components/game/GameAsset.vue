@@ -1,9 +1,11 @@
 <template>
-  <img
-    :src="require(`../../assets/${type}/${asset}.svg`)"
-    :alt="asset"
-    :style="{ width, height, color }"
-  />
+  <span class="game-asset" :style="{ color }">
+    <img
+      :src="require(`../../assets/${type}/${asset}.svg`)"
+      :alt="asset"
+      :style="{ width, height }"
+    />
+  </span>
 </template>
 
 <script>

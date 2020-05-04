@@ -20,7 +20,7 @@
       <div class="card-image-wrapper">
         <img :src="require(`../../assets/gameCards/${type}.jpg`)" :alt="`Game Card: ${type}`" class="card-image" />
       </div>
-      <div class="card-description">
+      <div v-if="withDescription" class="card-description">
         {{ firstMenGameCardsDescriptions[type] }}
       </div>
     </section>
@@ -71,6 +71,10 @@
         default: 0
       },
       full: {
+        type: Boolean,
+        default: false
+      },
+      withDescription: {
         type: Boolean,
         default: false
       }
@@ -127,7 +131,7 @@
 
     .full-card {
       height: 100%;
-      padding: $spacer / 2;
+      // padding: $spacer / 2;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -136,10 +140,13 @@
         background: $game-card-victory-point;
         width: 100%;
         text-align: center;
+        font-size: $font-size-sm;
+        flex: 1;
       }
 
       .card-image-wrapper {
-        height: 70%;
+        flex: 4;
+        min-height: 70%;
 
         .card-image {
           width: 100%;

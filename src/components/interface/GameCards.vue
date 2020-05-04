@@ -6,12 +6,14 @@
         :key="`${card.type}-${index}`"
         :visible="visible"
         :type="card.type"
+        :full="full"
         :clickable="!card.wasPlayed"
         :wasPlayed="card.wasPlayed"
         @clicked="$emit('game-card-clicked', { cardType: card.type, index })"
+        class="game-card"
       />
     </div>
-    <GameCard v-else type="knight" :count="count" :clickable="allowed" @clicked="$emit('purchase-game-card')" />
+    <GameCard v-else :full="full" type="knight" :count="count" @clicked="$emit('purchase-game-card')" />
   </div>
 </template>
 
@@ -28,19 +30,19 @@
         type: Number,
         default: 0
       },
-      allowed: {
-        type: Boolean,
-        default: false
-      },
       visible: {
         type: Boolean,
         default: false 
+      },
+      full: {
+        type: Boolean,
+        default: false
       },
       deck: {
         type: Array,
         default: null
       }
-    }
+    },
   }
 </script>
 
@@ -51,7 +53,13 @@
     display: flex;
   
     .deck {
+      flex: 1;
       display: flex;
+      
+      .game-card {
+        height: 100%;
+        flex: 1;
+      }
     }
   }
 </style>

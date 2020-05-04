@@ -113,7 +113,7 @@
         this.setRollingDice(true);
 
         setTimeout(
-          () => this.setRollingDice(true),
+          () => this.setRollingDice(false),
           3000
         );
       },

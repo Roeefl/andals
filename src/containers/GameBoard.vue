@@ -240,8 +240,8 @@
 
     .countdown {
       position: fixed;
-      bottom: $spacer * 2;
-      right: 20%;
+      bottom: 10%;
+      right: 22%;
     }
 
     .game-over {

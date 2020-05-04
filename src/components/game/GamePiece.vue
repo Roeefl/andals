@@ -1,5 +1,5 @@
 <template>
-  <BaseButton icon>
+  <BaseButton icon @click="$emit('clicked')">
     <BaseIcon
       :size="size"
       :color="color"

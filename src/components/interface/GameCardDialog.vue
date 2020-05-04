@@ -17,6 +17,7 @@
           :type="type"
           full
           visible
+          withDescription
           :clickable="false"
           class="game-card"
         />
@@ -69,6 +70,7 @@
 
     .game-card {
       height: 40vh;
+      padding: $spacer;
     }
   }
 </style>

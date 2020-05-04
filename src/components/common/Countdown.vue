@@ -3,7 +3,7 @@
     :size="size"
     :color="color"
     :width="radius"
-    :value="(value / maxValue) * 100"
+    :value="Math.floor((value / (initialValue * 1000)) * 100)"
   />
 </template>
 
@@ -13,41 +13,45 @@
     props: {
       size: {
         type: Number,
-        default: 60
+        default: 200
       },
       color: {
         type: String,
-        default: 'success'
+        default: 'blue darken-1'
       },
       radius: {
         type: Number,
-        default: 8
+        default: 14
       },
-      value: {
+      initialValue: {
         type: Number,
-        required: true
-      },
-      maxValue: {
-        type: Number,
-        default: 10
+        default: 5
       }
     },
     data: () => ({
+      value: 0,
       incrementSeconds: null
     }),
     mounted() {
+      this.value = this.initialValue * 1000;
+
       this.incrementSeconds = setInterval(
         () => {
-          this.$emit('increment');
+          this.value = this.value - 100;
 
           if (this.value === 0)
-            this.$emit('end');
+            this.$emit('finished');
         },
-        1000
+        100
       );
     },
     destroyed() {
       clearInterval(this.incrementSeconds);
+    },
+    methods: {
+      reset: function() {
+        this.value = this.initialValue * 1000;
+      }
     }
   }
 </script>

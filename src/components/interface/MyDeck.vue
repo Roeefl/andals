@@ -3,6 +3,7 @@
     <BaseButton
       v-show="!displayDeck"
       spaced
+      color="warning"
       iconName="arrow-up-bold-box"
       iconSize="40px"
       iconColor="secondary"
@@ -28,9 +29,9 @@
           @click="$store.commit('closeMyDeck')"
           class="close-deck"
         />
-        <div class="deck-contents">
+        <div class="deck-container">
           <BuildingCosts :full="false" :counts="myPlayer.resourceCounts" color="secondary" class="building-costs" />
-          <div class="resources-container">
+          <div class="purchaseables">
             <div v-if="myPlayer.mustDiscardHalfDeck" class="discard">
               <h2 class="discard-header">
                 Discard {{ discardCardsNeeded }} Cards
@@ -46,14 +47,34 @@
                 Discard
               </BaseButton>
             </div>
-            <BaseDeck :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
+            <BaseDeck collapsed :deck="myPlayer.resourceCounts" @card-clicked="toggleCardSelection($event)" :selectedCards="selectedCards" class="resources-deck" />
+            <div class="game-pieces">
+              <GamePiece 
+                v-for="purchaseType in purchaseTypes"
+                :key="purchaseType"
+                :type="purchaseType"
+                :showCount="false"
+                :color="myPlayer.hasResources[purchaseType] ? '#43A047' : 'secondary'"
+                :size="purchaseType === 'gameCard' ? '100px' : '60px'"
+                @clicked="onPieceClick(purchaseType)"
+                class="game-piece"
+                :class="purchaseType"
+              />
+            </div>
           </div>
-          <GameCards
-            v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
-            visible
-            :deck="myPlayer.gameCards"
-            class="game-cards"
-          />
+          <div class="playables">
+            <GameCards
+              v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
+              visible
+              full
+              :deck="myPlayer.gameCards"
+              @game-card-clicked="playGameCard"
+              class="player-cards"
+            />
+            <BaseButton color="transparent" height="auto" @click="$store.commit('setDisplayedHeroCard', myPlayer.currentHeroCard)" class="playable-wrapper">
+              <HeroCard thumbnail :card="myPlayer.currentHeroCard || {}" class="hero-card" />
+            </BaseButton>
+          </div>
         </div>
       </v-sheet>
     </v-bottom-sheet>
@@ -67,8 +88,10 @@
   import BaseDeck from '@/components/game/BaseDeck';
   import BuildingCosts from '@/components/interface/BuildingCosts';
   import GameCards from '@/components/interface/GameCards';
+  import HeroCard from '@/components/game/HeroCard';
+  import GamePiece from '@/components/game/GamePiece';
   import BaseButton from '@/components/common/BaseButton';
-  import { pluralTypes as purchaseTypes } from '@/specs/purchases';
+  import { types as purchaseTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
   import { initialResourceCounts } from '@/specs/resources';
 
   import { MESSAGE_DISCARD_HALF_DECK } from '@/constants';
@@ -79,6 +102,8 @@
       BaseDeck,
       BuildingCosts,
       GameCards,
+      HeroCard,
+      GamePiece,
       BaseButton
     },
     data: () => ({
@@ -93,6 +118,7 @@
         return Math.floor(totalCards / 2);
       },
       ...mapState([
+        'roomState',
         'myPlayer',
         'displayDeck'
       ])
@@ -132,6 +158,15 @@
         });
 
         this.selectedCards = [];
+      },
+      onPieceClick: function(type) {
+        if (type === GAME_CARD) {
+          this.$emit('purchase-game-card');
+          return;
+        }
+      },
+      playGameCard: function(gameCard) {
+        this.$emit('play-card', gameCard);
       }
     }
   }
@@ -140,25 +175,23 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
+  $playable-card-size: 120px;
+
   .deck-sheet {
     position: relative;
 
-    .deck-contents {
+    .deck-container {
       height: 200px;
       padding: 0 $spacer;
       display: grid;
       grid-gap: $spacer;
-      grid-template-columns: 25% 45% 15%;
-
-      .resources-deck {
-        padding: $spacer;
-      }
+      grid-template-columns: 20% 40% 40%;
 
       .building-costs {
         height: 200px;
       }
 
-      .resources-container {
+      .purchaseables {
         display: flex;
         flex-direction: column;
 
@@ -170,10 +203,50 @@
             margin-right: $spacer * 2;
           }
         }
+
+        .resources-deck {
+          padding: $spacer;
+        }
+
+        .game-pieces {
+          margin-top: $spacer;
+          display: grid;
+          grid-template-columns: 15% 15% 15% 15% 40%;
+          place-items: center center;
+
+          .game-piece {
+            order: 1;
+
+            &.gameCard {
+              order: 2;
+              justify-self: end;
+            }
+          }
+        }
       }
 
-      .game-cards {
-        border-left: 1px solid lightgray;
+      .playables {
+        padding: $spacer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .player-cards {
+          display: flex;
+          width: $playable-card-size;
+          height: $playable-card-size;
+        }
+
+        .playable-wrapper {
+          padding: 0;
+        }
+
+        .hero-card {
+          width: $playable-card-size;
+          height: $playable-card-size;
+          background: $secondary;
+          color: $primary;
+        }
       }
     }
   }
