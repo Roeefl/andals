@@ -71,7 +71,7 @@
       @no="isDisplayConfirmMove = false"
       @yes="onConfirmMove($event)"
     />
-    <MyDeck @purchase-game-card="onGameCardPurchase" />
+    <MyDeck @purchase-game-card="onGameCardPurchase" @play-card="onPlayGameCard($event)" />
     <ConfirmTrade
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
@@ -415,11 +415,12 @@
           case MESSAGE_STEAL_CARD:
             const { stoleFrom, stolenResource } = broadcast;
 
-            // const message = `${playerName} has stolen a resource card from ${stoleFrom}`;
-            // this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
+            const message = `${playerName} has stolen a resource card from ${stoleFrom}`;
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
             
-            // if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
-            //   this.addRecentLoot({ resource: stolenResource, count: 1 });
+            if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
+              this.addRecentLoot({ resource: stolenResource, count: 1 });
+              
             break;
 
           case MESSAGE_TURN_ORDER:
@@ -437,10 +438,10 @@
 
           case MESSAGE_PLAY_GAME_CARD:
             const { cardType } = broadcast;
-            header = `${playerName} has played ${cardType}`;
+            essentialHeader = `${playerName} has played ${cardType}`;
 
             this.addGameLog({ type: CHAT_LOG_GAME_CARD, playerName, cardType });
-            this.setEssentialOverlay({ header, cardType });
+            this.setEssentialOverlay({ essentialHeader, cardType });
             break;
             
           default:
