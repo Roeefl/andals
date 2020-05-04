@@ -4,6 +4,9 @@
       <h1 class="overlay-header">
         {{ overlay.header }}
       </h1>
+      <h2 v-if="overlay.guardsKilled">
+        {{ guardsKilled }} guards were killed!
+      </h2>
       <div v-if="overlay.tokens" class="wildling-tokens">
         <WildlingToken
           v-for="(token, t) in overlay.tokens"
