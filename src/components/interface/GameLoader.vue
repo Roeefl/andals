@@ -17,9 +17,12 @@
         :key="p"
         class="player"
       >
-        <span>
-          {{ player.nickname }} is connecting...
-        </span>
+        <div class="avatar">
+          <BaseAvatar v-if="player.avatar" :size="100" :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
+          <span class="nickname">
+            {{ player.nickname }} is connecting...
+          </span>
+        </div>
       </li>
     </ul>
   </BaseOverlay>
@@ -27,11 +30,13 @@
 
 <script>
   import BaseOverlay from '@/components/common/BaseOverlay';
+  import BaseAvatar from '@/components/common/BaseAvatar';
 
   export default {
     name: 'GameLoader',
     components: {
-      BaseOverlay
+      BaseOverlay,
+      BaseAvatar
     },
     props: {
       size: {
@@ -68,6 +73,15 @@
 
     .player {
       padding: 1px;
+    }
+
+    .avatar {
+      display: flex;
+      align-items: center;
+
+      .nickname {
+        margin-left: $spacer;
+      }
     }
   }
 </style>

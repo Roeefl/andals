@@ -2,8 +2,8 @@
   <div class="player" :class="{ 'is-me': isMe}" :style="playerStyle(player.color)">
     <div class="upper">
       <div class="header">
-        <div v-if="player.avatar" class="avatar">
-          <BaseAvatar :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
+        <div class="avatar">
+          <BaseAvatar v-if="player.avatar" :size="32" :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
           <span class="nickname">
             {{ player.nickname }}
           </span>
@@ -383,10 +383,12 @@
           margin-bottom: $spacer / 2;
 
           .avatar {
+            padding-top: $spacer * 2;
             height: 60px;
             font-size: $font-size-lg;
 
             .nickname {
+              max-width: 160px;
               font-size: $font-size-lg;
             }
           }

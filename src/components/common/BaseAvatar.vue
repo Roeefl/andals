@@ -1,10 +1,9 @@
 <template>
-  <v-avatar>
+  <v-avatar :size="size">
     <img
       v-if="src"
       :src="src"
       :alt="alt"
-      class="avatar-image"
     >
     <BaseIcon
       v-else
@@ -32,6 +31,10 @@
         type: String,
         default: 'Avatar'
       },
+      size: {
+        type: String | Number,
+        default: 48
+      },
       iconColor: {
         type: String,
         default: 'secondary'
@@ -39,15 +42,3 @@
     } 
   }
 </script>
-
-
-<style scoped lang="scss">
-  @import '@/styles/partials';
-
-  $avatar-size: 36px;
-
-  .avatar-image {
-    width: $avatar-size;
-    height: $avatar-size;
-  }
-</style>
