@@ -47,7 +47,6 @@
         recentLoot
         :resource="card.resource"
         :count="card.count"
-        :clickable="false"
         class="recent-loot-card"
         :class="`recent-loot-card-${index}`"
       />
@@ -205,8 +204,8 @@
     left: 15%;
     display: flex;
     flex-direction: column;
-    -webkit-animation: slide-up-and-fade-out 5s ease both;
-    animation: slide-up-and-fade-out 5s ease both;
+    -webkit-animation: slide-up-and-fade-out 6s ease both;
+    animation: slide-up-and-fade-out 6s ease both;
 
     .recent-loot-card {
       margin: 0;

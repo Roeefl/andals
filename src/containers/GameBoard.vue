@@ -50,12 +50,6 @@
             v-if="isDisplayRobberTile(rowIndex, colIndex)"
             :active="myPlayer.mustMoveRobber"
           />
-          <Countdown
-            v-if="countdownTile === absoluteIndex(hexTileMap, rowIndex, colIndex)"
-            :initialValue="5"
-            @finished="onConfirmRobber"
-            class="countdown"
-          />
           <Wildling
             v-if="!!(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy"
             :type="(roomState.board[absoluteIndex(hexTileMap, rowIndex, colIndex)] || {}).occupiedBy.type"
@@ -81,6 +75,12 @@
         </HexTile>
       </div>
     </div>
+    <Countdown
+      v-if="countdownTile >= 0"
+      :initialValue="10"
+      @finished="onConfirmRobber"
+      class="countdown"
+    />
     <div class="trees">
       <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
     </div>
@@ -238,6 +238,12 @@
     display: grid;
     grid-template-columns: 10% 80% 10%;
 
+    .countdown {
+      position: fixed;
+      bottom: $spacer * 2;
+      right: 20%;
+    }
+
     .game-over {
       opacity: 0.5;
     }
@@ -321,12 +327,6 @@
     width: $tile-size * 1.6;
     height: $tile-size * 1.6;
     transform: rotate(90deg);
-  }
-
-  .countdown {
-    position: absolute;
-    bottom: -$spacer * 2;
-    left: $spacer * 3;
   }
 
   // .move-robber {
