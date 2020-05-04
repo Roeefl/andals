@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import Wall from '@/components/north/Wall';
@@ -109,6 +109,10 @@
       this.GUARD = GUARD;
     },
     methods: {
+      ...mapMutations([
+        'addGameLog',
+        'setEssentialOverlay'
+      ]),
       initializeRoom: function(room = this.room) {
         room.onMessage(this.onBroadcastReceived);
       },
@@ -148,29 +152,29 @@
 
         switch (type) {
           case MESSAGE_PLACE_GUARD:
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: broadcast.message });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: broadcast.message });
             
             if (isEssential)
-              this.$store.commit('setEssentialOverlay', { header: broadcast.message, guardPurchased: true });
+              this.setEssentialOverlay({ header: broadcast.message, guardPurchased: true });
             break;
 
           case MESSAGE_WILDLINGS_REVEAL_TOKENS:
             const { tokens } = broadcast;
             header = 'Wildlings Tokens Revealed:';
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_WILDLING_TOKENS, tokens });
-            this.$store.commit('setEssentialOverlay', { header, tokens });
+            this.addGameLog({ type: CHAT_LOG_WILDLING_TOKENS, tokens });
+            this.setEssentialOverlay({ header, tokens });
 
-            const { wildlingsAudio } = this.$refs;
-            if (wildlingsAudio) wildlingsAudio.play(); 
+            // const { wildlingsAudio } = this.$refs;
+            // if (wildlingsAudio) wildlingsAudio.play(); 
             break;
 
           case MESSAGE_WILDLINGS_ADVANCE_CLEARING:
             const { wildling } = broadcast;
             header = `A ${wildling.type} has advanced to the clearing!`;
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
-            this.$store.commit('setEssentialOverlay', { header });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
+            this.setEssentialOverlay({ header });
             break;
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
@@ -187,8 +191,8 @@
               guardsKilled = 1;
             };
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: header });
-            this.$store.commit('setEssentialOverlay', { header, guardsKilled, wildlingType: invader.type });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
+            this.setEssentialOverlay({ header, guardsKilled, wildlingType: invader.type });
             break;
 
           case MESSAGE_PLAY_HERO_CARD:
@@ -199,8 +203,8 @@
 
             header = `${playerName} has played ${heroCard.name}`;
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_HERO_CARD, playerName, heroCard });
-            this.$store.commit('setEssentialOverlay', { header, heroCard });
+            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, heroCard });
+            this.setEssentialOverlay({ header, heroCard });
             break;
 
           default:
@@ -242,7 +246,8 @@
 
   .the-north {
     // opacity: 0.5;
-    @include dashed-around();
+    border: 5px solid #6D4C41;
+    border-bottom: none;
     display: grid;
     grid-template-columns: 20% 60% 20%;
 

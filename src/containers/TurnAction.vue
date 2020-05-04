@@ -43,7 +43,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import colyseusService from '@/services/colyseus';
   import { isAllowRobberReset } from '@/utils/heroes';
 
@@ -106,11 +106,14 @@
       ])
     },
     methods: {
+      ...mapMutations([
+        'setRollingDice'
+      ]),
       rollDice: function() {
-        this.$store.commit('setRollingDice', true);
+        this.setRollingDice(true);
 
         setTimeout(
-          () => this.$store.commit('setRollingDice', false),
+          () => this.setRollingDice(true),
           3000
         );
       },

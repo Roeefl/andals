@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
   import firebaseService from '@/services/firebase';
@@ -69,7 +69,8 @@
       'isServerUp',
       'lobbySnowflakes',
       'currentUser',
-      'rooms'
+      'rooms',
+      'startAmbience'
     ]),
     data: function() {
       const randomInt = Math.floor(Math.random() * 9999);
@@ -91,24 +92,30 @@
         20 * 1000
       );
 
-      this.$store.commit('startAmbience');
+      this.startAmbience();
     },
     destroyed: function() {
       clearInterval(this.autoRefresh);
     },
     methods: {
+      ...mapMutations([
+        'setServerStatus',
+        'addAlert',
+        'setRooms',
+        'setGameLoading'
+      ]),
       fetchRooms: async function() {
         try {
           const rooms = await colyseusService.listRooms();
-          this.$store.commit('setRooms', rooms);
-          this.$store.commit('setServerStatus', true);
+          this.setRooms(rooms);
+          this.setServerStatus(true);
 
           return true;
         } catch (err) {
-          this.$store.commit('setServerStatus', false);
+          this.setServerStatus(false);
       
           console.error('Unable to fetch rooms list. Game server might be down');
-          this.$store.commit('addAlert', 'Unable to connect to game server');
+          this.addAlert('Unable to connect to game server');
 
           return false;
         }
@@ -117,15 +124,15 @@
         try {
           const isSuccess = await this.fetchRooms();
           if (isSuccess)
-            this.$store.commit('addAlert', 'Rooms list refreshed');
+            this.addAlert('Rooms list refreshed');
         } catch (err) {
           console.error('Unable to fetch rooms list. Game server might be down');
-          this.$store.commit('addAlert', 'Unable to connect to game server');
+          this.addAlert('Unable to connect to game server');
         }
       },
       createRoom: async function() {
         try {
-          this.$store.commit('setGameLoading', true);
+          this.setGameLoading(true);
           
           const options = {
             roomTitle: this.roomTitle,
@@ -169,7 +176,7 @@
           const room = await colyseusService.reconnect(roomId);
 
           if (!room) {
-            this.$store.commit('addAlert', 'Unable to reconnect. Sorry.');
+            this.addAlert('Unable to reconnect. Sorry.');
             return;
           }
           

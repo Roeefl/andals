@@ -71,7 +71,7 @@
       @no="isDisplayConfirmMove = false"
       @yes="onConfirmMove($event)"
     />
-    <MyDeck />
+    <MyDeck @purchase-game-card="onGameCardPurchase" />
     <ConfirmTrade
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
@@ -127,9 +127,7 @@
   import GameChat from '@/containers/GameChat';
   import GameLog from '@/containers/GameLog';
   import PlayersList from '@/containers/PlayersList';
-
   import BreachMarker from '@/components/north/BreachMarker';
-
   import MyDeck from '@/components/interface/MyDeck';
   import TradeDialog from '@/components/interface/TradeDialog';
   import ConfirmMove from '@/components/interface/ConfirmMove';
@@ -137,9 +135,9 @@
   import OpponentDeck from '@/components/interface/OpponentDeck';
   import SelectResource from '@/components/interface/SelectResource';
   import RollingDice from '@/components/interface/RollingDice';
-
   import DraggableWidget from '@/components/common/DraggableWidget';
 
+  import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
   import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
@@ -243,7 +241,7 @@
           .findIndex(p => p.playerSessionId === this.room.sessionId);
       },
       isMyTurn: function() {
-        return this.roomState.currentTurn === this.myPlayerIndex
+        return this.roomState.currentTurn === this.myPlayerIndex;
       },
       tradingWith: function() {
         return this.myPlayer.pendingTrade
@@ -263,6 +261,15 @@
           this.bankDummy
         ];
       },
+      isCardPurchaseEnabled: function() {
+        return (
+          this.isMyTurn &&
+          !this.roomState.isSetupPhase &&
+          this.roomState.isDiceRolled &&
+          this.myPlayer.hasResources.gameCard &&
+          !this.myPlayer.mustMoveRobber
+        );
+      },
       ...mapState([
         'myPlayer',
         'roomState',
@@ -273,6 +280,15 @@
       ])
     },
     methods: {
+      ...mapMutations([
+        'updateRoomState',
+        'addAlert',
+        'addGameLog',
+        'setEssentialOverlay',
+        'addRecentLoot',
+        'openMyDeck',
+        'setJustPurchasedGameCard'
+      ]),
       initializeRoom: function(room = this.room) {
         // Define a series of room lifecycle methods
         room.onStateChange.once(this.initializeState);
@@ -287,7 +303,7 @@
           console.log("room", room)
 
           if (!room) {
-            this.$store.commit('addAlert', 'Unable to reconnect. Sorry.');
+            this.addAlert('Unable to reconnect. Sorry.');
             router.push('/lobby');
             return;
           }
@@ -296,22 +312,22 @@
           this.initializeRoom(room);
         } catch (err) {
           console.error('reconnect failed:', err);
-          this.$store.commit('addAlert', 'Unable to reconnect. Sorry.');
+          this.addAlert('Unable to reconnect. Sorry.');
           router.push('/lobby');
         }
       },
       initializeState: function(initialRoomState) {
-        this.$store.commit('updateRoomState', initialRoomState);
+        this.updateRoomState(initialRoomState);
       },
       updateState: function(updatedRoomState) {
         console.log('BasesGame -> updateState -> updatedRoomState | ', updatedRoomState);
-        this.$store.commit('updateRoomState', updatedRoomState);
+        this.updateRoomState(updatedRoomState);
         
         if (this.bankTradeResource)
           this.evaluateBankTrade();
       },
       onEssentialBroadcast: function(header, data) {
-        this.$store.commit('setEssentialOverlay', {
+        this.setEssentialOverlay({
           ...data,
           header
         });
@@ -339,20 +355,20 @@
 
           case MESSAGE_ROLL_DICE:
             const { dice } = broadcast;
-            this.$store.commit('addGameLog', { type: CHAT_LOG_DICE, playerName, dice });
+            this.addGameLog({ type: CHAT_LOG_DICE, playerName, dice });
             
             if (isEssential) {
               essentialHeader = `${playerName} rolled a 7`;
               essentialData.isRobber = true;
-            };
 
-            if (this.myPlayer.mustDiscardHalfDeck)
-              this.$store.commit('openMyDeck');
+              if (sumValues(this.myPlayer.resourceCounts) > 7)
+                this.openMyDeck();
+            };
             break;
 
           case MESSAGE_COLLECT_ALL_LOOT:
             const { playerSessionId, loot } = broadcast;
-            this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot });
+            this.addGameLog({ type: CHAT_LOG_LOOT, playerName, loot });
             
             if (isEssential)
               essentialHeader = `${playerName} collects: ${loot}`;
@@ -361,30 +377,30 @@
               Object
                 .entries(loot)
                 .filter(([resource, count]) => count > 0)
-                .forEach(([resource, count]) => this.$store.commit('addRecentLoot', { resource, count }));
+                .forEach(([resource, count]) => this.addRecentLoot({ resource, count }));
             }
             break;
           
           case MESSAGE_COLLECT_RESOURCE_LOOT:
             const { resource } = broadcast;
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_LOOT, playerName, loot: { [resource]: 1 } });
+            this.addGameLog({ type: CHAT_LOG_LOOT, playerName, loot: { [resource]: 1 } });
 
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
-              this.$store.commit('addRecentLoot', { resource, count: 1 });
+              this.addRecentLoot({ resource, count: 1 });
             
             break;
 
           case MESSAGE_DISCARD_HALF_DECK:
             const { discardedCounts } = broadcast;
-            this.$store.commit('addGameLog', { type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
+            this.addGameLog({ type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
             
             if (isEssential)
               essentialHeader = `${playerName} discards: ${discardedCounts}`;
             break;
 
           case MESSAGE_GAME_LOG:
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
 
             if (isEssential)
               essentialHeader = message;
@@ -400,21 +416,21 @@
             const { stoleFrom, stolenResource } = broadcast;
 
             // const message = `${playerName} has stolen a resource card from ${stoleFrom}`;
-            // this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+            // this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
             
             // if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
-            //   this.$store.commit('addRecentLoot', { resource: stolenResource, count: 1 });
+            //   this.addRecentLoot({ resource: stolenResource, count: 1 });
             break;
 
           case MESSAGE_TURN_ORDER:
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
 
             // if (this.roomState.isGameStarted && this.isMyTurn)
-            //   this.$store.commit('openMyDeck');
+            //   this.openMyDeck();
             break;
 
           case MESSAGE_GAME_VICTORY:
-            this.$store.commit('addGameLog', { type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
             this.$store.commit('victory', playerName);
             this.onEssentialBroadcast(`VICTORY! ${playerName} has won the game!`);
             break;
@@ -423,8 +439,8 @@
             const { cardType } = broadcast;
             header = `${playerName} has played ${cardType}`;
 
-            this.$store.commit('addGameLog', { type: CHAT_LOG_GAME_CARD, playerName, cardType });
-            this.$store.commit('setEssentialOverlay', { header, cardType });
+            this.addGameLog({ type: CHAT_LOG_GAME_CARD, playerName, cardType });
+            this.setEssentialOverlay({ header, cardType });
             break;
             
           default:
@@ -457,6 +473,8 @@
           this.finishTurn();
       },
       onGameCardPurchase: function() {
+        if (!this.isCardPurchaseEnabled) return;
+        
         this.activePurchase = {
           type: GAME_CARD
         };
@@ -524,7 +542,7 @@
             selectedCardIndex: additionalData.index
           });
 
-          this.$store.commit('setJustPurchasedGameCard', true);
+          this.setJustPurchasedGameCard(true);
           return;
         }
 
@@ -553,7 +571,7 @@
           type: MESSAGE_FINISH_TURN
         });
 
-        this.$store.commit('setJustPurchasedGameCard', false);
+        this.setJustPurchasedGameCard(false);
       },
       requestTradeWith: function(withWho) {
         if (!this.roomState.isGameStarted) return;
@@ -767,7 +785,8 @@
         }
 
         .game-board {
-          @include dashed-around();
+          border: 5px solid #6D4C41;
+          border-top: none;
           background-image: url('../assets/ocean.jpg');
           background-size: cover;
           height: $board-height;
