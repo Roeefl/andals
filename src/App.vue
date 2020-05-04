@@ -17,16 +17,15 @@
       <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
     </audio>
     <GameLoader v-if="isGameLoading" :players="players" />
-    <CustomizePlayer
-      v-if="isDisplayCustomizePlayer"
-      :isOpen="isDisplayCustomizePlayer"
-      @close="isDisplayCustomizePlayer = false"
-    />
+    <v-dialog v-model="isDisplayCustomizePlayer" width="400" @click:outside="isDisplayCustomizePlayer = false">
+      <CustomizePlayer @close="isDisplayCustomizePlayer = false" />
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
   import { mapState } from 'vuex';
+  import router from '@/router';
   import colyseusService from '@/services/colyseus';
   import firebaseService from '@/services/firebase';
 
@@ -34,6 +33,8 @@
   import BaseAlert from '@/components/common/BaseAlert';
   import GameLoader from '@/components/interface/GameLoader';
   import CustomizePlayer from '@/components/lobby/CustomizePlayer';
+
+  import { FIREBASE_USER_SIGNUP } from '@/constants'
 
   export default {
     name: 'App',
@@ -77,6 +78,11 @@
         const currentUser = wasLoggedIn
           ? await firebaseService.logout()
           : await firebaseService.login();
+
+        if (currentUser === FIREBASE_USER_SIGNUP) {
+          router.push('/signup');
+          return;
+        }
 
         this.$store.commit('setCurrentUser', currentUser || {});
         this.$store.commit('addAlert', `You are now logged ${wasLoggedIn ? 'out' : 'in'}`);

@@ -1,36 +1,32 @@
 <template>
-  <v-dialog
-    :value="isOpen"
-    width="400"
-    @click:outside="$emit('close')"
+  <ActionCard
+    title="Customize Player"
+    :cancel="!isSignup"
+    @cancel="$emit('close')"
+    :approveText="isSignup ? 'Sign Up' : 'Confirm'"
+    @approve="save"
   >
-    <ActionCard
-      title="Customize Player"
-      @cancel="$emit('close')"
-      @approve="saveUserPreferences"
-    >
-      <form class="customize">
-        <div class="inputs">
-          <h3>
-            Choose your nickname:
-          </h3>
-          <TextField :value="nickname" @input="nickname = $event" :label="null" class="nickname" />
-        </div>
-        <div class="avatar">
-          <h3>
-            Select Avatar:
-          </h3>
-          <BaseCarousel :height="300" :images="avatars" :selected="avatar" @selected-image="avatar = $event" />
-        </div>
-        <div class="choose-color">
-          <h3>
-            Choose your in-game player color:
-          </h3>
-          <ColorPicker :initialColor="color" @update="color = $event" class="color-picker" />
-        </div>
-      </form>
-    </ActionCard>
-  </v-dialog>
+    <form class="customize">
+      <div class="inputs">
+        <h3>
+          Choose your nickname:
+        </h3>
+        <TextField :value="nickname" @input="nickname = $event" :label="null" class="nickname" />
+      </div>
+      <div class="avatar">
+        <h3>
+          Select Avatar:
+        </h3>
+        <BaseCarousel :height="300" :images="avatars" :selected="avatar" @selected-image="avatar = $event" />
+      </div>
+      <div class="choose-color">
+        <h3>
+          Choose your in-game player color:
+        </h3>
+        <ColorPicker :initialColor="color" @update="color = $event" class="color-picker" />
+      </div>
+    </form>
+  </ActionCard>
 </template>
 
 <script>
@@ -57,7 +53,7 @@
       BaseCarousel
     },
     props: {
-      isOpen: {
+      isSignup: {
         type: Boolean,
         default: false
       }
@@ -65,7 +61,7 @@
     data: () => ({
       nickname: 'John Doe',
       color: '#409EFF',
-      avatar: 0
+      avatar: 1
     }),
     computed: mapState([
       'currentUser'
@@ -73,12 +69,24 @@
     created() {
       this.avatars = avatars;
 
-      this.nickname = this.currentUser.nickname;
-      this.avatar = this.currentUser.avatar;
-      this.color = this.currentUser.color;
+      if (!this.isSignup) {
+        this.nickname = this.currentUser.nickname;
+        this.avatar = this.currentUser.avatar;
+        this.color = this.currentUser.color;
+      } else {
+        const rawUser = firebaseService.auth.currentUser;
+        this.nickname = rawUser.displayName || this.nickname;
+      }
     },
     methods: {
-      saveUserPreferences: async function() {
+      createUser: async function() {
+        const addedDbuser = await firebaseService.addUser(this.nickname, this.color, this.avatar);
+        this.$emit('created', addedDbuser);
+      },
+      save: async function() {
+        if (this.isSignup)
+          return this.createUser();
+
         if (!this.currentUser || !this.currentUser.uid) return;
 
         this.$emit('close');

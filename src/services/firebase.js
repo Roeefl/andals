@@ -3,7 +3,7 @@ import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/storage';
 
-// const NEW_USER = 'NEW_USER';
+import { FIREBASE_USER_SIGNUP } from '@/constants'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBFbhnThQ5Ay7I7DwQ4S_7RuV2a24yXqPw",
@@ -58,34 +58,32 @@ class FirebaseService {
       if (!email) return false;
 
       const dbUserRef = await this.currentDbUser();
-
-      if (!dbUserRef)
-        return this.addUser(currUser); 
-
-      return dbUserRef;
+      return dbUserRef.email ? dbUserRef : FIREBASE_USER_SIGNUP;
     } catch (error) {
       console.error('Google Login Error.', error);
     }
   }
 
-  async addUser(user) {
+  async addUser(nickname, color, avatar) {
+    const currUser = this.auth.currentUser;
     const {
       uid,
       email = '',
-      displayName = email,
-      photoURL
-    } = user;
+      displayName = '',
+      photoURL = ''
+    } = currUser;
 
     console.log("FirebaseService -> addUser -> uid", uid)
+    if (!uid) return 'ERROR';
 
     try {
       await firebase.database().ref(`users/${uid}`).set({
         email,
         displayName,
         photoURL,
-        nickname: 'John Doe',
-        avatar: 1,
-        color: '#2c3e50',
+        nickname,
+        avatar,
+        color,
         isAdmin: false,
         games: 0,
         wins: 0,
@@ -115,14 +113,13 @@ class FirebaseService {
     const currUser = firebase.auth().currentUser;
     if (!currUser) return {};
 
-    const { email, uid } = currUser;
-
+    const { uid } = currUser;
     const snapshot = await firebase.database()
       .ref(`/users/${uid}`)
       .once('value');
 
     const userData = snapshot.val();
-    
+    if (!userData) return {};
     return {
       uid,
       ...userData
