@@ -19,6 +19,7 @@ export default new Vuex.Store({
     isGameLoading: false,
     isSelfReady: false,
     displayDeck: false,
+    displayedHeroCard: {},
     rooms: [],
     // reservations: [],
     roomState: {},
@@ -95,6 +96,9 @@ export default new Vuex.Store({
     },
     closeMyDeck(state) {
       state.displayDeck = false;
+    },
+    setDisplayedHeroCard(state, heroCard) {
+      state.displayedHeroCard = heroCard;
     },
     toggleSelfReady(state) {
       state.isSelfReady = !state.isSelfReady;
