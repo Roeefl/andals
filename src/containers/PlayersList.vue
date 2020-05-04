@@ -15,7 +15,7 @@
           :allowStealing="myPlayer.allowStealingFrom && myPlayer.allowStealingFrom.includes(player.playerSessionId)"
           @trade-with="$emit('trade-with', $event)"
           @steal-from="$emit('steal-from', $event)"
-          @display-hero-card="displayedHeroCard = $event"
+          @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
           class="player"
         />
       </li>
@@ -29,7 +29,7 @@
         @deck-clicked="$store.commit('openMyDeck')"
         @toggle-ready="$emit('toggle-ready')"
         @play-card="playGameCard($event)"
-        @display-hero-card="displayedHeroCard = $event"
+        @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
         class="player"
       />
     </div>
@@ -38,18 +38,20 @@
       :card="displayedHeroCard"
       :playAllowed="displayedHeroCard.type === (myPlayer.currentHeroCard || {}).type && isMyTurn && !myPlayer.hasPlayedHeroCard"
       @play-hero="playHeroCard($event)"
-      @close="displayedHeroCard = {}"
+      @close="$store.commit('setDisplayedHeroCard', {})"
     />
-    <ResourceCard
-      v-for="(card, key, index) in recentLoot"
-      :key="`${key}-${index}`"
-      recentLoot
-      :resource="card.resource"
-      :count="card.count"
-      :clickable="false"
-      class="recent-loot-card"
-      :class="`recent-loot-card-${index}`"
-    />
+    <div class="recent-loot-cards" v-if="Object.keys(recentLoot).length > 0">
+      <ResourceCard
+        v-for="(card, key, index) in recentLoot"
+        :key="`${key}-${index}`"
+        recentLoot
+        :resource="card.resource"
+        :count="card.count"
+        :clickable="false"
+        class="recent-loot-card"
+        :class="`recent-loot-card-${index}`"
+      />
+    </div>
   </div>
 </template>
 
@@ -88,9 +90,6 @@
         default: false
       }
     },
-    data: () => ({
-      displayedHeroCard: {}
-    }),
     computed: {
       myPlayerIndex: function() {
         return this.players
@@ -99,6 +98,7 @@
       ...mapState([
         'myPlayer',
         'players',
+        'displayedHeroCard',
         'justPurchasedGameCard',
         'recentLoot'
       ])
@@ -121,7 +121,7 @@
         this.$emit('play-card', gameCard);
       },
       playHeroCard: function(heroCard) {
-        this.displayedHeroCard = {};
+        this.$store.commit('setDisplayedHeroCard', {});
         this.$emit('play-hero', heroCard);
       }
     }
@@ -200,33 +200,19 @@
     }
   }
 
-  // @mixin recent-loot-cards() {
-  //   @for $t from 0 to 10 {
-  //     &:nth-child(#{$t + 1}) {
-  //       animation-delay: #{$t + 1}s;
-  //     }
-  //   }
-  // }
-
-  .recent-loot-card {
-    width: 160px;
-    height: 240px;
+  .recent-loot-cards {
     position: absolute;
     left: 15%;
+    display: flex;
+    flex-direction: column;
     -webkit-animation: slide-up-and-fade-out 5s ease both;
     animation: slide-up-and-fade-out 5s ease both;
-    // @include recent-loot-cards();
 
-    &.recent-loot-card-1 {
-      animation-delay: 0.5s;
-    }
-
-    &.recent-loot-card-2 {
-      animation-delay: 1s;
-    }
-
-    &.recent-loot-card-3 {
-      animation-delay: 1.5s;
+    .recent-loot-card {
+      margin: 0;
+      width: 140px;
+      height: 200px;
+      margin-top: -50px;
     }
   }
 </style>
