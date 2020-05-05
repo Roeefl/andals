@@ -1,8 +1,10 @@
-export const gamePhases = ['isTurnOrder', 'isSetup', 'isGameStart', 'isPlaceGuards'];
+export const gameNotifications = ['isTurnOrder', 'isSetup', 'isGameStart', 'isPlaceGuards', 'settlementPlaced', 'cityPlaced'];
 
-export const phaseToAssetName = {
+export const notificationToAsset = {
   isTurnOrder: 'turn-order',
   isSetup: 'setup-phase',
   isGameStart: 'game-start',
-  isPlaceGuards: 'place-guards'
+  isPlaceGuards: 'place-guards',
+  settlementPlaced: 'place-settlement',
+  cityPlaced: 'place-city'
 };

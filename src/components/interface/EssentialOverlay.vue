@@ -4,6 +4,9 @@
       <h1 class="overlay-header">
         {{ overlay.header }}
       </h1>
+      <h2 v-if="overlay.subHeader">
+        {{ overlay.subHeader }}
+      </h2>
       <h2 v-if="overlay.guardsKilled">
         {{ overlay.guardsKilled }} guards were killed!
       </h2>
@@ -26,10 +29,10 @@
       </div>
       <div class="game-phase">
         <GameAsset
-          v-for="(gamePhase, g) in gamePhases.filter(phase => overlay[phase])"
+          v-for="(gamePhase, g) in gameNotifications.filter(phase => overlay[phase])"
           :key="g"
           type="phases"
-          :asset="phaseToAssetName[gamePhase]"
+          :asset="notificationToAsset[gameNotification]"
         />
       </div>
       <div v-if="overlay.isRobber" class="robber">
@@ -54,7 +57,7 @@
   import BaseOverlay from '@/components/common/BaseOverlay';
   import WildlingToken from '@/components/north/WildlingToken';
   import GameAsset from '@/components/game/GameAsset';
-  import { gamePhases, phaseToAssetName } from '@/specs/gamePhases';
+  import { gameNotifications, notificationToAsset } from '@/specs/gamePhases';
 
   export default {
     name: 'EssentialOverlay',
@@ -74,8 +77,8 @@
       }
     },
     created() {
-      this.gamePhases = gamePhases;
-      this.phaseToAssetName = phaseToAssetName;
+      this.gameNotifications = gameNotifications;
+      this.notificationToAsset = notificationToAsset;
     }
   }
 </script>

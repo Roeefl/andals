@@ -3,7 +3,7 @@
     <ActionCard
       closeButton
       @close="$emit('close')"
-      :title="card.name"
+      title="Hero Card"
       titleColor="secondary"
       :cancel="playAllowed"
       cancelColor="warning"

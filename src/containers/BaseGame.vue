@@ -141,7 +141,7 @@
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
   import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
-  import { gamePhases } from '@/specs/gamePhases';
+  import { gameNotifications } from '@/specs/gamePhases';
 
   import {
     MESSAGE_CHAT,
@@ -395,9 +395,8 @@
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: broadcast.message });
 
             if (isEssential) essentialHeader = broadcast.message;
-            gamePhases.forEach(flag => {
-              if (broadcast[flag])
-                essentialData[flag] = true;
+            gameNotifications.forEach(flag => {
+              if (broadcast.notify === flag) essentialData[flag] = true;
             });
             
             break;
