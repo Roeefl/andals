@@ -49,10 +49,11 @@ class FirebaseService {
     const lobbyChat = await firebase.database().ref('lobbyChat/');
     lobbyChat.on('child_added', child => {
       const data = child.val();
-      const { sender, message } = data;
+      const { sender, message, channel } = data;
 
       const chatMessage = {
         key: child.key,
+        channel,
         sender,
         message
       };
@@ -160,11 +161,12 @@ class FirebaseService {
     }
   }
 
-  async sendLobbyChatMessage(message) {
+  async sendLobbyChatMessage(channel, message) {
     const lobbyChat = await firebase.database().ref('lobbyChat/');
 
     const newMessageRef = await lobbyChat.push();
     await newMessageRef.set({
+      channel,
       sender: 'Roee',
       message
     });

@@ -36,7 +36,7 @@
       <div class="lobby-contents">
         <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
         <div class="lobby-chat">
-          <GameChat :messages="lobbyChat" @send-message="sendLobbyMessage" />
+          <GameChat :channels="['lobby', 'lfm']" :messages="lobbyChat" @send-message="sendLobbyMessage($event)" />
         </div>
       </div>
     </section>
@@ -194,8 +194,8 @@
           console.error('Reconnect Failed:', err);
         }
       },
-      sendLobbyMessage: function(message) {
-        firebaseService.sendLobbyChatMessage(message);
+      sendLobbyMessage: function({ channel, message }) {
+        firebaseService.sendLobbyChatMessage(channel, message);
       }
     }
   }
@@ -205,7 +205,10 @@
  @import '@/styles/partials';
 
   .game-lobby {
+    height: 100%;
     overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
 
     .header-fallback {
       height: $header-height;
@@ -214,6 +217,7 @@
     }
 
     .lobby-interface {
+      flex: 1;
       z-index: $zindex-interface;
       display: flex;
       flex-direction: column;
@@ -239,9 +243,17 @@
     }
 
     .lobby-contents {
+      flex: 1;
+      max-height: 50%;
+      overflow-y: auto;
       margin-top: $spacer * 1.5;
       display: grid;
       grid-template-columns: 80% 20%;
+
+      .lobby-chat {
+        height: 100%;
+        position: relative;
+      }
     }
   }
 

@@ -1,7 +1,12 @@
 <template>
   <fragment>
-    <MessageList title="Chat" :messages="messages" class="messages-container">
-      <li v-for="(msg, i) in messages" :key="i">
+     <v-tabs v-if="channels.length > 0" @change="setChannel">
+      <v-tab v-for="(channel, c) in channels" :key="c">
+        {{ channel }}
+      </v-tab>
+    </v-tabs>
+    <MessageList title="Chat" :messages="channelMessages" class="messages-container">
+      <li v-for="(msg, i) in channelMessages" :key="i">
         <div>
           {{ msg.sender }}: {{ msg.message }}
         </div>
@@ -32,6 +37,10 @@
       TextField
     },
     props: {
+      channels: {
+        type: Array,
+        default: () => []
+      },
       messages: {
         type: Array,
         default: []
@@ -42,14 +51,24 @@
       }
     },
     data: () => ({
+      currentChannel: 'game',
       newMessage: ''
     }),
+    computed: {
+      channelMessages: function() {
+        if (!this.channels.length) return this.messages;
+        return this.messages.filter(({ channel }) => channel === this.currentChannel);
+      }
+    },
     methods: {
       sendMessage: function(e) {
         e.preventDefault();
         
-        this.$emit('send-message', this.newMessage);
+        this.$emit('send-message', { channel: this.currentChannel, message: this.newMessage });
         this.newMessage = '';
+      },
+      setChannel: function(channelIndex) {
+        this.currentChannel = this.channels[channelIndex]
       }
     }
   }

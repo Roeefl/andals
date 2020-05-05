@@ -90,8 +90,6 @@
     padding: $spacer;
     display: flex;
     flex-direction: column;
-    max-height: 70vh;
-    overflow-y: auto;
 
     .rooms-list {
       font-size: $font-size-lg;

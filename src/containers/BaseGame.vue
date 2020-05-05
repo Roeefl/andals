@@ -714,7 +714,7 @@
           tile: this.desiredRobberTile
         });
       },
-      sendChatMessage: function(message) {
+      sendChatMessage: function({ message }) {
         this.room.send({
           type: MESSAGE_CHAT,
           message
