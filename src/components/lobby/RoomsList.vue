@@ -90,11 +90,10 @@
     padding: $spacer;
     display: flex;
     flex-direction: column;
+    max-height: 70vh;
+    overflow-y: auto;
 
     .rooms-list {
-      max-height: 50vh;
-      overflow-y: auto;
-      width: 80%;
       font-size: $font-size-lg;
     }
   }

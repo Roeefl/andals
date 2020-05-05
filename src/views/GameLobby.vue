@@ -33,7 +33,12 @@
           </BaseButton>
         </li>
       </ul>
-      <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
+      <div class="lobby-contents">
+        <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
+        <div class="lobby-chat">
+          <GameChat :messages="lobbyChat" @send-message="sendLobbyMessage" />
+        </div>
+      </div>
     </section>
   </main>
 </template>
@@ -43,8 +48,9 @@
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
   import firebaseService from '@/services/firebase';
-  
+
   import RoomsList from '@/components/lobby/RoomsList';
+  import GameChat from '@/components/interface/GameChat';
   import CustomizeRoom from '@/components/lobby/CustomizeRoom';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BaseButton from '@/components/common/BaseButton';
@@ -56,6 +62,7 @@
     name: 'GameLobby',
     components: {
       RoomsList,
+      GameChat,
       ChoiceDialog,
       CustomizeRoom,
       BaseButton,
@@ -69,7 +76,8 @@
       'isServerUp',
       'lobbySnowflakes',
       'currentUser',
-      'rooms'
+      'rooms',
+      'lobbyChat'
     ]),
     data: function() {
       const randomInt = Math.floor(Math.random() * 9999);
@@ -185,6 +193,9 @@
         } catch (err) {
           console.error('Reconnect Failed:', err);
         }
+      },
+      sendLobbyMessage: function(message) {
+        firebaseService.sendLobbyChatMessage(message);
       }
     }
   }
@@ -210,10 +221,6 @@
       & > * {
         z-index: $zindex-interface;
       }
-
-      .rooms-list {
-        margin-top: $spacer * 1.5;
-      }
     }
 
     .actions {
@@ -229,6 +236,12 @@
         width: 100%;
         height: 100%;
       }
+    }
+
+    .lobby-contents {
+      margin-top: $spacer * 1.5;
+      display: grid;
+      grid-template-columns: 80% 20%;
     }
   }
 
