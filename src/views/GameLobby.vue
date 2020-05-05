@@ -69,8 +69,7 @@
       'isServerUp',
       'lobbySnowflakes',
       'currentUser',
-      'rooms',
-      'startAmbience'
+      'rooms'
     ]),
     data: function() {
       const randomInt = Math.floor(Math.random() * 9999);
@@ -102,7 +101,8 @@
         'setServerStatus',
         'addAlert',
         'setRooms',
-        'setGameLoading'
+        'setGameLoading',
+        'startAmbience'
       ]),
       fetchRooms: async function() {
         try {

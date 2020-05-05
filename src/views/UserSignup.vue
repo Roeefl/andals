@@ -2,7 +2,7 @@
   <main class="user-signup">
     <div class="header-fallback" />
     <section class="signup-container">
-      <CustomizePlayer isSignup @created="onUserCreated($event)" />
+      <CustomizePlayer light isSignup @created="onUserCreated($event)" class="customize-player" />
     </section>
   </main>
 </template>
@@ -48,8 +48,14 @@
     }
 
     .signup-container {
+      width: 100%;
       display: flex;
       flex-direction: column;
+      align-items: center;
+
+      .customize-player {
+        width: 40%;
+      }
     }
   }
 </style>

@@ -11,7 +11,7 @@
       <section class="header-buttons">
         <div v-for="item in links" :key="item.key" class="header-item" :class="{ 'home': item.key === 'lobby' && !isInGame }">
           <router-link v-if="!!item.to" :to="item.to" class="router-link">
-            <img v-if="item.img && !isInGame" :src="require(`../assets/${item.img}`)" :alt="item.key" />
+            <img v-if="item.img && !isInGame" :src="require(`../assets/${item.img}`)" :alt="item.key" class="header-image" />
             <BaseButton v-else icon :iconName="item.icon" :iconColor="item.iconColor" iconSize="24px" />
             <h3 v-if="item.title" class="item-title">
               {{ item.title }}
@@ -58,7 +58,7 @@
     {
       key: 'lobby',
       to: '/lobby',
-      img: 'logo.png',
+      img: 'logo.svg',
       icon: 'door-open'
     },
     {
@@ -222,6 +222,11 @@
 
     .router-link {
       display: flex;
+
+      .header-image {
+        width: 32px;
+        height: 32px;
+      }
 
       .item-title {
         margin-left: $spacer;

@@ -1,6 +1,8 @@
 <template>
   <ActionCard
-    title="Customize Player"
+    :light="light"
+    :color="light ? 'info' : 'secondary'"
+    :title="isSignup ? 'New User Sign-up' : 'Customize Player'"
     :cancel="!isSignup"
     @cancel="$emit('close')"
     :approveText="isSignup ? 'Sign Up' : 'Confirm'"
@@ -23,7 +25,7 @@
         <h3>
           Choose your in-game player color:
         </h3>
-        <ColorPicker :initialColor="color" @update="color = $event" class="color-picker" />
+        <ColorPicker :hideCanvas="!isSignup" :initialColor="color" @update="color = $event" class="color-picker" />
       </div>
     </form>
   </ActionCard>
@@ -54,6 +56,10 @@
     },
     props: {
       isSignup: {
+        type: Boolean,
+        default: false
+      },
+      light: {
         type: Boolean,
         default: false
       }
