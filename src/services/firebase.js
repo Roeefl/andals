@@ -32,7 +32,7 @@ class FirebaseService {
     return firebase.auth();
   }
 
-  async init(onAuthStateChanged) {
+  async init(onAuthStateChanged, onLobbyChatMessage) {
     console.log(this._);
     if (this._.isInitialized) return;
     
@@ -45,6 +45,20 @@ class FirebaseService {
         onAuthStateChanged(dbUserRef);
       }
     );
+
+    const lobbyChat = await firebase.database().ref('lobbyChat/');
+    lobbyChat.on('child_added', child => {
+      const data = child.val();
+      const { sender, message } = data;
+
+      const chatMessage = {
+        key: child.key,
+        sender,
+        message
+      };
+
+      onLobbyChatMessage(chatMessage);
+    });
   }
 
   async login() {
@@ -144,6 +158,16 @@ class FirebaseService {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  async sendLobbyChatMessage(message) {
+    const lobbyChat = await firebase.database().ref('lobbyChat/');
+
+    const newMessageRef = await lobbyChat.push();
+    await newMessageRef.set({
+      sender: 'Roee',
+      message
+    });
   }
 
   async addNote(note) {

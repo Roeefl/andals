@@ -21,6 +21,7 @@ export default new Vuex.Store({
     displayDeck: false,
     displayedHeroCard: {},
     rooms: [],
+    lobbyChat: [],
     // reservations: [],
     roomState: {},
     activeStructures: [
@@ -85,6 +86,12 @@ export default new Vuex.Store({
     setCurrentUser(state, user) {
       console.log("setCurrentUser -> user", user)
       state.currentUser = user;
+    },
+    addLobbyChatMessage(state, message) {
+      state.lobbyChat = [
+        ...state.lobbyChat,
+        message
+      ];
     },
     setGameLoading(state, isLoading) {
       console.log("setGameLoading -> isLoading", isLoading)

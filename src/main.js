@@ -12,7 +12,8 @@ Vue.use(Fragment.Plugin);
 Vue.use(VueDragDrop);
 
 firebaseService.init(
-  async (user) => store.commit('setCurrentUser', user)
+  async (user) => store.commit('setCurrentUser', user),
+  async (message) => store.commit('addLobbyChatMessage', message)
 );
 
 new Vue({
