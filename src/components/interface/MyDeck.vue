@@ -18,6 +18,7 @@
       width="68%"
       @click:outside="!myPlayer.mustDiscardHalfDeck && $store.commit('closeMyDeck')"
       :persistent="myPlayer.mustDiscardHalfDeck"
+      :overlay-opacity="0"
     >
       <v-sheet class="deck-sheet">
         <BaseButton
