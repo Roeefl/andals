@@ -369,9 +369,6 @@
           case MESSAGE_COLLECT_ALL_LOOT:
             const { playerSessionId, loot } = broadcast;
             this.addGameLog({ type: CHAT_LOG_LOOT, playerName, loot });
-            
-            if (isEssential)
-              essentialHeader = `${playerName} collects: ${loot}`;
 
             if (playerSessionId === this.myPlayer.playerSessionId) {
               Object
@@ -383,28 +380,21 @@
           
           case MESSAGE_COLLECT_RESOURCE_LOOT:
             const { resource } = broadcast;
-
             this.addGameLog({ type: CHAT_LOG_LOOT, playerName, loot: { [resource]: 1 } });
 
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
               this.addRecentLoot({ resource, count: 1 });
-            
             break;
 
           case MESSAGE_DISCARD_HALF_DECK:
             const { discardedCounts } = broadcast;
             this.addGameLog({ type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
-            
-            if (isEssential)
-              essentialHeader = `${playerName} discards: ${discardedCounts}`;
             break;
 
           case MESSAGE_GAME_LOG:
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: broadcast.message });
 
-            if (isEssential)
-              essentialHeader = message;
-
+            if (isEssential) essentialHeader = broadcast.message;
             gamePhases.forEach(flag => {
               if (broadcast[flag])
                 essentialData[flag] = true;
@@ -415,8 +405,8 @@
           case MESSAGE_STEAL_CARD:
             const { stoleFrom, stolenResource } = broadcast;
 
-            const message = `${playerName} has stolen a resource card from ${stoleFrom}`;
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
+            const stolenCardChatMessage = `${playerName} has stolen a resource card from ${stoleFrom}`;
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: stolenCardChatMessage });
             
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
               this.addRecentLoot({ resource: stolenResource, count: 1 });
@@ -430,12 +420,6 @@
             //   this.openMyDeck();
             break;
 
-          case MESSAGE_GAME_VICTORY:
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
-            this.$store.commit('victory', playerName);
-            this.onEssentialBroadcast(`VICTORY! ${playerName} has won the game!`);
-            break;
-
           case MESSAGE_PLAY_GAME_CARD:
             const { cardType } = broadcast;
             essentialHeader = `${playerName} has played ${cardType}`;
@@ -443,8 +427,12 @@
             this.addGameLog({ type: CHAT_LOG_GAME_CARD, playerName, cardType });
             this.setEssentialOverlay({ essentialHeader, cardType });
             break;
+
+          case MESSAGE_GAME_VICTORY:
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
+            this.$store.commit('victory', playerName);
+            this.onEssentialBroadcast(`VICTORY! ${playerName} has won the game!`);
             
-          default:
             break;
         }
 
@@ -788,8 +776,8 @@
         .game-board {
           border: 5px solid #6D4C41;
           border-top: none;
-          background-image: url('../assets/ocean.jpg');
-          background-size: cover;
+          // background-image: url('../assets/ocean.jpg');
+          // background-size: cover;
           height: $board-height;
 
           &.with-north {
