@@ -51,7 +51,7 @@
         </DraggableWidget>
         <v-divider dark class="divider" />
         <DraggableWidget class="game-chat-widget">
-          <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
+          <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
         </DraggableWidget>
       </aside>
     </div>
@@ -86,7 +86,7 @@
       @refuse="refuseTrade"
       @confirm-trade="confirmTrade"
     >
-      <GameChat :messages="chatMessages" :myPlayerSessionId="myPlayer.playerSessionId || 'NO_SESSION_ID'" />
+      <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
     </TradeDialog>
     <TradeDialog
       :isOpen="!!bankTradeResource"
@@ -124,10 +124,10 @@
   import GameStatus from '@/containers/GameStatus';
   import GameBoard from '@/containers/GameBoard';
   import TheNorth from '@/containers/TheNorth';
-  import GameChat from '@/containers/GameChat';
   import GameLog from '@/containers/GameLog';
   import PlayersList from '@/containers/PlayersList';
   import BreachMarker from '@/components/north/BreachMarker';
+  import GameChat from '@/components/interface/GameChat';
   import MyDeck from '@/components/interface/MyDeck';
   import TradeDialog from '@/components/interface/TradeDialog';
   import ConfirmMove from '@/components/interface/ConfirmMove';
@@ -712,6 +712,12 @@
         this.room.send({
           type: MESSAGE_MOVE_ROBBER,
           tile: this.desiredRobberTile
+        });
+      },
+      sendChatMessage: function(message) {
+        this.room.send({
+          type: MESSAGE_CHAT,
+          message
         });
       }
     }

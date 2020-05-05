@@ -38,7 +38,7 @@
       },
       myPlayerSessionId: {
         type: String,
-        required: true
+        default: ''
       }
     },
     data: () => ({
@@ -48,11 +48,7 @@
       sendMessage: function(e) {
         e.preventDefault();
         
-        colyseusService.room.send({
-          type: MESSAGE_CHAT,
-          message: this.newMessage
-        });
-
+        this.$emit('send-message', this.newMessage);
         this.newMessage = '';
       }
     }
