@@ -199,6 +199,10 @@
       isMyTurn: {
         type: Boolean,
         default: false  
+      },
+      currentRound: {
+        type: Number,
+        default: -1
       }
     },
     data: () => ({
@@ -207,9 +211,11 @@
     computed: {
       playGameCardAllowed: function() {
         return (
+          this.isMe &&
           this.isMyTurn &&
-          this.isMe && 
           !this.player.hasPlayedGameCard &&
+          !this.displayedGameCard.wasPlayed &&
+          this.displayedGameCard.purchasedRound !== this.currentRound &&
           this.displayedGameCard.type && this.displayedGameCard.type !== CARD_VICTORY_POINT
         );
       },

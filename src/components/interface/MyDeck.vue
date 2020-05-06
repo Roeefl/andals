@@ -92,7 +92,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import colyseusService from '@/services/colyseus';
 
   import BaseDeck from '@/components/game/BaseDeck';
@@ -145,6 +145,9 @@
       this.purchaseTypes = purchaseTypes;
     },
     methods: {
+      ...mapMutations([
+        'addAlert'
+      ]),
       toggleCardSelection: function(card) {
         if (!this.myPlayer.mustDiscardHalfDeck) return;
         
@@ -186,7 +189,13 @@
         }
       },
       playGameCard: function(gameCard) {
-        this.$emit('play-card', gameCard);
+        const desiredGameCard = this.myPlayer.gameCards[gameCard.index];
+        if (desiredGameCard.purchasedRound === this.roomState.currentRound) {
+          this.addAlert('You cannot play a development card on the same round you purchased it');
+          return;
+        };
+
+        this.$emit('play-game-card', gameCard);
       },
       onRequestTrade: function(requestedResource) {
         colyseusService.room.send({

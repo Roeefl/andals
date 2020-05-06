@@ -6,6 +6,7 @@
     @click:close="closeable && close"
     @click="$emit('click')"
     :outlined="outlined"
+    :disabled="disabled"
     :label="labeled"
     class="base-chip"
   >
@@ -65,6 +66,10 @@
       label: {
         type: String,
         default: ''
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     }
   }

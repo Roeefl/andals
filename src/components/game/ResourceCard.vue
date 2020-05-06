@@ -12,7 +12,7 @@
       <BaseBadge v-if="!hideCount" :color="resourceCardColors[resource]" :content="maskCount ? '?' : count" class="resource-count" />
       <BaseIcon v-if="selected" name="check-outline" size="x-large" color="highlight" class="selected" />
     </BaseButton>
-    <BaseIcon v-if="recentLoot" name="plus-one" size="60px" :color="resourceCardColors[resource]" class="recent-loot" />
+    <BaseIcon v-if="recentLoot" name="plus-outline" size="60px" :color="resourceCardColors[resource]" class="recent-loot" />
     <BaseIcon v-if="collectable" size="x-large" name="sack" color="success" class="collect" />
   </v-card>
 </template>

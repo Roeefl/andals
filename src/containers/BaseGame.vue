@@ -12,6 +12,7 @@
       <BaseWidget class="players-list">
         <PlayersList
           :isMyTurn="isMyTurn"
+          :currentRound="roomState.currentRound"
           :isGameReady="roomState.isGameReady"
           :isGameStarted="roomState.isGameStarted"
           :currentTurn="roomState.currentTurn"
@@ -68,7 +69,7 @@
       @no="isDisplayConfirmMove = false"
       @yes="onConfirmMove($event)"
     />
-    <MyDeck :isMyTurn="isMyTurn" @purchase-game-card="onGameCardPurchase" @play-card="onPlayGameCard($event)" />
+    <MyDeck :isMyTurn="isMyTurn" @purchase-game-card="onGameCardPurchase" @play-game-card="onPlayGameCard($event)" />
     <ConfirmTrade
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
@@ -379,7 +380,11 @@
               Object
                 .entries(loot)
                 .filter(([resource, count]) => count > 0)
-                .forEach(([resource, count]) => this.addRecentLoot({ resource, count }));
+                .forEach(([resource, count]) => {
+                  Array(count)
+                    .fill(resource)
+                    .forEach(singleLoot => this.addRecentLoot({ resource, count: 1 }));
+                });
             }
             break;
           
@@ -812,7 +817,7 @@
 
           &.with-north {
             // justify-content: center;
-            height: $board-height * 0.85;
+            height: $board-height * 0.9;
             background-image: unset;
             background-size: unset;
             background-repeat: repeat;

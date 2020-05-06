@@ -24,11 +24,12 @@
       <PlayerInfo
         :player="myPlayer"
         isMe
+        :currentRound="currentRound"
         :isGameReady="isGameReady"
         :isMyTurn="isMyTurn"
         @deck-clicked="$store.commit('openMyDeck')"
         @toggle-ready="$emit('toggle-ready')"
-        @play-card="playGameCard($event)"
+        @play-card="$emit('play-card', $event)"
         @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
         class="player"
       />
@@ -45,10 +46,9 @@
         v-for="(card, key, index) in recentLoot"
         :key="`${key}-${index}`"
         recentLoot
+        hideCount
         :resource="card.resource"
-        :count="card.count"
         class="recent-loot-card"
-        :class="`recent-loot-card-${index}`"
       />
     </div>
   </div>
@@ -87,6 +87,10 @@
       isMyTurn: {
         type: Boolean,
         default: false
+      },
+      currentRound: {
+        type: Number,
+        default: -1
       }
     },
     computed: {
@@ -109,15 +113,6 @@
         const gamePieces = player.roads + player.settlements + player.cities + player.guards;
 
         return `${player.playerSessionId}-${player.isReady}-${totalLoot}-${resourceCounts}-${gamePieces}-${(player.currentHeroCard || {}).name}`;
-      },
-      playGameCard: function(gameCard) {
-        const lastCardIndex = this.myPlayer.gameCards.length - 1;
-        if (this.justPurchasedGameCard && gameCard.index === lastCardIndex) {
-          this.$store.commit('addAlert', 'You cannot play a development card on the same round you purchased it');
-          return;
-        };
-
-        this.$emit('play-card', gameCard);
       },
       playHeroCard: function(heroCard) {
         this.$store.commit('setDisplayedHeroCard', {});
@@ -154,7 +149,7 @@
 
     .player-wrapper {
       flex: 1;
-      max-height: 200px;
+      max-height: 180px;
       overflow-y: hidden;
       margin-top: $spacer;
       position: relative;
@@ -200,18 +195,20 @@
   }
 
   .recent-loot-cards {
-    position: absolute;
-    left: 15%;
-    display: flex;
-    flex-direction: column;
     -webkit-animation: slide-up-and-fade-out 6s ease both;
     animation: slide-up-and-fade-out 6s ease both;
+    position: relative;
+  }
 
-    .recent-loot-card {
-      margin: 0;
-      width: 140px;
-      height: 200px;
-      margin-top: -50px;
+  .recent-loot-card {
+    position: absolute;
+    left: 240px;
+    width: 120px;
+    height: 180px;
+    
+    & + & {
+      margin-left: 0;
+      margin-top: 50px;
     }
   }
 </style>
