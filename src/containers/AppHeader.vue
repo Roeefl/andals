@@ -69,12 +69,12 @@
       width: 420,
       title: 'Preferences'
     },
-    // {
-    //   key: 'console',
-    //   icon: 'console',
-    //   width: 1400,
-    //   title: 'Developer Console'
-    // },
+    {
+      key: 'console',
+      icon: 'console',
+      width: 1400,
+      title: 'Developer Console'
+    },
     {
       key: 'roomStats',
       icon: 'contain',
