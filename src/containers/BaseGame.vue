@@ -836,7 +836,7 @@
 
           &.with-north {
             // justify-content: center;
-            height: $board-height * 0.9;
+            height: $board-height * 0.87;
             background-image: unset;
             background-size: unset;
             background-repeat: repeat;
@@ -852,7 +852,7 @@
 
         @include xl() {
           & > * {
-            flex: 1;
+            flex: 2;
 
             &:last-of-type {
               margin-top: $spacer;
@@ -868,6 +868,7 @@
         }
 
         .breach-marker {
+          flex: 1;
           justify-content: flex-start;
         }
 
@@ -892,7 +893,7 @@
         &.compact {
           .game-log,
           .game-chat-widget {
-            max-height: $board-height * 0.4;
+            max-height: $board-height * 0.5;
 
             @include lg-down() {
               max-height: unset;

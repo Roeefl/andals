@@ -3,15 +3,17 @@
     <template v-slot:activator="{ on }">
       <BaseButton :on="on" :color="buttonColor" :disabled="disabled" class="activator">
         <slot name="activate" />
-        <BaseIcon
-          size="x-large"
-          :color="iconColor"
-          :name="iconName"
-          v-if="iconName"
-          class="icon"
-        />
-        <img v-if="assetName" :src="require(`../../assets/${assetName}`)" :alt="assetName" />
-        {{ buttonText }}
+        <BaseTooltip :tooltip="title">
+          <BaseIcon
+            size="x-large"
+            :color="iconColor"
+            :name="iconName"
+            v-if="iconName"
+            class="icon"
+          />
+          <img v-if="assetName" :src="require(`../../assets/${assetName}`)" :alt="assetName" />
+          {{ buttonText }}
+        </BaseTooltip>
       </BaseButton>
     </template>
     <ActionCard
@@ -35,13 +37,15 @@
   import ActionCard from '@/components/common/ActionCard';
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
+  import BaseTooltip from '@/components/common/BaseTooltip';
 
   export default {
     name: 'ChoiceDialog',
     components: {
       ActionCard,
       BaseButton,
-      BaseIcon
+      BaseIcon,
+      BaseTooltip
     },
     props: {
       buttonText: {

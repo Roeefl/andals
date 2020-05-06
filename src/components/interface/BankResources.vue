@@ -22,21 +22,25 @@
       :counts="roomState.resourceCounts"
       @resource-clicked="$emit('bank-trading', $event)"
     />
-    <BaseButton
-      xs
-      color="success"
-      iconName="treasure-chest"
-      iconColor="white"
-      iconSize="x-large"
-      :clickable="myPlayer.allowCollectAll && sumValues(myPlayer.availableLoot) > 0"
-      @click="myPlayer.allowCollectAll && $emit('collect-all')"
-      class="collect-all"
-    />
-    <GameCards
-      :count="(roomState.gameCards || []).length"
-      @purchase-game-card="$emit('purchase-game-card')"
-      class="game-cards"
-    />
+    <BaseTooltip tooltip="Collect All">
+      <BaseButton
+        xs
+        color="success"
+        iconName="treasure-chest"
+        iconColor="white"
+        iconSize="x-large"
+        :clickable="myPlayer.allowCollectAll && sumValues(myPlayer.availableLoot) > 0"
+        @click="myPlayer.allowCollectAll && $emit('collect-all')"
+        class="collect-all"
+      />
+    </BaseTooltip>
+    <BaseTooltip tooltip="Development Cards">
+      <GameCards
+        :count="(roomState.gameCards || []).length"
+        @purchase-game-card="$emit('purchase-game-card')"
+        class="game-cards"
+      />
+    </BaseTooltip>
   </div>
 </template>
 
@@ -48,6 +52,7 @@
   import ResourceCounts from '@/components/interface/ResourceCounts';
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
+  import BaseTooltip from '@/components/common/BaseTooltip';
 
   export default {
     name: 'BankResources',
@@ -55,7 +60,8 @@
       GameCards,
       ResourceCounts,
       BaseButton,
-      BaseIcon
+      BaseIcon,
+      BaseTooltip
     },
     props: {
       isMyTurn: {

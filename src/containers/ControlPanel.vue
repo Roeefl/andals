@@ -57,7 +57,7 @@
   .control-panel {
     flex: 1;
     display: grid;
-    grid-template-columns: 15% 85%;
+    grid-template-columns: 17% 83%;
 
     @include lg-down() {
       grid-template-columns: 20% 80%;

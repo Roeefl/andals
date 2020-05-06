@@ -11,8 +11,10 @@
       <section class="header-buttons">
         <div v-for="item in links" :key="item.key" class="header-item" :class="{ 'home': item.key === 'lobby' && !isInGame }">
           <router-link v-if="!!item.to" :to="item.to" class="router-link">
-            <img v-if="item.img && !isInGame" :src="require(`../assets/${item.img}`)" :alt="item.key" class="header-image" />
-            <BaseButton v-else icon :iconName="item.icon" :iconColor="item.iconColor" iconSize="24px" />
+            <BaseTooltip :tooltip="item.key">
+              <img v-if="item.img && !isInGame" :src="require(`../assets/${item.img}`)" :alt="item.key" class="header-image" />
+              <BaseButton v-else icon :iconName="item.icon" :iconColor="item.iconColor" iconSize="24px" />
+            </BaseTooltip>
             <h3 v-if="item.title" class="item-title">
               {{ item.title }}
             </h3>
@@ -55,6 +57,7 @@
   import BuildingCosts from '@/components/interface/BuildingCosts';
   import BaseButton from '@/components/common/BaseButton';
   import BaseMenu from '@/components/common/BaseMenu';
+  import BaseTooltip from '@/components/common/BaseTooltip';
 
   const links = [
     {
@@ -117,7 +120,8 @@
       ChoiceDialog,
       BuildingCosts,
       BaseButton,
-      BaseMenu
+      BaseMenu,
+      BaseTooltip
     },
     props: {
       isLoggedIn: {
@@ -166,7 +170,7 @@
     background: transparent !important;
 
     &.in-game {
-      width: 15% !important;
+      width: 17% !important;
       box-shadow: none !important;
 
       @include lg-down() {
