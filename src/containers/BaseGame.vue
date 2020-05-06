@@ -1,15 +1,15 @@
 <template>
   <div class="base-game">
-    <DraggableWidget class="control-panel">
+    <BaseWidget class="control-panel">
       <ControlPanel
         :isMyTurn="isMyTurn"
         @toggle-ready="toggleReady"
         @purchase-game-card="onGameCardPurchase"
         @bank-trade="onTradeWithBank($event)"
       />
-    </DraggableWidget>
+    </BaseWidget>
     <div class="board-container">
-      <DraggableWidget class="players-list">
+      <BaseWidget class="players-list">
         <PlayersList
           :isMyTurn="isMyTurn"
           :isGameReady="roomState.isGameReady"
@@ -22,7 +22,7 @@
           @play-card="onPlayGameCard($event)"
           @toggle-ready="toggleReady"
         />
-      </DraggableWidget>
+      </BaseWidget>
       <div class="board-area">
         <TheNorth
           v-if="isWithNorth"
@@ -43,21 +43,18 @@
         />
       </div>
       <aside class="sidebar" :class="{ 'compact': isWithNorth }">
-        <DraggableWidget v-if="isWithNorth" :level="0" class="breach-marker">
+        <BaseWidget v-if="isWithNorth" :level="0" class="breach-marker">
           <BreachMarker :wallBreaches="roomState.wallBreaches" />
-        </DraggableWidget>
-        <DraggableWidget class="game-log">
+        </BaseWidget>
+        <BaseWidget class="game-log">
           <GameLog :friendly="roomState.friendlyGameLog" />
-        </DraggableWidget>
+        </BaseWidget>
         <v-divider dark class="divider" />
-        <DraggableWidget class="game-chat-widget">
+        <BaseWidget class="game-chat-widget">
           <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
-        </DraggableWidget>
+        </BaseWidget>
       </aside>
     </div>
-    <DraggableWidget class="game-status">
-      <GameStatus />
-    </DraggableWidget>
     <ConfirmMove
       :type="activePurchase.type"
       :removing="activePurchase.isRemove"
@@ -71,12 +68,20 @@
       @no="isDisplayConfirmMove = false"
       @yes="onConfirmMove($event)"
     />
-    <MyDeck @purchase-game-card="onGameCardPurchase" @play-card="onPlayGameCard($event)" />
+    <MyDeck :isMyTurn="isMyTurn" @purchase-game-card="onGameCardPurchase" @play-card="onPlayGameCard($event)" />
     <ConfirmTrade
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
       @no="respondToIncomingTrade(false)"
       @yes="respondToIncomingTrade(true)"
+    />
+    <ConfirmTrade
+      :isOpen="!!tradeRequested.senderSessionId"
+      :withWho="tradeRequested.sender"
+      title="Trade Requested"
+      :requestedResource="tradeRequested.requestedResource"
+      @no="tradeRequested = {}"
+      @yes="acceptResourceTradeRequest"
     />
     <TradeDialog
       :isOpen="!!myPlayer.tradingWith"
@@ -107,10 +112,9 @@
       @steal="selectStealCard($event)"
       @cancel="stealingFrom = {}"
     />
-    <SelectResource
-      :isOpen="myPlayer.isDeclaringMonopoly"
-      @resource-selected="onMonopolySelected($event)"
-    />
+    <v-dialog width="500" :value="myPlayer.isDeclaringMonopoly">
+      <SelectResource :title="null" @resource-selected="onMonopolySelected($event)" />
+    </v-dialog>
     <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" />
   </div>
 </template>
@@ -121,7 +125,6 @@
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import ControlPanel from '@/containers/ControlPanel';
-  import GameStatus from '@/containers/GameStatus';
   import GameBoard from '@/containers/GameBoard';
   import TheNorth from '@/containers/TheNorth';
   import GameLog from '@/containers/GameLog';
@@ -135,7 +138,7 @@
   import OpponentDeck from '@/components/interface/OpponentDeck';
   import SelectResource from '@/components/interface/SelectResource';
   import RollingDice from '@/components/interface/RollingDice';
-  import DraggableWidget from '@/components/common/DraggableWidget';
+  import BaseWidget from '@/components/common/BaseWidget';
 
   import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
@@ -165,6 +168,8 @@
     MESSAGE_SELECT_MONOPOLY_RESOURCE,
     MESSAGE_WILDLINGS_REMOVE_FROM_TILE,
     MESSAGE_TRADE_WITH_BANK,
+    MESSAGE_TRADE_REQUEST_RESOURCE,
+    MESSAGE_TRADE_REQUEST_RESOURCE_AGREE,
     MESSAGE_TRADE_REQUEST,
     MESSAGE_TRADE_START_AGREED,
     MESSAGE_TRADE_ADD_CARD,
@@ -183,9 +188,8 @@
   export default {
     name: 'BaseGame',
     components: {
-      DraggableWidget,
+      BaseWidget,
       ControlPanel,
-      GameStatus,
       GameBoard,
       TheNorth,
       GameChat,
@@ -207,6 +211,7 @@
         type: ROAD
       },
       waitingTradeWith: null,
+      tradeRequested: {},
       bankTradeResource: null,
       bankDummy: {
         nickname: 'Bank',
@@ -342,7 +347,7 @@
           playerName
         } = broadcast;
 
-        let essentialHeader = '';
+        let essentialHeader = null;
         let essentialData = {};
         
         switch (type) {
@@ -412,6 +417,19 @@
               
             break;
 
+          case MESSAGE_TRADE_REQUEST_RESOURCE:
+            const { requestedResource } = broadcast;
+
+            if (broadcast.senderSessionId !== this.myPlayer.playerSessionId) {
+              this.tradeRequested = {
+                sender,
+                senderSessionId,
+                requestedResource
+              };
+            }
+
+            break;
+
           case MESSAGE_TURN_ORDER:
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
 
@@ -424,18 +442,19 @@
             essentialHeader = `${playerName} has played ${cardType}`;
 
             this.addGameLog({ type: CHAT_LOG_GAME_CARD, playerName, cardType });
-            this.setEssentialOverlay({ essentialHeader, cardType });
+            essentialData.gameCardType = cardType;
             break;
 
           case MESSAGE_GAME_VICTORY:
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
             this.$store.commit('victory', playerName);
-            this.onEssentialBroadcast(`VICTORY! ${playerName} has won the game!`);
-            
+
+            essentialHeader = `VICTORY! ${playerName} has won the game!`;
             break;
         }
 
-        if (isEssential) this.onEssentialBroadcast(essentialHeader, essentialData);
+        if (isEssential && !!essentialHeader)
+          this.onEssentialBroadcast(essentialHeader, essentialData);
       },
       onRoomError: function(error) {
         console.error(`Room ${this.room.sessionId} encountered error: ${error.message}`);
@@ -640,6 +659,12 @@
           isAgreed
         });
       },
+      acceptResourceTradeRequest: function() {
+        this.room.send({
+          type: MESSAGE_TRADE_REQUEST_RESOURCE_AGREE,
+          offeredResource: this.tradeRequested.requestedResource
+        });
+      },
       addTradeCard: function(card) {
         const { resource } = card;
         
@@ -787,7 +812,7 @@
 
           &.with-north {
             // justify-content: center;
-            height: $board-height * 0.9;
+            height: $board-height * 0.85;
             background-image: unset;
             background-size: unset;
             background-repeat: repeat;

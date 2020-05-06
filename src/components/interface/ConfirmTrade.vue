@@ -2,19 +2,37 @@
   <v-dialog
     :value="isOpen"
     persistent
-    width="400"
+    width="500"
   >
-   <ActionCard :title="`Confirm trade with ${withWho}`" @cancel="$emit('no')" @approve="$emit('yes')" />
+    <ActionCard :title="title" @cancel="$emit('no')" @approve="$emit('yes')">
+      <h2 v-if="!requestedResource">
+        Confirm Trade with {{ withWho }}
+      </h2>
+      <div v-else class="requested-resource">
+        <h3>
+          {{ withWho }} is asking if anyone is willing to trade a
+        </h3>
+        <div class="resource-card-wrapper">
+          <ResourceCard
+            hideCount
+            :resource="requestedResource"
+            @clicked="onResourceClick(resource)"
+          />
+        </div>
+      </div>
+    </ActionCard>
   </v-dialog>
 </template>
 
 <script>
   import ActionCard from '@/components/common/ActionCard';
+  import ResourceCard from '@/components/game/ResourceCard';
 
   export default {
     name: 'ConfirmTrade',
     components: {
-      ActionCard
+      ActionCard,
+      ResourceCard
     },
     props: {
       isOpen: {
@@ -23,8 +41,27 @@
       },
       withWho: {
         type: String,
-        required: true
+        default: ''
+      },
+      requestedResource: {
+        type: String,
+        default: null
+      },
+      title: {
+        type: String,
+        default: 'Confirm Trade'
       }
     }
   }
 </script>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+  
+  .requested-resource {
+    padding: $spacer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

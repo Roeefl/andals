@@ -11,6 +11,7 @@
         <div class="status">
           <BaseChip
             v-if="!isGameReady"
+            :disabled="!isMe"
             :iconName="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'"
             :iconColor="player.isReady ? 'highlight' : 'error'"
             :label="player.isReady ? 'Ready' : 'Not Ready'"

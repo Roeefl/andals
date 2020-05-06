@@ -1,24 +1,21 @@
 <template>
-  <v-dialog
-    :value="isOpen"
-    persistent
-    width="600"
-  >
-    <ActionCard
-      title="Select Monopoly Resource"
-      :cancel="false"
-      :approve="!!selectedResource"
-      @approve="$emit('resource-selected', selectedResource)"
-    >
-      <ResourceCard
-        v-for="resource in resourceCardTypes"
-        :key="resource"
-        hideCount
-        :resource="resource"
-        @clicked="toggleSelectedResource(resource)"
-      />
-    </ActionCard>
-  </v-dialog>
+  <!-- <ActionCard
+    :title="title"
+    :cancel="false"
+    :approve="!autoConfirm && !!selectedResource"
+    @approve="$emit('resource-selected', selectedResource)"
+  > -->
+  <div class="select-resource">
+    <ResourceCard
+      v-for="resource in resourceCardTypes"
+      :key="resource"
+      hideCount
+      :resource="resource"
+      :clickable="!disabled"
+      @clicked="toggleSelectedResource(resource)"
+    />
+  </div>
+  <!-- </ActionCard> -->
 </template>
 
 <script>
@@ -34,7 +31,15 @@
       ResourceCard
     },
     props: {
-      isOpen: {
+      title: {
+        type: String,
+        default: 'Select Resource'
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
+      autoConfirm: {
         type: Boolean,
         default: false
       }
@@ -50,6 +55,9 @@
         this.selectedResource = this.selectedResource === resource
           ? null
           : resource;
+
+        if (this.autoConfirm)
+          this.$emit('resource-selected', this.selectedResource);
       }
     }
   }

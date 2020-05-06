@@ -24,14 +24,14 @@
         <BaseButton
           icon
           iconName="arrow-down-bold-box"
-          iconColor="secondary"
+          iconColor="primary"
           iconSize="40px"
           :disabled="myPlayer.mustDiscardHalfDeck"
           @click="$store.commit('closeMyDeck')"
           class="close-deck"
         />
         <div class="deck-container">
-          <BuildingCosts :full="false" :counts="myPlayer.resourceCounts" color="secondary" class="building-costs" />
+          <BuildingCosts :full="false" :counts="myPlayer.resourceCounts" color="white" class="building-costs" />
           <div class="purchaseables">
             <div v-if="myPlayer.mustDiscardHalfDeck" class="discard">
               <h2 class="discard-header">
@@ -55,7 +55,7 @@
                 :key="purchaseType"
                 :type="purchaseType"
                 :showCount="false"
-                :color="myPlayer.hasResources[purchaseType] ? '#43A047' : 'secondary'"
+                :color="myPlayer.hasResources[purchaseType] ? '#43A047' : 'primary'"
                 :size="purchaseType === 'gameCard' ? '100px' : '60px'"
                 @clicked="onPieceClick(purchaseType)"
                 class="game-piece"
@@ -76,6 +76,15 @@
               <HeroCard thumbnail :card="myPlayer.currentHeroCard || {}" class="hero-card" />
             </BaseButton>
           </div>
+          <v-hover v-slot:default="{ hover }">
+            <div class="offer-trade">
+              <BaseButton icon iconName="swap-horizontal-circle" iconColor="white" iconSize="80px" />
+              <span class="offer-trade-text">
+                Request Trade
+              </span>
+              <SelectResource v-if="hover" :disabled="!isMyTurn" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
+            </div>
+          </v-hover>
         </div>
       </v-sheet>
     </v-bottom-sheet>
@@ -88,6 +97,7 @@
 
   import BaseDeck from '@/components/game/BaseDeck';
   import BuildingCosts from '@/components/interface/BuildingCosts';
+  import SelectResource from '@/components/interface/SelectResource';
   import GameCards from '@/components/interface/GameCards';
   import HeroCard from '@/components/game/HeroCard';
   import GamePiece from '@/components/game/GamePiece';
@@ -95,7 +105,7 @@
   import { types as purchaseTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
   import { initialResourceCounts } from '@/specs/resources';
 
-  import { MESSAGE_DISCARD_HALF_DECK } from '@/constants';
+  import { MESSAGE_DISCARD_HALF_DECK, MESSAGE_TRADE_REQUEST_RESOURCE } from '@/constants';
 
   export default {
     name: 'MyDeck',
@@ -103,6 +113,7 @@
       BaseDeck,
       BuildingCosts,
       GameCards,
+      SelectResource,
       HeroCard,
       GamePiece,
       BaseButton
@@ -110,6 +121,12 @@
     data: () => ({
       selectedCards: []
     }),
+    props: {
+      isMyTurn: {
+        type: Boolean,
+        default: false  
+      }
+    },
     computed: {
       discardCardsNeeded: function() {
         const totalCards = Object
@@ -161,6 +178,8 @@
         this.selectedCards = [];
       },
       onPieceClick: function(type) {
+        if (!this.isMyTurn) return;
+        
         if (type === GAME_CARD) {
           this.$emit('purchase-game-card');
           return;
@@ -168,6 +187,12 @@
       },
       playGameCard: function(gameCard) {
         this.$emit('play-card', gameCard);
+      },
+      onRequestTrade: function(requestedResource) {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_REQUEST_RESOURCE,
+          requestedResource
+        });
       }
     }
   }
@@ -179,14 +204,15 @@
   $playable-card-size: 120px;
 
   .deck-sheet {
+    background: rgba($secondary, 0.5);
     position: relative;
 
     .deck-container {
       height: 200px;
       padding: 0 $spacer;
       display: grid;
-      grid-gap: $spacer;
-      grid-template-columns: 20% 40% 40%;
+      grid-gap: 1%;
+      grid-template-columns: 20% 40% 20% 17%;
 
       .building-costs {
         height: 200px;
@@ -248,6 +274,30 @@
           background: $secondary;
           color: $primary;
         }
+      }
+
+      .offer-trade {
+        padding-top: $spacer * 3;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+        .offer-trade-text {
+          margin-top: $spacer;
+          color: $primary;
+          text-align: center;
+        }
+      }
+
+      .select-resource {
+        position: absolute;
+        top: $spacer / 2;
+        left: $spacer / 2;
+        transform: translateX(-20%);
+        display: flex;
+        width: 200px;
       }
     }
   }
