@@ -75,12 +75,6 @@
         </HexTile>
       </div>
     </div>
-    <Countdown
-      v-if="countdownTile >= 0"
-      :initialValue="10"
-      @finished="onConfirmRobber"
-      class="countdown"
-    />
     <div class="trees">
       <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
     </div>
@@ -105,7 +99,6 @@
   import BaseOverlay from '@/components/common/BaseOverlay';
   import BaseButton from '@/components/common/BaseButton';
   import GameAsset from '@/components/game/GameAsset';
-  import Countdown from '@/components/common/Countdown';
 
   import { baseGameHexTilemap, firstMenHexTilemap } from '@/tilemaps/hexes';
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
@@ -132,7 +125,6 @@
       BaseOverlay,
       BaseButton,
       GameAsset,
-      Countdown
     },
     props: {
       allowPurchase: {
@@ -148,9 +140,6 @@
       'myPlayer',
       'desiredRobberTile'
     ]),
-    data: () => ({
-      countdownTile: -1
-    }),
     created() {
       this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
       this.structureTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameStructureTilemap : firstMenStructureTilemap;
@@ -203,13 +192,7 @@
       onMoveRobber: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
         this.$emit('robber-moved', tileIndex);
-
-        this.countdownTile = tileIndex;
-      },
-      onConfirmRobber: function() {
-        if (!this.myPlayer.mustMoveRobber) return;
-        this.$emit('robber-confirmed');
-        this.countdownTile = -1;
+        this.$store.commit('setRobberCountdown', true);
       },
       isDisplayRobberTile: function(row, col) {
         const absoluteTileIndex = boardService.absoluteIndex(this.hexTileMap, row, col);
@@ -237,12 +220,6 @@
   .board {
     display: grid;
     grid-template-columns: 10% 80% 10%;
-
-    .countdown {
-      position: fixed;
-      bottom: 10%;
-      right: 22%;
-    }
 
     .game-over {
       opacity: 0.5;

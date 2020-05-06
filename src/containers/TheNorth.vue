@@ -111,7 +111,8 @@
     methods: {
       ...mapMutations([
         'addGameLog',
-        'setEssentialOverlay'
+        'setEssentialOverlay',
+        'pushToEssentialOverlay'
       ]),
       initializeRoom: function(room = this.room) {
         room.onMessage(this.onBroadcastReceived);
@@ -159,11 +160,12 @@
             break;
 
           case MESSAGE_WILDLINGS_REVEAL_TOKENS:
+          console.log("MESSAGE_WILDLINGS_REVEAL_TOKENS", 123)
             const { tokens } = broadcast;
-            header = 'Wildlings Tokens Revealed:';
+            const subHeader = 'Wildlings Tokens Revealed:';
 
             this.addGameLog({ type: CHAT_LOG_WILDLING_TOKENS, tokens });
-            this.setEssentialOverlay({ header, tokens });
+            this.pushToEssentialOverlay({ subHeader, tokens });
 
             // const { wildlingsAudio } = this.$refs;
             // if (wildlingsAudio) wildlingsAudio.play(); 
@@ -174,7 +176,7 @@
             header = `A ${wildling.type} has advanced to the clearing!`;
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
-            this.setEssentialOverlay({ header });
+            this.setEssentialOverlay({ header, wildlingType: wildling.type });
             break;
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:

@@ -40,6 +40,7 @@ export default new Vuex.Store({
       currentHeroCard: {}
     },
     desiredRobberTile: -1,
+    showRobberCountdown: false,
     isRollingDice: false,
     gameLog: [],
     alerts: {},
@@ -47,6 +48,7 @@ export default new Vuex.Store({
     essentialOverlay: {
       isOpen: false
     },
+    essentialOverlayTimeout: null,
     justPurchasedGameCard: false,
     gameWinner: null
   },
@@ -112,6 +114,9 @@ export default new Vuex.Store({
     },
     setDesiredRobberTile(state, tile) {
       state.desiredRobberTile = tile;
+    },
+    setRobberCountdown(state, show) {
+      state.showRobberCountdown = show;
     },
     setRollingDice(state, isRolling) {
       state.isRollingDice = isRolling;
@@ -252,7 +257,7 @@ export default new Vuex.Store({
         ...data
       };
         
-      setTimeout(
+      state.essentialOverlayTimeout = setTimeout(
         () => {
           state.essentialOverlay = {
             isOpen: false
@@ -260,7 +265,25 @@ export default new Vuex.Store({
         },
         ESSENTIAL_OVERLAY_TIMEOUT
       );
-    }
+    },
+    pushToEssentialOverlay(state, data = {}) {
+      clearTimeout(state.essentialOverlayTimeout);
+  
+      state.essentialOverlay = {
+        ...state.essentialOverlay,
+        ...data,
+        isOpen: true
+      };
+  
+      state.essentialOverlayTimeout = setTimeout(
+        () => {
+          state.essentialOverlay = {
+            isOpen: false
+          };
+        },
+        ESSENTIAL_OVERLAY_TIMEOUT
+      );
+    },
   },
   actions: {
   },
