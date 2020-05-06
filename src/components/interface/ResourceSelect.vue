@@ -6,7 +6,7 @@
     @approve="$emit('resource-selected', selectedResource)"
   > -->
   <div class="select-container">
-    <div v-if="!asCarousel" class="select-resource">
+    <div v-if="!asCarousel" key="flat-select" class="select-resource">
       <ResourceCard
         v-for="resource in resourceCardTypes"
         :key="resource"
@@ -18,6 +18,7 @@
     </div>
     <v-carousel
       v-else
+      key="carousel-select"
       hide-delimiters
       show-arrows
       :cycle="false"

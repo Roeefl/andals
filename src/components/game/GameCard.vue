@@ -2,6 +2,7 @@
   <v-card light max-width="400" @click="clickable && $emit('clicked')" class="game-card" :class="{ 'clickable': clickable, 'thumbnail': !full }" :style="cardStyle">
     <BaseButton
       v-if="!full"
+      key="game-card-thumbnail"
       icon
       :xs="small"
       :iconSize="small ? 'medium' : 'x-large'"
@@ -13,7 +14,7 @@
       <BaseBadge v-if="!!count" color="secondary" :content="count" class="card-badge" />
       <BaseBadge v-if="wasPlayed" color="red" content="X" class="card-badge" />
     </BaseButton>
-    <section v-else class="full-card">
+    <section v-else key="game-card-full" class="full-card">
       <h2 class="card-title">
         {{ firstMenGameCardsTitles[type] }}
       </h2>

@@ -1,9 +1,9 @@
 <template>
   <div class="turn-action">
-    <div v-if="isWaitingForDiceRoll" class="dice">
+    <div v-if="isWaitingForDiceRoll" key="dice-needed" class="dice">
       <GameDice :dice="roomState.dice" @clicked="rollDice" enabled />
     </div>
-    <fragment v-else>
+    <fragment v-else key="dice-rolled">
       <BaseButton
         v-if="roomState.isGameReady && !myPlayer.mustMoveRobber"
         color="red"
@@ -31,10 +31,10 @@
         :height="buttonHeight"
         @click="$emit('toggle-ready')"
       >
-        <span v-if="isSelfReady">
+        <span v-if="isSelfReady" key="not-ready">
           Not Ready
         </span>
-        <span v-else>
+        <span v-else key="ready">
           I am Ready!
         </span>
       </BaseButton>

@@ -2,11 +2,13 @@
   <v-avatar :size="size">
     <img
       v-if="src"
+      key="avatar-image"
       :src="src"
       :alt="alt"
     >
     <BaseIcon
       v-else
+      key="avatar-icon"
       name="account-circle"
       size="36px"
       :color="iconColor"

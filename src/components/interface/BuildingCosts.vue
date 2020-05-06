@@ -12,7 +12,7 @@
           {{ victoryPointsPerPurchase[name] }} Victory Points
         </span>
       </div>
-      <div v-if="full" class="cost">
+      <div v-if="full" key="full-building-costs" class="cost">
         <ResourceCard
           v-for="resource in resourceCardTypes"
           :key="resource"
@@ -20,7 +20,7 @@
           :count="costs[resource]"
         />    
       </div>
-      <div v-else class="cost">
+      <div v-else key="collapsed-building-costs" class="cost">
         <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="costs[resource] > 0">
           <ResourceCard
             v-for="(resourceCard, index) in Array(costs[resource] || 0).fill(resource)"

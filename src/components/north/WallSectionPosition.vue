@@ -1,9 +1,9 @@
 <template>
   <BaseButton icon @click="$emit('clicked')">
-    <drag v-if="guard && guard.ownerId" :transfer-data="{ fromSection: guard.section, fromPosition: position }">
+    <drag v-if="guard && guard.ownerId" key="guarded-position" :transfer-data="{ fromSection: guard.section, fromPosition: position }">
       <BaseIcon v-if="guard.ownerId" size="24px" :color="guard.ownerColor" :name="structureIcons.guard" class="icon" />
     </drag>
-    <span v-else class="position-order">
+    <span v-else key="empty-position" class="position-order">
       {{ position + 1 }}
     </span>
   </BaseButton>

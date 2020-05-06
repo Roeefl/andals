@@ -1,6 +1,6 @@
 <template>
   <div class="game-cards">
-    <div v-if="!!deck" class="deck">
+    <div v-if="!!deck" key="game-cards-deck" class="deck">
       <GameCard
         v-for="(card, index) in deck"
         :key="`${card.type}-${index}`"
@@ -13,7 +13,7 @@
         class="game-card"
       />
     </div>
-    <GameCard v-else :full="full" type="knight" :count="count" @clicked="$emit('purchase-game-card')" />
+    <GameCard v-else key="game-cards-single" :full="full" type="knight" :count="count" @clicked="$emit('purchase-game-card')" />
   </div>
 </template>
 

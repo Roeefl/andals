@@ -1,5 +1,5 @@
 <template>
-  <div v-if="roomState.board" class="board" :class="{ 'game-over': roomState.isVictory }">
+  <div v-if="roomState.board" key="has-board" class="board" :class="{ 'game-over': roomState.isVictory }">
     <div class="trees">
       <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
     </div>
@@ -79,7 +79,7 @@
       <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
     </div>
   </div>
-  <div v-else>
+  <div v-else key="no-board">
     No board to display
   </div>
 </template>

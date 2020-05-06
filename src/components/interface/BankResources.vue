@@ -8,6 +8,7 @@
     </div>
     <ResourceCounts
       v-if="sumValues(myPlayer.availableLoot) > 0"
+      key="available-loot"
       spaced
       collectable
       :clickable="false"
@@ -16,6 +17,7 @@
     />
     <ResourceCounts
       v-else
+      key="bank-trading"
       spaced
       hideCounts
       :clickable="roomState.isGameStarted && isMyTurn"

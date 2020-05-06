@@ -10,16 +10,16 @@
     >
       <section class="header-buttons">
         <div v-for="item in links" :key="item.key" class="header-item" :class="{ 'home': item.key === 'lobby' && !isInGame }">
-          <router-link v-if="!!item.to" :to="item.to" class="router-link">
+          <router-link v-if="!!item.to" key="link-item" :to="item.to" class="router-link">
             <BaseTooltip :tooltip="item.key">
-              <img v-if="item.img && !isInGame" :src="require(`../assets/${item.img}`)" :alt="item.key" class="header-image" />
-              <BaseButton v-else icon :iconName="item.icon" :iconColor="item.iconColor" iconSize="24px" />
+              <img v-if="item.img && !isInGame" key="imaged" :src="require(`../assets/${item.img}`)" :alt="item.key" class="header-image" />
+              <BaseButton v-else key="iconed" icon :iconName="item.icon" :iconColor="item.iconColor" iconSize="24px" />
             </BaseTooltip>
             <h3 v-if="item.title" class="item-title">
               {{ item.title }}
             </h3>
           </router-link>
-          <ChoiceDialog v-else buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor || (isInGame ? 'primary' : 'success')" :title="item.title"  :width="item.width">
+          <ChoiceDialog v-else key="dialog-item" buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor || (isInGame ? 'primary' : 'success')" :title="item.title"  :width="item.width">
             <AppSettings v-if="item.key === 'settings'" />
             <DevConsole v-if="item.key === 'console'" />
             <RoomStats v-if="item.key === 'roomStats'" />
