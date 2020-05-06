@@ -2,18 +2,21 @@
   <v-dialog
     :value="isOpen"
     persistent
-    width="900"
+    width="1000"
   >
-    <ActionCard v-if="!!players[1]" :title="`Trading with ${players[1].nickname}`" :approve="false" :cancelText="cancelText" @cancel="$emit('refuse')">
+    <ActionCard v-if="!!players[1]" closeButton :title="`Trading with ${players[1].nickname}`" :approve="false" :cancelText="cancelText" @close="$emit('refuse')" @cancel="$emit('refuse')">
       <div class="wrapper" :class="{ 'with-chat': !withBank }">
-        <div class="trade">
-          <drop @drop="$emit('remove-card', $event.resource)" class="my-deck" >
+        <div class="trade-contents">
+          <drop @drop="$emit('remove-card', $event.resource)" class="my-deck">
+            <h2>
+              My Deck
+            </h2>
             <BaseDeck :deck="players[0].resourceCounts" @card-clicked="$emit('add-card', $event)" />
           </drop>
           <drop v-for="(player, i) in players" :key="renderKey(player)" @drop="i === 0 && $emit('add-card', $event)" class="player">
-            <div class="nickname">
-              {{ i === 0 ? 'You are' : `${player.nickname} is` }} offering:
-            </div>
+            <h3>
+              {{ i === 0 ? 'ME' : player.nickname }}:
+            </h3>
             <div class="trade-cards">
               <div v-for="resource in resourceCardTypes" :key="resource" v-show="player.tradeCounts && player.tradeCounts[resource]" class="resource-type">
                 <drag 
@@ -34,14 +37,24 @@
             </div>
             <div class="confirmed">
               <BaseButton
-                :color="player.isTradeConfirmed ? 'warning' : 'success'"
-                :iconName="player.isTradeConfirmed ? 'cancel' : 'check-decagram'"
+                icon
+                iconSize="64px"
+                :iconColor="player.isTradeConfirmed ? 'warning' : 'highlight'"
+                :iconName="player.isTradeConfirmed ? 'cancel' : 'check-circle-outline'"
+                :clickable="i === 0"
                 @click="i === 0 && $emit('confirm-trade')"
-              >
-                {{ player.isTradeConfirmed ? 'Confirmed' : 'Confirm' }}
-              </BaseButton>
+              />
             </div>
           </drop>
+        </div>
+        <div v-if="!withBank" class="select-resource">
+          <h2>
+            Asking For:
+          </h2>
+          <SelectResource asCarousel autoConfirm @resource-selected="$emit('declare-resource', $event)" />
+          <div>
+            <ResourceCard :resource="players[1].requestingResource" :clickable="false" hideCount big />
+          </div>
         </div>
         <div v-if="!withBank" class="chat">
           <slot />
@@ -54,17 +67,19 @@
 <script>
   import { resourceCardTypes } from '@/specs/resources';
   
-  import ResourceCard from '@/components/game/ResourceCard';
   import ActionCard from '@/components/common/ActionCard';
   import BaseDeck from '@/components/game/BaseDeck';
+  import ResourceCard from '@/components/game/ResourceCard';
+  import SelectResource from '@/components/interface/SelectResource';
   import BaseButton from '@/components/common/BaseButton';
 
   export default {
     name: 'TradeDialog',
     components: {
-      ResourceCard,
       ActionCard,
       BaseDeck,
+      ResourceCard,
+      SelectResource,
       BaseButton
     },
     props: {
@@ -105,23 +120,29 @@
 
   .wrapper {
     display: grid;
+    grid-gap: 1%;
     grid-template-columns: 1fr;
 
     &.with-chat {
-      grid-template-columns: 70% 30%;
+      grid-template-columns: 50% 24% 24%;
     }
 
-    .trade {
+    .trade-contents {
+      padding: $spacer;
       display: flex;
       flex-direction: column;
 
-      .nickname {
-        padding: $spacer / 2;
+      & > * {
+        flex: 1;
+        min-height: 100px;
+        border-bottom: 1px solid $primary;
+
+        &:last-of-type {
+          border-bottom: 0;
+        }
       }
 
       .my-deck {
-        padding: $spacer;
-        height: 100px;
         display: flex;
         align-items: center;
         overflow-x: auto;
@@ -129,12 +150,9 @@
       }
 
       .player {
-        height: 80px;
         display: grid;
-        grid-template-columns: 20% 60% 20%;
-        margin: $spacer 0;
-        padding: $spacer 0;
-        border-top: 1px solid black;
+        grid-template-columns: 25% 60% 15%;
+        align-items: center;
       }
 
       .trade-cards {
@@ -142,7 +160,22 @@
       }
     }
 
+    .select-resource {
+      border-left: 1px solid $primary;
+      padding-top: $spacer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 200px;
+
+      & > * {
+        flex: 1;
+      }
+    }
+
     .chat {
+      padding-left: $spacer / 2;
+      border-left: 1px solid $primary;
       position: relative;
     }
   }

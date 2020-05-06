@@ -37,7 +37,6 @@
           @tile-clicked="onTileClick($event)"
           @remove-road="onRemoveRoad($event)"
           @robber-moved="$store.commit('setDesiredRobberTile', $event)"
-          @robber-confirmed="onRobberConfirmed"
           @remove-wildling="onRemoveWildling($event)"
           class="game-board"
           :class="{ 'with-north': isWithNorth }"
@@ -87,6 +86,7 @@
     <TradeDialog
       :isOpen="!!myPlayer.tradingWith"
       :players="[myPlayer, players.find(({ playerSessionId }) => playerSessionId === myPlayer.tradingWith)]"
+      @declare-resource="onDeclareRequestedResource($event)"
       @add-card="addTradeCard($event)"
       @remove-card="removeTradeCard($event)"
       @refuse="refuseTrade"
@@ -117,6 +117,12 @@
       <SelectResource :title="null" @resource-selected="onMonopolySelected($event)" />
     </v-dialog>
     <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" />
+    <Countdown
+      v-if="showRobberCountdown"
+      :initialValue="10"
+      @finished="onConfirmRobber"
+      class="countdown"
+    />
   </div>
 </template>
 
@@ -140,6 +146,7 @@
   import SelectResource from '@/components/interface/SelectResource';
   import RollingDice from '@/components/interface/RollingDice';
   import BaseWidget from '@/components/common/BaseWidget';
+  import Countdown from '@/components/common/Countdown';
 
   import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
@@ -203,7 +210,8 @@
       OpponentDeck,
       RollingDice,
       SelectResource,
-      BreachMarker
+      BreachMarker,
+      Countdown
     },
     data: () => ({
       chatMessages: [],
@@ -282,6 +290,7 @@
         'players',
         'isRollingDice',
         'desiredRobberTile',
+        'showRobberCountdown',
         'gameWinner'
       ])
     },
@@ -293,7 +302,8 @@
         'setEssentialOverlay',
         'addRecentLoot',
         'openMyDeck',
-        'setJustPurchasedGameCard'
+        'setJustPurchasedGameCard',
+        'setRobberCountdown'
       ]),
       initializeRoom: function(room = this.room) {
         // Define a series of room lifecycle methods
@@ -670,6 +680,12 @@
           offeredResource: this.tradeRequested.requestedResource
         });
       },
+      onDeclareRequestedResource: function(resource) {
+        this.room.send({
+          type: MESSAGE_TRADE_REQUEST_RESOURCE,
+          requestedResource: resource
+        });
+      },
       addTradeCard: function(card) {
         const { resource } = card;
         
@@ -737,7 +753,10 @@
           cardIndex: gameCard.index
         });
       },
-      onRobberConfirmed: function() {
+      onConfirmRobber: function() {
+        if (!this.myPlayer.mustMoveRobber) return;
+        this.setRobberCountdown(false);
+
         this.room.send({
           type: MESSAGE_MOVE_ROBBER,
           tile: this.desiredRobberTile
@@ -901,5 +920,11 @@
         margin-top: $spacer * 1.5;
       }
     }
+  }
+
+  .countdown {
+    position: fixed;
+    bottom: 10%;
+    right: 22%;
   }
 </style>

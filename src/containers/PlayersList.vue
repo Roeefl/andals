@@ -149,7 +149,7 @@
 
     .player-wrapper {
       flex: 1;
-      max-height: 180px;
+      max-height: 50%;
       overflow-y: hidden;
       margin-top: $spacer;
       position: relative;
@@ -208,7 +208,7 @@
     
     & + & {
       margin-left: 0;
-      margin-top: 50px;
+      margin-top: 150px;
     }
   }
 </style>
