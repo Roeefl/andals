@@ -60,7 +60,7 @@
           <h2>
             Asking For:
           </h2>
-          <SelectResource asCarousel autoConfirm @resource-selected="$emit('declare-resource', $event)" />
+          <ResourceSelect asCarousel autoConfirm @resource-selected="$emit('declare-resource', $event)" />
           <div class="other-player-request">
             <ResourceCard :resource="players[1].requestingResource" :clickable="false" hideCount big />
           </div>
@@ -79,7 +79,7 @@
   import ActionCard from '@/components/common/ActionCard';
   import BaseDeck from '@/components/game/BaseDeck';
   import ResourceCard from '@/components/game/ResourceCard';
-  import SelectResource from '@/components/interface/SelectResource';
+  import ResourceSelect from '@/components/interface/ResourceSelect';
   import BaseButton from '@/components/common/BaseButton';
   import BaseAvatar from '@/components/common/BaseAvatar';
 
@@ -89,7 +89,7 @@
       ActionCard,
       BaseDeck,
       ResourceCard,
-      SelectResource,
+      ResourceSelect,
       BaseButton,
       BaseAvatar
     },

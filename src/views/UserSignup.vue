@@ -2,7 +2,7 @@
   <main class="user-signup">
     <div class="header-fallback" />
     <section class="signup-container">
-      <CustomizePlayer light isSignup @created="onUserCreated($event)" class="customize-player" />
+      <PlayerCustomize light isSignup @created="onUserCreated($event)" class="customize-player" />
     </section>
   </main>
 </template>
@@ -13,12 +13,12 @@
   import colyseusService from '@/services/colyseus';
   import firebaseService from '@/services/firebase';
   
-  import CustomizePlayer from '@/components/lobby/CustomizePlayer';
+  import PlayerCustomize from '@/components/lobby/PlayerCustomize';
 
   export default {
     name: 'UserSignup',
     components: {
-      CustomizePlayer
+      PlayerCustomize
     },
     created() {
       if (this.currentUser.email)

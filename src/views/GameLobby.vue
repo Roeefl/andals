@@ -9,7 +9,7 @@
       <ul class="actions">
         <li class="action-item">
           <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" :disabled="!isServerUp" @approve="createRoom" class="create-room">
-            <CustomizeRoom
+            <RoomSettings
               :roomType="roomType"
               @select-room-type="roomType = $event"
               :roomTitle="roomTitle"
@@ -51,7 +51,7 @@
 
   import RoomsList from '@/components/lobby/RoomsList';
   import GameChat from '@/components/interface/GameChat';
-  import CustomizeRoom from '@/components/lobby/CustomizeRoom';
+  import RoomSettings from '@/components/lobby/RoomSettings';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BaseButton from '@/components/common/BaseButton';
 
@@ -64,7 +64,7 @@
       RoomsList,
       GameChat,
       ChoiceDialog,
-      CustomizeRoom,
+      RoomSettings,
       BaseButton,
       SnowyTown,
       Snowflakes

@@ -8,17 +8,17 @@
           :nickname="(currentUser || {}).nickname"
           @login="handleLogin"
           @customize-player="isDisplayCustomizePlayer = true"
-        />
-        <router-view />
+        ></AppHeader>
+        <router-view></router-view>
       </div>
-      <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }" />
+      <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }"></BaseAlert>
     </div>
     <audio ref="ambience">
       <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
     </audio>
-    <GameLoader v-if="isGameLoading" :players="players" />
+    <GameLoader v-if="isGameLoading" :players="players"></GameLoader>
     <v-dialog v-model="isDisplayCustomizePlayer" width="400" @click:outside="isDisplayCustomizePlayer = false">
-      <CustomizePlayer @close="isDisplayCustomizePlayer = false" />
+      <PlayerCustomize @close="isDisplayCustomizePlayer = false"></PlayerCustomize>
     </v-dialog>
   </v-app>
 </template>
@@ -32,7 +32,7 @@
   import AppHeader from '@/containers/AppHeader';
   import BaseAlert from '@/components/common/BaseAlert';
   import GameLoader from '@/components/interface/GameLoader';
-  import CustomizePlayer from '@/components/lobby/CustomizePlayer';
+  import PlayerCustomize from '@/components/lobby/PlayerCustomize';
 
   import { FIREBASE_USER_SIGNUP } from '@/constants'
 
@@ -42,7 +42,7 @@
       AppHeader,
       BaseAlert,
       GameLoader,
-      CustomizePlayer
+      PlayerCustomize
     },
     data: () => ({
       isDisplayCustomizePlayer: false

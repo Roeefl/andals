@@ -29,7 +29,7 @@
           :disabled="myPlayer.mustDiscardHalfDeck"
           @click="$store.commit('closeMyDeck')"
           class="close-deck"
-        />
+        ></BaseButton>
         <div class="deck-container">
           <BuildingCosts :full="false" :counts="myPlayer.resourceCounts" color="white" class="building-costs" />
           <div class="purchaseables">
@@ -60,7 +60,7 @@
                 @clicked="onPieceClick(purchaseType)"
                 class="game-piece"
                 :class="purchaseType"
-              />
+              ></GamePiece>
             </div>
           </div>
           <div class="playables">
@@ -71,7 +71,7 @@
               :deck="myPlayer.gameCards"
               @game-card-clicked="playGameCard"
               class="player-cards"
-            />
+            ></GameCards>
             <BaseButton color="transparent" height="auto" @click="$store.commit('setDisplayedHeroCard', myPlayer.currentHeroCard)" class="playable-wrapper">
               <HeroCard thumbnail :card="myPlayer.currentHeroCard || {}" class="hero-card" />
             </BaseButton>
@@ -82,7 +82,7 @@
               <span class="offer-trade-text">
                 Request Trade
               </span>
-              <SelectResource v-if="hover" :disabled="!isMyTurn" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
+              <ResourceSelect v-if="hover" :disabled="!isMyTurn" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
             </div>
           </v-hover>
         </div>
@@ -97,7 +97,7 @@
 
   import BaseDeck from '@/components/game/BaseDeck';
   import BuildingCosts from '@/components/interface/BuildingCosts';
-  import SelectResource from '@/components/interface/SelectResource';
+  import ResourceSelect from '@/components/interface/ResourceSelect';
   import GameCards from '@/components/interface/GameCards';
   import HeroCard from '@/components/game/HeroCard';
   import GamePiece from '@/components/game/GamePiece';
@@ -113,7 +113,7 @@
       BaseDeck,
       BuildingCosts,
       GameCards,
-      SelectResource,
+      ResourceSelect,
       HeroCard,
       GamePiece,
       BaseButton

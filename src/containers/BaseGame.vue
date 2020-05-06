@@ -55,7 +55,7 @@
         </BaseWidget>
       </aside>
     </div>
-    <ConfirmMove
+    <PurchaseConfirm
       :type="activePurchase.type"
       :removing="activePurchase.isRemove"
       :header="activePurchase.isRemove ? 'Remove' : undefined"
@@ -69,13 +69,13 @@
       @yes="onConfirmMove($event)"
     />
     <MyDeck :isMyTurn="isMyTurn" @purchase-game-card="onGameCardPurchase" @play-game-card="onPlayGameCard($event)" />
-    <ConfirmTrade
+    <TradeConfirm
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
       @no="respondToIncomingTrade(false)"
       @yes="respondToIncomingTrade(true)"
     />
-    <ConfirmTrade
+    <TradeConfirm
       :isOpen="!!tradeRequested.senderSessionId"
       :withWho="tradeRequested.sender"
       title="Trade Requested"
@@ -115,7 +115,7 @@
       @cancel="stealingFrom = {}"
     />
     <v-dialog width="500" :value="myPlayer.isDeclaringMonopoly">
-      <SelectResource :title="null" @resource-selected="onMonopolySelected($event)" />
+      <ResourceSelect :title="null" @resource-selected="onMonopolySelected($event)" />
     </v-dialog>
     <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" />
     <Countdown
@@ -141,10 +141,10 @@
   import GameChat from '@/components/interface/GameChat';
   import MyDeck from '@/components/interface/MyDeck';
   import TradeDialog from '@/components/interface/TradeDialog';
-  import ConfirmMove from '@/components/interface/ConfirmMove';
-  import ConfirmTrade from '@/components/interface/ConfirmTrade';
+  import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
+  import TradeConfirm from '@/components/interface/TradeConfirm';
   import OpponentDeck from '@/components/interface/OpponentDeck';
-  import SelectResource from '@/components/interface/SelectResource';
+  import ResourceSelect from '@/components/interface/ResourceSelect';
   import RollingDice from '@/components/interface/RollingDice';
   import BaseWidget from '@/components/common/BaseWidget';
   import Countdown from '@/components/common/Countdown';
@@ -205,13 +205,13 @@
       GameChat,
       GameLog,
       PlayersList,
-      ConfirmTrade,
-      ConfirmMove,
+      TradeConfirm,
+      PurchaseConfirm,
       MyDeck,
       TradeDialog,
       OpponentDeck,
       RollingDice,
-      SelectResource,
+      ResourceSelect,
       BreachMarker,
       Countdown
     },

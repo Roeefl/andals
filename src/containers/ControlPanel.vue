@@ -10,7 +10,7 @@
         @purchase-game-card="$emit('purchase-game-card')"
         class="bank-resources"
       />
-      <CurrentGameAction class="game-action" />
+      <GamePhase class="game-action" />
     </div>
   </div>
 </template>
@@ -19,7 +19,7 @@
   import colyseusService from '@/services/colyseus';
 
   import BankResources from '@/components/interface/BankResources';
-  import CurrentGameAction from '@/components/interface/CurrentGameAction';
+  import GamePhase from '@/components/interface/GamePhase';
 
   import { MESSAGE_COLLECT_ALL_LOOT, MESSAGE_COLLECT_RESOURCE_LOOT } from '@/constants';
 
@@ -27,7 +27,7 @@
     name: 'ControlPanel',
     components: {
       BankResources,
-      CurrentGameAction
+      GamePhase
     },
     props: {
       isMyTurn: {
