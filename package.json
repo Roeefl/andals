@@ -9,6 +9,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "animejs": "^3.2.0",
     "axios": "^0.19.2",
     "colyseus.js": "^0.12.2",
     "core-js": "^3.6.4",
