@@ -2,11 +2,11 @@
   <div class="wildling-camps">
     <div v-for="(section, s) in sectionNames" :key="`section-${s}`" class="wildling-section">
       <ClanArea
-        v-if="section !== WOODS && roomState.clanAreas"
+        v-if="section !== WOODS && clanAreas"
         :clan="clans[section]"
         :trails="clanTrails[section].trails"
-        :campfires="roomState.clanAreas[section].campfires"
-        :camps="roomState.clanAreas[section].camps"
+        :campfires="clanAreas[section].campfires"
+        :camps="clanAreas[section].camps"
         @remove-wildling="$emit('remove-wildling', { clanName: clans[section].name, campIndex: $event })"
       />
       <div v-if="section === WOODS" class="trees">
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapGetters } from 'vuex';
   import colyseusService from '@/services/colyseus';
   import { clanNames, clans } from '@/specs/clans';
 
@@ -35,8 +35,8 @@
     },
     computed: {
       clanTrails: () => colyseusService.clanTrails,
-      ...mapState([
-        'roomState'
+      ...mapGetters([
+        'clanAreas'
       ])
     },
     created() {

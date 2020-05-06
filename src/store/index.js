@@ -52,6 +52,10 @@ export default new Vuex.Store({
     justPurchasedGameCard: false,
     gameWinner: null
   },
+  getters: {
+    currentRound: state => state.roomState.currentRound,
+    clanAreas: state => state.roomState.clanAreas,
+  },
   mutations: {
     toggleSnow(state) {
       const nextValue = !state.enableSnow;

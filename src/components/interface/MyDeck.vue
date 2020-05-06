@@ -92,7 +92,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
+  import { mapState, mapMutations, mapGetters } from 'vuex';
   import colyseusService from '@/services/colyseus';
 
   import BaseDeck from '@/components/game/BaseDeck';
@@ -135,8 +135,10 @@
 
         return Math.floor(totalCards / 2);
       },
+      ...mapGetters([
+        'currentRound'
+      ]),
       ...mapState([
-        'roomState',
         'myPlayer',
         'displayDeck'
       ])
@@ -190,7 +192,7 @@
       },
       playGameCard: function(gameCard) {
         const desiredGameCard = this.myPlayer.gameCards[gameCard.index];
-        if (desiredGameCard.purchasedRound === this.roomState.currentRound) {
+        if (desiredGameCard.purchasedRound === this.currentRound) {
           this.addAlert('You cannot play a development card on the same round you purchased it');
           return;
         };
