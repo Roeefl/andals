@@ -41,7 +41,7 @@
   import ResourceCard from '@/components/game/ResourceCard';
 
   export default {
-    name: 'SelectResource',
+    name: 'ResourceSelect',
     components: {
       ActionCard,
       ResourceCard

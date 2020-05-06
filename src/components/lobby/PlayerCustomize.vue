@@ -46,7 +46,7 @@
   }));
 
   export default {
-    name: 'CustomizePlayer',
+    name: 'PlayerCustomize',
     components: {
       ActionCard,
       TextField,

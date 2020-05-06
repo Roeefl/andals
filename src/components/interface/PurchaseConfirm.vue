@@ -60,7 +60,7 @@
   import GameCards from '@/components/interface/GameCards';
 
   export default {
-    name: 'ConfirmMove',
+    name: 'PurchaseConfirm',
     components: {
       ResourceCard,
       ActionCard,

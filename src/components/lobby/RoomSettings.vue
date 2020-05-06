@@ -48,7 +48,7 @@
   const roomTypeOptions = roomTypes.map(roomType => ({ text: roomType, value: roomType }));
 
   export default {
-    name: 'CustomizeRoom',
+    name: 'RoomSettings',
     components: {
       TextField,
       SelectValue,

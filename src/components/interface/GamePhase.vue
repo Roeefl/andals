@@ -42,7 +42,7 @@
   import BaseButton from '@/components/common/BaseButton';
 
   export default {
-    name: 'CurrentGameAction',
+    name: 'GamePhase',
     components: {
       BaseButton
     },

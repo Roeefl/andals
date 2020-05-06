@@ -17,7 +17,7 @@
             hideCount
             :resource="requestedResource"
             @clicked="onResourceClick(resource)"
-          />
+          ></ResourceCard>
         </div>
       </div>
     </ActionCard>
@@ -29,7 +29,7 @@
   import ResourceCard from '@/components/game/ResourceCard';
 
   export default {
-    name: 'ConfirmTrade',
+    name: 'TradeConfirm',
     components: {
       ActionCard,
       ResourceCard
