@@ -2,23 +2,23 @@
   <v-dialog
     :value="isOpen"
     persistent
-    width="80vw"
+    width="75vw"
   >
     <ActionCard
       title="Select your next Hero Card"
       :cancel="false"
-      @approve="$emit('selected', deck[0])"
+      :approve="false"
     >
-      <BaseButton icon iconName="arrow-left-box" iconColor="primary" iconSize="60px" @click="swipeLeft" class="arrow arrow-left" />
+      <!-- <BaseButton icon iconName="arrow-left-box" iconColor="primary" iconSize="60px" @click="swipeLeft" class="arrow arrow-left" /> -->
       <ul class="hero-cards">
-        <BaseButton v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" icon @click="swipeTo(c)" class="hero-card-wrapper">
+        <BaseButton v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" icon @click="$emit('selected', deck[c])" class="hero-card-wrapper">
           <HeroCard
             :card="card"
             class="hero-card"
           />
         </BaseButton>
       </ul>
-      <BaseButton icon iconName="arrow-right-box" iconColor="primary" iconSize="60px" @click="swipeRight" class="arrow arrow-right" />
+      <!-- <BaseButton icon iconName="arrow-right-box" iconColor="primary" iconSize="60px" @click="swipeRight" class="arrow arrow-right" /> -->
     </ActionCard>
   </v-dialog>
 </template>
@@ -76,16 +76,24 @@
 
   // @TODO: should be this.cards.length;
   $cards-count: 16;
-  $first-card-left: 20%;
+  $first-card-left: 5%;
   $card-distance: 80px;
   $zindex-first-card: 100;
 
   @mixin cards($start) {
-    @for $c from 0 to $cards-count {
+    @for $c from 0 to ($cards-count / 2) {
       &:nth-child(#{$c + 1}) {
         left: calc(#{$start} + #{$card-distance * $c});
-        // transform: translate(-#{$c * 0}rem, #{$c * 0}rem) rotate(#{(60 / $cards-count) * $c}deg);
-        z-index: $zindex-first-card - $c;
+        transform: translate(#{(($cards-count / 2) - $c) * 0.25}rem, #{$c * -1.5}rem) rotate(-#{(60 / $cards-count) * (($cards-count / 2) - $c)}deg);
+        z-index: $zindex-first-card + $c;
+      }
+    }
+
+    @for $c from ($cards-count / 2) to $cards-count {
+      &:nth-child(#{$c + 1}) {
+        left: calc(#{$start} + #{$card-distance * $c});
+        transform: translate(#{$c * 0.25}rem, #{($cards-count - $c) * -1.5}rem) rotate(#{(60 / $cards-count) * ($c + 1 - ($cards-count / 2))}deg);
+        z-index: $zindex-first-card + $c;
       }
     }
   }
@@ -95,19 +103,19 @@
     height: 600px;
 
     .hero-card-wrapper {
-      // animation: slide-in-bck-center 1.4s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
       position: absolute;
-      bottom: 85%;
+      bottom: 70%;
       @include cards($first-card-left);
 
       &:hover {
-        z-index: $zindex-first-card + 1;
-        bottom: 90%;
+        box-shadow: 0px 150px 1000px 250px $highlight;
+        z-index: $zindex-first-card + 100;
+        // bottom: 90%;
       }
 
       .hero-card {
-        width: 280px;
-        height: 520px;
+        width: 200px;
+        height: 440px;
       }
     }
   }
