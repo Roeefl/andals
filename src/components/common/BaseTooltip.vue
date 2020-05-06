@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip :bottom="align === 'bottom'" :left="align === 'left'" :right="align === 'right'" :top="align === 'top'">
+  <v-tooltip :disabled="!tooltip" :bottom="align === 'bottom'" :left="align === 'left'" :right="align === 'right'" :top="align === 'top'">
     <template v-slot:activator="{ on }">
       <span v-on="on">
         <slot />
@@ -24,7 +24,7 @@
       },
       tooltip: {
         type: String,
-        required: true
+        default: null
       }
     }
   };

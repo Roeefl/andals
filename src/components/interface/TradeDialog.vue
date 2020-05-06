@@ -4,7 +4,16 @@
     persistent
     width="1000"
   >
-    <ActionCard v-if="!!players[1]" closeButton :title="`Trading with ${players[1].nickname}`" :approve="false" :cancelText="cancelText" @close="$emit('refuse')" @cancel="$emit('refuse')">
+    <ActionCard
+      v-if="!!players[1]"
+      closeButton
+      :title="`Trading with ${players[1].nickname}`"
+      :cancelText="cancelText"
+      @close="$emit('refuse')"
+      @cancel="$emit('refuse')"
+      :approve="players[0].isAgreeToTrade && players[1].isAgreeToTrade"
+      @approve="$emit('confirm-trade')"
+    >
       <div class="wrapper" :class="{ 'with-chat': !withBank }">
         <div class="trade-contents">
           <drop @drop="$emit('remove-card', $event.resource)" class="my-deck">
@@ -15,6 +24,7 @@
           </drop>
           <drop v-for="(player, i) in players" :key="renderKey(player)" @drop="i === 0 && $emit('add-card', $event)" class="player">
             <h3>
+              <BaseAvatar v-if="player.avatar" :size="40" :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
               {{ i === 0 ? 'ME' : player.nickname }}:
             </h3>
             <div class="trade-cards">
@@ -39,10 +49,9 @@
               <BaseButton
                 icon
                 iconSize="64px"
-                :iconColor="player.isTradeConfirmed ? 'warning' : 'highlight'"
-                :iconName="player.isTradeConfirmed ? 'cancel' : 'check-circle-outline'"
-                :clickable="i === 0"
-                @click="i === 0 && $emit('confirm-trade')"
+                :iconColor="player.isAgreeToTrade ? 'highlight' : 'warning'"
+                :iconName="player.isAgreeToTrade ? 'check-circle-outline' : 'cancel'"
+                @click="i === 0 && $emit('agree-trade')"
               />
             </div>
           </drop>
@@ -72,6 +81,7 @@
   import ResourceCard from '@/components/game/ResourceCard';
   import SelectResource from '@/components/interface/SelectResource';
   import BaseButton from '@/components/common/BaseButton';
+  import BaseAvatar from '@/components/common/BaseAvatar';
 
   export default {
     name: 'TradeDialog',
@@ -80,7 +90,8 @@
       BaseDeck,
       ResourceCard,
       SelectResource,
-      BaseButton
+      BaseButton,
+      BaseAvatar
     },
     props: {
       isOpen: {

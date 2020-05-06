@@ -90,7 +90,8 @@
       @add-card="addTradeCard($event)"
       @remove-card="removeTradeCard($event)"
       @refuse="refuseTrade"
-      @confirm-trade="confirmTrade"
+      @agree-trade="agreeToTrade"
+      @confirm-trade="onTradeConfirm"
     >
       <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
     </TradeDialog>
@@ -182,6 +183,7 @@
     MESSAGE_TRADE_START_AGREED,
     MESSAGE_TRADE_ADD_CARD,
     MESSAGE_TRADE_REMOVE_CARD,
+    MESSAGE_TRADE_AGREE,
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
     MESSAGE_MOVE_ROBBER,
@@ -227,7 +229,7 @@
         playerSessionId: '-bank-',
         resourceCounts: {},
         tradeCounts: {},
-        isTradeConfirmed: false
+        isAgreeToTrade: false
       },
       stealingFrom: {}
     }),
@@ -611,7 +613,7 @@
         this.bankDummy = {
           ...this.bankDummy,
           tradeCounts: {},
-          isTradeConfirmed: false
+          isAgreeToTrade: false
         };
       },
       cancelBankTrade: function() {
@@ -638,7 +640,7 @@
         };
       },
       evaluateBankTrade: function() {
-        this.bankDummy.isTradeConfirmed = false;
+        this.bankDummy.isAgreeToTrade = false;
 
         const tradeCounts = Object.entries(this.myPlayer.tradeCounts);
         console.log("tradeCounts", tradeCounts, this.myPlayer.heroPrivilege);
@@ -656,10 +658,10 @@
           .every(([resource, count]) => count === 0)
 
         console.log("isTradeValid", isTradeValid);
-        if (isTradeValid) this.bankDummy.isTradeConfirmed = true;
+        if (isTradeValid) this.bankDummy.isAgreeToTrade = true;
       },
       requestBankTrade: function() {
-        if (!this.bankDummy.isTradeConfirmed) return;
+        if (!this.bankDummy.isAgreeToTrade) return;
         
         this.room.send({
           type: MESSAGE_TRADE_WITH_BANK,
@@ -705,7 +707,12 @@
           type: MESSAGE_TRADE_REFUSE
         });
       },
-      confirmTrade: function() {
+      agreeToTrade: function() {
+        this.room.send({
+          type: MESSAGE_TRADE_AGREE
+        });
+      },
+      onTradeConfirm: function() {
         this.room.send({
           type: MESSAGE_TRADE_CONFIRM
         });

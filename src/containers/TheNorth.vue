@@ -18,7 +18,7 @@
       <Wall
         :myColor="myPlayer.color"
         :guards="guards"
-        :allowPurchase="allowPurchase"
+        :allowPurchase="allowPurchase && (myPlayer.hasResources.guard || myPlayer.allowFreeGuard)"
         :allowRemove="myPlayer.allowKill === GUARD"
         @wall-clicked="onWallClicked($event)"
         @kill-guard="onGuardKill($event)"

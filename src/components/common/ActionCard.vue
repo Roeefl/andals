@@ -19,7 +19,7 @@
           </BaseButton>
         </div>
         <div class="card-action">
-          <BaseButton v-if="approve" text :color="approveColor" @click="$emit('approve')">
+          <BaseButton :clickable="approve" text :color="approveColor" @click="$emit('approve')">
             {{ approveText }}
           </BaseButton>
         </div>

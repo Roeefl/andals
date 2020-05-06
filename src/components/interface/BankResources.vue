@@ -25,7 +25,7 @@
     <BaseTooltip tooltip="Collect All">
       <BaseButton
         xs
-        color="success"
+        color="warning"
         iconName="treasure-chest"
         iconColor="white"
         iconSize="x-large"
