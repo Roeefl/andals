@@ -4,22 +4,9 @@
       <h1 class="overlay-header">
         {{ overlay.header }}
       </h1>
-      <h2 v-if="overlay.subHeader">
-        {{ overlay.subHeader }}
-      </h2>
       <h2 v-if="overlay.guardsKilled">
         {{ overlay.guardsKilled }} guards were killed!
       </h2>
-      <div v-if="overlay.tokens" class="wildling-tokens">
-        <WildlingToken
-          v-for="(token, t) in overlay.tokens"
-          :key="`token-${t}`"
-          :wildling="token.wildlingType"
-          :clan="token.clanType"
-          size="50px"
-          class="wildling-token"
-        />
-      </div>
       <div v-if="overlay.guardPurchased" class="guard-purchased">
         <GameAsset type="events" asset="guard-purchased" />
       </div>
@@ -33,6 +20,19 @@
           :key="g"
           type="phases"
           :asset="notificationToAsset[gameNotification]"
+        />
+      </div>
+      <h2 v-if="overlay.subHeader">
+        {{ overlay.subHeader }}
+      </h2>
+      <div v-if="overlay.tokens" class="wildling-tokens">
+        <WildlingToken
+          v-for="(token, t) in overlay.tokens"
+          :key="`token-${t}`"
+          :wildling="token.wildlingType"
+          :clan="token.clanType"
+          size="50px"
+          class="wildling-token"
         />
       </div>
       <div v-if="overlay.isRobber" class="robber">
