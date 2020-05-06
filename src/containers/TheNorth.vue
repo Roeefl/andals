@@ -111,8 +111,8 @@
     methods: {
       ...mapMutations([
         'addGameLog',
-        'setEssentialOverlay',
-        'pushToEssentialOverlay'
+        'setAttentions',
+        'addAttention'
       ]),
       initializeRoom: function(room = this.room) {
         room.onMessage(this.onBroadcastReceived);
@@ -156,7 +156,7 @@
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: broadcast.message });
             
             if (isEssential)
-              this.setEssentialOverlay({ header: broadcast.message, guardPurchased: true });
+              this.setAttentions({ header: broadcast.message, guardPurchased: true });
             break;
 
           case MESSAGE_WILDLINGS_REVEAL_TOKENS:
@@ -165,7 +165,7 @@
             const subHeader = 'Wildlings Tokens Revealed:';
 
             this.addGameLog({ type: CHAT_LOG_WILDLING_TOKENS, tokens });
-            this.pushToEssentialOverlay({ subHeader, tokens });
+            this.addAttention({ subHeader, tokens });
 
             // const { wildlingsAudio } = this.$refs;
             // if (wildlingsAudio) wildlingsAudio.play(); 
@@ -176,7 +176,7 @@
             header = `A ${wildling.type} has advanced to the clearing!`;
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
-            this.setEssentialOverlay({ header, wildlingType: wildling.type });
+            this.setAttentions({ header, wildlingType: wildling.type });
             break;
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
@@ -194,7 +194,7 @@
             };
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
-            this.setEssentialOverlay({ header, guardsKilled, wildlingType: invader.type });
+            this.setAttentions({ header, guardsKilled, wildlingType: invader.type });
             break;
 
           case MESSAGE_PLAY_HERO_CARD:
@@ -206,7 +206,7 @@
             header = `${playerName} has played ${heroCard.name}`;
 
             this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, heroCard });
-            this.setEssentialOverlay({ header, heroCard });
+            this.setAttentions({ header, heroCard });
             break;
 
           default:

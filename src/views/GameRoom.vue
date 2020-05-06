@@ -2,9 +2,9 @@
   <main id="game-room">
     <BaseGame />
     <Snowflakes v-if="false" :count="40" class="snowflakes" />
-    <EssentialOverlay
-      :isOpen="essentialOverlay.isOpen"
-      :overlay="essentialOverlay"
+    <Attentions
+      :isOpen="attentions.isOpen"
+      :overlay="attentions"
     />
   </main>
 </template>
@@ -15,18 +15,18 @@
 
   import BaseGame from '@/containers/BaseGame';
   import Snowflakes from '@/components/decor/Snowflakes';
-  import EssentialOverlay from '@/components/interface/EssentialOverlay';
+  import Attentions from '@/components/interface/Attentions';
 
   export default {
     name: 'GameRoom',
     components: {
       BaseGame,
       Snowflakes,
-      EssentialOverlay
+      Attentions
     },
     computed: mapState([
       'enableSnow',
-      'essentialOverlay'
+      'attentions'
     ]),
     async beforeRouteLeave (to, from, next) {
       try {

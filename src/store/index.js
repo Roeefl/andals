@@ -45,10 +45,10 @@ export default new Vuex.Store({
     gameLog: [],
     alerts: {},
     recentLoot: {},
-    essentialOverlay: {
+    attentions: {
       isOpen: false
     },
-    essentialOverlayTimeout: null,
+    attentionsTiemout: null,
     justPurchasedGameCard: false,
     gameWinner: null
   },
@@ -255,33 +255,33 @@ export default new Vuex.Store({
     victory(state, playerName) {
       state.gameWinner = playerName;
     },
-    setEssentialOverlay(state, data = {}) {
-      state.essentialOverlay = {
+    setAttentions(state, data = {}) {
+      state.attentions = {
         isOpen: true,
         ...data
       };
         
-      state.essentialOverlayTimeout = setTimeout(
+      state.attentionsTiemout = setTimeout(
         () => {
-          state.essentialOverlay = {
+          state.attentions = {
             isOpen: false
           };
         },
         ESSENTIAL_OVERLAY_TIMEOUT
       );
     },
-    pushToEssentialOverlay(state, data = {}) {
-      clearTimeout(state.essentialOverlayTimeout);
+    addAttention(state, data = {}) {
+      clearTimeout(state.attentionsTiemout);
   
-      state.essentialOverlay = {
-        ...state.essentialOverlay,
+      state.attentions = {
+        ...state.attentions,
         ...data,
         isOpen: true
       };
   
-      state.essentialOverlayTimeout = setTimeout(
+      state.attentionsTiemout = setTimeout(
         () => {
-          state.essentialOverlay = {
+          state.attentions = {
             isOpen: false
           };
         },

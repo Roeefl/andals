@@ -65,7 +65,7 @@
   import { gameNotifications, notificationToAsset } from '@/specs/gamePhases';
 
   export default {
-    name: 'EssentialOverlay',
+    name: 'Attentions',
     components: {
       BaseOverlay,
       WildlingToken,

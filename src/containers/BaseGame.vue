@@ -301,7 +301,7 @@
         'updateRoomState',
         'addAlert',
         'addGameLog',
-        'setEssentialOverlay',
+        'setAttentions',
         'addRecentLoot',
         'openMyDeck',
         'setJustPurchasedGameCard',
@@ -345,7 +345,7 @@
           this.evaluateBankTrade();
       },
       onEssentialBroadcast: function(header, data) {
-        this.setEssentialOverlay({
+        this.setAttentions({
           ...data,
           header
         });
