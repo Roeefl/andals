@@ -5,8 +5,8 @@
     :approve="!autoConfirm && !!selectedResource"
     @approve="$emit('resource-selected', selectedResource)"
   > -->
-  <div class="select-resource">
-    <div v-if="!asCarousel">
+  <div class="select-container">
+    <div v-if="!asCarousel" class="select-resource">
       <ResourceCard
         v-for="resource in resourceCardTypes"
         :key="resource"
@@ -85,6 +85,10 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
+
+  .select-resource {
+    display: flex;
+  }
 
   .carousel-item {
     width: 100%;

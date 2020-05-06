@@ -61,7 +61,7 @@
             Asking For:
           </h2>
           <SelectResource asCarousel autoConfirm @resource-selected="$emit('declare-resource', $event)" />
-          <div>
+          <div class="other-player-request">
             <ResourceCard :resource="players[1].requestingResource" :clickable="false" hideCount big />
           </div>
         </div>
@@ -177,10 +177,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 200px;
+      width: 100%;
 
       & > * {
         flex: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
 

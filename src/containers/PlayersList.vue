@@ -195,8 +195,7 @@
   }
 
   .recent-loot-cards {
-    -webkit-animation: slide-up-and-fade-out 6s ease both;
-    animation: slide-up-and-fade-out 6s ease both;
+    animation: slide-out-top 4s ease-out both;
     position: relative;
   }
 

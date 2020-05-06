@@ -304,9 +304,8 @@
         position: absolute;
         top: $spacer / 2;
         left: $spacer / 2;
-        transform: translateX(-20%);
-        display: flex;
-        width: 200px;
+        transform: translateX(-15%);
+        width: 100%;
       }
     }
   }
