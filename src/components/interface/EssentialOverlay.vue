@@ -29,7 +29,7 @@
       </div>
       <div class="game-phase">
         <GameAsset
-          v-for="(gamePhase, g) in gameNotifications.filter(phase => overlay[phase])"
+          v-for="(gameNotification, g) in gameNotifications.filter(phase => overlay[phase])"
           :key="g"
           type="phases"
           :asset="notificationToAsset[gameNotification]"
@@ -48,6 +48,11 @@
         <h4>
           {{ overlay.heroCard.ability }}
         </h4>
+      </div>
+      <div v-if="overlay.gameCardType" class="game-card">
+        <h2>
+          {{ overlay.gameCardType }}
+        </h2>
       </div>
     </div>
   </BaseOverlay>

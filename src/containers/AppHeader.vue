@@ -19,7 +19,8 @@
           </router-link>
           <ChoiceDialog v-else buttonColor="transparent" :iconName="item.icon" :iconColor="item.iconColor || (isInGame ? 'primary' : 'success')" :title="item.title"  :width="item.width">
             <AppSettings v-if="item.key === 'settings'" />
-            <div v-if="item.key === 'console'" /> <!-- <DevConsole /> -->
+            <DevConsole v-if="item.key === 'console'" />
+            <RoomStats v-if="item.key === 'roomStats'" />
             <BuildingCosts v-if="item.key === 'buildingCosts'"/>
           </ChoiceDialog>
         </div>
@@ -49,6 +50,7 @@
 <script>
   import AppSettings from '@/containers/AppSettings';
   import DevConsole from '@/containers/DevConsole';
+  import RoomStats from '@/components/interface/RoomStats';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BuildingCosts from '@/components/interface/BuildingCosts';
   import BaseButton from '@/components/common/BaseButton';
@@ -67,11 +69,17 @@
       width: 420,
       title: 'Preferences'
     },
+    // {
+    //   key: 'console',
+    //   icon: 'console',
+    //   width: 1400,
+    //   title: 'Developer Console'
+    // },
     {
-      key: 'console',
-      icon: 'console',
-      width: 1400,
-      title: 'Developer Console'
+      key: 'roomStats',
+      icon: 'contain',
+      width: 650,
+      title: 'Game Information'
     },
     {
       key: 'buildingCosts',
@@ -105,6 +113,7 @@
     components: {
       AppSettings,
       DevConsole,
+      RoomStats,
       ChoiceDialog,
       BuildingCosts,
       BaseButton,
