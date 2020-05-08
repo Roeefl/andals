@@ -127,6 +127,7 @@
   import {
     MESSAGE_CHAT,
     MESSAGE_GAME_LOG,
+    MESSAGE_PLACE_STRUCTURE,
     MESSAGE_TURN_ORDER,
     MESSAGE_READY,
     MESSAGE_ROLL_DICE,
@@ -150,6 +151,8 @@
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
     CHAT_LOG_SIMPLE,
+    CHAT_LOG_PURCHASE,
+    CHAT_LOG_TURN_ORDER,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
     CHAT_LOG_DISCARD,
@@ -258,7 +261,7 @@
           console.log("room", room)
 
           if (!room) {
-            this.addAlert('Unable to reconnect. Sorry.');
+            this.addAlert({ color: 'warning', text: 'Unable to reconnect. Sorry.' });
             router.push('/lobby');
             return;
           }
@@ -267,7 +270,7 @@
           this.initializeRoom(room);
         } catch (err) {
           console.error('reconnect failed:', err);
-          this.addAlert('Unable to reconnect. Sorry.');
+          this.addAlert({ color: 'warning', text: 'Unable to reconnect. Sorry.' });
           router.push('/lobby');
         }
       },
@@ -290,15 +293,16 @@
       onBroadcastReceived: function(broadcast) {
         const {
           type,
-          isEssential = false,
+          isAttention = false,
           sender,
           senderSessionId,
           message,
-          playerName
+          playerName,
+          playerColor
         } = broadcast;
 
-        let essentialHeader = null;
-        let essentialData = {};
+        let attentionHeader = null;
+        let attentionData = {};
         
         switch (type) {
           case MESSAGE_CHAT:
@@ -310,20 +314,23 @@
 
           case MESSAGE_ROLL_DICE:
             const { dice } = broadcast;
-            this.addGameLog({ type: CHAT_LOG_DICE, playerName, dice });
+            this.addGameLog({ type: CHAT_LOG_DICE, playerName, playerColor, dice });
             
-            if (isEssential) {
-              essentialHeader = `${playerName} rolled a 7`;
-              essentialData.isRobber = true;
+            if (isAttention) {
+              attentionHeader = `${playerName} rolled a 7`;
+              attentionData.isRobber = true;
 
               if (sumValues(this.myPlayer.resourceCounts) > 7)
                 this.openMyDeck();
-            };
+            } else {
+              attentionHeader = 'Dice:';
+              attentionData.dice = dice;
+            }
             break;
 
           case MESSAGE_COLLECT_ALL_LOOT:
             const { playerSessionId, loot } = broadcast;
-            this.addGameLog({ type: CHAT_LOG_LOOT, playerName, loot });
+            this.addGameLog({ type: CHAT_LOG_LOOT, playerName, playerColor, loot });
 
             if (playerSessionId === this.myPlayer.playerSessionId) {
               Object
@@ -339,7 +346,7 @@
           
           case MESSAGE_COLLECT_RESOURCE_LOOT:
             const { resource } = broadcast;
-            this.addGameLog({ type: CHAT_LOG_LOOT, playerName, loot: { [resource]: 1 } });
+            this.addGameLog({ type: CHAT_LOG_LOOT, playerName, playerColor, loot: { [resource]: 1 } });
 
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
               this.addRecentLoot({ resource, count: 1 });
@@ -347,15 +354,15 @@
 
           case MESSAGE_DISCARD_HALF_DECK:
             const { discardedCounts } = broadcast;
-            this.addGameLog({ type: CHAT_LOG_DISCARD, playerName, loot: discardedCounts });
+            this.addGameLog({ type: CHAT_LOG_DISCARD, playerName, playerColor, loot: discardedCounts });
             break;
 
           case MESSAGE_GAME_LOG:
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: broadcast.message });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: broadcast.message, playerColor });
 
-            if (isEssential) essentialHeader = broadcast.message;
+            if (isAttention) attentionHeader = broadcast.message;
             gameNotifications.forEach(flag => {
-              if (broadcast.notify === flag) essentialData[flag] = true;
+              if (broadcast.notify === flag) attentionData[flag] = true;
             });
             
             break;
@@ -364,7 +371,7 @@
             const { stoleFrom, stolenResource } = broadcast;
 
             const stolenCardChatMessage = `${playerName} has stolen a resource card from ${stoleFrom}`;
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: stolenCardChatMessage });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, playerColor, message: stolenCardChatMessage });
             
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
               this.addRecentLoot({ resource: stolenResource, count: 1 });
@@ -385,30 +392,34 @@
             break;
 
           case MESSAGE_TURN_ORDER:
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message });
+            this.addGameLog({ type: CHAT_LOG_TURN_ORDER, playerName, playerColor, message });
 
             // if (this.roomState.isGameStarted && this.isMyTurn)
             //   this.openMyDeck();
             break;
 
+          case MESSAGE_PLACE_STRUCTURE:
+            this.addGameLog({ type: CHAT_LOG_PURCHASE, playerName, playerColor, message });
+            break;
+
           case MESSAGE_PLAY_GAME_CARD:
             const { cardType } = broadcast;
-            essentialHeader = `${playerName} has played ${cardType}`;
+            attentionHeader = `${playerName} has played ${cardType}`;
 
-            this.addGameLog({ type: CHAT_LOG_GAME_CARD, playerName, cardType });
-            essentialData.gameCardType = cardType;
+            this.addGameLog({ type: CHAT_LOG_GAME_CARD, playerName, cardType, playerColor });
+            attentionData.gameCardType = cardType;
             break;
 
           case MESSAGE_GAME_VICTORY:
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${playerName} has won the game!!!` });
             this.$store.commit('victory', playerName);
 
-            essentialHeader = `VICTORY! ${playerName} has won the game!`;
+            attentionHeader = `VICTORY! ${playerName} has won the game!`;
             break;
         }
 
-        if (isEssential && !!essentialHeader)
-          this.onEssentialBroadcast(essentialHeader, essentialData);
+        if (isAttention && !!attentionHeader)
+          this.onEssentialBroadcast(attentionHeader, attentionData);
       },
       onRoomError: function(error) {
         console.error(`Room ${this.room.sessionId} encountered error: ${error.message}`);

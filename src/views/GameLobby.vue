@@ -123,7 +123,7 @@
           this.setServerStatus(false);
       
           console.error('Unable to fetch rooms list. Game server might be down');
-          this.addAlert('Unable to connect to game server');
+          this.addAlert({ color: 'warning', text: 'Unable to connect to game server' });
 
           return false;
         }
@@ -132,10 +132,10 @@
         try {
           const isSuccess = await this.fetchRooms();
           if (isSuccess)
-            this.addAlert('Rooms list refreshed');
+            this.addAlert({ text: 'Rooms list refreshed' });
         } catch (err) {
           console.error('Unable to fetch rooms list. Game server might be down');
-          this.addAlert('Unable to connect to game server');
+          this.addAlert({ color: 'warning', text: 'Unable to connect to game server' });
         }
       },
       createRoom: async function() {
@@ -184,7 +184,7 @@
           const room = await colyseusService.reconnect(roomId);
 
           if (!room) {
-            this.addAlert('Unable to reconnect. Sorry.');
+            this.addAlert({ color: 'warning', text: 'Unable to reconnect. Sorry.' });
             return;
           }
           

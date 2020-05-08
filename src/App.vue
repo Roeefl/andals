@@ -11,7 +11,7 @@
         ></AppHeader>
         <router-view></router-view>
       </div>
-      <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert" :style="{ top: `${index * 55 + 10}px` }"></BaseAlert>
+      <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert.text" :color="alert.color" :style="{ top: `${index * 55 + 10}px` }"></BaseAlert>
     </div>
     <audio ref="ambience">
       <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
