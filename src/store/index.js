@@ -53,7 +53,16 @@ export default new Vuex.Store({
     gameWinner: null
   },
   getters: {
+    isGameStarted: state => state.roomState.isGameStarted,
+    isSetupPhase: state => state.roomState.isSetupPhase,
     currentRound: state => state.roomState.currentRound,
+    myPlayerIndex: state => state.players.findIndex(player => player.playerSessionId === state.myPlayer.playerSessionId),
+    isMyTurn: (state, getters) => state.roomState.currentTurn === getters.myPlayerIndex,
+    allowPurchasing: (state, getters) => (
+      getters.isMyTurn &&
+      (getters.isSetupPhase || state.roomState.isDiceRolled) &&
+      !state.myPlayer.mustMoveRobber
+    ),
     clanAreas: state => state.roomState.clanAreas,
   },
   mutations: {

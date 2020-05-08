@@ -18,7 +18,7 @@
       <Wall
         :myColor="myPlayer.color"
         :guards="guards"
-        :allowPurchase="allowPurchase && (myPlayer.hasResources.guard || myPlayer.allowFreeGuard)"
+        :allowPurchasing="allowPurchasing && (myPlayer.hasResources.guard || myPlayer.allowFreeGuard)"
         :allowRemove="myPlayer.allowKill === GUARD"
         @wall-clicked="onWallClicked($event)"
         @kill-guard="onGuardKill($event)"
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import Wall from '@/components/north/Wall';
@@ -76,12 +76,6 @@
       Wall,
       CardSwapper
     },
-    props: {
-      allowPurchase: {
-        type: Boolean,
-        default: false
-      }
-    },
     computed: {
       room: () => colyseusService.room,
       guards: function() {
@@ -102,6 +96,9 @@
         'roomState',
         'players',
         'myPlayer'
+      ]),
+      ...mapGetters([
+        'allowPurchasing'
       ])
     },
     created() {
@@ -120,7 +117,7 @@
       onWallClicked: function(location) {
         const { section, position } = location;
         
-        if (this.allowPurchase && (this.myPlayer.hasResources.guard || this.myPlayer.allowFreeGuard))
+        if (this.allowPurchasing && (this.myPlayer.hasResources.guard || this.myPlayer.allowFreeGuard))
           this.$emit('wall-clicked', location);
       },
       onGuardRelocate: function(relocationData) {

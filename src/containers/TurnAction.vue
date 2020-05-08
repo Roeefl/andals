@@ -43,7 +43,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import colyseusService from '@/services/colyseus';
   import { isAllowRobberReset } from '@/utils/heroes';
 
@@ -62,10 +62,6 @@
       BaseButton
     },
     props: {
-      isMyTurn: {
-        type: Boolean,
-        default: false  
-      },
       buttonWidth: {
         type: String,
         default: '140px'
@@ -103,6 +99,9 @@
         'myPlayer',
         'isSelfReady',
         'desiredRobberTile'
+      ]),
+      ...mapGetters([
+        'isMyTurn'
       ])
     },
     methods: {

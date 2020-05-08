@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
   import { sumValues } from '@/utils/objects';
 
   import GameCards from '@/components/interface/GameCards';
@@ -65,16 +65,15 @@
       BaseIcon,
       BaseTooltip
     },
-    props: {
-      isMyTurn: {
-        type: Boolean,
-        default: false
-      },
+    computed: {
+      ...mapState([
+        'roomState',
+        'myPlayer'
+      ]),
+      ...mapGetters([
+        'isMyTurn'
+      ])
     },
-    computed: mapState([
-      'roomState',
-      'myPlayer'
-    ]),
     created() {
       this.sumValues = sumValues;
     }

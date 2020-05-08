@@ -3,7 +3,6 @@
     <div class="app-header-gap" />
     <div class="game-ui">
       <BankResources
-        :isMyTurn="isMyTurn"
         @bank-trading="$emit('bank-trade', $event)"
         @collect-all="onCollectAllLoot"
         @collect-resource="collectResource($event)"
@@ -28,12 +27,6 @@
     components: {
       BankResources,
       GamePhase
-    },
-    props: {
-      isMyTurn: {
-        type: Boolean,
-        default: false
-      }
     },
     methods: {
       onCollectAllLoot: function() {

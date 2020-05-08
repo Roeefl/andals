@@ -82,7 +82,7 @@
               <span class="offer-trade-text">
                 Request Trade
               </span>
-              <ResourceSelect v-if="hover" :disabled="!isMyTurn" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
+              <ResourceSelect v-if="hover" :disabled="isTradingDisabled" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
             </div>
           </v-hover>
         </div>
@@ -121,12 +121,6 @@
     data: () => ({
       selectedCards: []
     }),
-    props: {
-      isMyTurn: {
-        type: Boolean,
-        default: false  
-      }
-    },
     computed: {
       discardCardsNeeded: function() {
         const totalCards = Object
@@ -135,12 +129,17 @@
 
         return Math.floor(totalCards / 2);
       },
-      ...mapGetters([
-        'currentRound'
-      ]),
+      isTradingDisabled: function() {
+        return !this.isGameStarted || !this.isMyTurn || this.myPlayer.isWaitingTradeRequest;
+      },
       ...mapState([
         'myPlayer',
         'displayDeck'
+      ]),
+      ...mapGetters([
+        'isGameStarted',
+        'currentRound',
+        'isMyTurn'
       ])
     },
     created() {

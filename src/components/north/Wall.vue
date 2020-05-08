@@ -5,7 +5,7 @@
       :key="renderKey(wallSection, w)"
       :guards="wallSection"
       :myColor="myColor"
-      :allowPurchase="allowPurchase"
+      :allowPurchasing="allowPurchasing"
       :allowRemove="allowRemove"
       @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
       @kill-guard="$emit('kill-guard', { section: w, position: $event })"
@@ -32,7 +32,7 @@
         type: String,
         default: 'red'
       },
-      allowPurchase: {
+      allowPurchasing: {
         type: Boolean,
         default: false
       },

@@ -55,7 +55,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
   import PlayerInfo from '@/components/interface/PlayerInfo';
   import HeroCardDialog from '@/components/interface/HeroCardDialog';
   import ResourceCard from '@/components/game/ResourceCard';
@@ -84,27 +84,23 @@
         type: Boolean,
         default: false
       },
-      isMyTurn: {
-        type: Boolean,
-        default: false
-      },
       currentRound: {
         type: Number,
         default: -1
       }
     },
     computed: {
-      myPlayerIndex: function() {
-        return this.players
-          .findIndex(player => player.playerSessionId === this.myPlayer.playerSessionId);
-      },
       ...mapState([
         'myPlayer',
         'players',
         'displayedHeroCard',
         'justPurchasedGameCard',
         'recentLoot'
-      ])
+      ]),
+      ...mapGetters([
+        'myPlayerIndex',
+        'isMyTurn'
+      ]),
     },
     methods: {
       renderKey(player) {

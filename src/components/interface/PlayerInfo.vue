@@ -98,7 +98,7 @@
       </div>
     </div>
     <div v-if="isMe" class="turn-action">
-      <TurnAction :isGameReady="isGameReady" :myPlayer="player" :isMyTurn="isMyTurn" @toggle-ready="$emit('toggle-ready')" />
+      <TurnAction :isGameReady="isGameReady" :myPlayer="player" @toggle-ready="$emit('toggle-ready')" />
     </div>
     <GameCardDialog
       v-if="!!displayedGameCard.type"

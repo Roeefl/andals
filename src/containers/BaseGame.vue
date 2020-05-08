@@ -2,7 +2,6 @@
   <div class="base-game">
     <BaseWidget class="control-panel">
       <ControlPanel
-        :isMyTurn="isMyTurn"
         @toggle-ready="toggleReady"
         @purchase-game-card="onGameCardPurchase"
         @bank-trade="onTradeWithBank($event)"
@@ -11,7 +10,6 @@
     <div class="board-container">
       <BaseWidget class="players-list">
         <PlayersList
-          :isMyTurn="isMyTurn"
           :currentRound="roomState.currentRound"
           :isGameReady="roomState.isGameReady"
           :isGameStarted="roomState.isGameStarted"
@@ -27,13 +25,11 @@
       <div class="board-area">
         <TheNorth
           v-if="isWithNorth"
-          :allowPurchase="allowPurchase"
           @wall-clicked="onGuardClick($event)"
           @kill-guard="onGuardClick($event, true)"
           class="the-north"
         />
         <GameBoard
-          :allowPurchase="allowPurchase"
           @tile-clicked="onTileClick($event)"
           @remove-road="onRemoveRoad($event)"
           @robber-moved="$store.commit('setDesiredRobberTile', $event)"
@@ -68,7 +64,7 @@
       @no="isDisplayConfirmMove = false"
       @yes="onConfirmMove($event)"
     />
-    <MyDeck :isMyTurn="isMyTurn" @purchase-game-card="onGameCardPurchase" @play-game-card="onPlayGameCard($event)" />
+    <MyDeck @purchase-game-card="onGameCardPurchase" @play-game-card="onPlayGameCard($event)" />
     <TradeConfirm
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
@@ -128,7 +124,7 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
@@ -252,24 +248,10 @@
       isWithNorth: function() {
         return this.room && this.room.name === ROOM_TYPE_FIRST_MEN;
       },
-      myPlayerIndex: function() {
-        return this.players
-          .findIndex(p => p.playerSessionId === this.room.sessionId);
-      },
-      isMyTurn: function() {
-        return this.roomState.currentTurn === this.myPlayerIndex;
-      },
       tradingWith: function() {
         return this.myPlayer.pendingTrade
           ? (this.players.find(({ playerSessionId }) => playerSessionId === this.myPlayer.pendingTrade) || {}).nickname
           : 'NONE';
-      },
-      allowPurchase: function() {
-        return (
-          this.isMyTurn &&
-          (this.roomState.isSetupPhase || this.roomState.isDiceRolled) &&
-          !this.myPlayer.mustMoveRobber
-        );
       },
       bankTradePlayers: function() {
         return [
@@ -294,7 +276,10 @@
         'desiredRobberTile',
         'showRobberCountdown',
         'gameWinner'
-      ])
+      ]),
+      ...mapGetters([
+        'isMyTurn'
+      ]),
     },
     methods: {
       ...mapMutations([

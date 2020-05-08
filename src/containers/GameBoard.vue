@@ -20,7 +20,7 @@
             v-for="([row, col]) in roadIndices(rowIndex, colIndex)"
             :key="`road-tile-${row}-${col}`"
             :placement="roadTileTypes[roadTileMap[row][col]]"
-            :enabled="allowPurchase && (myPlayer.hasResources.road || myPlayer.allowFreeRoads > 0) && isRoadAllowed(row, col) && !activeRoads[row][col].ownerId"
+            :enabled="allowPurchasing && (myPlayer.hasResources.road || myPlayer.allowFreeRoads > 0) && isRoadAllowed(row, col) && !activeRoads[row][col].ownerId"
             :removeable="myPlayer.allowRemoveRoad"
             @clicked="$emit('tile-clicked', { type: ROAD, row, col })"
             @remove="$emit('remove-road', { type: ROAD, row, col })"
@@ -35,7 +35,7 @@
             v-for="([row, col]) in structureIndices(rowIndex, colIndex)"
             :key="`structure-tile-${row}-${col}`"
             :placement="structureTileTypes[structureTileMap[row][col]]" 
-            :enabled="(allowPurchase && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchase && myPlayer.hasResources.city && isCityAllowed(row, col))"
+            :enabled="(allowPurchasing && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchasing && myPlayer.hasResources.city && isCityAllowed(row, col))"
             @clicked="$emit('tile-clicked', { type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
             :activeData="activeStructures[row][col] || {}"
             :harbor="harborAdjacentToStructure(structureTileMap, roomState.board, row, col, roomState.ports)"
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters, mapMutations } from 'vuex';
   import { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import HexTile from '@/components/tiles/HexTile';
@@ -126,20 +126,19 @@
       BaseButton,
       GameAsset,
     },
-    props: {
-      allowPurchase: {
-        type: Boolean,
-        default: false
-      }
+    computed: {
+      ...mapState([
+        'roomState',
+        'isDeveloperMode',
+        'activeStructures',
+        'activeRoads',
+        'myPlayer',
+        'desiredRobberTile'
+      ]),
+      ...mapGetters([
+        'allowPurchasing'
+      ])
     },
-    computed: mapState([
-      'roomState',
-      'isDeveloperMode',
-      'activeStructures',
-      'activeRoads',
-      'myPlayer',
-      'desiredRobberTile'
-    ]),
     created() {
       this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
       this.structureTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameStructureTilemap : firstMenStructureTilemap;
@@ -161,11 +160,13 @@
     },
     mounted() {
       // give it 1 more sec to render
-      setTimeout(() => {
-        this.$store.commit('setGameLoading', false);
-      }, 2000);
+      setTimeout(() => this.setGameLoading(false), 2000);
     },
     methods: {
+      ...mapMutations([
+        'setGameLoading',
+        'setRobberCountdown'
+      ]),
       roadIndices: function(row, col) {
         return [
           [row * 2, col * 2],
@@ -192,7 +193,7 @@
       onMoveRobber: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
         this.$emit('robber-moved', tileIndex);
-        this.$store.commit('setRobberCountdown', true);
+        this.setRobberCountdown(true);
       },
       isDisplayRobberTile: function(row, col) {
         const absoluteTileIndex = boardService.absoluteIndex(this.hexTileMap, row, col);
