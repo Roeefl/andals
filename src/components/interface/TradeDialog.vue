@@ -11,7 +11,7 @@
       :cancelText="cancelText"
       @close="$emit('refuse')"
       @cancel="$emit('refuse')"
-      :approve="players[0].isAgreeToTrade && players[1].isAgreeToTrade"
+      :approve="(players[0].isAgreeToTrade && players[1].isAgreeToTrade) || (withBank && players[1].isAgreeToTrade)"
       @approve="$emit('confirm-trade')"
     >
       <div class="wrapper" :class="{ 'with-chat': !withBank }">
