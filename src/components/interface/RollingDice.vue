@@ -81,7 +81,7 @@
     width: $face-size;
     height: $face-size;
     transform-style: preserve-3d;
-    animation: spin 1s linear 1s infinite;
+    animation: spin 1s infinite;
 
     &.die-0 {
       .face {
@@ -96,7 +96,7 @@
     }
 
     &.die-2 {
-      animation-direction: reverse;
+      // animation-direction: reverse;
 
       .face {
         background: $die-2-color;

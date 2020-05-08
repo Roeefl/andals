@@ -144,7 +144,7 @@ export default new Vuex.Store({
 
       setTimeout(() => {
         state.activePurchase = purchase
-      }, 400);
+      }, 200);
     },
     setDesiredRobberTile(state, tile) {
       state.desiredRobberTile = tile;

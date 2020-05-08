@@ -1,9 +1,9 @@
 <template>
   <div class="purchase-confirm">
     <h3 class="header">
-      {{ header }}
+      {{ type === MOVE_ROBBER ? 'Confirm' : header }}
     </h3>
-    <div v-if="!isFree && !removing" class="confirm-move">
+    <div v-if="withCosts && !isFree && !removing && type !== MOVE_ROBBER" class="confirm-move">
       <div class="cost">
         <ResourceCard
           v-for="resource in resourceCardTypes"
@@ -56,7 +56,7 @@
 <script>
   import colyseusService from '@/services/colyseus';
   import { resourceCardTypes } from '@/specs/resources';
-  import { GAME_CARD } from '@/specs/purchases';
+  import { GAME_CARD, MOVE_ROBBER } from '@/specs/purchases';
 
   import ResourceCard from '@/components/game/ResourceCard';
   import BaseDeck from '@/components/game/BaseDeck';
@@ -107,6 +107,10 @@
       selectionCount: {
         type: Number,
         default: 0
+      },
+      withCosts: {
+        type: Boolean,
+        default: true
       }
     },
     data: () => ({
@@ -127,6 +131,7 @@
     created() {
       this.resourceCardTypes = resourceCardTypes;
       this.GAME_CARD = GAME_CARD;
+      this.MOVE_ROBBER = MOVE_ROBBER
     },
     methods: {
       onResourceClick: function(resource) {

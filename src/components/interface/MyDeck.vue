@@ -8,7 +8,7 @@
       iconColor="secondary"
       @click="openMyDeck"
       class="open-my-deck"
-      :class="{ 'hi1dden': displayDeck }"
+      :class="{ 'hidden': displayDeck }"
     >
       My Deck
     </BaseButton>
@@ -16,6 +16,7 @@
       light
       :value="displayDeck"
       width="68%"
+      @click:outside="closeMyDeck"
       :persistent="myPlayer.mustDiscardHalfDeck"
       :overlay-opacity="0"
     >
@@ -60,10 +61,11 @@
                 class="game-piece"
                 :class="purchaseType"
               ></GamePiece>
-              <BaseBadge v-if="activePurchase && activePurchase.type === GAME_CARD">
+              <BaseBadge v-if="activePurchase && activePurchase.type === GAME_CARD" class="confirm-purchase">
                 <PurchaseConfirm
                   :type="GAME_CARD"
                   header="Game Card"
+                  :withCosts="false"
                   :myPlayer="myPlayer"
                   :isFlexible="myPlayer.flexiblePurchase === GAME_CARD"
                   :selectionCount="myPlayer.isVisiblePurchaseGameCard ? 3 : 0"
@@ -125,9 +127,7 @@
     MESSAGE_TRADE_REQUEST_RESOURCE,
     MESSAGE_PURCHASE_GAME_CARD
   } from '@/constants';
-  
-        // @click:outside="!myPlayer.mustDiscardHalfDeck && closeMyDeck"
-        
+
   export default {
     name: 'MyDeck',
     components: {
@@ -225,7 +225,7 @@
       playGameCard: function(gameCard) {
         const desiredGameCard = this.myPlayer.gameCards[gameCard.index];
         if (desiredGameCard.purchasedRound === this.currentRound) {
-          this.addAlert('You cannot play a development card on the same round you purchased it');
+          this.addAlert({ color: 'warning', text: 'You cannot play a development card on the same round you purchased it' });
           return;
         };
 
@@ -372,5 +372,18 @@
   .close-deck {
     position: absolute;
     @extend %toggle-button;
+  }
+
+  .confirm-purchase {
+    position: absolute;
+    top: $spacer * -3;
+    left: 50%;
+    width: 160px;
+    z-index: $zindex-interface + 20;
+    transition: opacity 200ms ease-in-out;
+
+    &.hidden {
+      opacity: 0;
+    }
   }
 </style>
