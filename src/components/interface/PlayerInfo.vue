@@ -184,11 +184,15 @@
         type: Boolean,
         default: false
       },
-      enableTrading: {
+      isGameStarted: {
         type: Boolean,
         default: false
       },
       waitingTrade: {
+        type: Boolean,
+        default: false
+      },
+      allowRequestTrade: {
         type: Boolean,
         default: false
       },
@@ -220,7 +224,7 @@
         );
       },
       requestTradeDisabled: function() {
-        return !this.enableTrading || this.waitingTrade;
+        return !this.allowRequestTrade;
       },
       stealDisabled: function() {
         return !this.allowStealing;

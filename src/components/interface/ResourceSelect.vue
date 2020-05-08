@@ -12,7 +12,7 @@
         :key="resource"
         hideCount
         :resource="resource"
-        :clickable="!disabled"
+        :clickable="enabled"
         @clicked="toggleSelectedResource(resource)"
       />
     </div>
@@ -52,9 +52,9 @@
         type: String,
         default: 'Select Resource'
       },
-      disabled: {
+      enabled: {
         type: Boolean,
-        default: false
+        default: true
       },
       autoConfirm: {
         type: Boolean,

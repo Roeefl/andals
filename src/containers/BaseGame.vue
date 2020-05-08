@@ -12,7 +12,6 @@
         <PlayersList
           :currentRound="roomState.currentRound"
           :isGameReady="roomState.isGameReady"
-          :isGameStarted="roomState.isGameStarted"
           :currentTurn="roomState.currentTurn"
           :waitingTradeWith="waitingTradeWith"
           @trade-with="requestTradeWith($event)"

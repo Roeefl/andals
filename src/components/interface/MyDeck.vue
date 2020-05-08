@@ -82,7 +82,7 @@
               <span class="offer-trade-text">
                 Request Trade
               </span>
-              <ResourceSelect v-if="hover" :disabled="isTradingDisabled" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
+              <ResourceSelect v-if="hover" :enabled="allowRequestTrade" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
             </div>
           </v-hover>
         </div>
@@ -129,9 +129,6 @@
 
         return Math.floor(totalCards / 2);
       },
-      isTradingDisabled: function() {
-        return !this.isGameStarted || !this.isMyTurn || this.myPlayer.isWaitingTradeRequest;
-      },
       ...mapState([
         'myPlayer',
         'displayDeck'
@@ -139,7 +136,8 @@
       ...mapGetters([
         'isGameStarted',
         'currentRound',
-        'isMyTurn'
+        'isMyTurn',
+        'allowRequestTrade'
       ])
     },
     created() {

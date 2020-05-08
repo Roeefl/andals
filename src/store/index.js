@@ -63,6 +63,11 @@ export default new Vuex.Store({
       (getters.isSetupPhase || state.roomState.isDiceRolled) &&
       !state.myPlayer.mustMoveRobber
     ),
+    allowRequestTrade: (state, getters) => (
+      getters.isGameStarted &&
+      getters.isMyTurn &&
+      !state.myPlayer.isWaitingTradeRequest
+    ),
     clanAreas: state => state.roomState.clanAreas,
   },
   mutations: {

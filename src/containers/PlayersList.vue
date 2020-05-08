@@ -9,10 +9,11 @@
       >
         <PlayerInfo
           :player="player"
-          :enableTrading="isGameStarted"
+          :isGameStarted="isGameStarted"
           :isGameReady="isGameReady"
           :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
           :allowStealing="myPlayer.allowStealingFrom && myPlayer.allowStealingFrom.includes(player.playerSessionId)"
+          :allowRequestTrade="allowRequestTrade"
           @trade-with="$emit('trade-with', $event)"
           @steal-from="$emit('steal-from', $event)"
           @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
@@ -80,10 +81,6 @@
         type: Boolean,
         default: false
       },
-      isGameStarted: {
-        type: Boolean,
-        default: false
-      },
       currentRound: {
         type: Number,
         default: -1
@@ -98,8 +95,10 @@
         'recentLoot'
       ]),
       ...mapGetters([
+        'isGameStarted',
         'myPlayerIndex',
-        'isMyTurn'
+        'isMyTurn',
+        'allowRequestTrade'
       ]),
     },
     methods: {
