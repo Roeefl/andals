@@ -190,7 +190,7 @@
   }
 
   .recent-loot-cards {
-    animation: slide-out-top 4s ease-out both;
+    animation: slide-out-top 6s ease-out both;
     position: relative;
   }
 

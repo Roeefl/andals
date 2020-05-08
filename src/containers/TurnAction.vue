@@ -106,7 +106,8 @@
     },
     methods: {
       ...mapMutations([
-        'setRollingDice'
+        'setRollingDice',
+        'setRobberCountdown'
       ]),
       rollDice: function() {
         this.setRollingDice(true);
@@ -118,6 +119,7 @@
       },
       moveRobber: function() {
         if (!this.myPlayer.mustMoveRobber) return;
+        this.setRobberCountdown(false);
 
         colyseusService.room.send({
           type: MESSAGE_MOVE_ROBBER,

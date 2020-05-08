@@ -7,7 +7,7 @@
       iconName="arrow-up-bold-box"
       iconSize="40px"
       iconColor="secondary"
-      @click="$store.commit('openMyDeck')"
+      @click="openMyDeck"
       class="open-my-deck"
     >
       My Deck
@@ -16,7 +16,7 @@
       light
       :value="displayDeck"
       width="68%"
-      @click:outside="!myPlayer.mustDiscardHalfDeck && $store.commit('closeMyDeck')"
+      @click:outside="!myPlayer.mustDiscardHalfDeck && closeMyDeck"
       :persistent="myPlayer.mustDiscardHalfDeck"
       :overlay-opacity="0"
     >
@@ -27,7 +27,7 @@
           iconColor="primary"
           iconSize="40px"
           :disabled="myPlayer.mustDiscardHalfDeck"
-          @click="$store.commit('closeMyDeck')"
+          @click="closeMyDeck"
           class="close-deck"
         ></BaseButton>
         <div class="deck-container">
@@ -68,11 +68,11 @@
               v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
               visible
               full
-              :deck="myPlayer.gameCards"
+              :deck="myPlayer.gameCards.filter(gameCard => gameCard.type !== CARD_VICTORY_POINT)"
               @game-card-clicked="playGameCard"
-              class="player-cards"
+              class="game-cards"
             ></GameCards>
-            <BaseButton color="transparent" height="auto" @click="$store.commit('setDisplayedHeroCard', myPlayer.currentHeroCard)" class="playable-wrapper">
+            <BaseButton color="transparent" height="auto" @click="$store.commit('setDisplayedHeroCard', myPlayer.currentHeroCard)" class="hero-card-wrapper">
               <HeroCard thumbnail :card="myPlayer.currentHeroCard || {}" class="hero-card" />
             </BaseButton>
           </div>
@@ -104,6 +104,7 @@
   import BaseButton from '@/components/common/BaseButton';
   import { types as purchaseTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
   import { initialResourceCounts } from '@/specs/resources';
+  import { CARD_VICTORY_POINT } from '@/specs/gameCards';
 
   import { MESSAGE_DISCARD_HALF_DECK, MESSAGE_TRADE_REQUEST_RESOURCE } from '@/constants';
 
@@ -142,10 +143,13 @@
     },
     created() {
       this.purchaseTypes = purchaseTypes;
+      this.CARD_VICTORY_POINT = CARD_VICTORY_POINT;
     },
     methods: {
       ...mapMutations([
-        'addAlert'
+        'addAlert',
+        'openMyDeck',
+        'closeMyDeck'
       ]),
       toggleCardSelection: function(card) {
         if (!this.myPlayer.mustDiscardHalfDeck) return;
@@ -162,7 +166,7 @@
           ];
       },
       onDiscard: function() {
-        this.$store.commit('closeMyDeck');
+        this.closeMyDeck();
 
         if (!this.myPlayer.mustDiscardHalfDeck) return;
 
@@ -209,7 +213,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $playable-card-size: 120px;
+  $playable-card-size: 80px;
 
   .deck-sheet {
     background: rgba($secondary, 0.5);
@@ -220,7 +224,7 @@
       padding: 0 $spacer;
       display: grid;
       grid-gap: 1%;
-      grid-template-columns: 20% 40% 20% 17%;
+      grid-template-columns: 20% 35% 25% 17%;
 
       .building-costs {
         height: 200px;
@@ -263,16 +267,10 @@
       .playables {
         padding: $spacer;
         display: flex;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: center;
 
-        .player-cards {
-          display: flex;
-          width: $playable-card-size;
-          height: $playable-card-size;
-        }
-
-        .playable-wrapper {
+        .hero-card-wrapper {
           padding: 0;
         }
 

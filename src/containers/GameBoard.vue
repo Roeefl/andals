@@ -192,6 +192,7 @@
       },
       onMoveRobber: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
+        
         this.$emit('robber-moved', tileIndex);
         this.setRobberCountdown(true);
       },

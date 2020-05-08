@@ -49,16 +49,21 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
+  $game-card-size: 80px;
+
   .game-cards {
     display: flex;
   
     .deck {
       flex: 1;
       display: flex;
+      flex-flow: row wrap;
       
       .game-card {
-        height: 100%;
+        // height: 100%;
         flex: 1;
+        width: $game-card-size;
+        height: $game-card-size;
       }
     }
   }
