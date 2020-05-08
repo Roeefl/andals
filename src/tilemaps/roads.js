@@ -16,7 +16,7 @@ export const baseGameRoadTilemap = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
-// 14 rows x 14 columns
+// 10 rows x 16 columns
 export const firstMenRoadTilemap = [
   [0, 0, 0, 0, 1, 2, 1, 2, 1, 2, 1, 2, 0, 0, 0, 0],
   [0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 0],

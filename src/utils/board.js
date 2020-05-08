@@ -153,7 +153,7 @@ export function isPurchaseAllowedRoad(structureTileMap, roadTileMap, activeStruc
 
       // const baseGameEvenRows = [0, 2, 4, 6];
       const firstMenEvenRows = [0, 1, 3, 4];
-      const colOffset = firstMenEvenRows.includes(roadRow) ? 0 : -2;
+      let colOffset = firstMenEvenRows.includes(roadRow) ? 0 : -2;
       
       switch (roadTile) {
         // road: [6, 6], type: 1 || intersecting roads: [6, 5], [6, 7], [5, 6], [7, 6]
@@ -176,9 +176,12 @@ export function isPurchaseAllowedRoad(structureTileMap, roadTileMap, activeStruc
 
         // road: [7, 7], type: 3 || intersecting roads: [6, 6], [6, 7], [8, 5], [8, 6]
         case 3:
+          colOffset = 0;
+          if (roadRow === 5) colOffset = 2;
+
           intersections = [
             [roadRow - 1, roadCol - 1], [roadRow - 1, roadCol],
-            [roadRow + 1, roadCol - 2], [roadRow + 1, roadCol - 1]
+            [roadRow + 1, roadCol - 2 + colOffset], [roadRow + 1, roadCol - 1 + colOffset]
           ];
           break;
       }
