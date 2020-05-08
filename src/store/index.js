@@ -5,6 +5,8 @@ import localStorage from '@/services/localStorage';
 import boardService from '@/services/board';
 import { ESSENTIAL_OVERLAY_TIMEOUT } from '../config';
 
+import { MESSAGE_FINISH_TURN } from '@/constants';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -39,6 +41,7 @@ export default new Vuex.Store({
       hasResources: {},
       currentHeroCard: {}
     },
+    activePurchase: null,
     desiredRobberTile: -1,
     showRobberCountdown: false,
     isRollingDice: false,
@@ -67,6 +70,13 @@ export default new Vuex.Store({
       getters.isGameStarted &&
       getters.isMyTurn &&
       !state.myPlayer.isWaitingTradeRequest
+    ),
+    allowPurchaseGameCard: (state, getters) => (
+      getters.isMyTurn &&
+      !getters.isSetupPhase &&
+      state.roomState.isDiceRolled &&
+      state.myPlayer.hasResources.gameCard &&
+      !state.myPlayer.mustMoveRobber
     ),
     clanAreas: state => state.roomState.clanAreas,
   },
@@ -129,6 +139,9 @@ export default new Vuex.Store({
     },
     toggleSelfReady(state) {
       state.isSelfReady = !state.isSelfReady;
+    },
+    setActivePurchase(state, purchase) {
+      state.activePurchase = purchase;
     },
     setDesiredRobberTile(state, tile) {
       state.desiredRobberTile = tile;
@@ -304,6 +317,13 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    async finishTurn({ commit }) {
+      await colyseusService.room.send({
+        type: MESSAGE_FINISH_TURN
+      });
+
+      commit('setJustPurchasedGameCard', false);
+    }
   },
   modules: {
   }

@@ -6,7 +6,6 @@
         @bank-trading="$emit('bank-trade', $event)"
         @collect-all="onCollectAllLoot"
         @collect-resource="collectResource($event)"
-        @purchase-game-card="$emit('purchase-game-card')"
         class="bank-resources"
       />
       <GamePhase class="game-action" />

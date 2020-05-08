@@ -43,17 +43,14 @@
 </template>
 
 <script>
-  import { mapState, mapGetters, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import colyseusService from '@/services/colyseus';
   import { isAllowRobberReset } from '@/utils/heroes';
 
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
 
-  import {
-    MESSAGE_FINISH_TURN,
-    MESSAGE_MOVE_ROBBER
-  } from '@/constants';
+  import { MESSAGE_MOVE_ROBBER } from '@/constants';
   
   export default {
     name: 'TurnAction',
@@ -109,6 +106,9 @@
         'setRollingDice',
         'setRobberCountdown'
       ]),
+      ...mapActions([
+        'finishTurn'
+      ]),
       rollDice: function() {
         this.setRollingDice(true);
 
@@ -125,14 +125,7 @@
           type: MESSAGE_MOVE_ROBBER,
           tile: this.desiredRobberTile
         });
-      },
-      finishTurn: function() {
-        colyseusService.room.send({
-          type: MESSAGE_FINISH_TURN
-        });
-
-        this.$store.commit('setJustPurchasedGameCard', false);
-      },
+      }
     }
   }
 </script>

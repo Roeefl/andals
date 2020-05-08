@@ -39,7 +39,6 @@
     <BaseTooltip tooltip="Development Cards">
       <GameCards
         :count="(roomState.gameCards || []).length"
-        @purchase-game-card="$emit('purchase-game-card')"
         class="game-cards"
       />
     </BaseTooltip>
