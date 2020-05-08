@@ -72,6 +72,18 @@
               <GameAsset type="pieces" asset="robber" width="60px" height="60px" />
             </BaseButton>
           </BaseOverlay>
+          <BaseBadge v-if="!!activePurchase" color="primary">
+            <PurchaseConfirm
+              :type="activePurchase.type"
+              :removing="activePurchase.isRemove"
+              :header="activePurchase.isRemove ? 'Remove' : undefined"
+              :isFree="roomState.isSetupPhase"
+              :myPlayer="myPlayer"
+              :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
+              @no="setActivePurchase(null)"
+              @yes="onConfirmPurchase($event)"
+            />
+          </BaseBadge>
         </HexTile>
       </div>
     </div>
@@ -85,8 +97,8 @@
 </template>
 
 <script>
-  import { mapState, mapGetters, mapMutations } from 'vuex';
-  import { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
+  import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+  import colyseusService, { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import HexTile from '@/components/tiles/HexTile';
   import RoadTile from '@/components/tiles/RoadTile';
@@ -99,6 +111,8 @@
   import BaseOverlay from '@/components/common/BaseOverlay';
   import BaseButton from '@/components/common/BaseButton';
   import GameAsset from '@/components/game/GameAsset';
+  import BaseBadge from '@/components/common/BaseBadge';
+  import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
 
   import { baseGameHexTilemap, firstMenHexTilemap } from '@/tilemaps/hexes';
   import { baseGameRoadTilemap, firstMenRoadTilemap } from '@/tilemaps/roads';
@@ -110,6 +124,12 @@
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
   import { ROAD, SETTLEMENT, CITY } from '@/specs/purchases';
   import { HERO_CARD_Ygritte, HERO_CARD_QhorinHalfhand } from '@/specs/heroCards';
+
+  import {
+    MESSAGE_PLACE_STRUCTURE,
+    MESSAGE_PLACE_ROAD,
+    MESSAGE_REMOVE_ROAD
+  } from '@/constants';
 
   export default {
     name: 'GameBoard',
@@ -124,6 +144,8 @@
       Tree,
       BaseOverlay,
       BaseButton,
+      BaseBadge,
+      PurchaseConfirm,
       GameAsset,
     },
     computed: {
@@ -133,7 +155,8 @@
         'activeStructures',
         'activeRoads',
         'myPlayer',
-        'desiredRobberTile'
+        'desiredRobberTile',
+        'activePurchase'
       ]),
       ...mapGetters([
         'allowPurchasing'
@@ -165,7 +188,11 @@
     methods: {
       ...mapMutations([
         'setGameLoading',
-        'setRobberCountdown'
+        'setRobberCountdown',
+        'setActivePurchase'
+      ]),
+      ...mapActions([
+        'finishTurn'
       ]),
       roadIndices: function(row, col) {
         return [
@@ -207,7 +234,32 @@
         const isDynamicPosition = this.myPlayer.mustMoveRobber && absoluteTileIndex === dynamicPosition;
 
          return isStaticPosition || isDynamicPosition;
-      }
+      },
+      onConfirmPurchase: function(purchase) {
+        const { type, row, col, isRemove = false } = this.activePurchase;
+
+        if (isRemove) {
+          colyseusService.room.send({
+            type: MESSAGE_REMOVE_ROAD,
+            row,
+            col
+          });
+
+          return;
+        }
+        
+        colyseusService.room.send({
+          type: type === ROAD ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
+          structureType: type === ROAD ? null : type,
+          row,
+          col
+        });
+
+        if (type === ROAD && this.roomState.isSetupPhase)
+          this.finishTurn();
+
+        this.setActivePurchase(null);
+      },
     }
   }
 </script>

@@ -18,11 +18,16 @@
       <Wall
         :myColor="myPlayer.color"
         :guards="guards"
+        :activePurchase="activePurchase"
+        :myPlayer="myPlayer"
+        :isSetupPhase="isSetupPhase"
         :allowPurchasing="allowPurchasing && (myPlayer.hasResources.guard || myPlayer.allowFreeGuard)"
         :allowRemove="myPlayer.allowKill === GUARD"
         @wall-clicked="onWallClicked($event)"
         @kill-guard="onGuardKill($event)"
         @relocate-guard="onGuardRelocate($event)"
+        @cancel-purchase="setActivePurchase(null)"
+        @confirm-purchase="onConfirmPurchase($event)"
         class="the-wall"
       />
     </div>
@@ -39,7 +44,7 @@
 </template>
 
 <script>
-  import { mapState, mapGetters, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
   import Wall from '@/components/north/Wall';
@@ -58,12 +63,13 @@
     MESSAGE_SELECT_HERO_CARD,
     MESSAGE_RELOCATE_GUARD,
     MESSAGE_PLACE_GUARD,
+    MESSAGE_REMOVE_GUARD,
     CHAT_LOG_WILDLING_TOKENS,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_HERO_CARD
   } from '@/constants';
 
-  import { ROAD, GUARD } from '@/specs/purchases';
+  import { GUARD } from '@/specs/purchases';
   import { isAllowNorthWildlingsRemove } from '@/utils/heroes';
   import { WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT } from '@/specs/wildlings';
 
@@ -95,9 +101,11 @@
       ...mapState([
         'roomState',
         'players',
-        'myPlayer'
+        'myPlayer',
+        'activePurchase'
       ]),
       ...mapGetters([
+        'isSetupPhase',
         'allowPurchasing'
       ])
     },
@@ -107,18 +115,33 @@
     },
     methods: {
       ...mapMutations([
+        'setActivePurchase',
         'addGameLog',
         'setAttentions',
         'addAttention'
       ]),
+      ...mapActions([
+        'finishTurn'
+      ]),
       initializeRoom: function(room = this.room) {
         room.onMessage(this.onBroadcastReceived);
+      },
+      onGuardAction: function(location, isRemove = false) {
+        console.log("TheNorth -> onGuardAction -> ", location, isRemove)
+        const { section, position } = location;
+        
+        this.setActivePurchase({
+          type: GUARD,
+          section,
+          position,
+          isRemove
+        });
       },
       onWallClicked: function(location) {
         const { section, position } = location;
         
         if (this.allowPurchasing && (this.myPlayer.hasResources.guard || this.myPlayer.allowFreeGuard))
-          this.$emit('wall-clicked', location);
+          this.onGuardAction(location);
       },
       onGuardRelocate: function(relocationData) {
         if (!this.myPlayer.allowGuardRelocate) return;
@@ -138,7 +161,7 @@
           .find(guard => guard.section === section && guard.position === position);
 
         if (killedGuard && killedGuard.ownerId !== this.myPlayer.playerSessionId)
-          this.$emit('kill-guard', location);
+          this.onGuardAction(location, true);
       },
       onBroadcastReceived: function(broadcast) {
         const {
@@ -235,6 +258,32 @@
           clearingIndex,
           wildlingIndex
         });
+      },
+      onConfirmPurchase: function(additionalData) {
+        const { type, section, position, isRemove = false } = this.activePurchase;
+        if (type !== GUARD) return;
+
+        if (isRemove) {
+          this.room.send({
+            type: MESSAGE_REMOVE_GUARD,
+            section,
+            position
+          });
+          
+          return;
+        } else {
+          this.room.send({
+            type: MESSAGE_PLACE_GUARD,
+            section,
+            position,
+            ...additionalData
+          });
+  
+          if (this.isSetupPhase)
+            this.finishTurn();
+        }
+
+        this.setActivePurchase(null);
       }
     }
   }

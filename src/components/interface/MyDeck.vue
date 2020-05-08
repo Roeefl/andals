@@ -61,6 +61,17 @@
                 class="game-piece"
                 :class="purchaseType"
               ></GamePiece>
+              <BaseBadge v-if="!!activePurchase" color="primary">
+                <PurchaseConfirm
+                  :type="activePurchase.type"
+                  :myPlayer="myPlayer"
+                  :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
+                  :selectionCount="myPlayer.isVisiblePurchaseGameCard ? 3 : 0"
+                  :gameCards="roomState.gameCards"
+                  @no="setActivePurchase(null)"
+                  @yes="onConfirmPurchase($event)"
+                />
+              </BaseBadge>
             </div>
           </div>
           <div class="playables">
@@ -102,11 +113,18 @@
   import HeroCard from '@/components/game/HeroCard';
   import GamePiece from '@/components/game/GamePiece';
   import BaseButton from '@/components/common/BaseButton';
+  import BaseBadge from '@/components/common/BaseBadge';
+  import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
+  
   import { types as purchaseTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
   import { initialResourceCounts } from '@/specs/resources';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
 
-  import { MESSAGE_DISCARD_HALF_DECK, MESSAGE_TRADE_REQUEST_RESOURCE } from '@/constants';
+  import {
+    MESSAGE_DISCARD_HALF_DECK,
+    MESSAGE_TRADE_REQUEST_RESOURCE,
+    MESSAGE_PURCHASE_GAME_CARD
+  } from '@/constants';
 
   export default {
     name: 'MyDeck',
@@ -117,7 +135,9 @@
       ResourceSelect,
       HeroCard,
       GamePiece,
-      BaseButton
+      BaseButton,
+      BaseBadge,
+      PurchaseConfirm
     },
     data: () => ({
       selectedCards: []
@@ -131,14 +151,17 @@
         return Math.floor(totalCards / 2);
       },
       ...mapState([
+        'roomState',
         'myPlayer',
-        'displayDeck'
+        'displayDeck',
+        'activePurchase'
       ]),
       ...mapGetters([
         'isGameStarted',
         'currentRound',
         'isMyTurn',
-        'allowRequestTrade'
+        'allowRequestTrade',
+        'allowPurchaseGameCard'
       ])
     },
     created() {
@@ -149,7 +172,9 @@
       ...mapMutations([
         'addAlert',
         'openMyDeck',
-        'closeMyDeck'
+        'closeMyDeck',
+        'setActivePurchase',
+        'setJustPurchasedGameCard'
       ]),
       toggleCardSelection: function(card) {
         if (!this.myPlayer.mustDiscardHalfDeck) return;
@@ -187,8 +212,11 @@
         if (!this.isMyTurn) return;
         
         if (type === GAME_CARD) {
-          this.$emit('purchase-game-card');
-          return;
+          if (!this.allowPurchaseGameCard) return;
+          
+          this.setActivePurchase({
+            type: GAME_CARD
+          });
         }
       },
       playGameCard: function(gameCard) {
@@ -205,7 +233,19 @@
           type: MESSAGE_TRADE_REQUEST_RESOURCE,
           requestedResource
         });
-      }
+      },
+      onConfirmPurchase: function(gameCard) {
+        const { type } = this.activePurchase;
+        if (type !== GAME_CARD) return;
+        
+        colyseusService.room.send({
+          type: MESSAGE_PURCHASE_GAME_CARD,
+          selectedCardIndex: gameCard.index
+        });
+
+        this.setJustPurchasedGameCard(true);
+        this.setActivePurchase(null);
+      },
     }
   }
 </script>

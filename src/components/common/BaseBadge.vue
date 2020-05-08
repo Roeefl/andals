@@ -1,5 +1,7 @@
 <template>
-  <v-badge :color="color" :content="content === 0 ? '0' : content" :icon="`mdi-${icon}`" />
+  <v-badge :color="color" :content="content === 0 ? '0' : content" :icon="`mdi-${icon}`">
+    <slot></slot>
+  </v-badge>
 </template>
 
 <script>

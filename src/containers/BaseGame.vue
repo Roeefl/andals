@@ -3,7 +3,6 @@
     <BaseWidget class="control-panel">
       <ControlPanel
         @toggle-ready="toggleReady"
-        @purchase-game-card="onGameCardPurchase"
         @bank-trade="onTradeWithBank($event)"
       />
     </BaseWidget>
@@ -24,8 +23,6 @@
       <div class="board-area">
         <TheNorth
           v-if="isWithNorth"
-          @wall-clicked="onGuardClick($event)"
-          @kill-guard="onGuardClick($event, true)"
           class="the-north"
         />
         <GameBoard
@@ -50,20 +47,7 @@
         </BaseWidget>
       </aside>
     </div>
-    <PurchaseConfirm
-      :type="activePurchase.type"
-      :removing="activePurchase.isRemove"
-      :header="activePurchase.isRemove ? 'Remove' : undefined"
-      :isOpen="isDisplayConfirmMove"
-      :isFree="roomState.isSetupPhase"
-      :myPlayer="myPlayer"
-      :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
-      :selectionCount="myPlayer.isVisiblePurchaseGameCard ? 3 : 0"
-      :gameCards="roomState.gameCards"
-      @no="isDisplayConfirmMove = false"
-      @yes="onConfirmMove($event)"
-    />
-    <MyDeck @purchase-game-card="onGameCardPurchase" @play-game-card="onPlayGameCard($event)" />
+    <MyDeck @play-game-card="onPlayGameCard($event)" />
     <TradeConfirm
       :isOpen="!!myPlayer.pendingTrade"
       :withWho="tradingWith"
@@ -123,7 +107,7 @@
 </template>
 
 <script>
-  import { mapState, mapGetters, mapMutations } from 'vuex';
+  import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import router from '@/router';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 
@@ -136,7 +120,6 @@
   import GameChat from '@/components/interface/GameChat';
   import MyDeck from '@/components/interface/MyDeck';
   import TradeDialog from '@/components/interface/TradeDialog';
-  import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
   import TradeConfirm from '@/components/interface/TradeConfirm';
   import OpponentDeck from '@/components/interface/OpponentDeck';
   import ResourceSelect from '@/components/interface/ResourceSelect';
@@ -158,13 +141,7 @@
     MESSAGE_ROLL_DICE,
     MESSAGE_COLLECT_ALL_LOOT,
     MESSAGE_COLLECT_RESOURCE_LOOT,
-    MESSAGE_FINISH_TURN,
-    MESSAGE_PLACE_STRUCTURE,
-    MESSAGE_PLACE_ROAD,
-    MESSAGE_REMOVE_ROAD,
     MESSAGE_PLACE_GUARD,
-    MESSAGE_REMOVE_GUARD,
-    MESSAGE_PURCHASE_GAME_CARD,
     MESSAGE_PLAY_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_STEAL_CARD,
@@ -201,7 +178,6 @@
       GameLog,
       PlayersList,
       TradeConfirm,
-      PurchaseConfirm,
       MyDeck,
       TradeDialog,
       OpponentDeck,
@@ -212,10 +188,6 @@
     },
     data: () => ({
       chatMessages: [],
-      isDisplayConfirmMove: false,
-      activePurchase: {
-        type: ROAD
-      },
       waitingTradeWith: null,
       tradeRequested: {},
       bankTradeResource: null,
@@ -258,19 +230,11 @@
           this.bankDummy
         ];
       },
-      isCardPurchaseEnabled: function() {
-        return (
-          this.isMyTurn &&
-          !this.roomState.isSetupPhase &&
-          this.roomState.isDiceRolled &&
-          this.myPlayer.hasResources.gameCard &&
-          !this.myPlayer.mustMoveRobber
-        );
-      },
       ...mapState([
-        'myPlayer',
         'roomState',
         'players',
+        'myPlayer',
+        'activePurchase',
         'isRollingDice',
         'desiredRobberTile',
         'showRobberCountdown',
@@ -288,8 +252,11 @@
         'setAttentions',
         'addRecentLoot',
         'openMyDeck',
-        'setJustPurchasedGameCard',
-        'setRobberCountdown'
+        'setRobberCountdown',
+        'setActivePurchase'
+      ]),
+      ...mapActions([
+        'finishTurn'
       ]),
       initializeRoom: function(room = this.room) {
         // Define a series of room lifecycle methods
@@ -480,106 +447,11 @@
         if (this.roomState.isTurnOrderPhase)
           this.finishTurn();
       },
-      onGameCardPurchase: function() {
-        if (!this.isCardPurchaseEnabled) return;
-        
-        this.activePurchase = {
-          type: GAME_CARD
-        };
-
-        this.isDisplayConfirmMove = true;
-      },
       onTileClick: function(tile) {
-        this.activePurchase = tile;
-        this.isDisplayConfirmMove = true;
+        this.setActivePurchase(tile);
       },
       onRemoveRoad: function(roadTile) {
-        this.activePurchase = roadTile;
-        this.activePurchase.isRemove = true;
-
-        this.isDisplayConfirmMove = true;
-      },
-      onGuardClick: function(location, isRemove = false) {
-      console.log("isRemove", isRemove)
-      console.log("location", location)
-        const { section, position } = location;
-        
-        this.activePurchase = {
-          type: GUARD,
-          section,
-          position,
-          isRemove
-        };
-
-        this.isDisplayConfirmMove = true;
-      },
-      onConfirmMove: function(additionalData) {
-        this.isDisplayConfirmMove = false;
-
-        const { type, row, col, isRemove = false } = this.activePurchase;
-
-        if (type === GUARD) {
-          const { section, position } = this.activePurchase;
-
-          if (isRemove) {
-            this.room.send({
-              type: MESSAGE_REMOVE_GUARD,
-              section,
-              position
-            });
-
-            return;
-          }
-
-          this.room.send({
-            type: MESSAGE_PLACE_GUARD,
-            section,
-            position,
-            ...additionalData
-          });
-
-          if (this.roomState.isSetupPhase)
-            this.finishTurn();
-
-          return;
-        };
-
-        if (type === GAME_CARD) {
-          this.room.send({
-            type: MESSAGE_PURCHASE_GAME_CARD,
-            selectedCardIndex: additionalData.index
-          });
-
-          this.setJustPurchasedGameCard(true);
-          return;
-        }
-
-        if (isRemove) {
-          this.room.send({
-            type: MESSAGE_REMOVE_ROAD,
-            row,
-            col
-          });
-
-          return;
-        }
-        
-        this.room.send({
-          type: type === ROAD ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
-          structureType: type === ROAD ? null : type,
-          row,
-          col
-        });
-
-        if (type === ROAD && this.roomState.isSetupPhase)
-          this.finishTurn();
-      },
-      finishTurn: function() {
-        this.room.send({
-          type: MESSAGE_FINISH_TURN
-        });
-
-        this.setJustPurchasedGameCard(false);
+        this.setActivePurchase({ ...roadTile, isRemove: true });
       },
       requestTradeWith: function(withWho) {
         if (!this.roomState.isGameStarted) return;

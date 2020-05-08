@@ -11,17 +11,34 @@
       @kill-guard="$emit('kill-guard', { section: w, position: $event })"
       @relocate-guard="$emit('relocate-guard', { ...$event, toSection: w })"
     />
+    <BaseBadge v-if="!!activePurchase" color="primary">
+      <PurchaseConfirm
+        :type="activePurchase.type"
+        :removing="activePurchase.isRemove"
+        :header="activePurchase.isRemove ? 'Remove' : undefined"
+        :isFree="isSetupPhase"
+        :myPlayer="myPlayer"
+        :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
+        @no="$emit('cancel-purchase')"
+        @yes="$emit('confirm-purchase', $event)"
+      />
+    </BaseBadge>
   </div>
 </template>
 
 <script>
   import WallSection from '@/components/north/WallSection';
+  import BaseBadge from '@/components/common/BaseBadge';
+  import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
+
   import { wallSectionsCount } from '@/specs/wall';
 
   export default {
     name: 'Wall',
     components: {
-      WallSection
+      WallSection,
+      BaseBadge,
+      PurchaseConfirm
     },
     props: {
       guards: {
@@ -39,6 +56,18 @@
       allowRemove: {
         type: Boolean,
         default: false   
+      },
+      activePurchase: {
+        type: Object,
+        default: () => null
+      },
+      myPlayer: {
+        type: Object,
+        default: () => {}
+      },
+      isSetupPhase: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {

@@ -1,17 +1,20 @@
 <template>
   <ul class="wall-tile" :style="hoverStyle">
-    <li v-for="position in positions" :key="position" class="wall-position" :class="{ 'enabled': allowPurchase && isBuildGuardAllowed(position) }">
-      <drop @drop="$emit('relocate-guard', $event)">
-        <WallSectionPosition :position="position" :guard="guards.find(guard => guard.position === position)" @clicked="onPositionClicked(position)" />
-      </drop>
+    <li v-for="position in positions" :key="position" class="wall-position" :class="{ 'enabled': allowPurchasing && isBuildGuardAllowed(position) }">
+      <BaseTooltip :tooltip="allowPurchasing && isBuildGuardAllowed(position) ? 'Place Guard' : null">
+        <drop @drop="$emit('relocate-guard', $event)">
+          <WallSectionPosition :position="position" :guard="guards.find(guard => guard.position === position)" @clicked="onPositionClicked(position)" />
+        </drop>
+      </BaseTooltip>
     </li>
   </ul>
 </template>
 
 <script>
 // -${guard.ownerId}
-
+  import BaseTooltip from '@/components/common/BaseTooltip';
   import WallSectionPosition from '@/components/north/WallSectionPosition';
+
   import { wallSectionSize } from '@/specs/wall';
 
   const positions = new Array(wallSectionSize).fill(0).map((x, positionIndex) => positionIndex);
@@ -19,6 +22,7 @@
   export default {
     name: 'WallSection',
     components: {
+      BaseTooltip,
       WallSectionPosition
     },
     props: {
@@ -30,7 +34,7 @@
         type: String,
         default: 'red'
       },
-      allowPurchase: {
+      allowPurchasing: {
         type: Boolean,
         default: false
       },
