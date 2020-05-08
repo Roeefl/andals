@@ -1,17 +1,11 @@
 <template>
-  <BaseOverlay :isOpen="true">
-    <div class="dice-container">
-      <BaseButton
-        v-for="(diceValue, d) in dice"
-        :key="`dice-${d}-${diceValue}`"
-        color="transparent"
-        :iconName="d < 2 ? `dice-${diceValue}` : `numeric-${diceValue}-box-outline`"
-        iconSize="120px"
-        :iconColor="diceColors[`dice${d}`]"
-        width="120px"
-        height="120px"
-        class="dice"
-      />
+  <BaseOverlay :isOpen="true" class="dice-container">
+    <div id="dice-container">
+      <div v-for="(dice, di) in dice" :key="di" class="die" :class="`die-${di}`">
+        <div v-for="(face, f) in Array(6).fill(0)" :key="f" class="face" :class="`face-${f + 1}`">
+          <div v-for="(dot, d) in Array(f + 1).fill(0)" :key="d" class="dot" />
+        </div>
+      </div>
     </div>
   </BaseOverlay>
 </template>
@@ -19,8 +13,9 @@
 <script>
   import BaseOverlay from '@/components/common/BaseOverlay';
   import BaseButton from '@/components/common/BaseButton';
+  
   import { ROOM_TYPE_BASE_GAME, ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
-  import { diceColors, WILDLING_DICE_MAX } from '@/specs/dice';
+  import { WILDLING_DICE_MAX } from '@/specs/dice';
   
   export default {
     name: 'RollingDice',
@@ -35,15 +30,13 @@
       }
     },
     data: () => ({
-      dice: [4, 3]
+      dice: [4, 3, 1]
     }),
-    created() {
-      this.diceColors = diceColors;
-    },
     mounted() {
       const diceRoller = setInterval(() => {
         const randomDice1 = Math.floor(Math.random() * 6) + 1;
         const randomDice2 = Math.floor(Math.random() * 6) + 1;
+
         this.dice = [randomDice1, randomDice2];
 
         if (this.type === ROOM_TYPE_FIRST_MEN) {
@@ -54,7 +47,7 @@
             wildlingDice
           ];
         }
-      }, 50);
+      }, 500);
 
       setTimeout(() => {
         clearInterval(diceRoller);
@@ -67,18 +60,209 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $dice-size: 160px;
+  $face-size: 100px;
+  $dot-size: $face-size * 0.225;
+  
+  $die-0-color: $warning;
+  $die-1-color: $success;
+  $die-2-color: $primary;
 
-  .dice-container {
+  #dice-container {
+    perspective: 2000px;
+    width: 40vw;
+    height: 30vh;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    background: $secondary;
+    background: transparent;
   }
 
-  .dice {
-    & + & {
-      margin-left: $spacer;
+  .die {
+    width: $face-size;
+    height: $face-size;
+    transform-style: preserve-3d;
+    animation: spin 1s linear 1s infinite;
+
+    &.die-0 {
+      .face {
+        background: $die-0-color;
+      }
+    }
+
+    &.die-1 {
+      .face {
+        background: $die-1-color;
+      }
+    }
+
+    &.die-2 {
+      animation-direction: reverse;
+
+      .face {
+        background: $die-2-color;
+      }
+    }
+
+    &:hover {
+      animation-play-state: paused;
+    }
+
+    .face {
+      position: absolute;
+      width: $face-size;
+      height: $face-size;
+      font-size: 40px;
+      text-align: center;
+      line-height: $face-size;
+      border: 1px solid black;
+      transform-style: preserve-3d;
+
+      &:hover {
+        background: $highlight;
+      }
+
+      .dot {
+        position: absolute;
+        width: $dot-size;
+        height: $dot-size;
+        border-radius: 50%;
+        background: black;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  .face-1 {
+    transform: translateZ(calc($face-size / -2)) rotateY(180deg);
+
+    & > .dot {
+      left: 50%;
+      top: 50%;
+    }
+  }
+
+  .face-2 {
+    transform: translateX(50%) rotateY(90deg);
+
+    & > .dot:nth-child(1) {
+        left: 25%;
+        top: 50%;
+    }
+
+    & > .dot:nth-child(1) {
+        left: 25%;
+        top: 50%;
+    }
+
+    & > .dot:nth-child(2) {
+        left: 75%;
+        top: 50%;
+    }
+  }
+
+  .face-3 {
+    transform: translateX(-50%) rotateY(-90deg);
+
+    & > .dot:nth-child(1) {
+      left: 25%;
+      top: 25%;
+    }
+
+    & > .dot:nth-child(2) {
+      left: 50%;
+      top: 50%;
+    }
+
+    & > .dot:nth-child(3) {
+      left: 75%;
+      top: 75%;
+    }
+  }
+
+  .face-4 {
+    transform: translateY(50%) rotateX(90deg);
+
+    & > .dot:nth-child(1) {
+      left: 25%;
+      top: 25%
+    }
+
+    & > .dot:nth-child(2) {
+      left: 75%;
+      top: 25%
+    }
+
+    & > .dot:nth-child(3) {
+      left: 25%;
+      top: 75%
+    }
+
+    & > .dot:nth-child(4) {
+      left: 75%;
+      top: 75%
+    }
+  }
+
+  .face-5 {
+    transform: translateY(-50%) rotateX(-90deg);
+
+    & > .dot:nth-child(1) {
+      left: 25%;
+      top: 25%
+    }
+
+    & > .dot:nth-child(2) {
+      left: 75%;
+      top: 25%
+    }
+
+    & > .dot:nth-child(3) {
+      left: 25%;
+      top: 75%
+    }
+
+    & > .dot:nth-child(4) {
+      left: 75%;
+      top: 75%
+    }
+
+    & > .dot:nth-child(5) {
+      left: 50%;
+      top: 50%
+    }
+  }
+
+  .face-6 {
+    transform: translateZ(calc($face-size / 2));
+
+    & > .dot:nth-child(1) {
+      left: 25%;
+      top: 25%
+    }
+
+    & > .dot:nth-child(2) {
+      left: 75%;
+      top: 25%
+    }
+
+    & > .dot:nth-child(3) {
+      left: 25%;
+      top: 50%
+    }
+
+    & > .dot:nth-child(4) {
+      left: 75%;
+      top: 50%
+    }
+
+    & > .dot:nth-child(5) {
+      left: 25%;
+      top: 75%
+    }
+
+    & > .dot:nth-child(6) {
+      left: 75%;
+      top: 75%
     }
   }
 </style>

@@ -242,3 +242,13 @@
   from { transform: scaleY(1) }
   to { transform: scaleY(0) }
 }
+
+@keyframes spin {
+  from {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  
+  to {
+    transform: rotateX(360deg) rotateY(720deg);
+  }
+}

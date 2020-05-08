@@ -5,9 +5,6 @@
         @toggle-ready="toggleReady"
         @bank-trade="onTradeWithBank($event)"
       />
-      <v-btn @click="setRollingDice(!isRollingDice)">
-        Roll Dice
-      </v-btn>
     </BaseWidget>
     <div class="board-container">
       <BaseWidget class="players-list">
