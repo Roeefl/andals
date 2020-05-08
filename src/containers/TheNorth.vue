@@ -66,6 +66,7 @@
     MESSAGE_REMOVE_GUARD,
     CHAT_LOG_WILDLING_TOKENS,
     CHAT_LOG_SIMPLE,
+    CHAT_LOG_PURCHASE,
     CHAT_LOG_HERO_CARD
   } from '@/constants';
 
@@ -166,16 +167,18 @@
       onBroadcastReceived: function(broadcast) {
         const {
           type,
-          isEssential = false
+          playerName,
+          playerColor,
+          isAttention = false
         } = broadcast;
 
         let header = '';
 
         switch (type) {
           case MESSAGE_PLACE_GUARD:
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: broadcast.message });
+            this.addGameLog({ type: CHAT_LOG_PURCHASE, playerName, playerColor, message: broadcast.message });
             
-            if (isEssential)
+            if (isAttention)
               this.setAttentions({ header: broadcast.message, guardPurchased: true });
             break;
 
@@ -218,18 +221,11 @@
             break;
 
           case MESSAGE_PLAY_HERO_CARD:
-            const {
-              playerName,
-              heroCard
-            } = broadcast;
-
+            const { heroCard } = broadcast;
             header = `${playerName} has played ${heroCard.name}`;
 
-            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, heroCard });
+            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, heroCard });
             this.setAttentions({ header, heroCard });
-            break;
-
-          default:
             break;
         }
       },

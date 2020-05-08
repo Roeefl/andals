@@ -4,12 +4,25 @@
       <div v-if="log.type === CHAT_LOG_SIMPLE">
         {{ log.message }}
       </div>
+      <div v-if="[CHAT_LOG_PURCHASE, CHAT_LOG_TURN_ORDER].includes(log.type)">
+        <span v-if="log.playerName" :style="{ color: log.playerColor }" class="player-name">
+          {{ log.playerName }}
+        </span>
+        <span>
+          {{ log.message }}
+        </span>
+      </div>
       <div v-if="log.type === CHAT_LOG_DICE" class="player-rolls">
-        {{ log.playerName }} rolls:
+        <span :style="{ color: log.playerColor }" class="player-name">
+          {{ log.playerName }}
+        </span> rolls:
         <GameDice :small="true" :dice="log.dice" :enabled="false" />
       </div>
-      <div v-if="log.type === CHAT_LOG_LOOT || log.type === CHAT_LOG_DISCARD" class="loot">
-        {{ log.playerName }} {{ log.type === CHAT_LOG_LOOT ? 'collected' : 'discarded' }}
+      <div v-if="[CHAT_LOG_DISCARD, CHAT_LOG_LOOT].includes(log.type)" class="loot">
+        <span :style="{ color: log.playerColor }" class="player-name">
+          {{ log.playerName }}
+        </span>
+        {{ log.type === CHAT_LOG_LOOT ? 'collects' : 'discards' }}
         <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="log.loot[resource]">
           <ResourceCard
             v-for="(card, i) in Array(log.loot[resource] || 0).fill(resource)"
@@ -32,14 +45,12 @@
           class="wildling-token"
         />
       </div>
-      <div v-if="log.type === CHAT_LOG_HERO_CARD" class="played-hero-card">
-        <span class="hero-card">
-          {{ log.playerName }} has played {{ log.heroCard.name }}
-        </span>
-      </div>
-      <div v-if="log.type === CHAT_LOG_GAME_CARD" class="played-game-card">
-        <span class="game-card">
-          {{ log.playerName }} has played {{ log.cardType }}
+      <div v-if="[CHAT_LOG_HERO_CARD, CHAT_LOG_GAME_CARD].includes(log.type)" class="played-card">
+        <span class="card">
+          <span :style="{ color: log.playerColor }" class="player-name">
+            {{ log.playerName }}
+          </span>
+          has played {{ log.type === CHAT_LOG_HERO_CARD ? log.heroCard.name : log.cardType }}
         </span>
       </div>
     </li>
@@ -57,7 +68,17 @@
   import HeroCard from '@/components/game/HeroCard';
   
   import { resourceCardTypes } from '@/specs/resources';
-  import { CHAT_LOG_SIMPLE, CHAT_LOG_DICE, CHAT_LOG_LOOT, CHAT_LOG_DISCARD, CHAT_LOG_WILDLING_TOKENS, CHAT_LOG_HERO_CARD, CHAT_LOG_GAME_CARD} from '@/constants';
+  import {
+    CHAT_LOG_SIMPLE,
+    CHAT_LOG_TURN_ORDER,
+    CHAT_LOG_PURCHASE,
+    CHAT_LOG_DICE,
+    CHAT_LOG_LOOT,
+    CHAT_LOG_DISCARD,
+    CHAT_LOG_WILDLING_TOKENS,
+    CHAT_LOG_HERO_CARD,
+    CHAT_LOG_GAME_CARD
+    } from '@/constants';
 
   export default {
     name: 'GameLog',
@@ -80,8 +101,9 @@
     ]),
     created() {
       this.resourceCardTypes = resourceCardTypes;
-
       this.CHAT_LOG_SIMPLE = CHAT_LOG_SIMPLE;
+      this.CHAT_LOG_PURCHASE = CHAT_LOG_PURCHASE;
+      this.CHAT_LOG_TURN_ORDER = CHAT_LOG_TURN_ORDER;
       this.CHAT_LOG_DICE = CHAT_LOG_DICE;
       this.CHAT_LOG_LOOT = CHAT_LOG_LOOT;
       this.CHAT_LOG_DISCARD = CHAT_LOG_DISCARD;
@@ -115,6 +137,10 @@
         border-bottom: 1px solid lightgray;
       }
 
+      .player-name {
+        margin-right: $spacer / 3;
+      }
+
       .loot {
         display: flex;
         flex-flow: row wrap;
@@ -145,10 +171,10 @@
     }
   }
 
-  .played-hero-card {
+  .played-card {
     display: flex;
 
-    .hero-card {
+    .card {
       background: $error;
     }
   }

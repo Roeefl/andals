@@ -118,8 +118,6 @@
 </template>
 
 <script>
-  import invertColor from 'invert-color';
-
   import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
   import { pluralTypes as purchaseTypes } from '@/specs/purchases';
   import { hexToRgb } from '@/utils/colors';
