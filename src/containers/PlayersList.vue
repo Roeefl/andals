@@ -192,6 +192,7 @@
   .recent-loot-cards {
     animation: slide-out-top 6s ease-out both;
     position: relative;
+    z-index: $zindex-decor-overlay;
   }
 
   .recent-loot-card {

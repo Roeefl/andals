@@ -7,6 +7,7 @@
         </drop>
       </BaseTooltip>
     </li>
+    <slot></slot>
   </ul>
 </template>
 

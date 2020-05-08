@@ -1,31 +1,19 @@
 <template>
-  <v-dialog
-    width="600"
-    :value="isOpen"
-    @click:outside="onCancel"
-  >
-    <ActionCard
-      :title="`Confirm ${removing ? 'Removal' : 'Purchase'}: ${type}`"
-      @cancel="onCancel"
-      :approve="!isFlexible || (!swapWhich && !swapWith.resource) || (!!swapWhich && !!swapWith.resource)"
-      @approve="onConfirm"
-    >
-     <div v-if="!isFree && !removing" class="confirm-move">
-      <h2>
-        {{ header }} {{ type }}
-      </h2>
-      <div>
-        <div class="cost">
-          <ResourceCard
-            v-for="resource in resourceCardTypes"
-            :key="resource"
-            v-show="buildingCosts[type][resource]"
-            :resource="resource"
-            :count="buildingCosts[type][resource]"
-            :selected="swapWhich === resource"
-            @clicked="onResourceClick(resource)"
-          />
-        </div>
+  <div class="purchase-confirm">
+    <h3 class="header">
+      {{ header }}
+    </h3>
+    <div v-if="!isFree && !removing" class="confirm-move">
+      <div class="cost">
+        <ResourceCard
+          v-for="resource in resourceCardTypes"
+          :key="resource"
+          v-show="buildingCosts[type][resource]"
+          :resource="resource"
+          :count="buildingCosts[type][resource]"
+          :selected="swapWhich === resource"
+          @clicked="onResourceClick(resource)"
+        />
       </div>
       <div v-if="isFlexible">
         <h3>
@@ -45,8 +33,24 @@
         />
       </div>
     </div>
-  </ActionCard>
-  </v-dialog>
+    <div class="confirm-actions">
+      <BaseButton
+        icon
+        iconName="cancel"
+        iconColor="red"
+        iconSize="40px"
+        @click="onCancel"
+      />
+      <BaseButton
+        icon
+        iconName="check-all"
+        iconSize="40px"
+        iconColor="light-green darken-2"
+        :clickable="!isFlexible || (!swapWhich && !swapWith.resource) || (!!swapWhich && !!swapWith.resource)"
+        @click="onConfirm"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -55,17 +59,17 @@
   import { GAME_CARD } from '@/specs/purchases';
 
   import ResourceCard from '@/components/game/ResourceCard';
-  import ActionCard from '@/components/common/ActionCard';
   import BaseDeck from '@/components/game/BaseDeck';
+  import BaseButton from '@/components/common/BaseButton';
   import GameCards from '@/components/interface/GameCards';
 
   export default {
     name: 'PurchaseConfirm',
     components: {
       ResourceCard,
-      ActionCard,
       BaseDeck,
-      GameCards
+      GameCards,
+      BaseButton
     },
     props: {
       isOpen: {
@@ -78,7 +82,7 @@
       },
       header: {
         type: String,
-        default: 'Building Costs for'
+        default: null
       },
       removing: {
         type: Boolean,
@@ -148,20 +152,39 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  .confirm-move {
+  .purchase-confirm {
+    background: $secondary;
+    box-shadow: 0px 0px 6px 6px $success;
+    border-radius: 40px;
+    min-height: 60px;
     display: flex;
     flex-direction: column;
-    padding: $spacer / 2;
+    justify-content: center;
 
-    & > * {
-      margin: $spacer / 2 0;
-      padding: $spacer / 2 0;
-      border-bottom: 1px solid black;
+    .header {
+      color: $primary;
+      align-self: center;
     }
-  }
 
-  .cost {
-    display: flex;
+    .confirm-move {
+      display: flex;
+      flex-direction: column;
+      padding: $spacer / 2;
+
+      .cost {
+        display: flex;
+        margin: $spacer / 2 0;
+        padding: $spacer / 2 0;
+        border-bottom: 1px solid black;
+      }
+    }
+
+    .confirm-actions {
+      flex: 1;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+    }
   }
   
   .resources-deck {

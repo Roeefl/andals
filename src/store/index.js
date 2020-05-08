@@ -141,7 +141,11 @@ export default new Vuex.Store({
       state.isSelfReady = !state.isSelfReady;
     },
     setActivePurchase(state, purchase) {
-      state.activePurchase = purchase;
+      state.activePurchase = null;
+
+      setTimeout(() => {
+        state.activePurchase = purchase
+      }, 400);
     },
     setDesiredRobberTile(state, tile) {
       state.desiredRobberTile = tile;

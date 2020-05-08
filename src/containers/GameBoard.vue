@@ -22,8 +22,8 @@
             :placement="roadTileTypes[roadTileMap[row][col]]"
             :enabled="allowPurchasing && (myPlayer.hasResources.road || myPlayer.allowFreeRoads > 0) && isRoadAllowed(row, col) && !activeRoads[row][col].ownerId"
             :removeable="myPlayer.allowRemoveRoad"
-            @clicked="$emit('tile-clicked', { type: ROAD, row, col })"
-            @remove="$emit('remove-road', { type: ROAD, row, col })"
+            @clicked="setActivePurchase({ type: ROAD, row, col })"
+            @remove="setActivePurchase({ type: ROAD, row, col, isRemove: true })"
             :activeData="activeRoads[row][col] || {}"
             :myColor="myPlayer.color"
           >
@@ -36,7 +36,7 @@
             :key="`structure-tile-${row}-${col}`"
             :placement="structureTileTypes[structureTileMap[row][col]]" 
             :enabled="(allowPurchasing && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchasing && myPlayer.hasResources.city && isCityAllowed(row, col))"
-            @clicked="$emit('tile-clicked', { type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
+            @clicked="setActivePurchase({ type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
             :activeData="activeStructures[row][col] || {}"
             :harbor="harborAdjacentToStructure(structureTileMap, roomState.board, row, col, roomState.ports)"
             :myColor="myPlayer.color"
@@ -72,24 +72,26 @@
               <GameAsset type="pieces" asset="robber" width="60px" height="60px" />
             </BaseButton>
           </BaseOverlay>
-          <BaseBadge v-if="!!activePurchase" color="primary">
-            <PurchaseConfirm
-              :type="activePurchase.type"
-              :removing="activePurchase.isRemove"
-              :header="activePurchase.isRemove ? 'Remove' : undefined"
-              :isFree="roomState.isSetupPhase"
-              :myPlayer="myPlayer"
-              :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
-              @no="setActivePurchase(null)"
-              @yes="onConfirmPurchase($event)"
-            />
-          </BaseBadge>
         </HexTile>
       </div>
     </div>
     <div class="trees">
       <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
     </div>
+    <BaseBadge class="confirm-purchase" :class="{ 'hidden': !displayPurchaseModal }">
+      <PurchaseConfirm
+        v-if="displayPurchaseModal"
+        :key="`${activePurchase.type}-${activePurchase.row}-${activePurchase.col}`"
+        :type="activePurchase.type"
+        :header="`${activePurchase.isRemove ? 'Remove' : ''} ${activePurchase.type}`"
+        :removing="activePurchase.isRemove"
+        :isFree="roomState.isSetupPhase"
+        :myPlayer="myPlayer"
+        :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
+        @no="setActivePurchase(null)"
+        @yes="onConfirmPurchase($event)"
+      />
+    </BaseBadge>
   </div>
   <div v-else key="no-board">
     No board to display
@@ -160,7 +162,10 @@
       ]),
       ...mapGetters([
         'allowPurchasing'
-      ])
+      ]),
+      displayPurchaseModal: function() {
+        return this.activePurchase && [SETTLEMENT, ROAD, CITY].includes(this.activePurchase.type);
+      }
     },
     created() {
       this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
@@ -272,6 +277,7 @@
   }
 
   .board {
+    position: relative;
     display: grid;
     grid-template-columns: 10% 80% 10%;
 
@@ -358,6 +364,19 @@
     width: $tile-size * 1.6;
     height: $tile-size * 1.6;
     transform: rotate(90deg);
+  }
+
+  .confirm-purchase {
+    position: absolute;
+    top: $spacer * 2;
+    right: $spacer * 5;
+    width: 200px;
+    z-index: $zindex-interface + 20;
+    transition: opacity 200ms ease-in-out;
+
+    &.hidden {
+      opacity: 0;
+    }
   }
 
   // .move-robber {

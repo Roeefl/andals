@@ -26,8 +26,6 @@
           class="the-north"
         />
         <GameBoard
-          @tile-clicked="onTileClick($event)"
-          @remove-road="onRemoveRoad($event)"
           @robber-moved="$store.commit('setDesiredRobberTile', $event)"
           @remove-wildling="onRemoveWildling($event)"
           class="game-board"
@@ -81,6 +79,7 @@
       @add-card="addTradeCard($event)"
       @remove-card="removeTradeCard($event)"
       @refuse="cancelBankTrade"
+      @agree-trade="agreeToTrade"
       @confirm-trade="requestBankTrade"
       cancelText="Cancel"
     />
@@ -234,7 +233,6 @@
         'roomState',
         'players',
         'myPlayer',
-        'activePurchase',
         'isRollingDice',
         'desiredRobberTile',
         'showRobberCountdown',
@@ -252,8 +250,7 @@
         'setAttentions',
         'addRecentLoot',
         'openMyDeck',
-        'setRobberCountdown',
-        'setActivePurchase'
+        'setRobberCountdown'
       ]),
       ...mapActions([
         'finishTurn'
@@ -446,12 +443,6 @@
 
         if (this.roomState.isTurnOrderPhase)
           this.finishTurn();
-      },
-      onTileClick: function(tile) {
-        this.setActivePurchase(tile);
-      },
-      onRemoveRoad: function(roadTile) {
-        this.setActivePurchase({ ...roadTile, isRemove: true });
       },
       requestTradeWith: function(withWho) {
         if (!this.roomState.isGameStarted) return;

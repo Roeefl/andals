@@ -61,11 +61,12 @@
                 class="game-piece"
                 :class="purchaseType"
               ></GamePiece>
-              <BaseBadge v-if="!!activePurchase" color="primary">
+              <BaseBadge v-if="activePurchase && activePurchase.type === GAME_CARD">
                 <PurchaseConfirm
-                  :type="activePurchase.type"
+                  :type="GAME_CARD"
+                  header="Game Card"
                   :myPlayer="myPlayer"
-                  :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
+                  :isFlexible="myPlayer.flexiblePurchase === GAME_CARD"
                   :selectionCount="myPlayer.isVisiblePurchaseGameCard ? 3 : 0"
                   :gameCards="roomState.gameCards"
                   @no="setActivePurchase(null)"
@@ -166,6 +167,7 @@
     },
     created() {
       this.purchaseTypes = purchaseTypes;
+      this.GAME_CARD = GAME_CARD;
       this.CARD_VICTORY_POINT = CARD_VICTORY_POINT;
     },
     methods: {

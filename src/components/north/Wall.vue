@@ -10,19 +10,21 @@
       @wall-clicked="$emit('wall-clicked', { section: w, position: $event })"
       @kill-guard="$emit('kill-guard', { section: w, position: $event })"
       @relocate-guard="$emit('relocate-guard', { ...$event, toSection: w })"
-    />
-    <BaseBadge v-if="!!activePurchase" color="primary">
-      <PurchaseConfirm
-        :type="activePurchase.type"
-        :removing="activePurchase.isRemove"
-        :header="activePurchase.isRemove ? 'Remove' : undefined"
-        :isFree="isSetupPhase"
-        :myPlayer="myPlayer"
-        :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
-        @no="$emit('cancel-purchase')"
-        @yes="$emit('confirm-purchase', $event)"
-      />
-    </BaseBadge>
+      class="wall-section"
+    >
+      <BaseBadge v-if="activePurchase && activePurchase.type === GUARD && activePurchase.section === w" class="confirm-purchase">
+        <PurchaseConfirm
+          :type="GUARD"
+          :removing="activePurchase.isRemove"
+          :header="activePurchase.isRemove ? 'Remove' : null"
+          :isFree="isSetupPhase"
+          :myPlayer="myPlayer"
+          :isFlexible="myPlayer.flexiblePurchase === GUARD"
+          @no="$emit('cancel-purchase')"
+          @yes="$emit('confirm-purchase', $event)"
+        />
+      </BaseBadge>
+    </WallSection>
   </div>
 </template>
 
@@ -32,6 +34,7 @@
   import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
 
   import { wallSectionsCount } from '@/specs/wall';
+  import { GUARD } from '@/specs/purchases';
 
   export default {
     name: 'Wall',
@@ -76,6 +79,9 @@
           .map((x, sectionIndex) => this.guards.filter(guard => guard.section === sectionIndex));
       }
     },
+    created() {
+      this.GUARD = GUARD;
+    },
     methods: {
       renderKey(wallSection, sectionIndex) {
         const allOwnerIds = wallSection
@@ -95,5 +101,22 @@
     @include dashed-around();
     display: grid;
     grid-template-columns: repeat(4, 25%);
+
+    .wall-section {
+      position: relative;
+    }
+  }
+
+  .confirm-purchase {
+    position: absolute;
+    top: $spacer * -6;
+    left: $spacer * 2;
+    width: 70%;
+    z-index: $zindex-interface + 20;
+    transition: opacity 200ms ease-in-out;
+
+    &.hidden {
+      opacity: 0;
+    }
   }
 </style>
