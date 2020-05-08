@@ -5,6 +5,9 @@
         @toggle-ready="toggleReady"
         @bank-trade="onTradeWithBank($event)"
       />
+      <v-btn @click="setRollingDice(!isRollingDice)">
+        Roll Dice
+      </v-btn>
     </BaseWidget>
     <div class="board-container">
       <BaseWidget class="players-list">
@@ -26,7 +29,6 @@
           class="the-north"
         />
         <GameBoard
-          @robber-moved="$store.commit('setDesiredRobberTile', $event)"
           @remove-wildling="onRemoveWildling($event)"
           class="game-board"
           :class="{ 'with-north': isWithNorth }"
@@ -96,12 +98,6 @@
       <ResourceSelect :title="null" @resource-selected="onMonopolySelected($event)" />
     </v-dialog>
     <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" />
-    <Countdown
-      v-if="showRobberCountdown"
-      :initialValue="10"
-      @finished="onConfirmRobber"
-      class="countdown"
-    />
   </div>
 </template>
 
@@ -124,7 +120,6 @@
   import ResourceSelect from '@/components/interface/ResourceSelect';
   import RollingDice from '@/components/interface/RollingDice';
   import BaseWidget from '@/components/common/BaseWidget';
-  import Countdown from '@/components/common/Countdown';
 
   import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
@@ -157,7 +152,6 @@
     MESSAGE_TRADE_AGREE,
     MESSAGE_TRADE_CONFIRM,
     MESSAGE_TRADE_REFUSE,
-    MESSAGE_MOVE_ROBBER,
     CHAT_LOG_SIMPLE,
     CHAT_LOG_DICE,
     CHAT_LOG_LOOT,
@@ -182,8 +176,7 @@
       OpponentDeck,
       RollingDice,
       ResourceSelect,
-      BreachMarker,
-      Countdown
+      BreachMarker
     },
     data: () => ({
       chatMessages: [],
@@ -235,7 +228,6 @@
         'myPlayer',
         'isRollingDice',
         'desiredRobberTile',
-        'showRobberCountdown',
         'gameWinner'
       ]),
       ...mapGetters([
@@ -250,7 +242,7 @@
         'setAttentions',
         'addRecentLoot',
         'openMyDeck',
-        'setRobberCountdown'
+        'setRollingDice'
       ]),
       ...mapActions([
         'finishTurn'
@@ -607,15 +599,6 @@
           cardIndex: gameCard.index
         });
       },
-      onConfirmRobber: function() {
-        if (!this.myPlayer.mustMoveRobber) return;
-        this.setRobberCountdown(false);
-
-        this.room.send({
-          type: MESSAGE_MOVE_ROBBER,
-          tile: this.desiredRobberTile
-        });
-      },
       sendChatMessage: function({ message }) {
         this.room.send({
           type: MESSAGE_CHAT,
@@ -775,11 +758,5 @@
         margin-top: $spacer * 1.5;
       }
     }
-  }
-
-  .countdown {
-    position: fixed;
-    bottom: 10%;
-    right: 22%;
   }
 </style>

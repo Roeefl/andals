@@ -104,7 +104,7 @@
     methods: {
       ...mapMutations([
         'setRollingDice',
-        'setRobberCountdown'
+        'setActivePurchase'
       ]),
       ...mapActions([
         'finishTurn'
@@ -119,7 +119,7 @@
       },
       moveRobber: function() {
         if (!this.myPlayer.mustMoveRobber) return;
-        this.setRobberCountdown(false);
+        this.setActivePurchase(null);
 
         colyseusService.room.send({
           type: MESSAGE_MOVE_ROBBER,

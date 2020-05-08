@@ -124,13 +124,14 @@
 
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
-  import { ROAD, SETTLEMENT, CITY } from '@/specs/purchases';
+  import { ROAD, SETTLEMENT, CITY, MOVE_ROBBER } from '@/specs/purchases';
   import { HERO_CARD_Ygritte, HERO_CARD_QhorinHalfhand } from '@/specs/heroCards';
 
   import {
     MESSAGE_PLACE_STRUCTURE,
     MESSAGE_PLACE_ROAD,
-    MESSAGE_REMOVE_ROAD
+    MESSAGE_REMOVE_ROAD,
+    MESSAGE_MOVE_ROBBER
   } from '@/constants';
 
   export default {
@@ -164,7 +165,7 @@
         'allowPurchasing'
       ]),
       displayPurchaseModal: function() {
-        return this.activePurchase && [SETTLEMENT, ROAD, CITY].includes(this.activePurchase.type);
+        return this.activePurchase && [SETTLEMENT, ROAD, CITY, MOVE_ROBBER].includes(this.activePurchase.type);
       }
     },
     created() {
@@ -193,8 +194,8 @@
     methods: {
       ...mapMutations([
         'setGameLoading',
-        'setRobberCountdown',
-        'setActivePurchase'
+        'setActivePurchase',
+        'setDesiredRobberTile'
       ]),
       ...mapActions([
         'finishTurn'
@@ -225,8 +226,8 @@
       onMoveRobber: function(tileIndex) {
         if (!this.myPlayer.mustMoveRobber) return;
         
-        this.$emit('robber-moved', tileIndex);
-        this.setRobberCountdown(true);
+        this.setDesiredRobberTile(tileIndex);
+        this.setActivePurchase({ type: MOVE_ROBBER });
       },
       isDisplayRobberTile: function(row, col) {
         const absoluteTileIndex = boardService.absoluteIndex(this.hexTileMap, row, col);
@@ -240,11 +241,16 @@
 
          return isStaticPosition || isDynamicPosition;
       },
-      onConfirmPurchase: function(purchase) {
+      onConfirmPurchase: async function(purchase) {
         const { type, row, col, isRemove = false } = this.activePurchase;
 
+        if (type === MOVE_ROBBER) {
+          this.onConfirmRobber();
+          return;
+        }
+
         if (isRemove) {
-          colyseusService.room.send({
+          await colyseusService.room.send({
             type: MESSAGE_REMOVE_ROAD,
             row,
             col
@@ -253,7 +259,7 @@
           return;
         }
         
-        colyseusService.room.send({
+        await colyseusService.room.send({
           type: type === ROAD ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,
           structureType: type === ROAD ? null : type,
           row,
@@ -262,6 +268,16 @@
 
         if (type === ROAD && this.roomState.isSetupPhase)
           this.finishTurn();
+
+        this.setActivePurchase(null);
+      },
+      onConfirmRobber: async function() {
+        if (!this.myPlayer.mustMoveRobber) return;
+
+        await colyseusService.room.send({
+          type: MESSAGE_MOVE_ROBBER,
+          tile: this.desiredRobberTile
+        });
 
         this.setActivePurchase(null);
       },

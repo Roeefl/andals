@@ -43,7 +43,6 @@ export default new Vuex.Store({
     },
     activePurchase: null,
     desiredRobberTile: -1,
-    showRobberCountdown: false,
     isRollingDice: false,
     gameLog: [],
     alerts: {},
@@ -149,9 +148,6 @@ export default new Vuex.Store({
     },
     setDesiredRobberTile(state, tile) {
       state.desiredRobberTile = tile;
-    },
-    setRobberCountdown(state, show) {
-      state.showRobberCountdown = show;
     },
     setRollingDice(state, isRolling) {
       state.isRollingDice = isRolling;
