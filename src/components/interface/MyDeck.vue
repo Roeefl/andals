@@ -1,7 +1,6 @@
 <template>
   <fragment>
     <BaseButton
-      v-show="!displayDeck"
       spaced
       color="warning"
       iconName="arrow-up-bold-box"
@@ -9,6 +8,7 @@
       iconColor="secondary"
       @click="openMyDeck"
       class="open-my-deck"
+      :class="{ 'hi1dden': displayDeck }"
     >
       My Deck
     </BaseButton>
@@ -16,7 +16,6 @@
       light
       :value="displayDeck"
       width="68%"
-      @click:outside="!myPlayer.mustDiscardHalfDeck && closeMyDeck"
       :persistent="myPlayer.mustDiscardHalfDeck"
       :overlay-opacity="0"
     >
@@ -126,7 +125,9 @@
     MESSAGE_TRADE_REQUEST_RESOURCE,
     MESSAGE_PURCHASE_GAME_CARD
   } from '@/constants';
-
+  
+        // @click:outside="!myPlayer.mustDiscardHalfDeck && closeMyDeck"
+        
   export default {
     name: 'MyDeck',
     components: {
@@ -362,6 +363,10 @@
     font-size: $font-size-lg;
     opacity: 1;
     animation: fade-in 2s linear ease-in-out;
+
+    &.hidden {
+      opacity: 0;
+    }
   }
 
   .close-deck {

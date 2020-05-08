@@ -25,14 +25,6 @@
             iconColor="info"
             label="Waiting..."
           />
-          <BaseMenu
-            v-if="isGameReady && !isMe"
-            small
-            buttonColor="primary"
-            iconName="skew-more"
-            :items="opponentActions"
-            @item-clicked="$emit($event, player.playerSessionId)"
-          />
         </div>
       </div>
       <div v-if="isMe" class="game-pieces" @click="$emit('deck-clicked')">
@@ -111,6 +103,17 @@
     <BaseOverlay v-if="allowStealing" :isOpen="allowStealing" :isFullScreen="false" :opacity="0.6">
       <BaseButton icon iconName="hand-okay" iconSize="60px" iconColor="warning" @click="$emit('steal-from', player.playerSessionId)" class="steal-button" />
     </BaseOverlay>
+    <BaseButton
+      v-if="!isMe"
+      key="trade"
+      icon
+      iconName="swap-horizontal-circle"
+      iconColor="#E64A19"
+      iconSize="60px"
+      :disabled="requestTradeDisabled"
+      @click="$emit('trade-with', player.playerSessionId)"
+      class="trade-with"
+    />
   </div>
 </template>
 
@@ -138,22 +141,22 @@
 
   import tileColors from '@/styles/export.scss';
 
-  const playerActions = [
-    {
-      name: 'trade',
-      title: 'Request Trade',
-      icon: 'swap-vertical-circle',
-      disabledKey: 'requestTradeDisabled',
-      emit: 'trade-with'
-    },
-    {
-      name: 'steal',
-      title: 'Steal Card',
-      icon: 'hand-okay',
-      disabledKey: 'stealDisabled',
-      emit: 'steal-from'
-    }
-  ];
+  // const playerActions = [
+  //   {
+  //     name: 'trade',
+  //     title: 'Request Trade',
+  //     icon: 'swap-vertical-circle',
+  //     disabledKey: 'requestTradeDisabled',
+  //     emit: 'trade-with'
+  //   },
+  //   // {
+  //   //   name: 'steal',
+  //   //   title: 'Steal Card',
+  //   //   icon: 'hand-okay',
+  //   //   disabledKey: 'stealDisabled',
+  //   //   emit: 'steal-from'
+  //   // }
+  // ];
 
   export default {
     name: 'PlayerInfo.vue',
@@ -229,14 +232,14 @@
       stealDisabled: function() {
         return !this.allowStealing;
       },
-      opponentActions: function() {
-        return playerActions.map(action => {
-          return {
-            ...action,
-            disabled: action.disabledKey && this[action.disabledKey]
-          }
-        });
-      }
+      // opponentActions: function() {
+      //   return playerActions.map(action => {
+      //     return {
+      //       ...action,
+      //       disabled: action.disabledKey && this[action.disabledKey]
+      //     }
+      //   });
+      // }
     },
     created() {
       this.purchaseTypes = purchaseTypes;
@@ -429,6 +432,13 @@
           }
         }
       }
+    }
+
+    .trade-with {
+      position: absolute;
+      bottom: $spacer;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 
