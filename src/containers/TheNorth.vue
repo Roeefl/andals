@@ -75,6 +75,7 @@
   import { GUARD } from '@/specs/purchases';
   import { isAllowNorthWildlingsRemove } from '@/utils/heroes';
   import { WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT } from '@/specs/wildlings';
+  import { heroSpecs } from '@/specs/heroCards';
 
   export default {
     name: 'TheNorth',
@@ -223,11 +224,12 @@
             break;
 
           case MESSAGE_PLAY_HERO_CARD:
-            const { heroCard } = broadcast;
-            header = `${playerName} has played ${heroCard.name}`;
+            const { heroCardType } = broadcast;
+            const heroCard = heroSpecs[heroCardType];
 
+            header = `${playerName} has played ${heroCard.name}`;
             this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, heroCard });
-            this.setAttentions({ header, heroCard });
+            this.setAttentions({ header, heroCard, heroCardType });
             break;
         }
       },

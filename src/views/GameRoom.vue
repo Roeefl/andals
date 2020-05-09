@@ -4,7 +4,7 @@
     <Snowflakes v-if="false" :count="40" class="snowflakes" />
     <Attentions
       :isOpen="attentions.isOpen"
-      :overlay="attentions"
+      :attentions="attentions"
     />
   </main>
 </template>
