@@ -84,9 +84,9 @@
 
     .clan-symbol {
       position: absolute;
-      top: 15%;
-      left: $spacer * -1;
-      opacity: 0.35;
+      top: 5%;
+      left: 0;
+      opacity: 0.4;
     }
 
     .clan-camps {
@@ -110,6 +110,7 @@
 
     .clan-trails {
       display: flex;
+      justify-content: space-evenly;
     }
   }
 </style>

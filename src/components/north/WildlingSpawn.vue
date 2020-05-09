@@ -35,10 +35,12 @@
   @import '@/styles/partials';
   .wildling-spawn {
     padding: $spacer;
+    display: flex;
+    flex-flow: row wrap;
   }
 
   .wildling {
-    margin-right: $spacer;
-    margin-bottom: $spacer;
+    margin-left: $spacer / 2;
+    margin-bottom: $spacer / 2;
   }
 </style>

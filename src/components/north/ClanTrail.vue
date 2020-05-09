@@ -1,6 +1,5 @@
 <template>
   <div class="clan-trail">
-    <BaseIcon name="hammer-wrench" color="secondary" size="64px" class="trail-icon" />
     <div class="trail-symbol">
       <div class="trail-value">
         {{ value }}
@@ -29,7 +28,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $symbol-color: #6a3e2a;
+  $symbol-color: rgba(black, 0.8);
   $symbol-size: 24px;
 
   .clan-trail {
@@ -66,13 +65,5 @@
     top: $spacer;
     left: -$spacer * 1.3;
     text-align: center;
-  }
-
-  .trail-icon {
-    position: absolute;
-    top: $spacer * -1;
-    left: $spacer * -0.7;
-    z-index: $zindex-interface - 1;
-    opacity: 0.3;
   }
 </style>

@@ -79,7 +79,7 @@ export default new Vuex.Store({
       state.myPlayer.hasResources.gameCard &&
       !state.myPlayer.mustMoveRobber
     ),
-    clanAreas: state => state.roomState.clanAreas,
+    clanAreas: state => state.roomState.clanAreas || [],
   },
   mutations: {
     toggleSnow(state) {

@@ -9,10 +9,10 @@
         <WildlingClearing
           v-for="(clearing, c) in roomState.wildlingClearings"
           :key="`clearing-${c}-${clearing.wildlings}`"
+          :clearingIndex="c"
           :clearing="clearing"
           @remove-wildling="onRemoveWildlingFromClearing(c, $event)"
           class="clearing"
-          :class="`clearing-${c}`"
         />
       </div>
       <Wall
@@ -295,7 +295,7 @@
     border: 5px solid #6D4C41;
     border-bottom: none;
     display: grid;
-    grid-template-columns: 20% 60% 20%;
+    grid-template-columns: 20% 65% 15%;
 
    &.ready {
       opacity: 1;
@@ -332,15 +332,5 @@
     justify-content: center;
     align-items: center;
     padding: 0 $spacer * 2;
-
-    &.clearing-0,
-    &.clearing-1 {
-      justify-content: flex-start;
-    }
-
-    &.clearing-2,
-    &.clearing-3 {
-      justify-content: flex-end;
-    }
   }
 </style>
