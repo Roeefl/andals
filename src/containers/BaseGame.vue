@@ -95,6 +95,12 @@
       <ResourceSelect :title="null" @resource-selected="onMonopolySelected($event)" />
     </v-dialog>
     <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" />
+    <audio ref="diceAudio">
+      <source src="../assets/audio/dice.mp3" type="audio/mpeg">
+    </audio>
+    <audio ref="lootAudio">
+      <source src="../assets/audio/collect-loot.mp3" type="audio/mpeg">
+    </audio>
   </div>
 </template>
 
@@ -123,7 +129,8 @@
   import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
   import { gameNotifications } from '@/specs/gamePhases';
-  import { DEFAULT_ATTENTION_TIMEOUT } from '@/config';
+
+  import { DEFAULT_ATTENTION_TIMEOUT, OPPONENT_DICE_TIMEOUT } from '@/config';
 
   import {
     MESSAGE_CHAT,
@@ -327,8 +334,16 @@
               if (sumValues(this.myPlayer.resourceCounts) > 7)
                 this.openMyDeck();
             } else {
-              if (senderSessionId !== this.myPlayer.playerSessionId)
+              if (senderSessionId !== this.myPlayer.playerSessionId) {
                 this.setOpponentDice({ who: senderSessionId, dice });
+
+                setTimeout(() => {
+                  this.setOpponentDice(null);
+
+                  const { diceAudio } = this.$refs;
+                  if (diceAudio) diceAudio.play(); 
+                }, OPPONENT_DICE_TIMEOUT);
+              }
             }
             break;
 
@@ -337,6 +352,9 @@
             this.addGameLog({ type: CHAT_LOG_LOOT, playerName, playerColor, loot });
 
             if (playerSessionId === this.myPlayer.playerSessionId) {
+              const { lootAudio } = this.$refs;
+              if (lootAudio) lootAudio.play(); 
+
               Object
                 .entries(loot)
                 .filter(([resource, count]) => count > 0)

@@ -39,8 +39,8 @@
       :cards="roomState.heroCards"
       @selected="onSelectHeroCard($event)"
     />
-    <audio ref="wildlingsAudio">
-      <source src="../assets/audio/snow-footsteps.mp3" type="audio/mpeg">
+    <audio ref="footstep">
+      <source src="../assets/audio/footstep.ogg" type="audio/mpeg">
     </audio>
   </div>
 </template>
@@ -192,8 +192,8 @@
             this.addGameLog({ type: CHAT_LOG_WILDLING_TOKENS, tokens });
             this.addAttention({ subHeader, tokens });
 
-            // const { wildlingsAudio } = this.$refs;
-            // if (wildlingsAudio) wildlingsAudio.play(); 
+            const { footstep } = this.$refs;
+            if (footstep) footstep.play(); 
             break;
 
           case MESSAGE_WILDLINGS_ADVANCE_CLEARING:

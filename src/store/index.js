@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 import localStorage from '@/services/localStorage';
 import boardService from '@/services/board';
-import { DEFAULT_ATTENTION_TIMEOUT, OPPONENT_DICE_TIMEOUT } from '@/config';
+import { DEFAULT_ATTENTION_TIMEOUT } from '@/config';
 
 import { MESSAGE_FINISH_TURN } from '@/constants';
 
@@ -156,10 +156,6 @@ export default new Vuex.Store({
     },
     setOpponentDice(state, data) {
       state.opponentDice = data;
-
-      setTimeout(() => {
-        state.opponentDice = null
-      }, OPPONENT_DICE_TIMEOUT);
     },
     setRooms(state, rooms) {
       state.rooms = [

@@ -7,6 +7,9 @@
         </div>
       </div>
     </div>
+    <audio ref="diceAudio">
+      <source src="../../assets/audio/dice.mp3" type="audio/mpeg">
+    </audio>
   </BaseOverlay>
 </template>
 
@@ -62,6 +65,9 @@
           Math.floor(Math.random() * 6) + 1,
           Math.floor(Math.random() * WILDLING_DICE_MAX) + 1
         ];
+
+        const { diceAudio } = this.$refs;
+        if (diceAudio) diceAudio.play(); 
 
         this.$emit('finished', randomDice);
       }, 2000);
