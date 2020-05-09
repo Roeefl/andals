@@ -18,7 +18,11 @@ class ColyseusService {
       isJoinedRoom: false,
       room: null,
       buildingCosts: initialBuildingCosts,
-      clanTrails: {}
+      clanTrails: {},
+      gameManifests: {
+        baseGame: {},
+        firstMen: {}
+      }
     };
   }
 
@@ -38,8 +42,23 @@ class ColyseusService {
   }
 
   async initializeStaticResources() {
+    await this.fetchManifests();
     await this.fetchBuildingCosts();
     await this.fetchClans();
+  }
+
+  async fetchManifests() {
+    const endpoint = 'gameManifests';
+
+    const gameManifests = await axios
+      .get(`${baseUrl}/api/${endpoint}/`)
+      .then(({ data }) => data);
+
+    this._.gameManifests = gameManifests;
+  }
+
+  get gameManifests() {
+    return this._.gameManifests;
   }
 
   async fetchBuildingCosts() {

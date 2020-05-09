@@ -16,9 +16,9 @@ function hexTileAdjacentStructures(tileRow, tileCol) {
   ];
 };
 
-export function harborAdjacentStructures(structureTileMap, tileRow, tileCol, harborPorts = [0, 1]) {
+export function harborAdjacentStructures(structureTilemap, tileRow, tileCol, harborPorts = [0, 1]) {
   const adjacentStructures = hexTileAdjacentStructures(tileRow, tileCol)
-    .filter(([sRow, sCol]) => sRow >= 0 && sRow < structureTileMap.length && !!structureTileMap[sRow][sCol]);
+    .filter(([sRow, sCol]) => sRow >= 0 && sRow < structureTilemap.length && !!structureTilemap[sRow][sCol]);
 
   const [firstPortIndex, secondPortIndex] = harborPorts;
 
@@ -47,22 +47,22 @@ function adjacentStructuresToStructure(tileType, row, col) {
   ];
 };
 
-export function harborAdjacentToStructure(structureTileMap, board, row, col, harborPorts = [0, 1]) {
+export function harborAdjacentToStructure(structureTilemap, board, row, col, harborPorts = [0, 1]) {
   return board
     .filter(({ type, resource }) => type === TILE_WATER && !!resource)
     .find(({ row: tileRow, col: tileCol }) => {
-      const adjacentStructures = harborAdjacentStructures(structureTileMap, tileRow, tileCol, harborPorts);
+      const adjacentStructures = harborAdjacentStructures(structureTilemap, tileRow, tileCol, harborPorts);
       return adjacentStructures.some(([structureRow, structureCol]) => structureRow === row && structureCol === col);
     });
 }
 
-export function isPurchaseAllowedSettlement(structureTileMap, roadTileMap, activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, board = [], harborPorts = [0, 1]) {
+export function isPurchaseAllowedSettlement(structureTilemap, roadTilemap, activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, board = [], harborPorts = [0, 1]) {
   if (!isSetupPhase) {
     const isAdjacentToOwnedRoad = activeRoads
       .flat()
       .filter(road => !!road && road.ownerId && road.ownerId === mySessionId)
       .map(({ row: roadRow, col: roadCol }) => {
-        const roadTile = roadTileMap[roadRow][roadCol];
+        const roadTile = roadTilemap[roadRow][roadCol];
         if (!roadTile) return false;
   
         let allowedStructures = [];
@@ -88,13 +88,13 @@ export function isPurchaseAllowedSettlement(structureTileMap, roadTileMap, activ
   }
 
   // Not allowed to place structure on ports on setup round
-  if (isSetupPhase && harborAdjacentToStructure(structureTileMap, board, row, col, harborPorts)) return false;
+  if (isSetupPhase && harborAdjacentToStructure(structureTilemap, board, row, col, harborPorts)) return false;
 
   const isAdjacentToActiveStructures = activeStructures
     .flat()
     .filter(structure => !!structure && !!structure.ownerId)
     .map(({ row: structureRow, col: structureCol }) => {
-      const structureTile = structureTileMap[structureRow][structureCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
+      const structureTile = structureTilemap[structureRow][structureCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
       if (!structureTile) return false;
 
       const adjacentStructureTiles = adjacentStructuresToStructure(structureTile, structureRow, structureCol);
@@ -104,7 +104,7 @@ export function isPurchaseAllowedSettlement(structureTileMap, roadTileMap, activ
   return isAdjacentToActiveStructures.every(isAdjacent => !isAdjacent);
 };
 
-export function isPurchaseAllowedRoad(structureTileMap, roadTileMap, activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, lastStructureBuilt = null) {
+export function isPurchaseAllowedRoad(structureTilemap, roadTilemap, activeStructures, activeRoads, mySessionId, row, col, isSetupPhase = false, lastStructureBuilt = null) {
   const allRoads = activeRoads.flat();
 
   // Already owns this road...
@@ -116,7 +116,7 @@ export function isPurchaseAllowedRoad(structureTileMap, roadTileMap, activeStruc
     .filter(structure => !isSetupPhase || !lastStructureBuilt || (!!structure && structure.row === lastStructureBuilt.row && structure.col === lastStructureBuilt.col))
     .filter(structure => !!structure && structure.ownerId && structure.ownerId === mySessionId)
     .map(({ row: structureRow, col: structureCol }) => {
-      const structureTile = structureTileMap[structureRow][structureCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
+      const structureTile = structureTilemap[structureRow][structureCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
       if (!structureTile) return false;
 
       let intersections = [[structureRow * 2, structureCol - 1], [structureRow * 2, structureCol]];
@@ -146,7 +146,7 @@ export function isPurchaseAllowedRoad(structureTileMap, roadTileMap, activeStruc
     .filter(road => !!road && road.ownerId && road.ownerId === mySessionId)
     .map(({ row: roadRow, col: roadCol }) => {
       // 0: 'hide', 1: 'top-left', 2: 'top-right', 3: 'left'
-      const roadTile = roadTileMap[roadRow][roadCol];
+      const roadTile = roadTilemap[roadRow][roadCol];
       if (!roadTile) return false;
 
       let intersections = [];

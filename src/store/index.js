@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import colyseusService from '@/services/colyseus';
+import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 import localStorage from '@/services/localStorage';
 import boardService from '@/services/board';
 import { DEFAULT_ATTENTION_TIMEOUT, OPPONENT_DICE_TIMEOUT } from '@/config';
@@ -56,7 +56,7 @@ export default new Vuex.Store({
     gameWinner: null
   },
   getters: {
-    roomType: state => state.roomState.roomType,
+    roomType: state => state.roomState.roomType || ROOM_TYPE_FIRST_MEN,
     isGameStarted: state => state.roomState.isGameStarted,
     isSetupPhase: state => state.roomState.isSetupPhase,
     currentRound: state => state.roomState.currentRound,
