@@ -1,59 +1,61 @@
 <template>
   <MessageList title="Game Log" :messages="gameLog" class="messages-container">
-    <li v-for="(log, i) in gameLog" :key="i" class="log" :class="{ 'last-in-round': log.type === CHAT_LOG_SIMPLE && log.message && log.message.toLowerCase().includes('finish') }">
-      <div v-if="log.type === CHAT_LOG_SIMPLE">
-        {{ log.message }}
-      </div>
-      <div v-if="[CHAT_LOG_PURCHASE, CHAT_LOG_TURN_ORDER].includes(log.type)">
-        <span v-if="log.playerName" :style="{ color: log.playerColor }" class="player-name">
-          {{ log.playerName }}
-        </span>
-        <span>
+    <transition-group name="gamelogs" tag="span">
+      <li v-for="(log, i) in gameLog" :key="i" class="log" :class="{ 'last-in-round': log.type === CHAT_LOG_SIMPLE && log.message && log.message.toLowerCase().includes('finish') }">
+        <div v-if="log.type === CHAT_LOG_SIMPLE">
           {{ log.message }}
-        </span>
-      </div>
-      <div v-if="log.type === CHAT_LOG_DICE" class="player-rolls">
-        <span :style="{ color: log.playerColor }" class="player-name">
-          {{ log.playerName }}
-        </span> rolls:
-        <GameDice :small="true" :dice="log.dice" :enabled="false" />
-      </div>
-      <div v-if="[CHAT_LOG_DISCARD, CHAT_LOG_LOOT].includes(log.type)" class="loot">
-        <span :style="{ color: log.playerColor }" class="player-name">
-          {{ log.playerName }}
-        </span>
-        {{ log.type === CHAT_LOG_LOOT ? 'collects' : 'discards' }}
-        <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="log.loot[resource]">
-          <ResourceCard
-            v-for="(card, i) in Array(log.loot[resource] || 0).fill(resource)"
-            :key="`card-${i}`"
-            small
-            hideCount
-            :hideIcon="!friendly"
-            :resource="resource"
-            class="resource"
-          />
-        </fragment>
-      </div>
-      <div v-if="log.type === CHAT_LOG_WILDLING_TOKENS" class="wildling-tokens">
-        Wildling Tokens revealed:
-        <WildlingToken
-          v-for="(token, t) in log.tokens"
-          :key="`token-${t}`"
-          :wildling="token.wildlingType"
-          :clan="token.clanType"
-          class="wildling-token"
-        />
-      </div>
-      <div v-if="[CHAT_LOG_HERO_CARD, CHAT_LOG_GAME_CARD].includes(log.type)" class="played-card">
-        <span class="card">
+        </div>
+        <div v-if="[CHAT_LOG_PURCHASE, CHAT_LOG_TURN_ORDER].includes(log.type)">
+          <span v-if="log.playerName" :style="{ color: log.playerColor }" class="player-name">
+            {{ log.playerName }}
+          </span>
+          <span>
+            {{ log.message }}
+          </span>
+        </div>
+        <div v-if="log.type === CHAT_LOG_DICE" class="player-rolls">
+          <span :style="{ color: log.playerColor }" class="player-name">
+            {{ log.playerName }}
+          </span> rolls:
+          <GameDice :small="true" :dice="log.dice" :enabled="false" />
+        </div>
+        <div v-if="[CHAT_LOG_DISCARD, CHAT_LOG_LOOT].includes(log.type)" class="loot">
           <span :style="{ color: log.playerColor }" class="player-name">
             {{ log.playerName }}
           </span>
-          has played {{ log.type === CHAT_LOG_HERO_CARD ? log.heroCard.name : log.cardType }}
-        </span>
-      </div>
-    </li>
+          {{ log.type === CHAT_LOG_LOOT ? 'collects' : 'discards' }}
+          <fragment v-for="resource in resourceCardTypes" :key="resource" v-show="log.loot[resource]">
+            <ResourceCard
+              v-for="(card, i) in Array(log.loot[resource] || 0).fill(resource)"
+              :key="`card-${i}`"
+              small
+              hideCount
+              :hideIcon="!friendly"
+              :resource="resource"
+              class="resource"
+            />
+          </fragment>
+        </div>
+        <div v-if="log.type === CHAT_LOG_WILDLING_TOKENS" class="wildling-tokens">
+          Wildling Tokens revealed:
+          <WildlingToken
+            v-for="(token, t) in log.tokens"
+            :key="`token-${t}`"
+            :wildling="token.wildlingType"
+            :clan="token.clanType"
+            class="wildling-token"
+          />
+        </div>
+        <div v-if="[CHAT_LOG_HERO_CARD, CHAT_LOG_GAME_CARD].includes(log.type)" class="played-card">
+          <span class="card">
+            <span :style="{ color: log.playerColor }" class="player-name">
+              {{ log.playerName }}
+            </span>
+            has played {{ log.type === CHAT_LOG_HERO_CARD ? log.heroCard.name : log.cardType }}
+          </span>
+        </div>
+      </li>
+    </transition-group>
   </MessageList>
 </template>
 
@@ -125,6 +127,15 @@
     padding: $spacer / 2;
     font-size: $font-size-md;
     max-width: 99%;
+
+    .gamelogs-enter-active, .gamelogs-leave-active {
+      transition: opacity 4s, background 10s ease-in, transform 3s;
+    }
+    .gamelogs-enter, .gamelogs-leave-to {
+      opacity: 0.5;
+      background: $highlight;
+      transform: translateX($spacer * -3);
+    }
 
     .log {
       max-width: 95%;
