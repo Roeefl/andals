@@ -1,11 +1,11 @@
 <template>
   <div class="clan-trail">
+    <BaseIcon name="hammer-wrench" color="secondary" size="64px" class="trail-icon" />
     <div class="trail-symbol">
       <div class="trail-value">
         {{ value }}
       </div>
     </div>
-    <!-- <BaseIcon name="hammer-wrench" color="secondary" size="64px" class="trail-icon" /> -->
   </div>
 </template>
 
@@ -70,8 +70,9 @@
 
   .trail-icon {
     position: absolute;
-    top: -$spacer * 1.25;
-    left: 0;
+    top: $spacer * -1;
+    left: $spacer * -0.7;
     z-index: $zindex-interface - 1;
+    opacity: 0.3;
   }
 </style>

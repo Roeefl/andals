@@ -31,6 +31,8 @@
         class="the-wall"
       />
     </div>
+    <div class="east">
+    </div>
     <CardSwapper
       v-if="myPlayer.swappingHeroCard"
       :isOpen="myPlayer.swappingHeroCard"

@@ -1,24 +1,23 @@
 <template>
-  <BaseButton
-    icon
-    :width="`${size}px`"
-    :height="`${size}px`"
-    :iconSize="`${size}px`"
-    :iconName="wildlingIcons[type]"
-    :iconColor="wildlingColors[type]"
-    @click="$emit('remove')"
-    class="wildling"
-  />
+  <span @click="$emit('remove')">
+    <GameAsset
+      type="wildlings"
+      :asset="type"
+      :width="`${size}px`"
+      :height="`${size}px`"
+      :color="wildlingColors[type]"
+    />
+  </span>
 </template>
 
 <script>
-  import BaseButton from '@/components/common/BaseButton';
-  import { wildlingIcons, wildlingColors } from '@/specs/wildlings';
+  import GameAsset from '@/components/game/GameAsset';
+  import { wildlingColors } from '@/specs/wildlings';
 
   export default {
     name: 'Wildling',
     components: {
-      BaseButton
+      GameAsset
     },
     props: {
       type: {
@@ -31,7 +30,6 @@
       }
     },
     created() {
-      this.wildlingIcons = wildlingIcons;
       this.wildlingColors = wildlingColors;
     }
   }
