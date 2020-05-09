@@ -1,7 +1,7 @@
 <template>
   <div class="clan-area">
     <div class="clan-symbol">
-      <BaseIcon :name="clan.icon" :color="clanColors[clan.name]" size="30px" />
+      <BaseIcon :name="clan.icon" :color="clanColors[clan.name]" size="140px" />
     </div>
     <div class="clan-camps">
       <div
@@ -46,7 +46,7 @@
       },
       campfires: {
         type: Number,
-        default: 4
+        default: 5
       },
       camps: {
         type: Array,
@@ -80,6 +80,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+
+    .clan-symbol {
+      position: absolute;
+      top: 15%;
+      left: $spacer * -1;
+      opacity: 0.35;
+    }
 
     .clan-camps {
       flex: 1;
@@ -89,6 +97,8 @@
       .clan-camp {
         flex: 1;
         position: relative;
+        display: flex;
+        justify-content: center;
       }
 
       .wildling {
