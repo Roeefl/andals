@@ -94,12 +94,21 @@
     <v-dialog width="500" :value="myPlayer.isDeclaringMonopoly">
       <ResourceSelect :title="null" @resource-selected="onMonopolySelected($event)" />
     </v-dialog>
-    <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" />
+    <!-- <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" /> -->
+    <BaseOverlay v-if="activeDice && activeDice.who && activeDice.who === myPlayer.playerSessionId" isOpen :opacity="0.7">
+      <GameDice :dice="activeDice.dice" size="140px" />
+    </BaseOverlay>
     <audio ref="diceAudio">
       <source src="../assets/audio/dice.mp3" type="audio/mpeg">
     </audio>
     <audio ref="lootAudio">
-      <source src="../assets/audio/collect-loot.mp3" type="audio/mpeg">
+      <source src="../assets/audio/receive-loot.mp3" type="audio/mpeg">
+    </audio>
+    <audio ref="robberAudio">
+      <source src="../assets/audio/robber.mp3" type="audio/mpeg">
+    </audio>
+      <audio ref="structureAudio">
+      <source src="../assets/audio/structure.mp3" type="audio/mpeg">
     </audio>
   </div>
 </template>
@@ -121,8 +130,9 @@
   import TradeConfirm from '@/components/interface/TradeConfirm';
   import OpponentDeck from '@/components/interface/OpponentDeck';
   import ResourceSelect from '@/components/interface/ResourceSelect';
-  import RollingDice from '@/components/interface/RollingDice';
+  import GameDice from '@/components/interface/GameDice';
   import BaseWidget from '@/components/common/BaseWidget';
+  import BaseOverlay from '@/components/common/BaseOverlay';
 
   import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
@@ -130,7 +140,7 @@
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
   import { gameNotifications } from '@/specs/gamePhases';
 
-  import { DEFAULT_ATTENTION_TIMEOUT, OPPONENT_DICE_TIMEOUT } from '@/config';
+  import { DEFAULT_ATTENTION_TIMEOUT, ACTIVE_DICE_TIMEOUT } from '@/config';
 
   import {
     MESSAGE_CHAT,
@@ -141,7 +151,6 @@
     MESSAGE_ROLL_DICE,
     MESSAGE_COLLECT_ALL_LOOT,
     MESSAGE_COLLECT_RESOURCE_LOOT,
-    MESSAGE_PLACE_GUARD,
     MESSAGE_PLAY_GAME_CARD,
     MESSAGE_DISCARD_HALF_DECK,
     MESSAGE_STEAL_CARD,
@@ -182,9 +191,10 @@
       MyDeck,
       TradeDialog,
       OpponentDeck,
-      RollingDice,
+      GameDice,
       ResourceSelect,
-      BreachMarker
+      BreachMarker,
+      BaseOverlay
     },
     data: () => ({
       chatMessages: [],
@@ -236,7 +246,8 @@
         'myPlayer',
         'isRollingDice',
         'desiredRobberTile',
-        'gameWinner'
+        'gameWinner',
+        'activeDice'
       ]),
       ...mapGetters([
         'isMyTurn'
@@ -250,8 +261,7 @@
         'setAttentions',
         'addRecentLoot',
         'openMyDeck',
-        'setRollingDice',
-        'setOpponentDice'
+        'setActiveDice'
       ]),
       ...mapActions([
         'finishTurn'
@@ -313,7 +323,6 @@
 
         let attentionHeader = null;
         let attentionData = {};
-        let attentionTimeout = undefined;
         
         switch (type) {
           case MESSAGE_CHAT:
@@ -330,19 +339,20 @@
             if (isAttention) {
               attentionHeader = `${playerName} rolled a 7`;
               attentionData.isRobber = true;
+              
+              const { robberAudio } = this.$refs;
+              if (robberAudio) robberAudio.play(); 
 
               if (sumValues(this.myPlayer.resourceCounts) > 7)
                 this.openMyDeck();
             } else {
               if (senderSessionId !== this.myPlayer.playerSessionId) {
-                this.setOpponentDice({ who: senderSessionId, dice });
+                this.setActiveDice({ who: senderSessionId, dice });
+                
+                const { diceAudio } = this.$refs;
+                if (diceAudio) diceAudio.play(); 
 
-                setTimeout(() => {
-                  this.setOpponentDice(null);
-
-                  const { diceAudio } = this.$refs;
-                  if (diceAudio) diceAudio.play(); 
-                }, OPPONENT_DICE_TIMEOUT);
+                setTimeout(() => this.setActiveDice(null), ACTIVE_DICE_TIMEOUT);
               }
             }
             break;
@@ -422,6 +432,10 @@
 
           case MESSAGE_PLACE_STRUCTURE:
             this.addGameLog({ type: CHAT_LOG_PURCHASE, playerName, playerColor, message });
+
+            const { structureAudio } = this.$refs;
+            if (structureAudio) structureAudio.play(); 
+            
             break;
 
           case MESSAGE_PLAY_GAME_CARD:
@@ -441,7 +455,7 @@
         }
 
         if (isAttention && !!attentionHeader)
-          this.onAttention(attentionHeader, attentionData, attentionTimeout);
+          this.onAttention(attentionHeader, attentionData);
       },
       onRoomError: function(error) {
         console.error(`Room ${this.room.sessionId} encountered error: ${error.message}`);

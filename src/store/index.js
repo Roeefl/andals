@@ -44,7 +44,7 @@ export default new Vuex.Store({
     activePurchase: null,
     desiredRobberTile: -1,
     isRollingDice: false,
-    opponentDice: null,
+    activeDice: null,
     gameLog: [],
     alerts: {},
     recentLoot: {},
@@ -58,6 +58,7 @@ export default new Vuex.Store({
   getters: {
     roomType: state => state.roomState.roomType || ROOM_TYPE_FIRST_MEN,
     isGameStarted: state => state.roomState.isGameStarted,
+    isTurnOrderPhase: state => state.roomState.isTurnOrderPhase,
     isSetupPhase: state => state.roomState.isSetupPhase,
     currentRound: state => state.roomState.currentRound,
     myPlayerIndex: state => state.players.findIndex(player => player.playerSessionId === state.myPlayer.playerSessionId),
@@ -79,7 +80,7 @@ export default new Vuex.Store({
       state.myPlayer.hasResources.gameCard &&
       !state.myPlayer.mustMoveRobber
     ),
-    clanAreas: state => state.roomState.clanAreas || [],
+    clanAreas: state => state.roomState.clanAreas,
   },
   mutations: {
     toggleSnow(state) {
@@ -154,8 +155,8 @@ export default new Vuex.Store({
     setRollingDice(state, isRolling) {
       state.isRollingDice = isRolling;
     },
-    setOpponentDice(state, data) {
-      state.opponentDice = data;
+    setActiveDice(state, data) {
+      state.activeDice = data;
     },
     setRooms(state, rooms) {
       state.rooms = [

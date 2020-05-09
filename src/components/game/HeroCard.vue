@@ -109,8 +109,8 @@
         flex: 1;
         display: flex;
         align-items: center;
-        max-height: 120px;
-        overflow-y: hidden;
+        padding: 0 $spacer * 1.5;
+        // font-size: $font-size-xs;
       }
     }
 

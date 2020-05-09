@@ -1,7 +1,7 @@
 <template>
   <div class="turn-action">
     <div v-if="isWaitingForDiceRoll" key="dice-needed" class="dice">
-      <GameDice :dice="roomState.dice" @clicked="rollDice" enabled />
+      <GameDice :dice="roomState.dice" @clicked="rollDice" />
     </div>
     <fragment v-else key="dice-rolled">
       <BaseButton
@@ -39,6 +39,9 @@
         </span>
       </BaseButton>
     </fragment>
+    <audio ref="diceAudio">
+      <source src="../assets/audio/dice.mp3" type="audio/mpeg">
+    </audio>
   </div>
 </template>
 
@@ -50,7 +53,9 @@
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
 
-  import { MESSAGE_MOVE_ROBBER } from '@/constants';
+  import { ACTIVE_DICE_TIMEOUT } from '@/config';
+  import { WILDLING_DICE_MAX } from '@/specs/dice';
+  import { MESSAGE_MOVE_ROBBER, MESSAGE_ROLL_DICE } from '@/constants';
   
   export default {
     name: 'TurnAction',
@@ -71,7 +76,7 @@
     computed: {
       isEndTurnDisabled: function() {
         return (
-          this.roomState.isTurnOrderPhase ||
+          this.isTurnOrderPhase ||
           (this.roomState.isSetupPhase && (this.myPlayer.hasResources.road || this.myPlayer.hasResources.settlement || this.myPlayer.hasResources.guard)) ||
           !this.isMyTurn ||
           (!this.roomState.isSetupPhase && !this.roomState.isDiceRolled) ||
@@ -98,24 +103,40 @@
         'desiredRobberTile'
       ]),
       ...mapGetters([
-        'isMyTurn'
+        'isMyTurn',
+        'isTurnOrderPhase'
       ])
     },
     methods: {
       ...mapMutations([
-        'setRollingDice',
+        'setActiveDice',
         'setActivePurchase'
       ]),
       ...mapActions([
         'finishTurn'
       ]),
       rollDice: function() {
-        this.setRollingDice(true);
+        const dice = [
+          Math.floor(Math.random() * 6) + 1,
+          Math.floor(Math.random() * 6) + 1,
+          Math.floor(Math.random() * WILDLING_DICE_MAX) + 1
+        ];
 
-        setTimeout(
-          () => this.setRollingDice(false),
-          3000
-        );
+        this.setActiveDice({ who: this.myPlayer.playerSessionId, dice });
+        const { diceAudio } = this.$refs;
+        if (diceAudio) diceAudio.play(); 
+
+        setTimeout(() => {
+          colyseusService.room.send({
+            type: MESSAGE_ROLL_DICE,
+            dice
+          });
+
+          if (this.isTurnOrderPhase)
+            this.finishTurn();
+
+          this.setActiveDice(null);
+        }, 2000);
       },
       moveRobber: function() {
         if (!this.myPlayer.mustMoveRobber) return;

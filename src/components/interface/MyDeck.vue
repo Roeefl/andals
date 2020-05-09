@@ -92,9 +92,9 @@
           <v-hover v-slot:default="{ hover }">
             <div class="offer-trade">
               <BaseButton icon iconName="swap-horizontal-circle" iconColor="white" iconSize="80px" />
-              <span class="offer-trade-text">
+              <h3 class="offer-trade-text">
                 Request Trade
-              </span>
+              </h3>
               <ResourceSelect v-if="hover" :enabled="allowRequestTrade" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
             </div>
           </v-hover>
@@ -334,7 +334,7 @@
         position: relative;
 
         .offer-trade-text {
-          margin-top: $spacer;
+          margin-top: $spacer * 2;
           color: $primary;
           text-align: center;
         }

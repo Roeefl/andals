@@ -4,12 +4,11 @@
       v-for="(diceValue, d) in dice"
       :key="`dice-${d}`"
       color="secondary"
-      :width="small ? '28px' : '56px'"
-      :height="small ? '28px' : '56px'"
+      :width="size"
+      :height="size"
       :iconName="d < 2 ? `dice-${diceValue}` : `numeric-${diceValue}-box-outline`"
-      :iconSize="small ? '24px' : '56px'"
+      :iconSize="size"
       :iconColor="diceColors[`dice${d}`]"
-      :clickable="enabled"
       @click="$emit('clicked')"
       class="dice"
     />
@@ -30,13 +29,9 @@
         type: Array,
         default: () => [3, 4]
       },
-      small: {
-        type: Boolean,
-        default: false
-      },
-      enabled: {
-        type: Boolean,
-        default: false
+      size: {
+        type: String,
+        default: '64px'
       }
     },
     created() {

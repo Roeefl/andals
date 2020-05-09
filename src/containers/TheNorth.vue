@@ -228,8 +228,8 @@
             const heroCard = heroSpecs[heroCardType];
 
             header = `${playerName} has played ${heroCard.name}`;
-            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, heroCard });
-            this.setAttentions({ header, heroCard, heroCardType });
+            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, heroCard, heroCardType });
+            this.setAttentions({ header, heroCardType, heroCard, timeout: 5000 });
             break;
         }
       },
