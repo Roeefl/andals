@@ -162,6 +162,7 @@
         'activePurchase'
       ]),
       ...mapGetters([
+        'roomType',
         'allowPurchasing'
       ]),
       displayPurchaseModal: function() {
@@ -169,9 +170,9 @@
       }
     },
     created() {
-      this.hexTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
-      this.structureTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameStructureTilemap : firstMenStructureTilemap;
-      this.roadTileMap = this.roomState.roomType === ROOM_TYPE_BASE_GAME ? baseGameRoadTilemap : firstMenRoadTilemap;
+      this.hexTileMap = this.roomType === ROOM_TYPE_BASE_GAME ? baseGameHexTilemap : firstMenHexTilemap;
+      this.structureTileMap = this.roomType === ROOM_TYPE_BASE_GAME ? baseGameStructureTilemap : firstMenStructureTilemap;
+      this.roadTileMap = this.roomType === ROOM_TYPE_BASE_GAME ? baseGameRoadTilemap : firstMenRoadTilemap;
 
       this.hexTileTypes = hexTileTypes;
       this.structureTileTypes = structureTileTypes;

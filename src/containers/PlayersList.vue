@@ -19,8 +19,11 @@
           @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
           class="player"
         />
+        <BaseOverlay v-if="opponentDice && opponentDice.who && opponentDice.who === player.playerSessionId" isOpen :isFullScreen="false" :opacity="0.7">
+          <GameDice :dice="opponentDice.dice" />
+        </BaseOverlay>
       </li>
-    </ul>
+    </ul>      
     <div class="player-wrapper is-me" :class="{ 'current-turn': currentTurn === myPlayerIndex }">
       <PlayerInfo
         :player="myPlayer"
@@ -60,13 +63,17 @@
   import PlayerInfo from '@/components/interface/PlayerInfo';
   import HeroCardDialog from '@/components/interface/HeroCardDialog';
   import ResourceCard from '@/components/game/ResourceCard';
+  import BaseOverlay from '@/components/common/BaseOverlay';
+  import GameDice from '@/components/interface/GameDice';
 
   export default {
     name: 'PlayersList',
     components: {
       PlayerInfo,
       HeroCardDialog,
-      ResourceCard
+      ResourceCard,
+      BaseOverlay,
+      GameDice
     },
     props: {
       currentTurn: {
@@ -92,7 +99,8 @@
         'players',
         'displayedHeroCard',
         'justPurchasedGameCard',
-        'recentLoot'
+        'recentLoot',
+        'opponentDice'
       ]),
       ...mapGetters([
         'isGameStarted',

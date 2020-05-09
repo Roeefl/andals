@@ -59,9 +59,13 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
+
   import BaseOverlay from '@/components/common/BaseOverlay';
   import WildlingToken from '@/components/north/WildlingToken';
   import GameAsset from '@/components/game/GameAsset';
+  import ResourceCard from '@/components/game/ResourceCard';
+
   import { gameNotifications, notificationToAsset } from '@/specs/gamePhases';
 
   export default {
@@ -69,7 +73,8 @@
     components: {
       BaseOverlay,
       WildlingToken,
-      GameAsset
+      GameAsset,
+      ResourceCard
     },
     props: {
       isOpen: {
@@ -81,6 +86,9 @@
         required: true
       }
     },
+    computed: mapState([
+      'recentLoot'
+    ]),
     created() {
       this.gameNotifications = gameNotifications;
       this.notificationToAsset = notificationToAsset;

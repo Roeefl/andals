@@ -1,5 +1,5 @@
 <template>
-  <BaseOverlay :isOpen="true" class="dice-container">
+  <BaseOverlay :isOpen="true" class="dice-container" :style="spinStyle">
     <div id="dice-container">
       <div v-for="(dice, di) in dice" :key="di" class="die" :class="`die-${di}`">
         <div v-for="(face, f) in Array(6).fill(0)" :key="f" class="face" :class="`face-${f + 1}`">
@@ -30,28 +30,40 @@
       }
     },
     data: () => ({
+      spinStyle: { 
+        '--spin-start': '0deg',
+        '--spin-end': '360deg'
+      },
       dice: [4, 3, 1]
     }),
     mounted() {
-      const diceRoller = setInterval(() => {
-        const randomDice1 = Math.floor(Math.random() * 6) + 1;
-        const randomDice2 = Math.floor(Math.random() * 6) + 1;
+      // const diceRoller = setInterval(() => {
+      //   const spinStart = Math.floor(Math.random() * 360) + 1;
+      //   const spinEnd = Math.floor(Math.random() * 360) + 1;
 
-        this.dice = [randomDice1, randomDice2];
+      //   this.spinStyle['--spin-start'] = spinStart;
+      //   this.spinStyle['--spin-end'] = spinEnd;
+      // }, 300);
 
-        if (this.type === ROOM_TYPE_FIRST_MEN) {
-          const wildlingDice = Math.floor(Math.random() * WILDLING_DICE_MAX) + 1;
+        //       if (this.type === ROOM_TYPE_FIRST_MEN) {
+        //   const wildlingDice = Math.floor(Math.random() * WILDLING_DICE_MAX) + 1;
           
-          this.dice = [
-            ...this.dice,
-            wildlingDice
-          ];
-        }
-      }, 500);
+        //   this.dice = [
+        //     ...this.dice,
+        //     wildlingDice
+        //   ];
+        // }
 
       setTimeout(() => {
-        clearInterval(diceRoller);
-        this.$emit('finished', this.dice);
+        // clearInterval(diceRoller);
+
+        const randomDice = [
+          Math.floor(Math.random() * 6) + 1,
+          Math.floor(Math.random() * 6) + 1,
+          Math.floor(Math.random() * WILDLING_DICE_MAX) + 1
+        ];
+
+        this.$emit('finished', randomDice);
       }, 2000);
     }
   }
@@ -82,7 +94,7 @@
     height: $face-size;
     transform-style: preserve-3d;
     animation: spin 1s infinite;
-
+// linear 1s
     &.die-0 {
       .face {
         background: $die-0-color;
@@ -133,7 +145,7 @@
   }
 
   .face-1 {
-    transform: translateZ(calc($face-size / -2)) rotateY(180deg);
+    transform: translateZ($face-size / -2) rotateY(180deg);
 
     & > .dot {
       left: 50%;
@@ -233,7 +245,7 @@
   }
 
   .face-6 {
-    transform: translateZ(calc($face-size / 2));
+    transform: translateZ($face-size / 2);
 
     & > .dot:nth-child(1) {
       left: 25%;

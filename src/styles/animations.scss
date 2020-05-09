@@ -245,9 +245,9 @@
 
 @keyframes spin {
   from {
-    transform: rotateX(0deg) rotateY(0deg);
+    transform: rotateX(var(--spin-start)) rotateY(var(--spin-start));
   }
   to {
-    transform: rotateX(360deg) rotateY(360deg);
+    transform: rotateX(var(--spin-end)) rotateY(var(--spin-end));
   }
 }

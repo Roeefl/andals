@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import colyseusService from '@/services/colyseus';
 import localStorage from '@/services/localStorage';
 import boardService from '@/services/board';
-import { ESSENTIAL_OVERLAY_TIMEOUT } from '../config';
+import { DEFAULT_ATTENTION_TIMEOUT, OPPONENT_DICE_TIMEOUT } from '@/config';
 
 import { MESSAGE_FINISH_TURN } from '@/constants';
 
@@ -44,6 +44,7 @@ export default new Vuex.Store({
     activePurchase: null,
     desiredRobberTile: -1,
     isRollingDice: false,
+    opponentDice: null,
     gameLog: [],
     alerts: {},
     recentLoot: {},
@@ -55,6 +56,7 @@ export default new Vuex.Store({
     gameWinner: null
   },
   getters: {
+    roomType: state => state.roomState.roomType,
     isGameStarted: state => state.roomState.isGameStarted,
     isSetupPhase: state => state.roomState.isSetupPhase,
     currentRound: state => state.roomState.currentRound,
@@ -151,6 +153,13 @@ export default new Vuex.Store({
     },
     setRollingDice(state, isRolling) {
       state.isRollingDice = isRolling;
+    },
+    setOpponentDice(state, data) {
+      state.opponentDice = data;
+
+      setTimeout(() => {
+        state.opponentDice = null
+      }, OPPONENT_DICE_TIMEOUT);
     },
     setRooms(state, rooms) {
       state.rooms = [
@@ -283,6 +292,8 @@ export default new Vuex.Store({
       state.gameWinner = playerName;
     },
     setAttentions(state, data = {}) {
+      clearTimeout(state.attentionsTiemout);
+
       state.attentions = {
         isOpen: true,
         ...data
@@ -294,7 +305,7 @@ export default new Vuex.Store({
             isOpen: false
           };
         },
-        ESSENTIAL_OVERLAY_TIMEOUT
+        data.timeout || DEFAULT_ATTENTION_TIMEOUT
       );
     },
     addAttention(state, data = {}) {
@@ -312,7 +323,7 @@ export default new Vuex.Store({
             isOpen: false
           };
         },
-        ESSENTIAL_OVERLAY_TIMEOUT
+        data.timeout || DEFAULT_ATTENTION_TIMEOUT
       );
     },
   },

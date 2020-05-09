@@ -123,6 +123,7 @@
   import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
   import { gameNotifications } from '@/specs/gamePhases';
+  import { DEFAULT_ATTENTION_TIMEOUT } from '@/config';
 
   import {
     MESSAGE_CHAT,
@@ -242,7 +243,8 @@
         'setAttentions',
         'addRecentLoot',
         'openMyDeck',
-        'setRollingDice'
+        'setRollingDice',
+        'setOpponentDice'
       ]),
       ...mapActions([
         'finishTurn'
@@ -284,10 +286,11 @@
         if (this.bankTradeResource)
           this.evaluateBankTrade();
       },
-      onEssentialBroadcast: function(header, data) {
+      onAttention: function(header, data, timeout = DEFAULT_ATTENTION_TIMEOUT) {
         this.setAttentions({
           ...data,
-          header
+          header,
+          timeout
         });
       },
       onBroadcastReceived: function(broadcast) {
@@ -303,6 +306,7 @@
 
         let attentionHeader = null;
         let attentionData = {};
+        let attentionTimeout = undefined;
         
         switch (type) {
           case MESSAGE_CHAT:
@@ -323,8 +327,8 @@
               if (sumValues(this.myPlayer.resourceCounts) > 7)
                 this.openMyDeck();
             } else {
-              attentionHeader = 'Dice:';
-              attentionData.dice = dice;
+              if (senderSessionId !== this.myPlayer.playerSessionId)
+                this.setOpponentDice({ who: senderSessionId, dice });
             }
             break;
 
@@ -419,7 +423,7 @@
         }
 
         if (isAttention && !!attentionHeader)
-          this.onEssentialBroadcast(attentionHeader, attentionData);
+          this.onAttention(attentionHeader, attentionData, attentionTimeout);
       },
       onRoomError: function(error) {
         console.error(`Room ${this.room.sessionId} encountered error: ${error.message}`);
