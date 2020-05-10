@@ -1,48 +1,3 @@
-<template>
-  <main class="game-lobby" id="game-lobby">
-    <div class="loader-wrapper">
-      <SnowyTown class="game-loader" />
-      <Snowflakes :count="lobbySnowflakes" class="snowflakes" />
-    </div>
-    <div class="header-fallback" />
-    <section class="lobby-interface">
-      <ul class="actions">
-        <li class="action-item">
-          <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" :disabled="!isServerUp" @approve="createRoom" class="create-room">
-            <RoomSettings
-              :roomType="roomType"
-              @select-room-type="roomType = $event"
-              :roomTitle="roomTitle"
-              @update-title="roomTitle = $event"
-              :roomMaxPlayers="roomMaxPlayers"
-              @update-max-players="roomMaxPlayers = $event"
-              :playVsBots="playVsBots"
-              @toggle-bots="playVsBots = !playVsBots"
-              :autoPickup="autoPickup"
-              @toggle-auto-pickup="autoPickup = !autoPickup"
-              :friendlyGameLog="friendlyGameLog"
-              @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
-              :botReplacement="botReplacement"
-              @toggle-bot-replacement="botReplacement = !botReplacement"
-            />
-          </ChoiceDialog>
-        </li>
-        <li class="action-item">
-          <BaseButton spaced color="info" iconColor="white" iconName="refresh-circle" iconSize="x-large" @click="refreshRooms" class="refresh-list">
-            Refresh List
-          </BaseButton>
-        </li>
-      </ul>
-      <div class="lobby-contents">
-        <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
-        <div class="lobby-chat">
-          <GameChat :channels="['lobby', 'lfm']" :messages="lobbyChat" @send-message="sendLobbyMessage($event)" />
-        </div>
-      </div>
-    </section>
-  </main>
-</template>
-
 <script>
   import { mapState, mapMutations } from 'vuex';
   import router from '@/router';
@@ -103,6 +58,14 @@
     },
     destroyed: function() {
       clearInterval(this.autoRefresh);
+    },
+    watch: {
+      lobbyChat: function(newMessages, oldMessages) {
+        if (newMessages.length > oldMessages.length) {
+          const { messageReceived } = this.$refs;
+          if (messageReceived) messageReceived.play(); 
+        }
+      }
     },
     methods: {
       ...mapMutations([
@@ -195,11 +158,59 @@
         }
       },
       sendLobbyMessage: function({ channel, message }) {
-        firebaseService.sendLobbyChatMessage(channel, message);
+        firebaseService.sendLobbyChatMessage(this.currentUser.nickname, channel, message);
       }
     }
   }
 </script>
+
+<template>
+  <main class="game-lobby" id="game-lobby">
+    <div class="loader-wrapper">
+      <SnowyTown class="game-loader" />
+      <Snowflakes :count="lobbySnowflakes" class="snowflakes" />
+    </div>
+    <div class="header-fallback" />
+    <section class="lobby-interface">
+      <ul class="actions">
+        <li class="action-item">
+          <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" :disabled="!isServerUp" @approve="createRoom" class="create-room">
+            <RoomSettings
+              :roomType="roomType"
+              @select-room-type="roomType = $event"
+              :roomTitle="roomTitle"
+              @update-title="roomTitle = $event"
+              :roomMaxPlayers="roomMaxPlayers"
+              @update-max-players="roomMaxPlayers = $event"
+              :playVsBots="playVsBots"
+              @toggle-bots="playVsBots = !playVsBots"
+              :autoPickup="autoPickup"
+              @toggle-auto-pickup="autoPickup = !autoPickup"
+              :friendlyGameLog="friendlyGameLog"
+              @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
+              :botReplacement="botReplacement"
+              @toggle-bot-replacement="botReplacement = !botReplacement"
+            />
+          </ChoiceDialog>
+        </li>
+        <li class="action-item">
+          <BaseButton spaced color="info" iconColor="white" iconName="refresh-circle" iconSize="x-large" @click="refreshRooms" class="refresh-list">
+            Refresh List
+          </BaseButton>
+        </li>
+      </ul>
+      <div class="lobby-contents">
+        <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
+        <div class="lobby-chat">
+          <GameChat :channels="['lobby', 'lfm']" :messages="lobbyChat" @send-message="sendLobbyMessage($event)" />
+        </div>
+      </div>
+    </section>
+    <audio ref="messageReceived">
+      <source src="../assets/audio/chat-message.mp3" type="audio/mpeg">
+    </audio>
+  </main>
+</template>
 
 <style scoped lang="scss">
  @import '@/styles/partials';
@@ -244,15 +255,16 @@
 
     .lobby-contents {
       flex: 1;
-      max-height: 50%;
+      max-height: 80%;
       overflow-y: auto;
       margin-top: $spacer * 1.5;
       display: grid;
       grid-template-columns: 80% 20%;
 
       .lobby-chat {
-        height: 100%;
         position: relative;
+        max-height: 50vh;
+        overflow-y: auto;
       }
     }
   }

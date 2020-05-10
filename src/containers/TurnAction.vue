@@ -1,49 +1,3 @@
-<template>
-  <div class="turn-action">
-    <div v-if="isWaitingForDiceRoll" key="dice-needed" class="dice">
-      <GameDice :dice="roomState.dice" @clicked="rollDice" />
-    </div>
-    <fragment v-else key="dice-rolled">
-      <BaseButton
-        v-if="allowFinishTurn"
-        color="red"
-        :width="buttonWidth"
-        :height="buttonHeight"
-        @click="finishTurn"
-      >
-        Finish My Turn
-      </BaseButton>
-      <BaseButton
-        v-if="myPlayer.mustMoveRobber"
-        color="warning"
-        :width="buttonWidth"
-        :height="buttonHeight"
-        @click="moveRobber"
-        :clickable="isLegalRobberMove"
-      >
-        Move Robber
-      </BaseButton>
-      <BaseButton
-        v-if="!roomState.isGameReady"
-        :color="isSelfReady ? 'error' : '#558B2F'"
-        :width="buttonWidth"
-        :height="buttonHeight"
-        @click="$emit('toggle-ready')"
-      >
-        <span v-if="isSelfReady" key="not-ready">
-          Not Ready
-        </span>
-        <span v-else key="ready">
-          I am Ready!
-        </span>
-      </BaseButton>
-    </fragment>
-    <audio ref="diceAudio">
-      <source src="../assets/audio/dice.mp3" type="audio/mpeg">
-    </audio>
-  </div>
-</template>
-
 <script>
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import colyseusService from '@/services/colyseus';
@@ -148,6 +102,52 @@
     }
   }
 </script>
+
+<template>
+  <div class="turn-action">
+    <div v-if="isWaitingForDiceRoll" key="dice-needed" class="dice">
+      <GameDice :dice="roomState.dice" @clicked="rollDice" />
+    </div>
+    <fragment v-else key="dice-rolled">
+      <BaseButton
+        v-if="allowFinishTurn"
+        color="red"
+        :width="buttonWidth"
+        :height="buttonHeight"
+        @click="finishTurn"
+      >
+        Finish My Turn
+      </BaseButton>
+      <BaseButton
+        v-if="myPlayer.mustMoveRobber"
+        color="warning"
+        :width="buttonWidth"
+        :height="buttonHeight"
+        @click="moveRobber"
+        :clickable="isLegalRobberMove"
+      >
+        Move Robber
+      </BaseButton>
+      <BaseButton
+        v-if="!roomState.isGameReady"
+        :color="isSelfReady ? 'error' : '#558B2F'"
+        :width="buttonWidth"
+        :height="buttonHeight"
+        @click="$emit('toggle-ready')"
+      >
+        <span v-if="isSelfReady" key="not-ready">
+          Not Ready
+        </span>
+        <span v-else key="ready">
+          I am Ready!
+        </span>
+      </BaseButton>
+    </fragment>
+    <audio ref="diceAudio">
+      <source src="../assets/audio/dice.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';

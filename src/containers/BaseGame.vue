@@ -1,118 +1,3 @@
-<template>
-  <div class="base-game">
-    <BaseWidget class="control-panel">
-      <ControlPanel
-        @toggle-ready="toggleReady"
-        @bank-trade="onTradeWithBank($event)"
-      />
-    </BaseWidget>
-    <div class="board-container">
-      <BaseWidget class="players-list">
-        <PlayersList
-          :currentRound="roomState.currentRound"
-          :isGameReady="roomState.isGameReady"
-          :currentTurn="roomState.currentTurn"
-          :waitingTradeWith="waitingTradeWith"
-          @trade-with="requestTradeWith($event)"
-          @steal-from="stealFrom($event)"
-          @play-hero="onPlayHeroCard($event)"
-          @play-card="onPlayGameCard($event)"
-          @toggle-ready="toggleReady"
-        />
-      </BaseWidget>
-      <div class="board-area">
-        <TheNorth
-          v-if="isWithNorth"
-          class="the-north"
-        />
-        <GameBoard
-          @remove-wildling="onRemoveWildling($event)"
-          class="game-board"
-          :class="{ 'with-north': isWithNorth }"
-        />
-      </div>
-      <aside class="sidebar" :class="{ 'compact': isWithNorth }">
-        <BaseWidget v-if="isWithNorth" :level="0" class="breach-marker">
-          <BreachMarker :wallBreaches="roomState.wallBreaches" />
-        </BaseWidget>
-        <BaseWidget class="game-log">
-          <GameLog :friendly="roomState.friendlyGameLog" />
-        </BaseWidget>
-        <v-divider dark class="divider" />
-        <BaseWidget class="game-chat-widget">
-          <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
-        </BaseWidget>
-      </aside>
-    </div>
-    <MyDeck @play-game-card="onPlayGameCard($event)" />
-    <TradeConfirm
-      :isOpen="!!myPlayer.pendingTrade"
-      :withWho="tradingWith"
-      @no="respondToIncomingTrade(false)"
-      @yes="respondToIncomingTrade(true)"
-    />
-    <TradeConfirm
-      :isOpen="!!tradeRequested.senderSessionId"
-      :withWho="tradeRequested.sender"
-      title="Trade Requested"
-      :requestedResource="tradeRequested.requestedResource"
-      @no="tradeRequested = {}"
-      @yes="acceptResourceTradeRequest"
-    />
-    <TradeDialog
-      :isOpen="!!myPlayer.tradingWith"
-      :players="[myPlayer, players.find(({ playerSessionId }) => playerSessionId === myPlayer.tradingWith)]"
-      @declare-resource="onDeclareRequestedResource($event)"
-      @add-card="addTradeCard($event)"
-      @remove-card="removeTradeCard($event)"
-      @refuse="refuseTrade"
-      @agree-trade="agreeToTrade"
-      @confirm-trade="onTradeConfirm"
-    >
-      <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
-    </TradeDialog>
-    <TradeDialog
-      :isOpen="!!bankTradeResource"
-      withBank
-      :players="bankTradePlayers"
-      @add-card="addTradeCard($event)"
-      @remove-card="removeTradeCard($event)"
-      @refuse="cancelBankTrade"
-      @agree-trade="agreeToTrade"
-      @confirm-trade="requestBankTrade"
-      cancelText="Cancel"
-    />
-    <OpponentDeck
-      :isOpen="!!stealingFrom.playerSessionId"
-      :opponent="stealingFrom"
-      :hideResources="!myPlayer.isVisibleSteal"
-      :giveBack="myPlayer.heroPrivilege === HERO_CARD_JeorMormont"
-      :myDeck="myPlayer.resourceCounts"
-      @steal="selectStealCard($event)"
-      @cancel="stealingFrom = {}"
-    />
-    <v-dialog width="500" :value="myPlayer.isDeclaringMonopoly">
-      <ResourceSelect :title="null" @resource-selected="onMonopolySelected($event)" />
-    </v-dialog>
-    <!-- <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" /> -->
-    <BaseOverlay v-if="activeDice && activeDice.who && activeDice.who === myPlayer.playerSessionId" isOpen :opacity="0.7">
-      <GameDice :dice="activeDice.dice" size="140px" />
-    </BaseOverlay>
-    <audio ref="diceAudio">
-      <source src="../assets/audio/dice.mp3" type="audio/mpeg">
-    </audio>
-    <audio ref="lootAudio">
-      <source src="../assets/audio/receive-loot.mp3" type="audio/mpeg">
-    </audio>
-    <audio ref="robberAudio">
-      <source src="../assets/audio/robber.mp3" type="audio/mpeg">
-    </audio>
-      <audio ref="structureAudio">
-      <source src="../assets/audio/structure.mp3" type="audio/mpeg">
-    </audio>
-  </div>
-</template>
-
 <script>
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import router from '@/router';
@@ -382,7 +267,7 @@
 
             if (broadcast.playerSessionId === this.myPlayer.playerSessionId) {
               this.addRecentLoot({ resource, count: 1 });
-              
+
               const { lootAudio } = this.$refs;
               if (lootAudio) lootAudio.play(); 
             }
@@ -656,6 +541,121 @@
     }
   }
 </script>
+
+<template>
+  <div class="base-game">
+    <BaseWidget class="control-panel">
+      <ControlPanel
+        @toggle-ready="toggleReady"
+        @bank-trade="onTradeWithBank($event)"
+      />
+    </BaseWidget>
+    <div class="board-container">
+      <BaseWidget class="players-list">
+        <PlayersList
+          :currentRound="roomState.currentRound"
+          :isGameReady="roomState.isGameReady"
+          :currentTurn="roomState.currentTurn"
+          :waitingTradeWith="waitingTradeWith"
+          @trade-with="requestTradeWith($event)"
+          @steal-from="stealFrom($event)"
+          @play-hero="onPlayHeroCard($event)"
+          @play-card="onPlayGameCard($event)"
+          @toggle-ready="toggleReady"
+        />
+      </BaseWidget>
+      <div class="board-area">
+        <TheNorth
+          v-if="isWithNorth"
+          class="the-north"
+        />
+        <GameBoard
+          @remove-wildling="onRemoveWildling($event)"
+          class="game-board"
+          :class="{ 'with-north': isWithNorth }"
+        />
+      </div>
+      <aside class="sidebar" :class="{ 'compact': isWithNorth }">
+        <BaseWidget v-if="isWithNorth" :level="0" class="breach-marker">
+          <BreachMarker :wallBreaches="roomState.wallBreaches" />
+        </BaseWidget>
+        <BaseWidget class="game-log">
+          <GameLog :friendly="roomState.friendlyGameLog" />
+        </BaseWidget>
+        <v-divider dark class="divider" />
+        <BaseWidget class="game-chat-widget">
+          <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
+        </BaseWidget>
+      </aside>
+    </div>
+    <MyDeck @play-game-card="onPlayGameCard($event)" />
+    <TradeConfirm
+      :isOpen="!!myPlayer.pendingTrade"
+      :withWho="tradingWith"
+      @no="respondToIncomingTrade(false)"
+      @yes="respondToIncomingTrade(true)"
+    />
+    <TradeConfirm
+      :isOpen="!!tradeRequested.senderSessionId"
+      :withWho="tradeRequested.sender"
+      title="Trade Requested"
+      :requestedResource="tradeRequested.requestedResource"
+      @no="tradeRequested = {}"
+      @yes="acceptResourceTradeRequest"
+    />
+    <TradeDialog
+      :isOpen="!!myPlayer.tradingWith"
+      :players="[myPlayer, players.find(({ playerSessionId }) => playerSessionId === myPlayer.tradingWith)]"
+      @declare-resource="onDeclareRequestedResource($event)"
+      @add-card="addTradeCard($event)"
+      @remove-card="removeTradeCard($event)"
+      @refuse="refuseTrade"
+      @agree-trade="agreeToTrade"
+      @confirm-trade="onTradeConfirm"
+    >
+      <GameChat :messages="chatMessages" @send-message="sendChatMessage($event)" />
+    </TradeDialog>
+    <TradeDialog
+      :isOpen="!!bankTradeResource"
+      withBank
+      :players="bankTradePlayers"
+      @add-card="addTradeCard($event)"
+      @remove-card="removeTradeCard($event)"
+      @refuse="cancelBankTrade"
+      @agree-trade="agreeToTrade"
+      @confirm-trade="requestBankTrade"
+      cancelText="Cancel"
+    />
+    <OpponentDeck
+      :isOpen="!!stealingFrom.playerSessionId"
+      :opponent="stealingFrom"
+      :hideResources="!myPlayer.isVisibleSteal"
+      :giveBack="myPlayer.heroPrivilege === HERO_CARD_JeorMormont"
+      :myDeck="myPlayer.resourceCounts"
+      @steal="selectStealCard($event)"
+      @cancel="stealingFrom = {}"
+    />
+    <v-dialog width="500" :value="myPlayer.isDeclaringMonopoly">
+      <ResourceSelect :title="null" @resource-selected="onMonopolySelected($event)" />
+    </v-dialog>
+    <!-- <RollingDice v-if="isRollingDice" :type="roomState.roomType" @finished="sendDice($event)" /> -->
+    <BaseOverlay v-if="activeDice && activeDice.who && activeDice.who === myPlayer.playerSessionId" isOpen :opacity="0.7">
+      <GameDice :dice="activeDice.dice" size="140px" />
+    </BaseOverlay>
+    <audio ref="diceAudio">
+      <source src="../assets/audio/dice.mp3" type="audio/mpeg">
+    </audio>
+    <audio ref="lootAudio">
+      <source src="../assets/audio/receive-loot.mp3" type="audio/mpeg">
+    </audio>
+    <audio ref="robberAudio">
+      <source src="../assets/audio/robber.mp3" type="audio/mpeg">
+    </audio>
+      <audio ref="structureAudio">
+      <source src="../assets/audio/structure.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';

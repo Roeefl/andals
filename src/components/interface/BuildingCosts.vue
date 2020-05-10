@@ -1,3 +1,45 @@
+<script>
+  import colyseusService from '@/services/colyseus';
+  
+  import ResourceCard from '@/components/game/ResourceCard';
+  import BaseIcon from '@/components/common/BaseIcon';
+
+  import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
+  import { structureIcons } from '@/specs/gamePieces';
+  import { victoryPointsPerPurchase } from '@/specs/purchases';
+
+  export default {
+    name: 'BuildingCosts',
+    components: {
+      ResourceCard,
+      BaseIcon
+    },
+    props: {
+      full: {
+        type: Boolean,
+        default: true
+      },
+      color: {
+        type: String,
+        default: 'primary'
+      },
+      counts: {
+        type: Object,
+        default: () => {}
+      }
+    },
+    computed: {
+      buildingCosts: () => colyseusService.buildingCosts
+    },
+    created() {
+      this.victoryPointsPerPurchase = victoryPointsPerPurchase;
+      this.structureIcons = structureIcons;
+      this.resourceCardTypes = resourceCardTypes;
+      this.resourceCardColors = resourceCardColors;
+    }
+  }
+</script>
+
 <template>
   <div class="building-costs">
     <section v-for="(costs, name) in buildingCosts" :key="name" class="resource-type" :class="{ 'full': full }">
@@ -46,48 +88,6 @@
     </footer>
   </div>
 </template>
-
-<script>
-  import colyseusService from '@/services/colyseus';
-  
-  import ResourceCard from '@/components/game/ResourceCard';
-  import BaseIcon from '@/components/common/BaseIcon';
-
-  import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
-  import { structureIcons } from '@/specs/gamePieces';
-  import { victoryPointsPerPurchase } from '@/specs/purchases';
-
-  export default {
-    name: 'BuildingCosts',
-    components: {
-      ResourceCard,
-      BaseIcon
-    },
-    props: {
-      full: {
-        type: Boolean,
-        default: true
-      },
-      color: {
-        type: String,
-        default: 'primary'
-      },
-      counts: {
-        type: Object,
-        default: () => {}
-      }
-    },
-    computed: {
-      buildingCosts: () => colyseusService.buildingCosts
-    },
-    created() {
-      this.victoryPointsPerPurchase = victoryPointsPerPurchase;
-      this.structureIcons = structureIcons;
-      this.resourceCardTypes = resourceCardTypes;
-      this.resourceCardColors = resourceCardColors;
-    }
-  }
-</script>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
