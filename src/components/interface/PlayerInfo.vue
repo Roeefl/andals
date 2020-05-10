@@ -27,19 +27,9 @@
           />
         </div>
       </div>
-      <div v-if="isMe" class="game-pieces" @click="$emit('deck-clicked')">
-        <div v-for="purchaseType in purchaseTypes" :key="purchaseType" class="game-piece">
-          <GamePiece 
-            :count="player[purchaseType]"
-            :type="purchaseType"
-            :color="player.color"
-            :size="isMe ? '30px' : '22px'"
-          />
-        </div>
-        <div class="perks">
-          <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="primary" class="longest-road" />
-          <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
-        </div>
+      <div v-if="isMe" class="perks">
+        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="primary" class="longest-road" />
+        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
       </div>
       <div v-if="player.resourceCounts" @click="$emit('deck-clicked')" class="resource-cards">
         <fragment v-for="resource in resourceCardTypes" :key="`resource-${resource}`">
@@ -119,7 +109,6 @@
 
 <script>
   import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
-  import { pluralTypes as purchaseTypes } from '@/specs/purchases';
   import { hexToRgb } from '@/utils/colors';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
   
@@ -241,7 +230,6 @@
       // }
     },
     created() {
-      this.purchaseTypes = purchaseTypes;
       this.resourceCardTypes = resourceCardTypes;
       this.resourceCardColors = resourceCardColors;
     },
@@ -322,7 +310,7 @@
         }
       }
 
-      .game-pieces {
+      .perks {
         display: flex;
       }
 

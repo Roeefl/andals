@@ -12,7 +12,7 @@
   import BaseBadge from '@/components/common/BaseBadge';
   import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
   
-  import { types as purchaseTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
+  import { types as purchaseTypes, pluralTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
   import { initialResourceCounts } from '@/specs/resources';
   import { CARD_VICTORY_POINT } from '@/specs/gameCards';
 
@@ -62,7 +62,8 @@
       ])
     },
     created() {
-      this.purchaseTypes = purchaseTypes;
+      this.purchaseTypes = purchaseTypes.filter(type => type !== GAME_CARD);
+      this.pluralTypes = pluralTypes;
       this.GAME_CARD = GAME_CARD;
       this.CARD_VICTORY_POINT = CARD_VICTORY_POINT;
     },
@@ -211,13 +212,20 @@
                 v-for="purchaseType in purchaseTypes"
                 :key="purchaseType"
                 :type="purchaseType"
-                :showCount="false"
+                :count="myPlayer[pluralTypes[purchaseType]]"
                 :color="myPlayer.hasResources[purchaseType] ? '#43A047' : 'primary'"
-                :size="purchaseType === 'gameCard' ? '100px' : '60px'"
+                size="60px"
                 @clicked="onPieceClick(purchaseType)"
                 class="game-piece"
-                :class="purchaseType"
-              ></GamePiece>
+              />
+              <GamePiece
+                type="gameCard"
+                :showCount="false"
+                size="100px"
+                :color="myPlayer.hasResources.gameCard ? '#43A047' : 'primary'"
+                @clicked="onPieceClick('gameCard')"
+                class="game-card"
+              />
               <BaseBadge v-if="activePurchase && activePurchase.type === GAME_CARD" class="confirm-purchase">
                 <PurchaseConfirm
                   :type="GAME_CARD"
@@ -316,11 +324,10 @@
 
           .game-piece {
             order: 1;
-
-            &.gameCard {
-              order: 2;
-              justify-self: end;
-            }
+          }
+          .game-card {
+            order: 2;
+            justify-self: end;
           }
         }
       }
