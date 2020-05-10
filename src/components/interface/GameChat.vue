@@ -5,7 +5,7 @@
         {{ channel }}
       </v-tab>
     </v-tabs>
-    <MessageList beep title="Chat" :messages="channelMessages" class="messages-container">
+    <MessageList title="Chat" :messages="channelMessages" class="messages-container">
       <li v-for="(msg, i) in channelMessages" :key="i">
         <div>
           {{ msg.sender }}: {{ msg.message }}

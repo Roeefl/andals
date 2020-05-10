@@ -6,9 +6,6 @@
     <ul ref="messages" class="messages" @scroll="isScrollNeeded = true">
       <slot />
     </ul>
-    <audio ref="messageReceived">
-      <source src="../../assets/audio/chat-message.mp3" type="audio/mpeg">
-    </audio>
   </div>
 </template>
 
@@ -23,10 +20,6 @@
       messages: {
         type: Array,
         default: []
-      },
-      beep: {
-        type: Boolean,
-        default: false
       }
     },
     data: () => ({
@@ -37,9 +30,6 @@
         if (newMessages.length > oldMessages.length) {
           // @TODO: Add another condition only for GameChat:
           // newMessages[newMessages.length - 1].senderSessionId === this.myPlayerSessionId
-          const { messageReceived } = this.$refs;
-          if (this.beep && messageReceived) messageReceived.play(); 
-
           setTimeout(
             () => this.goToBottom(),
             200
