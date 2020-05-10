@@ -70,8 +70,8 @@
             :resource="resource"
             small
             hideCount
-            :color="counts[resource] >= costs[resource] ? '#43A047' : 'white'"
-            :iconColor="counts[resource] >= costs[resource] ? 'white' : null"
+            :color="(counts[resource] >= costs[resource] || costs[resource] > 1 && counts[resource] > 0 && index === 0) ? '#43A047' : 'white'"
+            :iconColor="(counts[resource] >= costs[resource] || costs[resource] > 1 && counts[resource] > 0 && index === 0) ? 'white' : null"
             class="resource-card"
             :class="{ 'mini-card': !full }"
           />

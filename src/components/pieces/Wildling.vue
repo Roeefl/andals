@@ -1,15 +1,3 @@
-<template>
-  <span @click="$emit('remove')">
-    <GameAsset
-      type="wildlings"
-      :asset="type"
-      :width="`${size}px`"
-      :height="`${size}px`"
-      :color="wildlingColors[type]"
-    />
-  </span>
-</template>
-
 <script>
   import GameAsset from '@/components/game/GameAsset';
   import { wildlingColors } from '@/specs/wildlings';
@@ -34,3 +22,25 @@
     }
   }
 </script>
+
+<template>
+  <span @click="$emit('remove')" class="wildling">
+    <GameAsset
+      type="wildlings"
+      :asset="type"
+      :width="`${size}px`"
+      :height="`${size}px`"
+      :color="wildlingColors[type]"
+    />
+  </span>
+</template>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  .wildling {
+    // padding: 1px;
+    // border-radius: 100%;
+    // border: 1px solid black;
+  }
+</style>
