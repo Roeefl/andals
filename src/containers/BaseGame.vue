@@ -44,7 +44,7 @@
     MESSAGE_WILDLINGS_REMOVE_FROM_TILE,
     MESSAGE_TRADE_WITH_BANK,
     MESSAGE_TRADE_REQUEST_RESOURCE,
-    MESSAGE_TRADE_REQUEST_RESOURCE_AGREE,
+    MESSAGE_TRADE_REQUEST_RESOURCE_RESPOND,
     MESSAGE_TRADE_REQUEST,
     MESSAGE_TRADE_START_AGREED,
     MESSAGE_TRADE_ADD_CARD,
@@ -146,7 +146,9 @@
         'setAttentions',
         'addRecentLoot',
         'openMyDeck',
-        'setActiveDice'
+        'setActiveDice',
+        'updateAwaitingTradeRequest',
+        'resetAwaitingTradeRequest'
       ]),
       ...mapActions([
         'finishTurn'
@@ -312,6 +314,14 @@
 
             break;
 
+          case MESSAGE_TRADE_REQUEST_RESOURCE_RESPOND:
+            const { isTradeStarted, whoRefused } = broadcast;
+
+            if (isTradeStarted) this.resetAwaitingTradeRequest();
+            else this.updateAwaitingTradeRequest(whoRefused);
+            
+            break;
+
           case MESSAGE_TRADE_CONFIRM:
             const { player1, player2 } = broadcast;
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${player1} has completed a trade with ${player2}` });
@@ -454,9 +464,10 @@
           isAgreed
         });
       },
-      acceptResourceTradeRequest: async function() {
+      respondToResourceTradeRequest: async function(isAgreed) {
         await this.room.send({
-          type: MESSAGE_TRADE_REQUEST_RESOURCE_AGREE,
+          type: MESSAGE_TRADE_REQUEST_RESOURCE_RESPOND,
+          isAgreed,
           offeredResource: this.tradeRequested.requestedResource
         });
 
@@ -608,8 +619,8 @@
       :withWho="tradeRequested.sender"
       title="Trade Requested"
       :requestedResource="tradeRequested.requestedResource"
-      @no="tradeRequested = {}"
-      @yes="acceptResourceTradeRequest"
+      @no="respondToResourceTradeRequest(false)"
+      @yes="respondToResourceTradeRequest(true)"
     />
     <TradeDialog
       :isOpen="!!myPlayer.tradingWith"

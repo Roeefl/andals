@@ -45,6 +45,7 @@ export default new Vuex.Store({
     desiredRobberTile: -1,
     isRollingDice: false,
     activeDice: null,
+    awaitingTradeRequest: {},
     gameLog: [],
     alerts: {},
     recentLoot: {},
@@ -157,6 +158,23 @@ export default new Vuex.Store({
     },
     setActiveDice(state, data) {
       state.activeDice = data;
+    },
+    initAwaitingTradeRequest(state) {
+      state.awaitingTradeRequest = state.players
+        .filter(({ playerSessionId }) => playerSessionId !== state.myPlayer.playerSessionId)
+        .reduce((acc, { playerSessionId }) => {
+          acc[playerSessionId] = true;
+          return acc;
+        }, {});
+    },
+    updateAwaitingTradeRequest(state, whoRefused) {
+      state.awaitingTradeRequest = {
+        ...state.awaitingTradeRequest,
+        [whoRefused]: false
+      };
+    },
+    resetAwaitingTradeRequest(state) {
+      state.awaitingTradeRequest = {}
     },
     setRooms(state, rooms) {
       state.rooms = [

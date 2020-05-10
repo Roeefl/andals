@@ -4,7 +4,7 @@
     persistent
     width="500"
   >
-    <ActionCard :title="title" @cancel="$emit('no')" @approve="$emit('yes')">
+    <ActionCard :title="title" cancelText="Refuse" approveText="Agree" @cancel="$emit('no')" @approve="$emit('yes')">
       <h2 v-if="!requestedResource" key="direct-trade">
         Confirm Trade with {{ withWho }}
       </h2>

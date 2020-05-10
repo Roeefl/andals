@@ -10,6 +10,8 @@
   import GamePiece from '@/components/game/GamePiece';
   import BaseButton from '@/components/common/BaseButton';
   import BaseBadge from '@/components/common/BaseBadge';
+  import BaseAvatar from '@/components/common/BaseAvatar';
+  import BaseChip from '@/components/common/BaseChip';
   import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
   
   import { types as purchaseTypes, pluralTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
@@ -33,6 +35,8 @@
       GamePiece,
       BaseButton,
       BaseBadge,
+      BaseChip,
+      BaseAvatar,
       PurchaseConfirm
     },
     data: () => ({
@@ -51,7 +55,8 @@
         'roomState',
         'myPlayer',
         'displayDeck',
-        'activePurchase'
+        'activePurchase',
+        'awaitingTradeRequest'
       ]),
       ...mapGetters([
         'isGameStarted',
@@ -73,7 +78,8 @@
         'openMyDeck',
         'closeMyDeck',
         'setActivePurchase',
-        'setJustPurchasedGameCard'
+        'setJustPurchasedGameCard',
+        'initAwaitingTradeRequest'
       ]),
       toggleCardSelection: function(card) {
         if (!this.myPlayer.mustDiscardHalfDeck) return;
@@ -133,6 +139,8 @@
           type: MESSAGE_TRADE_REQUEST_RESOURCE,
           requestedResource
         });
+
+        this.initAwaitingTradeRequest();
       },
       onConfirmPurchase: function(gameCard) {
         const { type } = this.activePurchase;
@@ -260,9 +268,24 @@
               <h3 class="offer-trade-text">
                 Request Trade
               </h3>
-              <ResourceSelect v-if="hover" :enabled="allowRequestTrade" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
+              <ResourceSelect v-if="hover && !Object.keys(awaitingTradeRequest).length" :enabled="allowRequestTrade" class="select-resource" :title="null" autoConfirm @resource-selected="onRequestTrade($event)" />
             </div>
           </v-hover>
+          <div class="awaiting-trade-request">
+            <div v-for="([sessionId, isThinking], p) in Object.entries(awaitingTradeRequest)" :key="p">
+              <BaseAvatar
+                :size="80"
+                :src="require(`../../assets/avatars/${(roomState.players[sessionId] || {}).avatar || 1}.png`)"
+              />
+              <BaseChip 
+                color="transparent"
+                iconSize="30px"
+                :iconName="isThinking ? 'dots-horizontal' : 'alpha-x-circle'"
+                :iconColor="isThinking ? 'secondary' : 'warning'"
+                class="thinking"
+              />
+            </div>
+          </div>
         </div>
         <BaseButton icon :iconName="isPinned ? 'pin-off-outline' : 'pin-outline'" iconColor="white" iconSize="28px" @click="isPinned = !isPinned" class="pin-deck" />
       </v-sheet>
@@ -416,5 +439,17 @@
     position: absolute;
     top: $spacer / 2;
     right: $spacer / 2;
+  }
+
+  .awaiting-trade-request {
+    position: absolute;
+    top: $spacer * -2;
+    right: 10%;
+
+    .thinking {
+      position: absolute;
+      top: $spacer * -2;
+      right: $spacer * -1;
+    }
   }
 </style>

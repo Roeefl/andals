@@ -1,112 +1,3 @@
-<template>
-  <div class="player" :class="{ 'is-me': isMe}" :style="playerStyle(player.color)">
-    <div class="upper">
-      <div class="header">
-        <div class="avatar">
-          <BaseAvatar :size="64" :src="require(`../../assets/avatars/${player.avatar || 1}.png`)" :alt="player.nickname" />
-          <span class="nickname">
-            {{ player.nickname }}
-          </span>
-        </div>
-        <div class="status">
-          <BaseChip
-            v-if="!isGameReady"
-            :disabled="!isMe"
-            :iconName="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'"
-            :iconColor="player.isReady ? 'highlight' : 'error'"
-            :label="player.isReady ? 'Ready' : 'Not Ready'"
-            @click="isMe && $emit('toggle-ready')"
-            class="is-ready"
-          />
-          <BaseChip
-            v-if="waitingTrade"
-            icoName="head-dots-horizontal-outline"
-            iconSize="32px"
-            iconColor="info"
-            label="Waiting..."
-          />
-        </div>
-      </div>
-      <div v-if="isMe" class="perks">
-        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="primary" class="longest-road" />
-        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
-      </div>
-      <div v-if="player.resourceCounts" @click="$emit('deck-clicked')" class="resource-cards">
-        <fragment v-for="resource in resourceCardTypes" :key="`resource-${resource}`">
-          <!-- .filter(resource => player.resourceCounts[resource] > 0) -->
-          <ResourceCard
-            v-for="(resourceCard, index) in Array(player.resourceCounts[resource]).fill(resource)"
-            :key="`card-${resource}-${index}`"
-            :resource="resource"
-            small
-            hideCount
-            :hideIcon="!isMe"
-            :clickable="isMe"
-            class="resource-card"
-            :class="{ 'my-resource-card': isMe }"
-          />
-        </fragment>
-      </div>
-      <div class="player-assets">
-        <div class="belongings">
-          <div class="game-cards">
-            <GameCard
-              v-for="(gameCard, index) in (player.gameCards || [])"
-              :key="`${gameCard.type}-${index}`"
-              :visible="isMe"
-              :type="gameCard.type"
-              :wasPlayed="gameCard.wasPlayed"
-              :clickable="true"
-              @clicked="displayedGameCard = isMe ? { ...gameCard, index } : {}"
-              class="game-card"
-            />
-          </div>
-          <div class="owned-harbors">
-            <BaseIcon
-              v-for="(harbor, resource) in (player.ownedHarbors || [])"
-              :key="`owned-harbor-${resource}`"
-              v-show="harbor"
-              name="sail-boat"
-              :color="resourceCardColors[resource] || 'secondary'" size="32px"
-            />
-          </div>
-        </div>
-        <div class="hero-card-wrapper" :class="{ 'was-played': (player.currentHeroCard || {}).wasPlayed }">
-          <BaseButton color="transparent" height="auto" @click="$emit('display-hero-card', player.currentHeroCard)" class="hero-card-button">
-            <HeroCard thumbnail :card="player.currentHeroCard || {}" class="hero-card" />
-          </BaseButton>
-          <BaseIcon v-if="(player.currentHeroCard || {}).wasPlayed" name="circle-half-full" size="36px" color="primary" class="icon-was-played" />
-        </div>
-      </div>
-    </div>
-    <div v-if="isMe" class="turn-action">
-      <TurnAction :isGameReady="isGameReady" :myPlayer="player" @toggle-ready="$emit('toggle-ready')" />
-    </div>
-    <GameCardDialog
-      v-if="!!displayedGameCard.type"
-      :isOpen="!!displayedGameCard.type"
-      :type="displayedGameCard.type"
-      :playAllowed="playGameCardAllowed"
-      @dismiss="displayedGameCard = {}"
-      @play="playGameCard"
-    />
-    <BaseOverlay v-if="allowStealing" :isOpen="allowStealing" :isFullScreen="false" :opacity="0.6">
-      <BaseButton icon iconName="hand-okay" iconSize="60px" iconColor="warning" @click="$emit('steal-from', player.playerSessionId)" class="steal-button" />
-    </BaseOverlay>
-    <BaseButton
-      v-if="!isMe"
-      key="trade"
-      icon
-      iconName="swap-horizontal-circle"
-      iconColor="#E64A19"
-      iconSize="60px"
-      :disabled="requestTradeDisabled"
-      @click="$emit('trade-with', player.playerSessionId)"
-      class="trade-with"
-    />
-  </div>
-</template>
-
 <script>
   import { resourceCardTypes, resourceCardColors } from '@/specs/resources';
   import { hexToRgb } from '@/utils/colors';
@@ -256,6 +147,115 @@
     }
   }
 </script>
+
+<template>
+  <div class="player" :class="{ 'is-me': isMe}" :style="playerStyle(player.color)">
+    <div class="upper">
+      <div class="header">
+        <div class="avatar">
+          <BaseAvatar :size="64" :src="require(`../../assets/avatars/${player.avatar || 1}.png`)" :alt="player.nickname" />
+          <span class="nickname">
+            {{ player.nickname }}
+          </span>
+        </div>
+        <div class="status">
+          <BaseChip
+            v-if="!isGameReady"
+            :disabled="!isMe"
+            :iconName="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'"
+            :iconColor="player.isReady ? 'highlight' : 'error'"
+            :label="player.isReady ? 'Ready' : 'Not Ready'"
+            @click="isMe && $emit('toggle-ready')"
+            class="is-ready"
+          />
+          <BaseChip
+            v-if="waitingTrade"
+            icoName="head-dots-horizontal-outline"
+            iconSize="32px"
+            iconColor="info"
+            label="Waiting..."
+          />
+        </div>
+      </div>
+      <div v-if="isMe" class="perks">
+        <BaseIcon v-if="player.hasLongestRoad" name="highway" size="24px" color="primary" class="longest-road" />
+        <BaseIcon v-if="player.hasLargestArmy" name="sword-cross" size="24px" color="primary" class="largest-army" />
+      </div>
+      <div v-if="player.resourceCounts" @click="$emit('deck-clicked')" class="resource-cards">
+        <fragment v-for="resource in resourceCardTypes" :key="`resource-${resource}`">
+          <!-- .filter(resource => player.resourceCounts[resource] > 0) -->
+          <ResourceCard
+            v-for="(resourceCard, index) in Array(player.resourceCounts[resource]).fill(resource)"
+            :key="`card-${resource}-${index}`"
+            :resource="resource"
+            small
+            hideCount
+            :hideIcon="!isMe"
+            :clickable="isMe"
+            class="resource-card"
+            :class="{ 'my-resource-card': isMe }"
+          />
+        </fragment>
+      </div>
+      <div class="player-assets">
+        <div class="belongings">
+          <div class="game-cards">
+            <GameCard
+              v-for="(gameCard, index) in (player.gameCards || [])"
+              :key="`${gameCard.type}-${index}`"
+              :visible="isMe"
+              :type="gameCard.type"
+              :wasPlayed="gameCard.wasPlayed"
+              :clickable="true"
+              @clicked="displayedGameCard = isMe ? { ...gameCard, index } : {}"
+              class="game-card"
+            />
+          </div>
+          <div class="owned-harbors">
+            <BaseIcon
+              v-for="(harbor, resource) in (player.ownedHarbors || [])"
+              :key="`owned-harbor-${resource}`"
+              v-show="harbor"
+              name="sail-boat"
+              :color="resourceCardColors[resource] || 'secondary'" size="32px"
+            />
+          </div>
+        </div>
+        <div class="hero-card-wrapper" :class="{ 'was-played': (player.currentHeroCard || {}).wasPlayed }">
+          <BaseButton color="transparent" height="auto" @click="$emit('display-hero-card', player.currentHeroCard)" class="hero-card-button">
+            <HeroCard thumbnail :card="player.currentHeroCard || {}" class="hero-card" />
+          </BaseButton>
+          <BaseIcon v-if="(player.currentHeroCard || {}).wasPlayed" name="circle-half-full" size="36px" color="primary" class="icon-was-played" />
+        </div>
+      </div>
+    </div>
+    <div v-if="isMe" class="turn-action">
+      <TurnAction :isGameReady="isGameReady" :myPlayer="player" @toggle-ready="$emit('toggle-ready')" />
+    </div>
+    <GameCardDialog
+      v-if="!!displayedGameCard.type"
+      :isOpen="!!displayedGameCard.type"
+      :type="displayedGameCard.type"
+      :playAllowed="playGameCardAllowed"
+      @dismiss="displayedGameCard = {}"
+      @play="playGameCard"
+    />
+    <BaseOverlay v-if="allowStealing" :isOpen="allowStealing" :isFullScreen="false" :opacity="0.6">
+      <BaseButton icon iconName="hand-okay" iconSize="60px" iconColor="warning" @click="$emit('steal-from', player.playerSessionId)" class="steal-button" />
+    </BaseOverlay>
+    <BaseButton
+      v-if="!isMe"
+      key="trade"
+      icon
+      iconName="swap-horizontal-circle"
+      iconColor="#E64A19"
+      iconSize="60px"
+      :disabled="requestTradeDisabled"
+      @click="$emit('trade-with', player.playerSessionId)"
+      class="trade-with"
+    />
+  </div>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
