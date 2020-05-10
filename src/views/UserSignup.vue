@@ -30,7 +30,7 @@
     methods: {
       onUserCreated: async function(addedDbuser) {
         this.$store.commit('setCurrentUser', addedDbuser);
-        this.$store.commit('addAlert', 'Successfully signed up! welcome aboard =)');
+        this.$store.commit('addAlert', { text: 'You are now signed up! welcome aboard =)' });
         router.push('/lobby');
       }
     }

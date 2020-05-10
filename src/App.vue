@@ -85,7 +85,7 @@
         }
 
         this.$store.commit('setCurrentUser', currentUser || {});
-        this.$store.commit('addAlert', `You are now logged ${wasLoggedIn ? 'out' : 'in'}`);
+        this.$store.commit('addAlert', { text: `You are now logged ${wasLoggedIn ? 'out' : 'in'}` });
       },
       startAmbience: function() {
         const { ambience } = this.$refs;
