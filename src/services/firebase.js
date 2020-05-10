@@ -161,13 +161,13 @@ class FirebaseService {
     }
   }
 
-  async sendLobbyChatMessage(channel, message) {
+  async sendLobbyChatMessage(sender, channel, message) {
     const lobbyChat = await firebase.database().ref('lobbyChat/');
 
     const newMessageRef = await lobbyChat.push();
     await newMessageRef.set({
       channel,
-      sender: 'Roee',
+      sender,
       message
     });
   }
