@@ -41,7 +41,7 @@
     <HeroCardDialog
       :isOpen="!!displayedHeroCard.type"
       :card="displayedHeroCard"
-      :playAllowed="displayedHeroCard.type === (myPlayer.currentHeroCard || {}).type && isMyTurn && !myPlayer.hasPlayedHeroCard"
+      :playAllowed="playHeroCardAllowed"
       @play-hero="playHeroCard($event)"
       @close="$store.commit('setDisplayedHeroCard', {})"
     />
@@ -94,6 +94,15 @@
       }
     },
     computed: {
+      playHeroCardAllowed: function() {
+        return (
+          this.isGameStarted &&
+          this.isMyTurn &&
+          !!this.myPlayer.currentHeroCard && this.displayedHeroCard.type === this.myPlayer.currentHeroCard.type &&
+          !this.myPlayer.hasPlayedHeroCard &&
+          this.displayedHeroCard.purchasedRound !== this.currentRound
+        );
+      },
       ...mapState([
         'myPlayer',
         'players',
