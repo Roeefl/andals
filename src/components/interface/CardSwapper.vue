@@ -80,6 +80,9 @@
   $card-distance: 80px;
   $zindex-first-card: 100;
 
+  $hero-card-width: 200px;
+  $hero-card-height: 440px;
+
   @mixin cards($start) {
     @for $c from 0 to ($cards-count / 2) {
       &:nth-child(#{$c + 1}) {
@@ -106,16 +109,23 @@
       position: absolute;
       bottom: 70%;
       @include cards($first-card-left);
-
-      &:hover {
-        box-shadow: 0px 150px 1000px 250px $highlight;
-        z-index: $zindex-first-card + 100;
-        // bottom: 90%;
-      }
+      opacity: 0.9;
 
       .hero-card {
-        width: 200px;
-        height: 440px;
+        width: $hero-card-width;
+        height: $hero-card-height;
+        font-size: $font-size-xs;
+      }
+
+      &:hover {
+        z-index: $zindex-first-card + 100;
+        opacity: 1;
+        bottom: 75%;
+
+        .hero-card {
+          width: $hero-card-width * 1.3;
+          height: $hero-card-height * 1.3;
+        }
       }
     }
   }
