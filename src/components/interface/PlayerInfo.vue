@@ -3,7 +3,7 @@
     <div class="upper">
       <div class="header">
         <div class="avatar">
-          <BaseAvatar v-if="player.avatar" :size="64" :src="require(`../../assets/avatars/${player.avatar}.png`)" :alt="player.nickname" />
+          <BaseAvatar :size="64" :src="require(`../../assets/avatars/${player.avatar || 1}.png`)" :alt="player.nickname" />
           <span class="nickname">
             {{ player.nickname }}
           </span>
