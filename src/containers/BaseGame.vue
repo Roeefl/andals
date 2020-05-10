@@ -545,6 +545,7 @@
         });
       },
       onPlayGameCard: function(gameCard) {
+      console.log("gameCard", gameCard)
         this.room.send({
           type: MESSAGE_PLAY_GAME_CARD,
           cardType: gameCard.type,

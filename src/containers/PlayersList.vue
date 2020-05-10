@@ -39,7 +39,8 @@
       />
     </div>
     <HeroCardDialog
-      :isOpen="!!displayedHeroCard.type"
+      v-if="!!displayedHeroCard.type"
+      isOpen
       :card="displayedHeroCard"
       :playAllowed="playHeroCardAllowed"
       @play-hero="playHeroCard($event)"

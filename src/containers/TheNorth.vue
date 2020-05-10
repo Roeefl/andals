@@ -35,7 +35,7 @@
     </div>
     <CardSwapper
       v-if="myPlayer.swappingHeroCard"
-      :isOpen="myPlayer.swappingHeroCard"
+      isOpen
       :cards="roomState.heroCards"
       @selected="onSelectHeroCard($event)"
     />
@@ -260,6 +260,7 @@
             position
           });
           
+          this.setActivePurchase(null);
           return;
         } else {
           this.room.send({
