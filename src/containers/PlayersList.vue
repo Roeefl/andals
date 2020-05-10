@@ -19,8 +19,8 @@
           @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
           class="player"
         />
-        <BaseOverlay v-if="opponentDice && opponentDice.who && opponentDice.who === player.playerSessionId" isOpen :isFullScreen="false" :opacity="0.7">
-          <GameDice :dice="opponentDice.dice" />
+        <BaseOverlay v-if="activeDice && activeDice.who && activeDice.who === player.playerSessionId" isOpen :isFullScreen="false" :opacity="0.7">
+          <GameDice :dice="activeDice.dice" />
         </BaseOverlay>
       </li>
     </ul>      
@@ -100,7 +100,7 @@
         'displayedHeroCard',
         'justPurchasedGameCard',
         'recentLoot',
-        'opponentDice'
+        'activeDice'
       ]),
       ...mapGetters([
         'isGameStarted',
@@ -111,11 +111,8 @@
     },
     methods: {
       renderKey(player) {
-        const totalLoot = Object.values(player.availableLoot).reduce((r1, r2) => r1 + r2, 0);
         const resourceCounts = Object.values(player.resourceCounts).reduce((r1, r2) => r1 + r2, 0);
-        const gamePieces = player.roads + player.settlements + player.cities + player.guards;
-
-        return `${player.playerSessionId}-${player.isReady}-${totalLoot}-${resourceCounts}-${gamePieces}-${(player.currentHeroCard || {}).name}`;
+        return `${player.playerSessionId}-${player.isReady}-${resourceCounts}-${(player.currentHeroCard || { type: '' }).type}`;
       },
       playHeroCard: function(heroCard) {
         this.$store.commit('setDisplayedHeroCard', {});
