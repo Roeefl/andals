@@ -74,7 +74,7 @@
 
   import { GUARD } from '@/specs/purchases';
   import { isAllowNorthWildlingsRemove } from '@/utils/heroes';
-  import { WILDLING_REGULAR, WILDLING_CLIMBER, WILDLING_GIANT } from '@/specs/wildlings';
+  import { wildlingAttentionHeaders } from '@/specs/wildlings';
   import { heroSpecs } from '@/specs/heroCards';
 
   export default {
@@ -206,21 +206,11 @@
             break;
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
-            const { invader } = broadcast;
+            const { invader, guardsKilled } = broadcast;
+            const invadeHeader = wildlingAttentionHeaders[invader.type];
 
-            let guardsKilled = 0;
-            if (invader.type === WILDLING_REGULAR) {
-              header = 'Attack on the wall! The wildlings have overthrown the guards and invaded Westeros';
-              guardsKilled = 1;
-            } else if (invader.type === WILDLING_CLIMBER) {
-              header = 'A wildling has climbed the wall!';
-            } else if (invader.type === WILDLING_GIANT) {
-              header = 'Attack on the wall! A giant has killed a guard';
-              guardsKilled = 1;
-            };
-
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
-            this.setAttentions({ header, guardsKilled, wildlingType: invader.type });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: invadeHeader });
+            this.setAttentions({ header: invadeHeader, guardsKilled, wildlingType: invader.type });
             break;
 
           case MESSAGE_PLAY_HERO_CARD:
