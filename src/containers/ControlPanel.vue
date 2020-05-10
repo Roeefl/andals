@@ -1,18 +1,3 @@
-<template>
-  <div class="control-panel">
-    <div class="app-header-gap" />
-    <div class="game-ui">
-      <BankResources
-        @bank-trading="$emit('bank-trade', $event)"
-        @collect-all="onCollectAllLoot"
-        @collect-resource="collectResource($event)"
-        class="bank-resources"
-      />
-      <GamePhase class="game-action" />
-    </div>
-  </div>
-</template>
-
 <script>
   import colyseusService from '@/services/colyseus';
 
@@ -43,38 +28,42 @@
   }
 </script>
 
+<template>
+  <header class="control-panel">
+    <div class="app-header-gap" />
+    <GamePhase class="game-action" />
+    <BankResources
+      @bank-trading="$emit('bank-trade', $event)"
+      @collect-all="onCollectAllLoot"
+      @collect-resource="collectResource($event)"
+      class="bank-resources"
+    />
+  </header>
+</template>
+
 <style scoped lang="scss">
   @import '@/styles/partials';
 
   .control-panel {
     flex: 1;
     display: grid;
-    grid-template-columns: 17% 83%;
+    grid-template-columns: 20% 30% 50%;
+    place-items: center end;
 
-    @include lg-down() {
-      grid-template-columns: 20% 80%;
+    @include md-down() {
+      grid-template-columns: repeat(3, 33%);
+    }
+    
+    .game-action {
+      width: 80%;
+      height: 70%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .game-ui {
-      padding-right: $spacer;
-      display: grid;
-      grid-template-columns: 60% 40%;
-      align-items: center;
-
-      @include md-down() {
-        grid-template-columns: 70% 30%;
-      }
-
-      .bank-resources {
-        margin-left: $spacer * 2;
-      }
-      
-      .game-action {
-        height: 80%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+    .bank-resources {
+      padding-right: $spacer * 2;
     }
   }
 </style>

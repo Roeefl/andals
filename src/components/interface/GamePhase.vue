@@ -1,3 +1,25 @@
+<script>
+  import { mapState } from 'vuex';
+  import BaseButton from '@/components/common/BaseButton';
+
+  export default {
+    name: 'GamePhase',
+    components: {
+      BaseButton
+    },
+    computed: {
+      currentPlayer: function() {
+        if (!this.players.length) return {};
+        return this.players[this.roomState.currentTurn];
+      },
+      ...mapState([
+        'players',
+        'roomState'
+      ])
+    },
+  }
+</script>
+
 <template>
   <div class="container">
     <div v-if="!roomState || !roomState.isGameReady" key="preparing" class="action-wrapper">
@@ -34,30 +56,9 @@
         thinking
       </div>
     </div>
+    ...
   </div>
 </template>
-
-<script>
-  import { mapState } from 'vuex';
-  import BaseButton from '@/components/common/BaseButton';
-
-  export default {
-    name: 'GamePhase',
-    components: {
-      BaseButton
-    },
-    computed: {
-      currentPlayer: function() {
-        if (!this.players.length) return {};
-        return this.players[this.roomState.currentTurn];
-      },
-      ...mapState([
-        'players',
-        'roomState'
-      ])
-    },
-  }
-</script>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
@@ -67,8 +68,6 @@
     font-size: $font-size-lg;
     box-shadow: 0px 0px 6px 6px $highlight;
     padding: 0 $spacer;
-    background: $primary;
-    color: $secondary;
 
     .action-wrapper {
       display: flex;
