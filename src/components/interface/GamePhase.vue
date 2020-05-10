@@ -12,6 +12,15 @@
         if (!this.players.length) return {};
         return this.players[this.roomState.currentTurn];
       },
+      ongoingTrade: function() {
+        const tradingPlayer = this.players.find(player => !!player.tradingWith);
+        if (!tradingPlayer) return false;
+
+        const tradingWith = this.players.find(({ playerSessionId }) => playerSessionId === tradingPlayer.tradingWith);
+        if (!tradingWith) return false;
+
+        return `${tradingPlayer.nickname} and ${tradingWith.nickname} are trading`;
+      },
       ...mapState([
         'players',
         'roomState'
@@ -35,6 +44,9 @@
       <div v-for="(value, key) in currentPlayer.hasResources" :key="key" v-show="value">
         {{ key }}
       </div>
+    </div>
+    <div v-else-if="ongoingTrade" key="ongoing-trade">
+      {{ ongoingTrade }}
     </div>
     <div v-else key="in-game" class="action-wrapper">
       <div class="base">
