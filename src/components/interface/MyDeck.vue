@@ -285,7 +285,7 @@
       padding: 0 $spacer;
       display: grid;
       grid-gap: 1%;
-      grid-template-columns: 20% 35% 25% 17%;
+      grid-template-columns: 20% 35% 22% 20%;
 
       .building-costs {
         height: 200px;

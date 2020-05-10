@@ -312,6 +312,12 @@
 
             break;
 
+          case MESSAGE_TRADE_CONFIRM:
+            const { player1, player2 } = broadcast;
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${player1} has completed a trade with ${player2}` });
+            
+            break;
+
           case MESSAGE_TURN_ORDER:
             this.addGameLog({ type: CHAT_LOG_TURN_ORDER, playerName, playerColor, message });
 
@@ -448,11 +454,13 @@
           isAgreed
         });
       },
-      acceptResourceTradeRequest: function() {
-        this.room.send({
+      acceptResourceTradeRequest: async function() {
+        await this.room.send({
           type: MESSAGE_TRADE_REQUEST_RESOURCE_AGREE,
           offeredResource: this.tradeRequested.requestedResource
         });
+
+        this.tradeRequested = {}
       },
       onDeclareRequestedResource: function(resource) {
         this.room.send({

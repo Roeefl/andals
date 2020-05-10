@@ -216,6 +216,7 @@
     computed: {
       playGameCardAllowed: function() {
         return (
+          this.isGameStarted &&
           this.isMe &&
           this.isMyTurn &&
           !this.player.hasPlayedGameCard &&

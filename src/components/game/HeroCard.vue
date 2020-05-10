@@ -110,7 +110,7 @@
         display: flex;
         align-items: center;
         padding: 0 $spacer * 1.5;
-        // font-size: $font-size-xs;
+        font-size: $font-size-md;
       }
     }
 
