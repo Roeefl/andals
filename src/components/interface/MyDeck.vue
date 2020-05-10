@@ -1,3 +1,163 @@
+<script>
+  import { mapState, mapMutations, mapGetters } from 'vuex';
+  import colyseusService from '@/services/colyseus';
+
+  import BaseDeck from '@/components/game/BaseDeck';
+  import BuildingCosts from '@/components/interface/BuildingCosts';
+  import ResourceSelect from '@/components/interface/ResourceSelect';
+  import GameCards from '@/components/interface/GameCards';
+  import HeroCard from '@/components/game/HeroCard';
+  import GamePiece from '@/components/game/GamePiece';
+  import BaseButton from '@/components/common/BaseButton';
+  import BaseBadge from '@/components/common/BaseBadge';
+  import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
+  
+  import { types as purchaseTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
+  import { initialResourceCounts } from '@/specs/resources';
+  import { CARD_VICTORY_POINT } from '@/specs/gameCards';
+
+  import {
+    MESSAGE_DISCARD_HALF_DECK,
+    MESSAGE_TRADE_REQUEST_RESOURCE,
+    MESSAGE_PURCHASE_GAME_CARD
+  } from '@/constants';
+
+  export default {
+    name: 'MyDeck',
+    components: {
+      BaseDeck,
+      BuildingCosts,
+      GameCards,
+      ResourceSelect,
+      HeroCard,
+      GamePiece,
+      BaseButton,
+      BaseBadge,
+      PurchaseConfirm
+    },
+    data: () => ({
+      isPinned: false,
+      selectedCards: []
+    }),
+    computed: {
+      discardCardsNeeded: function() {
+        const totalCards = Object
+          .values(this.myPlayer.resourceCounts)
+          .reduce((r1, r2) => r1 + r2, 0);
+
+        return Math.floor(totalCards / 2);
+      },
+      ...mapState([
+        'roomState',
+        'myPlayer',
+        'displayDeck',
+        'activePurchase'
+      ]),
+      ...mapGetters([
+        'isGameStarted',
+        'currentRound',
+        'isMyTurn',
+        'allowRequestTrade',
+        'allowPurchaseGameCard'
+      ])
+    },
+    created() {
+      this.purchaseTypes = purchaseTypes;
+      this.GAME_CARD = GAME_CARD;
+      this.CARD_VICTORY_POINT = CARD_VICTORY_POINT;
+    },
+    methods: {
+      ...mapMutations([
+        'addAlert',
+        'openMyDeck',
+        'closeMyDeck',
+        'setActivePurchase',
+        'setJustPurchasedGameCard'
+      ]),
+      toggleCardSelection: function(card) {
+        if (!this.myPlayer.mustDiscardHalfDeck) return;
+        
+        const { index, resource } = card;
+
+        const isCardSelected = this.selectedCards.some(sel => sel.index === index && sel.resource === resource);
+
+        this.selectedCards = isCardSelected
+          ? this.selectedCards.filter(sel => sel.index !== index || sel.resource !== resource)
+          : [
+            ...this.selectedCards,
+            card
+          ];
+      },
+      onDiscard: function() {
+        if (!this.isPinned)
+          this.closeMyDeck();
+
+        if (!this.myPlayer.mustDiscardHalfDeck) return;
+
+        const discardedCounts = this.selectedCards.reduce((acc, { resource }) => {
+          acc[resource]++;
+          return acc;
+        }, initialResourceCounts);
+        console.log("discardedCounts", discardedCounts)
+
+        colyseusService.room.send({
+          type: MESSAGE_DISCARD_HALF_DECK,
+          discardedCounts
+        });
+
+        this.selectedCards = [];
+      },
+      onPieceClick: function(type) {
+        if (!this.isMyTurn) return;
+        
+        if (type === GAME_CARD) {
+          if (!this.allowPurchaseGameCard) return;
+          
+          this.setActivePurchase({
+            type: GAME_CARD
+          });
+        }
+      },
+      playGameCard: function(gameCard) {
+        const desiredGameCard = this.myPlayer.gameCards[gameCard.index];
+        if (desiredGameCard.purchasedRound === this.currentRound) {
+          this.addAlert({ color: 'warning', text: 'You cannot play a development card on the same round you purchased it' });
+          return;
+        };
+
+        this.$emit('play-game-card', gameCard);
+      },
+      onRequestTrade: function(requestedResource) {
+        colyseusService.room.send({
+          type: MESSAGE_TRADE_REQUEST_RESOURCE,
+          requestedResource
+        });
+      },
+      onConfirmPurchase: function(gameCard) {
+        const { type } = this.activePurchase;
+        if (type !== GAME_CARD) return;
+        
+        colyseusService.room.send({
+          type: MESSAGE_PURCHASE_GAME_CARD,
+          selectedCardIndex: gameCard.index
+        });
+
+        this.setJustPurchasedGameCard(true);
+        this.setActivePurchase(null);
+      },
+      minimizeDeck: function() {
+        if (this.myPlayer.mustDiscardHalfDeck) {
+          this.addAlert({ color: 'warning', text: 'You must discard half of your deck before you can finish your turn' });
+          return;
+        }
+        
+        if (this.isPinned) this.isPinned = false;
+        this.closeMyDeck();
+      }
+    }
+  }
+</script>
+
 <template>
   <fragment>
     <BaseButton
@@ -12,13 +172,10 @@
     >
       My Deck
     </BaseButton>
-    <v-bottom-sheet
-      light
-      :value="displayDeck"
-      width="68%"
-      @click:outside="closeMyDeck"
-      :persistent="myPlayer.mustDiscardHalfDeck"
-      :overlay-opacity="0"
+      <!-- // @click:outside="!isPinned && closeMyDeck()" -->
+    <div
+      v-if="displayDeck"
+      class="my-deck"
     >
       <v-sheet class="deck-sheet">
         <BaseButton
@@ -27,7 +184,7 @@
           iconColor="primary"
           iconSize="40px"
           :disabled="myPlayer.mustDiscardHalfDeck"
-          @click="closeMyDeck"
+          @click="minimizeDeck"
           class="close-deck"
         ></BaseButton>
         <div class="deck-container">
@@ -99,164 +256,25 @@
             </div>
           </v-hover>
         </div>
+        <BaseButton icon :iconName="isPinned ? 'pin-off-outline' : 'pin-outline'" iconColor="white" iconSize="28px" @click="isPinned = !isPinned" class="pin-deck" />
       </v-sheet>
-    </v-bottom-sheet>
+    </div>
   </fragment>
 </template>
-
-<script>
-  import { mapState, mapMutations, mapGetters } from 'vuex';
-  import colyseusService from '@/services/colyseus';
-
-  import BaseDeck from '@/components/game/BaseDeck';
-  import BuildingCosts from '@/components/interface/BuildingCosts';
-  import ResourceSelect from '@/components/interface/ResourceSelect';
-  import GameCards from '@/components/interface/GameCards';
-  import HeroCard from '@/components/game/HeroCard';
-  import GamePiece from '@/components/game/GamePiece';
-  import BaseButton from '@/components/common/BaseButton';
-  import BaseBadge from '@/components/common/BaseBadge';
-  import PurchaseConfirm from '@/components/interface/PurchaseConfirm';
-  
-  import { types as purchaseTypes, ROAD, SETTLEMENT, CITY, GAME_CARD, GUARD } from '@/specs/purchases';
-  import { initialResourceCounts } from '@/specs/resources';
-  import { CARD_VICTORY_POINT } from '@/specs/gameCards';
-
-  import {
-    MESSAGE_DISCARD_HALF_DECK,
-    MESSAGE_TRADE_REQUEST_RESOURCE,
-    MESSAGE_PURCHASE_GAME_CARD
-  } from '@/constants';
-
-  export default {
-    name: 'MyDeck',
-    components: {
-      BaseDeck,
-      BuildingCosts,
-      GameCards,
-      ResourceSelect,
-      HeroCard,
-      GamePiece,
-      BaseButton,
-      BaseBadge,
-      PurchaseConfirm
-    },
-    data: () => ({
-      selectedCards: []
-    }),
-    computed: {
-      discardCardsNeeded: function() {
-        const totalCards = Object
-          .values(this.myPlayer.resourceCounts)
-          .reduce((r1, r2) => r1 + r2, 0);
-
-        return Math.floor(totalCards / 2);
-      },
-      ...mapState([
-        'roomState',
-        'myPlayer',
-        'displayDeck',
-        'activePurchase'
-      ]),
-      ...mapGetters([
-        'isGameStarted',
-        'currentRound',
-        'isMyTurn',
-        'allowRequestTrade',
-        'allowPurchaseGameCard'
-      ])
-    },
-    created() {
-      this.purchaseTypes = purchaseTypes;
-      this.GAME_CARD = GAME_CARD;
-      this.CARD_VICTORY_POINT = CARD_VICTORY_POINT;
-    },
-    methods: {
-      ...mapMutations([
-        'addAlert',
-        'openMyDeck',
-        'closeMyDeck',
-        'setActivePurchase',
-        'setJustPurchasedGameCard'
-      ]),
-      toggleCardSelection: function(card) {
-        if (!this.myPlayer.mustDiscardHalfDeck) return;
-        
-        const { index, resource } = card;
-
-        const isCardSelected = this.selectedCards.some(sel => sel.index === index && sel.resource === resource);
-
-        this.selectedCards = isCardSelected
-          ? this.selectedCards.filter(sel => sel.index !== index || sel.resource !== resource)
-          : [
-            ...this.selectedCards,
-            card
-          ];
-      },
-      onDiscard: function() {
-        this.closeMyDeck();
-
-        if (!this.myPlayer.mustDiscardHalfDeck) return;
-
-        const discardedCounts = this.selectedCards.reduce((acc, { resource }) => {
-          acc[resource]++;
-          return acc;
-        }, initialResourceCounts);
-        console.log("discardedCounts", discardedCounts)
-
-        colyseusService.room.send({
-          type: MESSAGE_DISCARD_HALF_DECK,
-          discardedCounts
-        });
-
-        this.selectedCards = [];
-      },
-      onPieceClick: function(type) {
-        if (!this.isMyTurn) return;
-        
-        if (type === GAME_CARD) {
-          if (!this.allowPurchaseGameCard) return;
-          
-          this.setActivePurchase({
-            type: GAME_CARD
-          });
-        }
-      },
-      playGameCard: function(gameCard) {
-        const desiredGameCard = this.myPlayer.gameCards[gameCard.index];
-        if (desiredGameCard.purchasedRound === this.currentRound) {
-          this.addAlert({ color: 'warning', text: 'You cannot play a development card on the same round you purchased it' });
-          return;
-        };
-
-        this.$emit('play-game-card', gameCard);
-      },
-      onRequestTrade: function(requestedResource) {
-        colyseusService.room.send({
-          type: MESSAGE_TRADE_REQUEST_RESOURCE,
-          requestedResource
-        });
-      },
-      onConfirmPurchase: function(gameCard) {
-        const { type } = this.activePurchase;
-        if (type !== GAME_CARD) return;
-        
-        colyseusService.room.send({
-          type: MESSAGE_PURCHASE_GAME_CARD,
-          selectedCardIndex: gameCard.index
-        });
-
-        this.setJustPurchasedGameCard(true);
-        this.setActivePurchase(null);
-      },
-    }
-  }
-</script>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
 
   $playable-card-size: 80px;
+
+  .my-deck {
+    position: fixed;
+    bottom: 0;
+    left: 16vw;
+    width: 67vw;
+    z-index: $zindex-screen-overlay;
+    animation: fade-in 400ms;
+  }
 
   .deck-sheet {
     background: rgba($secondary, 0.5);
@@ -327,11 +345,11 @@
 
       .offer-trade {
         padding-top: $spacer * 3;
+        position: relative;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        position: relative;
 
         .offer-trade-text {
           margin-top: $spacer * 2;
@@ -385,5 +403,11 @@
     &.hidden {
       opacity: 0;
     }
+  }
+
+  .pin-deck {
+    position: absolute;
+    top: $spacer / 2;
+    right: $spacer / 2;
   }
 </style>
