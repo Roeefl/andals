@@ -5,12 +5,11 @@
     </div>
     <fragment v-else key="dice-rolled">
       <BaseButton
-        v-if="roomState.isGameReady && !myPlayer.mustMoveRobber"
+        v-if="allowFinishTurn"
         color="red"
         :width="buttonWidth"
         :height="buttonHeight"
         @click="finishTurn"
-        :clickable="!isEndTurnDisabled"
       >
         Finish My Turn
       </BaseButton>
@@ -74,16 +73,14 @@
       }
     },
     computed: {
-      isEndTurnDisabled: function() {
+      allowFinishTurn: function() {
         return (
-          this.isTurnOrderPhase ||
-          (this.roomState.isSetupPhase && (this.myPlayer.hasResources.road || this.myPlayer.hasResources.settlement || this.myPlayer.hasResources.guard)) ||
-          !this.isMyTurn ||
-          (!this.roomState.isSetupPhase && !this.roomState.isDiceRolled) ||
-          (this.myPlayer.mustMoveRobber && this.desiredRobberTile === -1) ||
-          this.myPlayer.allowStealingFrom.length > 0 ||
-          this.myPlayer.allowFreeRoads > 0 ||
-          this.roomState.isVictory
+          this.isGameStarted &&
+          this.isMyTurn &&
+          this.roomState.isDiceRolled &&
+          !this.myPlayer.mustMoveRobber &&
+          !this.roomState.isVictory &&
+          !this.myPlayer.allowStealingFrom.length
         );
       },
       isWaitingForDiceRoll: function() {
@@ -103,6 +100,7 @@
         'desiredRobberTile'
       ]),
       ...mapGetters([
+        'isGameStarted',
         'isMyTurn',
         'isTurnOrderPhase'
       ])
