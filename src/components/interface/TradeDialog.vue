@@ -49,9 +49,11 @@
               <BaseButton
                 icon
                 iconSize="64px"
-                :iconColor="player.isAgreeToTrade ? 'highlight' : 'warning'"
-                :iconName="player.isAgreeToTrade ? 'check-circle-outline' : 'cancel'"
+                iconName="check-circle-outline"
+                iconColor="highlight"
                 @click="i === 0 && $emit('agree-trade')"
+                class="agree-trade"
+                :class="{ 'agreed': player.isAgreeToTrade }"
               />
             </div>
           </drop>
@@ -201,5 +203,13 @@
 
   .resource-card {
     margin-left: $spacer / 3;
+  }
+
+  .agree-trade {
+    opacity: 0.4;
+
+    &.agreed {
+      opacity: 1;
+    }
   }
 </style>
