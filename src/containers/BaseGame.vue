@@ -358,10 +358,10 @@
             break;
 
           case MESSAGE_COLLECT_ALL_LOOT:
-            const { playerSessionId, loot } = broadcast;
+            const { loot } = broadcast;
             this.addGameLog({ type: CHAT_LOG_LOOT, playerName, playerColor, loot });
 
-            if (playerSessionId === this.myPlayer.playerSessionId) {
+            if (broadcast.playerSessionId === this.myPlayer.playerSessionId) {
               const { lootAudio } = this.$refs;
               if (lootAudio) lootAudio.play(); 
 
@@ -380,8 +380,12 @@
             const { resource } = broadcast;
             this.addGameLog({ type: CHAT_LOG_LOOT, playerName, playerColor, loot: { [resource]: 1 } });
 
-            if (broadcast.playerSessionId === this.myPlayer.playerSessionId)
+            if (broadcast.playerSessionId === this.myPlayer.playerSessionId) {
               this.addRecentLoot({ resource, count: 1 });
+              
+              const { lootAudio } = this.$refs;
+              if (lootAudio) lootAudio.play(); 
+            }
             break;
 
           case MESSAGE_DISCARD_HALF_DECK:
