@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
 import localStorage from '@/services/localStorage';
 import boardService from '@/services/board';
-import { DEFAULT_ATTENTION_TIMEOUT } from '@/config';
+import { DEFAULT_ATTENTION_TIMEOUT, RECENT_LOOT_TIMEOUT } from '@/config';
 
 import { MESSAGE_FINISH_TURN } from '@/constants';
 
@@ -310,7 +310,7 @@ export default new Vuex.Store({
         delete updatedLoot[lootKey];
 
         state.recentLoot = updatedLoot;
-      }, 5000);
+      }, RECENT_LOOT_TIMEOUT);
     },
     victory(state, playerName) {
       state.gameWinner = playerName;

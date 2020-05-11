@@ -1,2 +1,3 @@
 export const DEFAULT_ATTENTION_TIMEOUT = 3000;
 export const ACTIVE_DICE_TIMEOUT = 3000;
+export const RECENT_LOOT_TIMEOUT = 5000;

@@ -1,64 +1,3 @@
-<template>
-  <div class="players-wrapper">
-    <ul class="other-players">
-      <li
-        v-for="(player, index) in players.filter(player => player.playerSessionId !== myPlayer.playerSessionId)"
-        :key="renderKey(player)"
-        class="player-wrapper"
-        :class="{ 'current-turn': currentTurn === index }"
-      >
-        <PlayerInfo
-          :player="player"
-          :isGameStarted="isGameStarted"
-          :isGameReady="isGameReady"
-          :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
-          :allowStealing="myPlayer.allowStealingFrom && myPlayer.allowStealingFrom.includes(player.playerSessionId)"
-          :allowRequestTrade="allowRequestTrade"
-          @trade-with="$emit('trade-with', $event)"
-          @steal-from="$emit('steal-from', $event)"
-          @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
-          class="player"
-        />
-        <BaseOverlay v-if="activeDice && activeDice.who && activeDice.who === player.playerSessionId" isOpen :isFullScreen="false" :opacity="0.7">
-          <GameDice :dice="activeDice.dice" />
-        </BaseOverlay>
-      </li>
-    </ul>      
-    <div class="player-wrapper is-me" :class="{ 'current-turn': currentTurn === myPlayerIndex }">
-      <PlayerInfo
-        :player="myPlayer"
-        isMe
-        :currentRound="currentRound"
-        :isGameReady="isGameReady"
-        :isMyTurn="isMyTurn"
-        @deck-clicked="$store.commit('openMyDeck')"
-        @toggle-ready="$emit('toggle-ready')"
-        @play-card="$emit('play-card', $event)"
-        @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
-        class="player"
-      />
-    </div>
-    <HeroCardDialog
-      v-if="!!displayedHeroCard.type"
-      isOpen
-      :card="displayedHeroCard"
-      :playAllowed="playHeroCardAllowed"
-      @play-hero="playHeroCard($event)"
-      @close="$store.commit('setDisplayedHeroCard', {})"
-    />
-    <div class="recent-loot-cards" v-if="Object.keys(recentLoot).length > 0">
-      <ResourceCard
-        v-for="(card, key, index) in recentLoot"
-        :key="`${key}-${index}`"
-        recentLoot
-        hideCount
-        :resource="card.resource"
-        class="recent-loot-card"
-      />
-    </div>
-  </div>
-</template>
-
 <script>
   import { mapState, mapGetters } from 'vuex';
   import PlayerInfo from '@/components/interface/PlayerInfo';
@@ -131,6 +70,67 @@
     }
   }
 </script>
+
+<template>
+  <div class="players-wrapper">
+    <ul class="other-players">
+      <li
+        v-for="(player, index) in players.filter(player => player.playerSessionId !== myPlayer.playerSessionId)"
+        :key="renderKey(player)"
+        class="player-wrapper"
+        :class="{ 'current-turn': currentTurn === index }"
+      >
+        <PlayerInfo
+          :player="player"
+          :isGameStarted="isGameStarted"
+          :isGameReady="isGameReady"
+          :waitingTrade="myPlayer.isWaitingTradeRequest && player.playerSessionId === waitingTradeWith"
+          :allowStealing="myPlayer.allowStealingFrom && myPlayer.allowStealingFrom.includes(player.playerSessionId)"
+          :allowRequestTrade="allowRequestTrade"
+          @trade-with="$emit('trade-with', $event)"
+          @steal-from="$emit('steal-from', $event)"
+          @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
+          class="player"
+        />
+        <BaseOverlay v-if="activeDice && activeDice.who && activeDice.who === player.playerSessionId" isOpen :isFullScreen="false" :opacity="0.7">
+          <GameDice :dice="activeDice.dice" />
+        </BaseOverlay>
+      </li>
+    </ul>      
+    <div class="player-wrapper is-me" :class="{ 'current-turn': currentTurn === myPlayerIndex }">
+      <PlayerInfo
+        :player="myPlayer"
+        isMe
+        :currentRound="currentRound"
+        :isGameReady="isGameReady"
+        :isMyTurn="isMyTurn"
+        @deck-clicked="$store.commit('openMyDeck')"
+        @toggle-ready="$emit('toggle-ready')"
+        @play-card="$emit('play-card', $event)"
+        @display-hero-card="$store.commit('setDisplayedHeroCard', $event)"
+        class="player"
+      />
+    </div>
+    <HeroCardDialog
+      v-if="!!displayedHeroCard.type"
+      isOpen
+      :card="displayedHeroCard"
+      :playAllowed="playHeroCardAllowed"
+      @play-hero="playHeroCard($event)"
+      @close="$store.commit('setDisplayedHeroCard', {})"
+    />
+    <div class="recent-loot-cards" v-show="recentLoot.length">
+      <ResourceCard
+        v-for="(resourceCard, rc) in recentLoot"
+        :key="rc"
+        recentLoot
+        hideCount
+        :resource="resourceCard"
+        class="recent-loot-card"
+      />
+    </div>
+  </div>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
@@ -218,7 +218,7 @@
     
     & + & {
       margin-left: 0;
-      margin-top: 200px;
+      margin-top: 140px;
     }
   }
 </style>
