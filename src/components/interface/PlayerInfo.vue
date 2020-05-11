@@ -221,11 +221,11 @@
             />
           </div>
         </div>
-        <div class="hero-card-wrapper" :class="{ 'was-played': (player.currentHeroCard || {}).wasPlayed }">
+        <div class="hero-card-wrapper" :class="{ 'was-played': player.currentHeroCard.wasPlayed }">
           <BaseButton color="transparent" height="auto" @click="$emit('display-hero-card', player.currentHeroCard)" class="hero-card-button">
-            <HeroCard thumbnail :card="player.currentHeroCard || {}" class="hero-card" />
+            <HeroCard thumbnail :card="player.currentHeroCard" class="hero-card" />
           </BaseButton>
-          <BaseIcon v-if="(player.currentHeroCard || {}).wasPlayed" name="circle-half-full" size="36px" color="primary" class="icon-was-played" />
+          <BaseIcon v-show="player.currentHeroCard.wasPlayed" name="circle-half-full" size="36px" color="primary" class="icon-was-played" />
         </div>
       </div>
     </div>

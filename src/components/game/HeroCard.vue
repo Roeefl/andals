@@ -25,14 +25,14 @@
       <h3>
         {{ card.name }}
       </h3>
-      <h4 v-if="!thumbnail" class="card-title">
+      <h4 v-show="!thumbnail" class="card-title">
         {{ heroSpecs[card.type].title }}
       </h4>
     </header>
     <section class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
-      <img v-if="card.type" :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.type}`" class="card-image" />
+      <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.type}`" class="card-image" />
     </section>
-    <section v-if="!thumbnail && card.type" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
+    <section v-if="!thumbnail" key="card-info" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">
         {{ heroSpecs[card.type].ability }}
       </h3>

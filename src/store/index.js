@@ -39,7 +39,12 @@ export default new Vuex.Store({
       avatar: 1,
       resourceCounts: {},
       hasResources: {},
-      currentHeroCard: {}
+      currentHeroCard: {
+        type: 'JeorMormont',
+        name: 'Jeor Mormont',
+        title: 'Jeor Mormont',
+        wasPlayed: false
+      }
     },
     activePurchase: null,
     desiredRobberTile: -1,
@@ -172,9 +177,13 @@ export default new Vuex.Store({
         ...state.awaitingTradeRequest,
         [whoRefused]: false
       };
+
+      if (Object.entries(state.awaitingTradeRequest).every(([key, value]) => !value)) {
+        state.awaitingTradeRequest = {};
+      }
     },
     resetAwaitingTradeRequest(state) {
-      state.awaitingTradeRequest = {}
+      state.awaitingTradeRequest = {};
     },
     setRooms(state, rooms) {
       state.rooms = [
