@@ -135,6 +135,9 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
+  $recent-loot-width: 120px;
+  $recent-loot-height: 180px;
+
   .players-wrapper {
     height: 100%;
     width: 100%;
@@ -210,15 +213,24 @@
     z-index: $zindex-decor-overlay;
   }
 
+  @mixin loot-positions() {
+    @for $c from 0 to 6 {
+      &:nth-child(#{$c + 1}) {
+        bottom: calc(#{$recent-loot-height * -$c});
+      }
+    }
+  }
+
   .recent-loot-card {
     position: absolute;
+    bottom: 0;
     left: 240px;
-    width: 120px;
-    height: 180px;
-    
+    width: $recent-loot-width;
+    height: $recent-loot-height;
+    @include loot-positions();
+
     & + & {
       margin-left: 0;
-      margin-top: 140px;
     }
   }
 </style>
