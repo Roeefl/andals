@@ -177,10 +177,6 @@ export default new Vuex.Store({
         ...state.awaitingTradeRequest,
         [whoRefused]: false
       };
-
-      if (Object.entries(state.awaitingTradeRequest).every(([key, value]) => !value)) {
-        state.awaitingTradeRequest = {};
-      }
     },
     resetAwaitingTradeRequest(state) {
       state.awaitingTradeRequest = {};

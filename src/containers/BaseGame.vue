@@ -132,7 +132,8 @@
         'isRollingDice',
         'desiredRobberTile',
         'gameWinner',
-        'activeDice'
+        'activeDice',
+        'awaitingTradeRequest'
       ]),
       ...mapGetters([
         'isMyTurn'
@@ -317,8 +318,15 @@
           case MESSAGE_TRADE_REQUEST_RESOURCE_RESPOND:
             const { isTradeStarted, whoRefused } = broadcast;
 
-            if (isTradeStarted) this.resetAwaitingTradeRequest();
-            else this.updateAwaitingTradeRequest(whoRefused);
+            if (isTradeStarted) {
+              this.resetAwaitingTradeRequest();
+            }
+            else {
+              this.updateAwaitingTradeRequest(whoRefused);
+
+              if (Object.values(this.awaitingTradeRequest).every(value => !value))
+                 this.resetAwaitingTradeRequest();
+            }
             
             break;
 
@@ -548,7 +556,7 @@
       console.log("gameCard", gameCard)
         this.room.send({
           type: MESSAGE_PLAY_GAME_CARD,
-          cardType: gameCard.type,
+          cardType: gameCard.cardType,
           cardIndex: gameCard.index
         });
       },

@@ -254,7 +254,7 @@
               v-if="myPlayer.gameCards && myPlayer.gameCards.length > 0"
               visible
               full
-              :deck="myPlayer.gameCards.filter(gameCard => gameCard.type !== CARD_VICTORY_POINT)"
+              :deck="myPlayer.gameCards.filter(gameCard => gameCard.type !== CARD_VICTORY_POINT && !gameCard.wasPlayed)"
               @game-card-clicked="playGameCard"
               class="game-cards"
             ></GameCards>

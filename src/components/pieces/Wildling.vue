@@ -24,7 +24,7 @@
 </script>
 
 <template>
-  <span @click="$emit('remove')" class="wildling">
+  <span @click="$emit('clicked')" class="wildling">
     <GameAsset
       type="wildlings"
       :asset="type"
