@@ -119,13 +119,13 @@
       @play-hero="playHeroCard($event)"
       @close="$store.commit('setDisplayedHeroCard', {})"
     />
-    <div class="recent-loot-cards" v-show="recentLoot.length">
+    <div class="recent-loot-cards" v-show="Object.keys(recentLoot).length > 0">
       <ResourceCard
-        v-for="(resourceCard, rc) in recentLoot"
-        :key="rc"
+        v-for="(card, key, index) in recentLoot"
+        :key="`${key}-${index}`"
         recentLoot
         hideCount
-        :resource="resourceCard"
+        :resource="card.resource"
         class="recent-loot-card"
       />
     </div>

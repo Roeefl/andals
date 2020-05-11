@@ -1,103 +1,3 @@
-<template>
-  <div v-if="roomState.board" key="has-board" class="board" :class="{ 'game-over': roomState.isVictory }">
-    <div class="trees">
-      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
-    </div>
-    <div class="tiles">
-      <div v-for="(tileRow, rowIndex) in hexTilemap" :key="`row-${rowIndex}`" class="tile-row" :class="{ 'even': rowIndex % 2 === 0 , 'odd': rowIndex % 2 === 1 }">
-        <HexTile
-          v-for="(tile, colIndex) in tileRow"
-          :key="`tile-${rowIndex}-${colIndex}`"
-          :type="hexTileTypes[tile]"
-          :tile="roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)]"
-          class="hex-tile"
-          :class="{ 'robber-camp': rowIndex === 0 && colIndex === 0 }"
-        >
-          <span v-if="isDeveloperMode" class="tile-index">
-            [{{ rowIndex }}, {{ colIndex }}]
-          </span>
-          <RoadTile
-            v-for="([row, col]) in roadIndices(rowIndex, colIndex)"
-            :key="`road-tile-${row}-${col}`"
-            :placement="roadTileTypes[roadTilemap[row][col]]"
-            :enabled="allowPurchasing && (myPlayer.hasResources.road || myPlayer.allowFreeRoads > 0) && isRoadAllowed(row, col) && !activeRoads[row][col].ownerId"
-            :removeable="myPlayer.allowRemoveRoad"
-            @clicked="setActivePurchase({ type: ROAD, row, col })"
-            @remove="setActivePurchase({ type: ROAD, row, col, isRemove: true })"
-            :activeData="activeRoads[row][col] || {}"
-            :myColor="myPlayer.color"
-          >
-            <span v-if="isDeveloperMode" class="road-index">
-              [{{ row }}, {{ col }}]
-            </span>
-          </RoadTile>
-          <StructureTile
-            v-for="([row, col]) in structureIndices(rowIndex, colIndex)"
-            :key="`structure-tile-${row}-${col}`"
-            :placement="structureTileTypes[structureTilemap[row][col]]" 
-            :enabled="(allowPurchasing && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchasing && myPlayer.hasResources.city && isCityAllowed(row, col))"
-            @clicked="setActivePurchase({ type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
-            :activeData="activeStructures[row][col] || {}"
-            :harbor="harborAdjacentToStructure(structureTilemap, roomState.board, row, col, roomState.ports)"
-            :myColor="myPlayer.color"
-          >
-            <span v-if="isDeveloperMode" class="structure-index">
-              [{{ row }}, {{ col }}]
-            </span>
-          </StructureTile>
-          <HarborTile :tile="roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)]" />
-          <RobberTile
-            v-if="isDisplayRobberTile(rowIndex, colIndex)"
-            :active="myPlayer.mustMoveRobber"
-          />
-          <Wildling
-            v-if="!!(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)] || {}).occupiedBy"
-            :type="(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)] || {}).occupiedBy.type"
-            :size="40"
-            @remove="myPlayer.heroPrivilege === HERO_CARD_Ygritte && $emit('remove-wildling', absoluteIndex(hexTilemap, rowIndex, colIndex))"
-            class="wildling"
-          />
-          <BaseOverlay
-            v-if="myPlayer.mustMoveRobber && (myPlayer.heroPrivilege !== HERO_CARD_QhorinHalfhand || (rowIndex === 0 && colIndex === 0)) && (myPlayer.heroPrivilege === HERO_CARD_QhorinHalfhand || !!(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)].value))"
-            isOpen
-            :isFullScreen="false"
-            :opacity="0"
-            class="move-robber-overlay"
-          >
-            <BaseButton
-              icon
-              @click="onMoveRobber(absoluteIndex(hexTilemap, rowIndex, colIndex))"
-              class="move-robber"
-            >
-              <GameAsset type="pieces" asset="robber" width="60px" height="60px" />
-            </BaseButton>
-          </BaseOverlay>
-        </HexTile>
-      </div>
-    </div>
-    <div class="trees">
-      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
-    </div>
-    <BaseBadge class="confirm-purchase" :class="{ 'hidden': !displayPurchaseModal }">
-      <PurchaseConfirm
-        v-if="displayPurchaseModal"
-        :key="`${activePurchase.type}-${activePurchase.row}-${activePurchase.col}`"
-        :type="activePurchase.type"
-        :header="`${activePurchase.isRemove ? 'Remove' : ''} ${activePurchase.type}`"
-        :removing="activePurchase.isRemove"
-        :isFree="roomState.isSetupPhase"
-        :myPlayer="myPlayer"
-        :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
-        @no="setActivePurchase(null)"
-        @yes="onConfirmPurchase($event)"
-      />
-    </BaseBadge>
-  </div>
-  <div v-else key="no-board">
-    No board to display
-  </div>
-</template>
-
 <script>
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import colyseusService from '@/services/colyseus';
@@ -125,7 +25,8 @@
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
   import { ROAD, SETTLEMENT, CITY, MOVE_ROBBER } from '@/specs/purchases';
-  import { HERO_CARD_Ygritte, HERO_CARD_QhorinHalfhand } from '@/specs/heroCards';
+  import { HERO_CARD_QhorinHalfhand } from '@/specs/heroCards';
+  import { isAllowRemoveWildlingFromHextile } from '@/utils/heroes';
 
   import {
     MESSAGE_PLACE_STRUCTURE,
@@ -185,7 +86,6 @@
       this.SETTLEMENT = SETTLEMENT;
       this.CITY = CITY;
 
-      this.HERO_CARD_Ygritte = HERO_CARD_Ygritte;
       this.HERO_CARD_QhorinHalfhand = HERO_CARD_QhorinHalfhand;
 
       this.harborAdjacentToStructure = harborAdjacentToStructure;
@@ -285,9 +185,113 @@
 
         this.setActivePurchase(null);
       },
+      onWildlingClick: function(tileIndex) {
+        if (isAllowRemoveWildlingFromHextile(myPlayer))
+          this.$emit('remove-wildling', tileIndex);
+      }
     }
   }
 </script>
+
+<template>
+  <div v-if="roomState.board" key="has-board" class="board" :class="{ 'game-over': roomState.isVictory }">
+    <div class="trees">
+      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
+    </div>
+    <div class="tiles">
+      <div v-for="(tileRow, rowIndex) in hexTilemap" :key="`row-${rowIndex}`" class="tile-row" :class="{ 'even': rowIndex % 2 === 0 , 'odd': rowIndex % 2 === 1 }">
+        <HexTile
+          v-for="(tile, colIndex) in tileRow"
+          :key="`tile-${rowIndex}-${colIndex}`"
+          :type="hexTileTypes[tile]"
+          :tile="roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)]"
+          class="hex-tile"
+          :class="{ 'robber-camp': rowIndex === 0 && colIndex === 0 }"
+        >
+          <span v-if="isDeveloperMode" class="tile-index">
+            [{{ rowIndex }}, {{ colIndex }}]
+          </span>
+          <RoadTile
+            v-for="([row, col]) in roadIndices(rowIndex, colIndex)"
+            :key="`road-tile-${row}-${col}`"
+            :placement="roadTileTypes[roadTilemap[row][col]]"
+            :enabled="allowPurchasing && (myPlayer.hasResources.road || myPlayer.allowFreeRoads > 0) && isRoadAllowed(row, col) && !activeRoads[row][col].ownerId"
+            :removeable="myPlayer.allowRemoveRoad"
+            @clicked="setActivePurchase({ type: ROAD, row, col })"
+            @remove="setActivePurchase({ type: ROAD, row, col, isRemove: true })"
+            :activeData="activeRoads[row][col] || {}"
+            :myColor="myPlayer.color"
+          >
+            <span v-if="isDeveloperMode" class="road-index">
+              [{{ row }}, {{ col }}]
+            </span>
+          </RoadTile>
+          <StructureTile
+            v-for="([row, col]) in structureIndices(rowIndex, colIndex)"
+            :key="`structure-tile-${row}-${col}`"
+            :placement="structureTileTypes[structureTilemap[row][col]]" 
+            :enabled="(allowPurchasing && myPlayer.hasResources.settlement && isSettlementAllowed(row, col)) || (allowPurchasing && myPlayer.hasResources.city && isCityAllowed(row, col))"
+            @clicked="setActivePurchase({ type: (activeStructures[row][col].type === SETTLEMENT ? CITY : SETTLEMENT), row, col })"
+            :activeData="activeStructures[row][col] || {}"
+            :harbor="harborAdjacentToStructure(structureTilemap, roomState.board, row, col, roomState.ports)"
+            :myColor="myPlayer.color"
+          >
+            <span v-if="isDeveloperMode" class="structure-index">
+              [{{ row }}, {{ col }}]
+            </span>
+          </StructureTile>
+          <HarborTile :tile="roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)]" />
+          <RobberTile
+            v-if="isDisplayRobberTile(rowIndex, colIndex)"
+            :active="myPlayer.mustMoveRobber"
+          />
+          <Wildling
+            v-if="!!(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)] || {}).occupiedBy"
+            :type="(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)] || {}).occupiedBy.type"
+            :size="40"
+            @clicked="onWildlingClick(absoluteIndex(hexTilemap, rowIndex, colIndex))"
+            class="wildling"
+          />
+          <BaseOverlay
+            v-if="myPlayer.mustMoveRobber && (myPlayer.heroPrivilege !== HERO_CARD_QhorinHalfhand || (rowIndex === 0 && colIndex === 0)) && (myPlayer.heroPrivilege === HERO_CARD_QhorinHalfhand || !!(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)].value))"
+            isOpen
+            :isFullScreen="false"
+            :opacity="0"
+            class="move-robber-overlay"
+          >
+            <BaseButton
+              icon
+              @click="onMoveRobber(absoluteIndex(hexTilemap, rowIndex, colIndex))"
+              class="move-robber"
+            >
+              <GameAsset type="pieces" asset="robber" width="60px" height="60px" />
+            </BaseButton>
+          </BaseOverlay>
+        </HexTile>
+      </div>
+    </div>
+    <div class="trees">
+      <Tree v-for="(tree, t) in Array(6).fill(0)" :key="t" rightColor="green" class="tree" />
+    </div>
+    <BaseBadge class="confirm-purchase" :class="{ 'hidden': !displayPurchaseModal }">
+      <PurchaseConfirm
+        v-if="displayPurchaseModal"
+        :key="`${activePurchase.type}-${activePurchase.row}-${activePurchase.col}`"
+        :type="activePurchase.type"
+        :header="`${activePurchase.isRemove ? 'Remove' : ''} ${activePurchase.type}`"
+        :removing="activePurchase.isRemove"
+        :isFree="roomState.isSetupPhase"
+        :myPlayer="myPlayer"
+        :isFlexible="myPlayer.flexiblePurchase === activePurchase.type"
+        @no="setActivePurchase(null)"
+        @yes="onConfirmPurchase($event)"
+      />
+    </BaseBadge>
+  </div>
+  <div v-else key="no-board">
+    No board to display
+  </div>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
