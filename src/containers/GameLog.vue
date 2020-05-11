@@ -51,13 +51,13 @@
             <span :style="{ color: log.playerColor }" class="player-name">
               {{ log.playerName }}
             </span>
-            has played
+            has {{ log.action }}
             <span v-if="log.heroCardType">
               <GameAsset type="abilities" :asset="log.heroCardType" width="32px" height="32px" />
             </span>
-          <span class="card-name">
-            {{ log.type === CHAT_LOG_HERO_CARD ? log.heroCard.name : log.cardType }}
-          </span>
+            <span class="card-name">
+              {{ log.type === CHAT_LOG_HERO_CARD ? log.heroCard.name : log.cardType }}
+            </span>
           </span>
         </div>
       </li>

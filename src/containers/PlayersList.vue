@@ -208,7 +208,7 @@
   }
 
   .recent-loot-cards {
-    animation: slide-out-top 6s ease-out both;
+    animation: slide-out-top 5s ease-out both;
     position: relative;
     z-index: $zindex-decor-overlay;
   }
@@ -216,7 +216,7 @@
   @mixin loot-positions() {
     @for $c from 0 to 6 {
       &:nth-child(#{$c + 1}) {
-        bottom: calc(#{$recent-loot-height * -$c});
+        bottom: calc(#{($recent-loot-height * 0.75) * -$c});
       }
     }
   }

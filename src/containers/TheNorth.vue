@@ -63,6 +63,7 @@
     MESSAGE_WILDLINGS_REMOVE_FROM_CLEARING,
     MESSAGE_PLAY_HERO_CARD,
     MESSAGE_SELECT_HERO_CARD,
+    MESSAGE_SWAPPED_HERO_CARD,
     MESSAGE_RELOCATE_GUARD,
     MESSAGE_PLACE_GUARD,
     MESSAGE_REMOVE_GUARD,
@@ -198,19 +199,19 @@
             break;
 
           case MESSAGE_WILDLINGS_ADVANCE_CLEARING:
-            const { wildling } = broadcast;
-            header = `A ${wildling.type} has advanced to the clearing!`;
+            const { wildlingType } = broadcast;
+            header = `A ${wildlingType} has advanced to the clearing!`;
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
-            this.setAttentions({ header, wildlingType: wildling.type });
+            this.setAttentions({ header, wildlingType });
             break;
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
-            const { invader, guardsKilled } = broadcast;
-            const invadeHeader = wildlingAttentionHeaders[invader.type];
+            const { invaderType, guardsKilled } = broadcast;
+            const invadeHeader = wildlingAttentionHeaders[invaderType || broadcast.wildlingType];
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: invadeHeader });
-            this.setAttentions({ header: invadeHeader, guardsKilled, wildlingType: invader.type });
+            this.setAttentions({ header: invadeHeader, guardsKilled, wildlingType: invaderType });
             break;
 
           case MESSAGE_PLAY_HERO_CARD:
@@ -218,8 +219,15 @@
             const heroCard = heroSpecs[heroCardType];
 
             header = `${playerName} has played ${heroCard.name}`;
-            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, heroCard, heroCardType });
+            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, action: 'played', heroCard, heroCardType });
             this.setAttentions({ header, heroCardType, heroCard, timeout: 5000 });
+            break;
+
+          case MESSAGE_SWAPPED_HERO_CARD:
+            const { newHeroCardType } = broadcast;
+            const newHeroCard = heroSpecs[newHeroCardType];
+
+            this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, action: 'picked', heroCard: newHeroCard });
             break;
         }
       },
