@@ -9,6 +9,20 @@ import { MESSAGE_FINISH_TURN } from '@/constants';
 
 Vue.use(Vuex);
 
+const initialMyPlayer = {
+  color: 'primary',
+  nickname: 'Loading...',
+  avatar: 1,
+  resourceCounts: {},
+  hasResources: {},
+  currentHeroCard: {
+    type: 'JeorMormont',
+    name: 'Jeor Mormont',
+    title: 'Jeor Mormont',
+    wasPlayed: false
+  }
+};
+
 export default new Vuex.Store({
   state: {
     enableSnow: localStorage.enableFx || false,
@@ -33,19 +47,7 @@ export default new Vuex.Store({
       ...boardService.initialRoads()
     ],
     players: [],
-    myPlayer: {
-      color: 'primary',
-      nickname: 'Loading...',
-      avatar: 1,
-      resourceCounts: {},
-      hasResources: {},
-      currentHeroCard: {
-        type: 'JeorMormont',
-        name: 'Jeor Mormont',
-        title: 'Jeor Mormont',
-        wasPlayed: false
-      }
-    },
+    myPlayer: initialMyPlayer,
     activePurchase: null,
     desiredRobberTile: -1,
     isRollingDice: false,
@@ -255,7 +257,7 @@ export default new Vuex.Store({
       state.gameLog = [];
 
       state.myPlayer = {
-        hasResources: {}
+        ...initialMyPlayer
       };
 
       const resetStructures = boardService.initialStructures();

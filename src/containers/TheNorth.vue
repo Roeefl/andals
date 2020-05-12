@@ -211,6 +211,7 @@
             const invadeHeader = wildlingAttentionHeaders[invaderType || broadcast.wildlingType];
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: invadeHeader });
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${guardsKilled} guards were killed` });
             this.setAttentions({ header: invadeHeader, guardsKilled, wildlingType: invaderType });
             break;
 
