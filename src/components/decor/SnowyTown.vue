@@ -1,17 +1,3 @@
-<template>
-  <div class="game-loader">
-    <Mountains class="mountains" />
-    <div class="base" />
-    <Settlement v-for="(house, h) in houses" :key="h" class="house" :class="`house-${h}`" />
-    <ul class="trees trees-left">
-      <Tree v-for="(tree, t) in Array(3)" :key="t" class="tree" />
-    </ul>
-    <ul class="trees trees-right">
-      <Tree v-for="(tree, t) in Array(3)" :key="t" class="tree" />
-    </ul>
-  </div>
-</template>
-
 <script>
   import Settlement from '@/components/decor/Settlement';
   import Mountains from '@/components/decor/Mountains';
@@ -31,6 +17,20 @@
     }
   }
 </script>
+
+<template>
+  <div class="game-loader">
+    <Mountains class="mountains" />
+    <div class="base" />
+    <Settlement v-for="(house, h) in houses" :key="h" class="house" :class="`house-${h}`" />
+    <ul class="trees trees-left">
+      <Tree v-for="(tree, t) in Array(3)" :key="t" class="tree" />
+    </ul>
+    <ul class="trees trees-right">
+      <Tree v-for="(tree, t) in Array(3)" :key="t" class="tree" />
+    </ul>
+  </div>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';

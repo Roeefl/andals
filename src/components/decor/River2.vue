@@ -20,18 +20,6 @@
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'River',
-    props: {
-      size: {
-        type: Number,
-        default: 102
-      }
-    }
-  }
-</script>
-
 <style scoped lang="scss">
   @import '@/styles/partials';
 
@@ -43,7 +31,62 @@
   $aqua: #9eeaff;
   $grey: #9e9ebe;
   $yellow: #fffcd1;
+
   $boatSpeed: 40s;
+
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  @keyframes wave {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-80px);
+    }
+  }
+
+  @keyframes boat {
+    0% {
+      transform: translateX(120vw) scale(0.8);
+    }
+    80%,
+    100% {
+      transform: translateX(-10vw) scale(0.8);
+    }
+  }
+  
+  @keyframes boat-shadow {
+    0% {
+      transform: skewX(35deg) translateX(15px);
+    }
+    50%,
+    100% {
+      transform: skewX(-55deg) translateX(-40px);
+    }
+  }
+
+  * {
+  position: absolute;
+  }
+  *:before,
+  *:after {
+    content: "";
+    position: absolute;
+  }
+
+  .scene {
+    width: 100%;
+    height: 100%;
+  }
 
   .background {
     background: $x-dark;
@@ -113,7 +156,7 @@
       left: random(100)+vw;
       width: $size;
       height: $size;
-      animation-delay: random(5) + s;
+      animation-delay: random(5)+s;
     }
   }
 
@@ -204,7 +247,7 @@
         transparentize($x-dark, 1) 100%
       );
       z-index: -1;
-      animation: boatShadow $boatSpeed linear infinite;
+      animation: boat-shadow $boatSpeed linear infinite;
     }
 
     .base {
@@ -229,69 +272,6 @@
       transform: scaleX(-1);
       clip-path: polygon(50% 0%, 0% 100%, 50% 100%);
       background: linear-gradient($light 0%, $x-dark 60%);
-    }
-  }
-
-  @keyframes twinkle {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.3;
-    }
-  }
-
-  @keyframes wave {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    50% {
-      transform: translateX(-80px);
-    }
-  }
-  @keyframes boat {
-    0% {
-      transform: translateX(120vw) scale(0.8);
-    }
-    80%,
-    100% {
-      transform: translateX(-10vw) scale(0.8);
-    }
-  }
-  @keyframes boatShadow {
-    0% {
-      transform: skewX(35deg) translateX(15px);
-    }
-    50%,
-    100% {
-      transform: skewX(-55deg) translateX(-40px);
-    }
-  }
-
-  @keyframes lightRotate {
-    0%,
-    100% {
-      // initial and final state
-      transform: perspective(500px) rotateY(0deg);
-    }
-    25% {
-      //rotates to the back
-      transform: perspective(500px) rotateY(35deg);
-    }
-    75% {
-      // rotates to the front
-      transform: perspective(500px) rotateY(-35deg);
-    }
-  }
-
-  @keyframes lightGlow {
-    50% {
-      opacity: 0;
-    }
-    75% {
-      opacity: 0.7;
     }
   }
 </style>

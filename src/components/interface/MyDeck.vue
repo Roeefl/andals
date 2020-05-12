@@ -411,6 +411,7 @@
     font-size: $font-size-lg;
     opacity: 1;
     animation: fade-in 2s linear ease-in-out;
+    z-index: $zindex-interface;
 
     &.hidden {
       opacity: 0;

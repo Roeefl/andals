@@ -18,6 +18,8 @@
   import GameDice from '@/components/interface/GameDice';
   import BaseWidget from '@/components/common/BaseWidget';
   import BaseOverlay from '@/components/common/BaseOverlay';
+  import MountainForest from '@/components/decor/MountainForest';
+  import River from '@/components/decor/River2';
 
   import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
@@ -79,7 +81,9 @@
       GameDice,
       ResourceSelect,
       BreachMarker,
-      BaseOverlay
+      BaseOverlay,
+      MountainForest,
+      River
     },
     data: () => ({
       chatMessages: [],
@@ -593,6 +597,12 @@
         />
       </BaseWidget>
       <div class="board-area">
+        <div class="mountain-forest">
+          <MountainForest />
+        </div>
+        <div class="river">
+          <River />
+        </div>
         <TheNorth
           v-if="isWithNorth"
           class="the-north"
@@ -731,6 +741,23 @@
         display: flex;
         flex-direction: column;
         background: white;
+        position: relative;
+
+        .mountain-forest {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 50%;
+        }
+
+        .river {
+          position: absolute;
+          top: 50%;
+          left: 0;
+          width: 100%;
+          height: 50%;
+        }
 
         @include lg-down() {
           grid-area: board;
@@ -741,19 +768,9 @@
         }
 
         .game-board {
-          border: 5px solid #6D4C41;
-          border-top: none;
-          // background-image: url('../assets/ocean.jpg');
-          // background-size: cover;
           height: $board-height;
 
           &.with-north {
-            // justify-content: center;
-            height: $board-height * 0.87;
-            background-image: unset;
-            background-size: unset;
-            background-repeat: repeat;
-            background: $primary;
             color: $secondary;
           }
         }
