@@ -8,7 +8,6 @@
   import RobberTile from '@/components/tiles/RobberTile';
   import HarborTile from '@/components/tiles/HarborTile';
   import Wildling from '@/components/pieces/Wildling';
-  import Mountains from '@/components/decor/Mountains';
   import Tree from '@/components/decor/Tree';
   import BaseOverlay from '@/components/common/BaseOverlay';
   import BaseButton from '@/components/common/BaseButton';
@@ -44,7 +43,6 @@
       HarborTile,
       RobberTile,
       Wildling,
-      Mountains,
       Tree,
       BaseOverlay,
       BaseButton,

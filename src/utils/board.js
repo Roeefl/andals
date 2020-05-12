@@ -94,7 +94,8 @@ export function isPurchaseAllowedSettlement(structureTilemap, roadTilemap, activ
     .flat()
     .filter(structure => !!structure && !!structure.ownerId)
     .map(({ row: structureRow, col: structureCol }) => {
-      const structureTile = structureTilemap[structureRow][structureCol]; // 'hide' === 0,'top' === 1, 'top-left' === 2
+      // 'hide' === 0,'top' === 1, 'top-left' === 2
+      const structureTile = structureTilemap[structureRow][structureCol];
       if (!structureTile) return false;
 
       const adjacentStructureTiles = adjacentStructuresToStructure(structureTile, structureRow, structureCol);
