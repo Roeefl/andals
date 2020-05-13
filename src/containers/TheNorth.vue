@@ -123,7 +123,8 @@
         'setActivePurchase',
         'addGameLog',
         'setAttentions',
-        'addAttention'
+        'addAttention',
+        'addAlert'
       ]),
       ...mapActions([
         'finishTurn'
@@ -181,13 +182,10 @@
         switch (type) {
           case MESSAGE_PLACE_GUARD:
             this.addGameLog({ type: CHAT_LOG_PURCHASE, playerName, playerColor, message: broadcast.message });
-            
-            if (isAttention)
-              this.setAttentions({ header: broadcast.message, guardPurchased: true });
+            this.addAlert({ color: 'success', text: broadcast.message });
             break;
 
           case MESSAGE_WILDLINGS_REVEAL_TOKENS:
-          console.log("MESSAGE_WILDLINGS_REVEAL_TOKENS", 123)
             const { tokens } = broadcast;
             const subHeader = 'Wildlings Tokens Revealed:';
 
@@ -200,10 +198,10 @@
 
           case MESSAGE_WILDLINGS_ADVANCE_CLEARING:
             const { wildlingType } = broadcast;
-            header = `A ${wildlingType} has advanced to the clearing!`;
+            header = `A ${wildlingType} wildling has advanced to the clearing!`;
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: header });
-            this.setAttentions({ header, wildlingType });
+            this.addAlert({ color: 'success', text: header});
             break;
 
           case MESSAGE_WILDLINGS_WALL_BATTLE:
@@ -212,6 +210,7 @@
 
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: invadeHeader });
             this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${guardsKilled} guards were killed` });
+
             this.setAttentions({ header: invadeHeader, guardsKilled, wildlingType: invaderType });
             break;
 
@@ -221,7 +220,7 @@
 
             header = `${playerName} has played ${heroCard.name}`;
             this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, action: 'played', heroCard, heroCardType });
-            this.setAttentions({ header, heroCardType, heroCard, timeout: 5000 });
+            this.setAttentions({ header, heroCardType, heroCard, timeout: 4000 });
             break;
 
           case MESSAGE_SWAPPED_HERO_CARD:
@@ -229,6 +228,7 @@
             const newHeroCard = heroSpecs[newHeroCardType];
 
             this.addGameLog({ type: CHAT_LOG_HERO_CARD, playerName, playerColor, action: 'picked', heroCard: newHeroCard });
+            this.addAlert({ color: 'info', text: `${playerName} has swapped his hero card for ${newHeroCard.name}`});
             break;
         }
       },

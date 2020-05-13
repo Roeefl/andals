@@ -324,7 +324,10 @@
 
           case MESSAGE_TRADE_CONFIRM:
             const { player1, player2 } = broadcast;
-            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: `${player1} has completed a trade with ${player2}` });
+            const tradeCompletedMessage = `${player1} has completed a trade with ${player2}`;
+
+            this.addGameLog({ type: CHAT_LOG_SIMPLE, message: tradeCompletedMessage });
+            this.addAlert({ color: 'success', text: tradeCompletedMessage });
             
             break;
 
@@ -337,6 +340,7 @@
 
           case MESSAGE_PLACE_STRUCTURE:
             this.addGameLog({ type: CHAT_LOG_PURCHASE, playerName, playerColor, message });
+            this.addAlert({ color: 'success', text: message });
 
             const { structureAudio } = this.$refs;
             if (structureAudio) structureAudio.play(); 
@@ -348,6 +352,8 @@
             attentionHeader = `${playerName} has played ${cardType}`;
 
             this.addGameLog({ type: CHAT_LOG_GAME_CARD, playerName, cardType, playerColor });
+            this.addAlert({ color: 'success', text: attentionHeader });
+
             attentionData.gameCardType = cardType;
             break;
 
