@@ -129,7 +129,7 @@
         );
       },
       onMoveRobber: function(tileIndex) {
-        if (!isAllowMoveRobber(this.myPlayer)) return;
+        if (!isAllowMoveRobber(this.myPlayer) && !isAllowRobberReset(this.myPlayer)) return;
         
         this.setDesiredRobberTile(tileIndex);
         this.setActivePurchase({ type: MOVE_ROBBER });
@@ -390,7 +390,7 @@
     position: absolute;
     top: $spacer * 2;
     right: $spacer * 5;
-    width: 200px;
+    width: 260px;
     z-index: $zindex-interface + 20;
     transition: opacity 200ms ease-in-out;
 
