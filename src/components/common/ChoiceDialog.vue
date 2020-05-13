@@ -1,38 +1,3 @@
-<template>
-  <v-dialog v-model="isOpen" :width="width">
-    <template v-slot:activator="{ on }">
-      <BaseButton :on="on" :color="buttonColor" :disabled="disabled" class="activator">
-        <slot name="activate" />
-        <BaseTooltip :tooltip="title">
-          <BaseIcon
-            size="x-large"
-            :color="iconColor"
-            :name="iconName"
-            v-if="iconName"
-            class="icon"
-          />
-          <img v-if="assetName" :src="require(`../../assets/${assetName}`)" :alt="assetName" />
-          {{ buttonText }}
-        </BaseTooltip>
-      </BaseButton>
-    </template>
-    <ActionCard
-      :title="title"
-      :cancel="hasCancel"
-      :cancelColor="cancelColor"
-      :cancelText="cancelText"
-      @cancel="onCancel"
-      :approveText="approveText"
-      :approveColor="approveColor"
-      :approve="hasApprove"
-      @approve="onApprove"
-      class="action-card"
-    >
-      <slot />
-    </ActionCard>
-  </v-dialog>
-</template>
-
 <script>
   import ActionCard from '@/components/common/ActionCard';
   import BaseButton from '@/components/common/BaseButton';
@@ -120,6 +85,41 @@
     }
   };
 </script>
+
+<template>
+  <v-dialog v-model="isOpen" :width="width">
+    <template v-slot:activator="{ on }">
+      <BaseButton :on="on" :color="buttonColor" :disabled="disabled" class="activator">
+        <slot name="activate" />
+        <BaseTooltip :tooltip="title">
+          <BaseIcon
+            size="x-large"
+            :color="iconColor"
+            :name="iconName"
+            v-if="iconName"
+            class="icon"
+          />
+          <img v-if="assetName" :src="require(`../../assets/${assetName}`)" :alt="assetName" />
+          {{ buttonText }}
+        </BaseTooltip>
+      </BaseButton>
+    </template>
+    <ActionCard
+      :title="title"
+      :cancel="hasCancel"
+      :cancelColor="cancelColor"
+      :cancelText="cancelText"
+      @cancel="onCancel"
+      :approveText="approveText"
+      :approveColor="approveColor"
+      :approve="hasApprove"
+      @approve="onApprove"
+      class="action-card"
+    >
+      <slot />
+    </ActionCard>
+  </v-dialog>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';

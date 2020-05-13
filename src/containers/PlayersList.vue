@@ -296,7 +296,7 @@
   @mixin loot-positions() {
     @for $c from 0 to 6 {
       &:nth-child(#{$c + 1}) {
-        bottom: calc(#{($recent-loot-height * 0.75) * -$c});
+        bottom: calc(#{($recent-loot-height * 1) * -$c});
       }
     }
   }

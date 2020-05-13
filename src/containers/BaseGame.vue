@@ -639,7 +639,7 @@
 <style scoped lang="scss">
   @import '@/styles/partials';
 
-  $board-height: 67vh;
+  $board-height: 64vh;
 
   .base-game {
     padding: 0 $spacer;

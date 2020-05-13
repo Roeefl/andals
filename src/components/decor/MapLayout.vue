@@ -3,8 +3,6 @@
     <section class="beyond-the-wall">
     </section>
     <section class="westeros-north">
-    </section>
-    <section class="westeros-middle">
       <Mountain v-for="(mountain, m) in Array(6).fill(0)" :key="m" class="mountain" />
     </section>
   </div>
@@ -28,28 +26,22 @@
   $mountain-width: 60px;
   $mountain-margin: 140px;
 
+  $board-height: 64vh;
+
   .wrapper {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
 
     .beyond-the-wall {
-      flex: 2;
       background: white;
       position: relative;
+      height: $board-height / 2;
     }
 
     .westeros-north {
-      flex: 4;
       background: $primary;
       position: relative;
-    }
-
-    .westeros-middle {
-      flex: 1;
-      background: $primary; // green
-      position: relative;
+      height: $board-height;
     }
   }
 
