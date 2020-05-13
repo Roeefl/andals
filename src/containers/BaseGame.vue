@@ -12,18 +12,17 @@
   import GameChat from '@/components/interface/GameChat';
   import MyDeck from '@/components/interface/MyDeck';
   import TradeDialog from '@/components/interface/TradeDialog';
-  import TradeConfirm from '@/components/interface/TradeConfirm';
-  import OpponentDeck from '@/components/interface/OpponentDeck';
   import ResourceSelect from '@/components/interface/ResourceSelect';
   import GameDice from '@/components/interface/GameDice';
   import BaseWidget from '@/components/common/BaseWidget';
   import BaseOverlay from '@/components/common/BaseOverlay';
   import MountainForest from '@/components/decor/MountainForest';
   import River from '@/components/decor/River2';
+  import MapLayout from '@/components/decor/MapLayout';
 
   import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
-  import { HERO_CARD_JeorMormont, HERO_CARD_TywinLannister } from '@/specs/heroCards';
+  import { HERO_CARD_TywinLannister } from '@/specs/heroCards';
   import { LUMBER, BRICK, SHEEP, WHEAT, ORE } from '@/utils/tileManifest';
   import { gameNotifications } from '@/specs/gamePhases';
 
@@ -48,7 +47,6 @@
     MESSAGE_TRADE_REQUEST_RESOURCE,
     MESSAGE_TRADE_REQUEST_RESOURCE_RESPOND,
     MESSAGE_TRADE_REQUEST,
-    MESSAGE_TRADE_START_AGREED,
     MESSAGE_TRADE_ADD_CARD,
     MESSAGE_TRADE_REMOVE_CARD,
     MESSAGE_TRADE_AGREE,
@@ -74,21 +72,19 @@
       GameChat,
       GameLog,
       PlayersList,
-      TradeConfirm,
       MyDeck,
       TradeDialog,
-      OpponentDeck,
       GameDice,
       ResourceSelect,
       BreachMarker,
       BaseOverlay,
       MountainForest,
-      River
+      River,
+      MapLayout
     },
     data: () => ({
       chatMessages: [],
       waitingTradeWith: null,
-      tradeRequested: {},
       bankTradeResource: null,
       bankDummy: {
         nickname: 'Bank',
@@ -96,12 +92,8 @@
         resourceCounts: {},
         tradeCounts: {},
         isAgreeToTrade: false
-      },
-      stealingFrom: {}
+      }
     }),
-    beforeCreate() {
-      this.HERO_CARD_JeorMormont = HERO_CARD_JeorMormont;
-    },
     async created() {
       if (!this.room) {
         await this.reconnect();
@@ -117,11 +109,6 @@
       room: () => colyseusService.room,
       isWithNorth: function() {
         return this.room && this.room.name === ROOM_TYPE_FIRST_MEN;
-      },
-      tradingWith: function() {
-        return this.myPlayer.pendingTrade
-          ? (this.players.find(({ playerSessionId }) => playerSessionId === this.myPlayer.pendingTrade) || {}).nickname
-          : 'NONE';
       },
       bankTradePlayers: function() {
         return [
@@ -153,7 +140,8 @@
         'openMyDeck',
         'setActiveDice',
         'updateAwaitingTradeRequest',
-        'resetAwaitingTradeRequest'
+        'resetAwaitingTradeRequest',
+        'setTradeRequested'
       ]),
       ...mapActions([
         'finishTurn'
@@ -310,11 +298,11 @@
             const { requestedResource } = broadcast;
 
             if (broadcast.senderSessionId !== this.myPlayer.playerSessionId) {
-              this.tradeRequested = {
+              this.setTradeRequested({
                 sender,
                 senderSessionId,
                 requestedResource
-              };
+              });
             }
 
             break;
@@ -470,21 +458,6 @@
 
         this.resetBankDummy();
       },
-      respondToIncomingTrade: function(isAgreed) {
-        this.room.send({
-          type: MESSAGE_TRADE_START_AGREED,
-          isAgreed
-        });
-      },
-      respondToResourceTradeRequest: async function(isAgreed) {
-        await this.room.send({
-          type: MESSAGE_TRADE_REQUEST_RESOURCE_RESPOND,
-          isAgreed,
-          offeredResource: this.tradeRequested.requestedResource
-        });
-
-        this.tradeRequested = {}
-      },
       onDeclareRequestedResource: function(resource) {
         this.room.send({
           type: MESSAGE_TRADE_REQUEST_RESOURCE,
@@ -519,23 +492,6 @@
         this.room.send({
           type: MESSAGE_TRADE_CONFIRM
         });
-      },
-      stealFrom: function(playerSessionId) {
-        this.stealingFrom = this.players.find(p => p.playerSessionId === playerSessionId);
-      },
-      selectStealCard: function(cards) {
-        const { selectedCard, selectedGiveCard } = cards;
-
-        const { resource } = selectedCard;
-
-        this.room.send({
-          type: MESSAGE_STEAL_CARD,
-          stealFrom: this.stealingFrom.playerSessionId,
-          resource,
-          giveBack: (selectedGiveCard || {}).resource
-        });
-
-        this.stealingFrom = {};
       },
       onMonopolySelected: function(selectedResource) {
         this.room.send({
@@ -590,19 +546,21 @@
           :currentTurn="roomState.currentTurn"
           :waitingTradeWith="waitingTradeWith"
           @trade-with="requestTradeWith($event)"
-          @steal-from="stealFrom($event)"
           @play-hero="onPlayHeroCard($event)"
           @play-card="onPlayGameCard($event)"
           @toggle-ready="toggleReady"
         />
       </BaseWidget>
       <div class="board-area">
-        <div class="mountain-forest">
+        <div class="map-layout">
+          <MapLayout />
+        </div>
+        <!-- <div class="mountain-forest">
           <MountainForest />
-        </div>
-        <div class="river">
+        </div> -->
+        <!-- <div class="river">
           <River />
-        </div>
+        </div> -->
         <TheNorth
           v-if="isWithNorth"
           class="the-north"
@@ -627,20 +585,6 @@
       </aside>
     </div>
     <MyDeck @play-game-card="onPlayGameCard($event)" />
-    <TradeConfirm
-      :isOpen="!!myPlayer.pendingTrade"
-      :withWho="tradingWith"
-      @no="respondToIncomingTrade(false)"
-      @yes="respondToIncomingTrade(true)"
-    />
-    <TradeConfirm
-      :isOpen="!!tradeRequested.senderSessionId"
-      :withWho="tradeRequested.sender"
-      title="Trade Requested"
-      :requestedResource="tradeRequested.requestedResource"
-      @no="respondToResourceTradeRequest(false)"
-      @yes="respondToResourceTradeRequest(true)"
-    />
     <TradeDialog
       :isOpen="!!myPlayer.tradingWith"
       :players="[myPlayer, players.find(({ playerSessionId }) => playerSessionId === myPlayer.tradingWith)]"
@@ -663,15 +607,6 @@
       @agree-trade="agreeToTrade"
       @confirm-trade="requestBankTrade"
       cancelText="Cancel"
-    />
-    <OpponentDeck
-      :isOpen="!!stealingFrom.playerSessionId"
-      :opponent="stealingFrom"
-      :hideResources="!myPlayer.isVisibleSteal"
-      :giveBack="myPlayer.heroPrivilege === HERO_CARD_JeorMormont"
-      :myDeck="myPlayer.resourceCounts"
-      @steal="selectStealCard($event)"
-      @cancel="stealingFrom = {}"
     />
     <v-dialog width="500" :value="myPlayer.isDeclaringMonopoly">
       <ResourceSelect :title="null" @resource-selected="onMonopolySelected($event)" />
@@ -697,7 +632,6 @@
 
 <style scoped lang="scss">
   @import '@/styles/partials';
-  @import '~vuetify/src/styles/styles.sass';
 
   $board-height: 67vh;
 
@@ -738,10 +672,18 @@
       }
 
       .board-area {
+        position: relative;
         display: flex;
         flex-direction: column;
-        background: white;
-        position: relative;
+
+        .map-layout {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+        }
 
         .mountain-forest {
           position: absolute;

@@ -53,6 +53,7 @@ export default new Vuex.Store({
     isRollingDice: false,
     activeDice: null,
     awaitingTradeRequest: {},
+    tradeRequested: {},
     gameLog: [],
     alerts: {},
     recentLoot: {},
@@ -165,6 +166,9 @@ export default new Vuex.Store({
     },
     setActiveDice(state, data) {
       state.activeDice = data;
+    },
+    setTradeRequested(state, trade) {
+      state.tradeRequested = trade;
     },
     initAwaitingTradeRequest(state) {
       state.awaitingTradeRequest = state.players
