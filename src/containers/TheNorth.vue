@@ -294,17 +294,11 @@
 
   .the-north {
     // opacity: 0.5;
-    border: 5px solid #6D4C41;
-    border-bottom: none;
     display: grid;
     grid-template-columns: 20% 65% 15%;
 
    &.ready {
       opacity: 1;
-    }
-
-    .west {
-      background: white;
     }
 
     .wall-area {
