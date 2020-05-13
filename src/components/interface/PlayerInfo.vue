@@ -14,7 +14,6 @@
   import BaseAvatar from '@/components/common/BaseAvatar';
   import BaseChip from '@/components/common/BaseChip';
   import BaseMenu from '@/components/common/BaseMenu';
-  import BaseOverlay from '@/components/common/BaseOverlay';
   import BaseButton from '@/components/common/BaseButton';
 
   import tileColors from '@/styles/export.scss';
@@ -49,7 +48,6 @@
       BaseAvatar,
       BaseChip,
       BaseMenu,
-      BaseOverlay,
       BaseButton
     },
     props: {
@@ -74,10 +72,6 @@
         default: false
       },
       allowRequestTrade: {
-        type: Boolean,
-        default: false
-      },
-      allowStealing: {
         type: Boolean,
         default: false
       },
@@ -107,9 +101,6 @@
       },
       requestTradeDisabled: function() {
         return !this.allowRequestTrade;
-      },
-      stealDisabled: function() {
-        return !this.allowStealing;
       },
       // opponentActions: function() {
       //   return playerActions.map(action => {
@@ -240,9 +231,6 @@
       @dismiss="displayedGameCard = {}"
       @play="playGameCard"
     />
-    <BaseOverlay v-if="allowStealing" :isOpen="allowStealing" :isFullScreen="false" :opacity="0.6">
-      <BaseButton icon iconName="hand-okay" iconSize="60px" iconColor="warning" @click="$emit('steal-from', player.playerSessionId)" class="steal-button" />
-    </BaseOverlay>
     <BaseButton
       v-if="!isMe"
       key="trade"
@@ -270,6 +258,7 @@
     border-radius: 30px;
     border: 4px solid $primary;
     color: $secondary;
+    position: relative;
 
     @include md-down() {
       justify-content: flex-start;
@@ -278,7 +267,6 @@
     .upper {
       display: flex;
       flex-direction: column;
-      position: relative;
 
       .header {
         display: flex;
@@ -453,10 +441,5 @@
     & + & {
       margin-left: $spacer / 2;
     }
-  }
-
-  .steal-button {
-    -webkit-animation: wobble-hor-bottom 4s cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite both;
-    animation: wobble-hor-bottom 4s cubic-bezier(0.470, 0.000, 0.745, 0.715) infinite both;
   }
 </style>
