@@ -3,9 +3,9 @@
     <section class="beyond-the-wall">
     </section>
     <section class="westeros-north">
-      <Mountain v-for="(mountain, m) in Array(6).fill(0)" :key="m" class="mountain" />
     </section>
     <section class="westeros-middle">
+      <Mountain v-for="(mountain, m) in Array(6).fill(0)" :key="m" class="mountain" />
     </section>
   </div>
 </template>
@@ -48,7 +48,7 @@
 
     .westeros-middle {
       flex: 1;
-      background: green;
+      background: $primary; // green
       position: relative;
     }
   }
