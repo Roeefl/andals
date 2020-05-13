@@ -66,6 +66,12 @@
       img: 'logo.svg',
       icon: 'door-open'
     },
+    // {
+    //   key: 'design',
+    //   to: '/design',
+    //   icon: 'brush',
+    //   iconColor: 'warning'
+    // },
     {
       key: 'settings',
       icon: 'cog',

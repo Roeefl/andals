@@ -4,6 +4,7 @@ import Home from '@/views/Home';
 import GameLobby from '@/views/GameLobby';
 import GameRoom from '@/views/GameRoom';
 import UserSignup from '@/views/UserSignup';
+import GameBoardDesign from '@/views/GameBoardDesign';
 
 Vue.use(VueRouter)
 
@@ -40,7 +41,12 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+  },
+  {
+    path: '/design',
+    name: 'Layout',
+    component: GameBoardDesign
+  },
 ]
 
 const router = new VueRouter({
