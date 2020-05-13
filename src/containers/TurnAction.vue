@@ -1,7 +1,7 @@
 <script>
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import colyseusService from '@/services/colyseus';
-  import { isAllowRobberReset } from '@/utils/heroes';
+  import { isAllowRobberReset, isAllowMoveRobber } from '@/utils/heroes';
 
   import GameDice from '@/components/interface/GameDice';
   import BaseButton from '@/components/common/BaseButton';
@@ -59,6 +59,9 @@
         'isTurnOrderPhase'
       ])
     },
+    created() {
+      this.isAllowMoveRobber = isAllowMoveRobber;
+    },
     methods: {
       ...mapMutations([
         'setActiveDice',
@@ -91,13 +94,14 @@
         }, 2000);
       },
       moveRobber: function() {
-        if (!this.myPlayer.mustMoveRobber) return;
-        this.setActivePurchase(null);
+        if (!isAllowMoveRobber(this.myPlayer)) return;
 
         colyseusService.room.send({
           type: MESSAGE_MOVE_ROBBER,
           tile: this.desiredRobberTile
         });
+        
+        this.setActivePurchase(null);
       }
     }
   }
@@ -119,7 +123,7 @@
         Finish My Turn
       </BaseButton>
       <BaseButton
-        v-if="myPlayer.mustMoveRobber"
+        v-if="isAllowMoveRobber(myPlayer)"
         color="warning"
         :width="buttonWidth"
         :height="buttonHeight"

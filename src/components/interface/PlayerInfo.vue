@@ -154,7 +154,7 @@
             v-if="!isGameReady"
             :disabled="!isMe"
             :iconName="player.isReady ? 'checkbox-marked-circle-outline' : 'do-not-disturb'"
-            :iconColor="player.isReady ? 'highlight' : 'error'"
+            :iconColor="player.isReady ? 'highlight' : 'warning'"
             :label="player.isReady ? 'Ready' : 'Not Ready'"
             @click="isMe && $emit('toggle-ready')"
             class="is-ready"

@@ -340,7 +340,7 @@
 
           case MESSAGE_PLACE_STRUCTURE:
             this.addGameLog({ type: CHAT_LOG_PURCHASE, playerName, playerColor, message });
-            this.addAlert({ color: 'success', text: message });
+            this.addAlert({ color: 'success', text: `${playerName} ${message}` });
 
             const { structureAudio } = this.$refs;
             if (structureAudio) structureAudio.play(); 

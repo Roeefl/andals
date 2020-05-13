@@ -7,18 +7,6 @@
   </span>
 </template>
 
-<script>
-  export default {
-    name: 'RobberTile',
-    props: {
-      active: {
-        type: Boolean,
-        default: false
-      }
-    }
-  };
-</script>
-
 <style scoped lang="scss">
   @import '@/styles/partials';
 

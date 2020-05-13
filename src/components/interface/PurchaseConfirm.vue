@@ -147,7 +147,7 @@
         this.$emit('no');
       },
       onConfirm: function() {
-        this.$emit('yes', this.isFlexible ? { swapWhich: this.swapWhich, swapWith: sthis.wapWith.resource } : {});
+        this.$emit('yes', this.isFlexible ? { swapWhich: this.swapWhich, swapWith: this.swapWith.resource } : {});
         this.onDestroy();
       }
     }

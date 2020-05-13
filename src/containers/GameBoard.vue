@@ -24,8 +24,7 @@
   import boardService from '@/services/board';
   import { isPurchaseAllowedSettlement, isPurchaseAllowedRoad, harborAdjacentToStructure } from '@/utils/board';
   import { ROAD, SETTLEMENT, CITY, MOVE_ROBBER } from '@/specs/purchases';
-  import { HERO_CARD_QhorinHalfhand } from '@/specs/heroCards';
-  import { isAllowRemoveWildlingFromHextile } from '@/utils/heroes';
+  import { isAllowMoveRobber, isAllowRobberReset, isAllowRemoveWildlingFromHextile } from '@/utils/heroes';
 
   import {
     MESSAGE_PLACE_STRUCTURE,
@@ -84,8 +83,6 @@
       this.SETTLEMENT = SETTLEMENT;
       this.CITY = CITY;
 
-      this.HERO_CARD_QhorinHalfhand = HERO_CARD_QhorinHalfhand;
-
       this.harborAdjacentToStructure = harborAdjacentToStructure;
       this.absoluteIndex = boardService.absoluteIndex;
     },
@@ -125,8 +122,14 @@
       isCityAllowed: function(row, col) {
         return this.myPlayer.hasResources.city && !!this.activeStructures[row][col] && this.activeStructures[row][col].type === SETTLEMENT && this.activeStructures[row][col].ownerId === this.myPlayer.playerSessionId;
       },
+      isDisplayMoveRobberOverlay: function(tileIndex, isRobberSpawnTile = false) {
+        return (
+          (isAllowMoveRobber(this.myPlayer) && !!(this.roomState.board[tileIndex].value)) ||
+          (isAllowRobberReset(this.myPlayer) && isRobberSpawnTile)
+        );
+      },
       onMoveRobber: function(tileIndex) {
-        if (!this.myPlayer.mustMoveRobber) return;
+        if (!isAllowMoveRobber(this.myPlayer)) return;
         
         this.setDesiredRobberTile(tileIndex);
         this.setActivePurchase({ type: MOVE_ROBBER });
@@ -134,12 +137,12 @@
       isDisplayRobberTile: function(row, col) {
         const absoluteTileIndex = boardService.absoluteIndex(this.hexTilemap, row, col);
 
-        const isStaticPosition = !this.myPlayer.mustMoveRobber && this.roomState.robberPosition === absoluteTileIndex;
+        const isStaticPosition = !isAllowMoveRobber(this.myPlayer) && this.roomState.robberPosition === absoluteTileIndex;
 
         const dynamicPosition = this.desiredRobberTile === -1
           ? this.roomState.robberPosition
           : this.desiredRobberTile;
-        const isDynamicPosition = this.myPlayer.mustMoveRobber && absoluteTileIndex === dynamicPosition;
+        const isDynamicPosition = isAllowMoveRobber(this.myPlayer) && absoluteTileIndex === dynamicPosition;
 
          return isStaticPosition || isDynamicPosition;
       },
@@ -174,8 +177,6 @@
         this.setActivePurchase(null);
       },
       onConfirmRobber: async function() {
-        if (!this.myPlayer.mustMoveRobber) return;
-
         await colyseusService.room.send({
           type: MESSAGE_MOVE_ROBBER,
           tile: this.desiredRobberTile
@@ -184,7 +185,7 @@
         this.setActivePurchase(null);
       },
       onWildlingClick: function(tileIndex) {
-        if (isAllowRemoveWildlingFromHextile(myPlayer))
+        if (isAllowRemoveWildlingFromHextile(this.myPlayer))
           this.$emit('remove-wildling', tileIndex);
       }
     }
@@ -239,10 +240,7 @@
             </span>
           </StructureTile>
           <HarborTile :tile="roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)]" />
-          <RobberTile
-            v-if="isDisplayRobberTile(rowIndex, colIndex)"
-            :active="myPlayer.mustMoveRobber"
-          />
+          <RobberTile v-if="isDisplayRobberTile(rowIndex, colIndex)" />
           <Wildling
             v-if="!!(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)] || {}).occupiedBy"
             :type="(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)] || {}).occupiedBy.type"
@@ -251,7 +249,7 @@
             class="wildling"
           />
           <BaseOverlay
-            v-if="myPlayer.mustMoveRobber && (myPlayer.heroPrivilege !== HERO_CARD_QhorinHalfhand || (rowIndex === 0 && colIndex === 0)) && (myPlayer.heroPrivilege === HERO_CARD_QhorinHalfhand || !!(roomState.board[absoluteIndex(hexTilemap, rowIndex, colIndex)].value))"
+            v-if="isDisplayMoveRobberOverlay(absoluteIndex(hexTilemap, rowIndex, colIndex), (rowIndex === 0 && colIndex === 0))"
             isOpen
             :isFullScreen="false"
             :opacity="0"
