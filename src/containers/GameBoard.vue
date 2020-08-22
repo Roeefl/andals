@@ -94,7 +94,8 @@
       ...mapMutations([
         'setGameLoading',
         'setActivePurchase',
-        'setDesiredRobberTile'
+        'setDesiredRobberTile',
+        'setActivePlacing'
       ]),
       ...mapActions([
         'finishTurn'
@@ -142,7 +143,9 @@
         const dynamicPosition = this.desiredRobberTile === -1
           ? this.roomState.robberPosition
           : this.desiredRobberTile;
-        const isDynamicPosition = isAllowMoveRobber(this.myPlayer) && absoluteTileIndex === dynamicPosition;
+
+        const isDynamicPosition = (isAllowMoveRobber(this.myPlayer) || isAllowRobberReset(this.myPlayer)) &&
+          absoluteTileIndex === dynamicPosition;
 
          return isStaticPosition || isDynamicPosition;
       },
@@ -163,6 +166,8 @@
 
           return;
         }
+
+        this.setActivePlacing(null);
         
         await colyseusService.room.send({
           type: type === ROAD ? MESSAGE_PLACE_ROAD : MESSAGE_PLACE_STRUCTURE,

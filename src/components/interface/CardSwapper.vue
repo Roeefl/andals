@@ -1,28 +1,3 @@
-<template>
-  <v-dialog
-    :value="isOpen"
-    persistent
-    width="75vw"
-  >
-    <ActionCard
-      title="Select your next Hero Card"
-      :cancel="false"
-      :approve="false"
-    >
-      <!-- <BaseButton icon iconName="arrow-left-box" iconColor="primary" iconSize="60px" @click="swipeLeft" class="arrow arrow-left" /> -->
-      <ul class="hero-cards">
-        <BaseButton v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" icon @click="$emit('selected', deck[c])" class="hero-card-wrapper">
-          <HeroCard
-            :card="card"
-            class="hero-card"
-          />
-        </BaseButton>
-      </ul>
-      <!-- <BaseButton icon iconName="arrow-right-box" iconColor="primary" iconSize="60px" @click="swipeRight" class="arrow arrow-right" /> -->
-    </ActionCard>
-  </v-dialog>
-</template>
-
 <script>
   import ActionCard from '@/components/common/ActionCard';
   import HeroCard from '@/components/game/HeroCard';
@@ -70,6 +45,31 @@
     }
   }
 </script>
+
+<template>
+  <v-dialog
+    :value="isOpen"
+    persistent
+    width="75vw"
+  >
+    <ActionCard
+      title="Select your next Hero Card"
+      :cancel="false"
+      :approve="false"
+    >
+      <!-- <BaseButton icon iconName="arrow-left-box" iconColor="primary" iconSize="60px" @click="swipeLeft" class="arrow arrow-left" /> -->
+      <ul class="hero-cards">
+        <BaseButton v-for="(card, c) in deck" :key="`wrapper-${c}-${card.type}`" icon @click="$emit('selected', deck[c])" class="hero-card-wrapper">
+          <HeroCard
+            :card="card"
+            class="hero-card"
+          />
+        </BaseButton>
+      </ul>
+      <!-- <BaseButton icon iconName="arrow-right-box" iconColor="primary" iconSize="60px" @click="swipeRight" class="arrow arrow-right" /> -->
+    </ActionCard>
+  </v-dialog>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';

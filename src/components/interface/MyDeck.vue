@@ -56,7 +56,8 @@
         'myPlayer',
         'displayDeck',
         'activePurchase',
-        'awaitingTradeRequest'
+        'awaitingTradeRequest',
+        'activePlacing'
       ]),
       ...mapGetters([
         'isGameStarted',
@@ -79,7 +80,8 @@
         'closeMyDeck',
         'setActivePurchase',
         'setJustPurchasedGameCard',
-        'initAwaitingTradeRequest'
+        'initAwaitingTradeRequest',
+        'setActivePlacing'
       ]),
       toggleCardSelection: function(card) {
         if (!this.myPlayer.mustDiscardHalfDeck) return;
@@ -123,7 +125,15 @@
           this.setActivePurchase({
             type: GAME_CARD
           });
+
+          return;
         }
+
+        const nextActivePlacing = this.activePlacing && this.activePlacing.type === type
+          ? null
+          : { type };
+
+        this.setActivePlacing(nextActivePlacing);
       },
       playGameCard: function(gameCard) {
         const desiredGameCard = this.myPlayer.gameCards[gameCard.index];

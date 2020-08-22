@@ -153,7 +153,7 @@ export function isPurchaseAllowedRoad(structureTilemap, roadTilemap, activeStruc
       let intersections = [];
 
       // const baseGameEvenRows = [0, 2, 4, 6];
-      const firstMenEvenRows = [0, 1, 3, 4];
+      const firstMenEvenRows = [0, 1, 3, 4, 8];
       let colOffset = firstMenEvenRows.includes(roadRow) ? 0 : -2;
       
       switch (roadTile) {

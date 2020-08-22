@@ -1,7 +1,7 @@
 <template>
   <div class="the-north" :class="{ ready: roomState.isGameReady }">
     <div class="west">
-      <WildlingSpawn :counts="roomState.spawnCounts" />
+      <!-- <WildlingSpawn :counts="roomState.spawnCounts" /> -->
     </div>
     <div class="wall-area">
       <WildlingCamps @remove-wildling="onRemoveWildlingFromCamp($event)" class="wildling-camps" />
@@ -121,6 +121,7 @@
     methods: {
       ...mapMutations([
         'setActivePurchase',
+        'setActivePlacing',
         'addGameLog',
         'setAttentions',
         'addAttention',
@@ -284,6 +285,7 @@
         }
 
         this.setActivePurchase(null);
+        this.setActivePlacing(null);
       }
     }
   }

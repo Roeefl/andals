@@ -15,6 +15,14 @@
     },
     created() {
       this.heroSpecs = heroSpecs;
+    },
+    updated() {
+      console.log(this.card);
+    },
+    computed: {
+      heroCardImageSrc: function() {
+         return require(`../../assets/heroes/${this.card.type}.jpg`);
+      }
     }
   }
 </script>
@@ -30,7 +38,7 @@
       </h4>
     </header>
     <section class="card-image-wrapper" :class="{ 'thumbnail': thumbnail }">
-      <img :src="require(`../../assets/heroes/${card.type}.jpg`)" :alt="`Hero: ${card.type}`" class="card-image" />
+      <img :src="heroCardImageSrc" :alt="`Hero: ${card.type}`" class="card-image" />
     </section>
     <section v-if="!thumbnail" key="card-info" class="card-info" :class="{ 'highlighted-section': !thumbnail }">
       <h3 class="card-ability">

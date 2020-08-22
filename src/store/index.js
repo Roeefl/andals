@@ -48,6 +48,7 @@ export default new Vuex.Store({
     ],
     players: [],
     myPlayer: initialMyPlayer,
+    activePlacing: null,
     activePurchase: null,
     desiredRobberTile: -1,
     isRollingDice: false,
@@ -158,6 +159,9 @@ export default new Vuex.Store({
         state.activePurchase = purchase
       }, 200);
     },
+    setActivePlacing(state, placing) {
+      state.activePlacing = placing;
+    },
     setDesiredRobberTile(state, tile) {
       state.desiredRobberTile = tile;
     },
@@ -263,6 +267,8 @@ export default new Vuex.Store({
       state.myPlayer = {
         ...initialMyPlayer
       };
+
+      state.activePlacing = null;
 
       const resetStructures = boardService.initialStructures();
       state.activeStructures = [

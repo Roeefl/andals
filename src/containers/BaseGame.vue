@@ -19,6 +19,7 @@
   import MountainForest from '@/components/decor/MountainForest';
   import River from '@/components/decor/River2';
   import MapLayout from '@/components/decor/MapLayout';
+  import ActivePlacing from '@/components/interface/ActivePlacing';
 
   import { sumValues } from '@/utils/objects';
   import { ROAD, GUARD, GAME_CARD } from '@/specs/purchases';
@@ -80,7 +81,8 @@
       BaseOverlay,
       MountainForest,
       River,
-      MapLayout
+      MapLayout,
+      ActivePlacing
     },
     data: () => ({
       chatMessages: [],
@@ -124,10 +126,12 @@
         'desiredRobberTile',
         'gameWinner',
         'activeDice',
-        'awaitingTradeRequest'
+        'awaitingTradeRequest',
+        'activePlacing'
       ]),
       ...mapGetters([
-        'isMyTurn'
+        'isMyTurn',
+        'isSetupPhase'
       ]),
     },
     methods: {
@@ -141,7 +145,8 @@
         'setActiveDice',
         'updateAwaitingTradeRequest',
         'resetAwaitingTradeRequest',
-        'setTradeRequested'
+        'setTradeRequested',
+        'setActivePlacing'
       ]),
       ...mapActions([
         'finishTurn'
@@ -182,6 +187,17 @@
         
         if (this.bankTradeResource)
           this.evaluateBankTrade();
+
+        if (this.isSetupPhase && this.isMyTurn) {
+          const [type] = Object
+            .keys(this.myPlayer.hasResources)
+            .filter(key => this.myPlayer.hasResources[key]);
+          console.log("type", type)
+
+          this.setActivePlacing({
+            type
+          });
+        }
       },
       onAttention: function(header, data, timeout = DEFAULT_ATTENTION_TIMEOUT) {
         this.setAttentions({
@@ -621,6 +637,7 @@
     <BaseOverlay v-if="activeDice && activeDice.who && activeDice.who === myPlayer.playerSessionId" isOpen :opacity="0.7">
       <GameDice :dice="activeDice.dice" size="140px" />
     </BaseOverlay>
+    <ActivePlacing v-if="!!activePlacing" :type="activePlacing.type" :color="myPlayer.color" />
     <audio ref="diceAudio">
       <source src="../assets/audio/dice.mp3" type="audio/mpeg">
     </audio>

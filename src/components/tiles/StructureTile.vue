@@ -1,21 +1,5 @@
-<template>
-  <span class="structure-tile" :class="[placement, { 'enabled': enabled }]" :style="hoverStyle">
-    <BaseButton
-      icon
-      width="40px"
-      height="40px"
-      @click="enabled && $emit('clicked')"
-      class="structure-button"
-      :class="[activeData.type, { 'disabled': !enabled }]"
-      :style="structureStyle"
-    >
-      <BaseIcon v-if="!!activeData.type" size="54px" :color="activeData.color" :name="structureIcons[activeData.type]" />
-      <slot />
-    </BaseButton>
-  </span>
-</template>
-
 <script>
+  import GamePiece from '@/components/game/GamePiece';
   import BaseButton from '@/components/common/BaseButton';
   import BaseIcon from '@/components/common/BaseIcon';
   
@@ -26,6 +10,7 @@
   export default {
     name: 'StructureTile',
     components: {
+      GamePiece,
       BaseButton,
       BaseIcon
     },
@@ -52,12 +37,9 @@
       }
     },
     computed: {
-      hoverStyle: function() {
-        return {
-          '--color-hover': this.myColor
-        }
-      },
       structureStyle: function() {
+        return {};
+        
         const hexBackground = (this.harbor && this.harbor.resource)
           ? resourceCardColors[this.harbor.resource]
           : this.myColor;
@@ -77,6 +59,33 @@
     }
   }
 </script>
+
+<template>
+  <v-hover v-slot:default="{ hover }" class="structure-tile" :class="[placement, { 'enabled': enabled }]">
+    <span>
+      <BaseButton
+        icon
+        width="40px"
+        height="40px"
+        class="structure-button"
+        :class="[activeData.type, { 'disabled': !enabled }]"
+        :style="structureStyle"
+      >
+        <BaseIcon v-if="!!activeData.type" size="54px" :color="activeData.color" :name="structureIcons[activeData.type]" />
+        <slot />
+      </BaseButton>
+      <span v-if="hover && enabled" class="game-piece">
+        <GamePiece
+          :type="activeData.type ? 'city' : 'settlement'"
+          :showCount="false"
+          :color="myColor"
+          @clicked="enabled && $emit('clicked')"
+          size="60px"
+        />
+      </span>
+    </span>
+  </v-hover>
+</template>
 
 <style scoped lang="scss">
   @import '@/styles/partials';
@@ -103,11 +112,6 @@
         &.settlement {
           animation: heartbeat 2s ease-in-out infinite;
         }
-
-        &:hover {
-          background: $secondary !important;
-          box-shadow: 2px 2px 12px 12px var(--color-hover);
-        }
       }
     }
   }
@@ -129,5 +133,15 @@
         opacity: 0.2;
       }
     }
+  }
+
+  .game-piece {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 2px solid $highlight;
+    padding: $spacer;
+    border-radius: 100%;
+    animation: heartbeat 2s ease-in-out;
   }
 </style>
