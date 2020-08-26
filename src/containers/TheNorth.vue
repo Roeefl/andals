@@ -1,50 +1,3 @@
-<template>
-  <div class="the-north" :class="{ ready: roomState.isGameReady }">
-    <div class="west">
-      <!-- <WildlingSpawn :counts="roomState.spawnCounts" /> -->
-    </div>
-    <div class="wall-area">
-      <WildlingCamps @remove-wildling="onRemoveWildlingFromCamp($event)" class="wildling-camps" />
-      <div class="wildling-clearings">
-        <WildlingClearing
-          v-for="(clearing, c) in roomState.wildlingClearings"
-          :key="`clearing-${c}-${clearing.wildlings}`"
-          :clearingIndex="c"
-          :clearing="clearing"
-          @remove-wildling="onRemoveWildlingFromClearing(c, $event)"
-          class="clearing"
-        />
-      </div>
-      <Wall
-        :myColor="myPlayer.color"
-        :guards="guards"
-        :activePurchase="activePurchase"
-        :myPlayer="myPlayer"
-        :isSetupPhase="isSetupPhase"
-        :allowPurchasing="allowPurchasing && (myPlayer.hasResources.guard || myPlayer.allowFreeGuard)"
-        :allowRemove="myPlayer.allowKill === GUARD"
-        @wall-clicked="onWallClicked($event)"
-        @kill-guard="onGuardKill($event)"
-        @relocate-guard="onGuardRelocate($event)"
-        @cancel-purchase="setActivePurchase(null)"
-        @confirm-purchase="onConfirmPurchase($event)"
-        class="the-wall"
-      />
-    </div>
-    <div class="east">
-    </div>
-    <CardSwapper
-      v-if="myPlayer.swappingHeroCard"
-      isOpen
-      :cards="roomState.heroCards"
-      @selected="onSelectHeroCard($event)"
-    />
-    <audio ref="footstep">
-      <source src="../assets/audio/footstep.ogg" type="audio/mpeg">
-    </audio>
-  </div>
-</template>
-
 <script>
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
   import colyseusService, { ROOM_TYPE_FIRST_MEN } from '@/services/colyseus';
@@ -291,13 +244,59 @@
   }
 </script>
 
+<template>
+  <div class="the-north" :class="{ ready: roomState.isGameReady }">
+    <!-- <div class="west"> -->
+      <!-- <WildlingSpawn :counts="roomState.spawnCounts" /> -->
+    <!-- </div> -->
+    <div class="wall-area">
+      <WildlingCamps @remove-wildling="onRemoveWildlingFromCamp($event)" class="wildling-camps" />
+      <div class="wildling-clearings">
+        <WildlingClearing
+          v-for="(clearing, c) in roomState.wildlingClearings"
+          :key="`clearing-${c}-${clearing.wildlings}`"
+          :clearingIndex="c"
+          :clearing="clearing"
+          @remove-wildling="onRemoveWildlingFromClearing(c, $event)"
+          class="clearing"
+        />
+      </div>
+      <Wall
+        :myColor="myPlayer.color"
+        :guards="guards"
+        :activePurchase="activePurchase"
+        :myPlayer="myPlayer"
+        :isSetupPhase="isSetupPhase"
+        :allowPurchasing="allowPurchasing && (myPlayer.hasResources.guard || myPlayer.allowFreeGuard)"
+        :allowRemove="myPlayer.allowKill === GUARD"
+        @wall-clicked="onWallClicked($event)"
+        @kill-guard="onGuardKill($event)"
+        @relocate-guard="onGuardRelocate($event)"
+        @cancel-purchase="setActivePurchase(null)"
+        @confirm-purchase="onConfirmPurchase($event)"
+        class="the-wall"
+      />
+    </div>
+    <CardSwapper
+      v-if="myPlayer.swappingHeroCard"
+      isOpen
+      :cards="roomState.heroCards"
+      @selected="onSelectHeroCard($event)"
+    />
+    <audio ref="footstep">
+      <source src="../assets/audio/footstep.ogg" type="audio/mpeg">
+    </audio>
+  </div>
+</template>
+
 <style scoped lang="scss">
   @import '@/styles/partials';
 
   .the-north {
-    // opacity: 0.5;
-    display: grid;
-    grid-template-columns: 20% 65% 15%;
+    opacity: 0.5;
+    display: flex;
+    justify-content: center;
+    background: red;
 
    &.ready {
       opacity: 1;

@@ -1,6 +1,19 @@
+<script>
+  import GameAsset from '@/components/game/GameAsset';
+
+  export default {
+    name: 'Mountains',
+    components: {
+      GameAsset
+    }
+  }
+</script>
+
 <template>
   <div class="mountains">
-    <div class="mountains-top" />
+    <div class="mountains-top">
+      <GameAsset type="pieces" asset="trillium" color="green" class="trillium" />
+    </div>
     <div class="mountain-shadow" />
   </div>
 </template>
@@ -100,5 +113,11 @@
         z-index: 2;
       }
     }
+  }
+
+  .trillium {
+    position: absolute;
+    top: -50px;
+    right: -120px;
   }
 </style>

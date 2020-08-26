@@ -2,13 +2,6 @@
   <v-app>
     <div id="app" class="app-wrapper">
       <div id="page">
-        <AppHeader
-          id="app-header"
-          :isLoggedIn="isLoggedIn"
-          :nickname="(currentUser || {}).nickname"
-          @login="handleLogin"
-          @customize-player="isDisplayCustomizePlayer = true"
-        ></AppHeader>
         <router-view></router-view>
       </div>
       <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert.text" :color="alert.color" :style="{ top: `${index * 55 + 10}px` }"></BaseAlert>
@@ -16,6 +9,18 @@
     <audio ref="ambience">
       <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
     </audio>
+    <BaseButton
+      spaced
+      color="primary"
+      iconName="play-box-outline"
+      iconSize="24px"
+      iconColor="success"
+      @click="startAmbience"
+      class="ambience-start"
+    >
+      Ambience, Please
+    </BaseButton>
+    <Avital class="avital" />
     <GameLoader v-if="isGameLoading" :players="players"></GameLoader>
     <v-dialog v-model="isDisplayCustomizePlayer" width="400" @click:outside="isDisplayCustomizePlayer = false">
       <PlayerCustomize @close="isDisplayCustomizePlayer = false"></PlayerCustomize>
@@ -33,6 +38,8 @@
   import BaseAlert from '@/components/common/BaseAlert';
   import GameLoader from '@/components/interface/GameLoader';
   import PlayerCustomize from '@/components/lobby/PlayerCustomize';
+  import BaseButton from '@/components/common/BaseButton';
+  import Avital from '@/components/common/Avital';
 
   import { FIREBASE_USER_SIGNUP } from '@/constants'
 
@@ -41,6 +48,8 @@
     components: {
       AppHeader,
       BaseAlert,
+      BaseButton,
+      Avital,
       GameLoader,
       PlayerCustomize
     },
@@ -52,7 +61,6 @@
         return !!(this.currentUser && this.currentUser.uid);
       },
       ...mapState([
-        'enableAmbience',
         'isGameLoading',
         'currentUser',
         'alerts',
@@ -62,12 +70,6 @@
     async beforeCreate() {
       await colyseusService.init();
       await colyseusService.initializeStaticResources();
-    },
-    watch: {
-      enableAmbience: function(enabled, prevEnabled) {
-        if (enabled && !prevEnabled) this.startAmbience();
-        if (!enabled && prevEnabled) this.stopAmbience();
-      }
     },
     methods: {
       handleLogin: async function() {
@@ -97,6 +99,7 @@
       },
       stopAmbience: function() {
         const { ambience } = this.$refs;
+        
         if (ambience) {
           ambience.pause();
           ambience.currentTime = 0;
@@ -116,6 +119,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    position: relative;
 
     ul {
       padding-left: 0;
@@ -123,6 +127,20 @@
 
     .button-icon {
       margin-right: 0;
+    }
+
+    .ambience-start {
+      position: absolute;
+      top: $spacer * 2;
+      left: $spacer * 2;
+      z-index: 2000;
+    }
+
+    .avital {
+      position: absolute;
+      top: 5%;
+      left: 10%;
+      z-index: 10000;
     }
   }
 

@@ -1,8 +1,8 @@
 <template>
   <div id="home">
     <router-link to="/lobby">
-      <BaseButton color="primary">
-        Take me to Lobby
+      <BaseButton color="primary" class="show-me">
+        Show me
       </BaseButton>
     </router-link>
   </div>
@@ -28,5 +28,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .show-me {
+    z-index: 2000;
   }
 </style>

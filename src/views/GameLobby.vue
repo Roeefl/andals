@@ -170,45 +170,6 @@
       <SnowyTown class="game-loader" />
       <Snowflakes :count="lobbySnowflakes" class="snowflakes" />
     </div>
-    <div class="header-fallback" />
-    <section class="lobby-interface">
-      <ul class="actions">
-        <li class="action-item">
-          <ChoiceDialog iconName="plus-circle" title="Create Room" buttonText="Create Room" :disabled="!isServerUp" @approve="createRoom" class="create-room">
-            <RoomSettings
-              :roomType="roomType"
-              @select-room-type="roomType = $event"
-              :roomTitle="roomTitle"
-              @update-title="roomTitle = $event"
-              :roomMaxPlayers="roomMaxPlayers"
-              @update-max-players="roomMaxPlayers = $event"
-              :playVsBots="playVsBots"
-              @toggle-bots="playVsBots = !playVsBots"
-              :autoPickup="autoPickup"
-              @toggle-auto-pickup="autoPickup = !autoPickup"
-              :friendlyGameLog="friendlyGameLog"
-              @toggle-friendly-game-log="friendlyGameLog = !friendlyGameLog"
-              :botReplacement="botReplacement"
-              @toggle-bot-replacement="botReplacement = !botReplacement"
-            />
-          </ChoiceDialog>
-        </li>
-        <li class="action-item">
-          <BaseButton spaced color="info" iconColor="white" iconName="refresh-circle" iconSize="x-large" @click="refreshRooms" class="refresh-list">
-            Refresh List
-          </BaseButton>
-        </li>
-      </ul>
-      <div class="lobby-contents">
-        <RoomsList :rooms="rooms" @join="joinRoom($event)" @reconnect="reconnect($event)" class="rooms-list" />
-        <div class="lobby-chat">
-          <GameChat :channels="['lobby', 'lfm']" :messages="lobbyChat" @send-message="sendLobbyMessage($event)" />
-        </div>
-      </div>
-    </section>
-    <audio ref="messageReceived">
-      <source src="../assets/audio/chat-message.mp3" type="audio/mpeg">
-    </audio>
   </main>
 </template>
 

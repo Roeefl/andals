@@ -26,7 +26,7 @@ const initialMyPlayer = {
 export default new Vuex.Store({
   state: {
     enableSnow: localStorage.enableFx || false,
-    lobbySnowflakes: 20,
+    lobbySnowflakes: 100,
     enableAmbience: localStorage.enableSound || false,
     isDeveloperMode: localStorage.developerMode || false,
     isUseGameEngine: localStorage.useGameEngine || false,

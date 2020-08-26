@@ -1,0 +1,63 @@
+<template>
+  <div class="avital">     
+    <pre>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+HHHHHHHHH     HHHHHHHHH                                                                                                                                                                                                                           
+H:::::::H     H:::::::H                                                                                                                                                                                                                           
+H:::::::H     H:::::::H                                                                                                                                                                                                                           
+HH::::::H     H::::::HH                                                                                                                                                                                                                           
+  H:::::H     H:::::H    aaaaaaaaaaaaa  ppppp   ppppppppp   ppppp   pppppppppyyyyyyy           yyyyyyy                                                                                                                                            
+  H:::::H     H:::::H    a::::::::::::a p::::ppp:::::::::p  p::::ppp:::::::::py:::::y         y:::::y                                                                                                                                             
+  H::::::HHHHH::::::H    aaaaaaaaa:::::ap:::::::::::::::::p p:::::::::::::::::py:::::y       y:::::y                                                                                                                                              
+  H:::::::::::::::::H             a::::app::::::ppppp::::::ppp::::::ppppp::::::py:::::y     y:::::y                                                                                                                                               
+  H:::::::::::::::::H      aaaaaaa:::::a p:::::p     p:::::p p:::::p     p:::::p y:::::y   y:::::y                                                                                                                                                
+  H::::::HHHHH::::::H    aa::::::::::::a p:::::p     p:::::p p:::::p     p:::::p  y:::::y y:::::y                                                                                                                                                 
+  H:::::H     H:::::H   a::::aaaa::::::a p:::::p     p:::::p p:::::p     p:::::p   y:::::y:::::y                                                                                                                                                  
+  H:::::H     H:::::H  a::::a    a:::::a p:::::p    p::::::p p:::::p    p::::::p    y:::::::::y                                                                                                                                                   
+HH::::::H     H::::::HHa::::a    a:::::a p:::::ppppp:::::::p p:::::ppppp:::::::p     y:::::::y                                                                                                                                                    
+H:::::::H     H:::::::Ha:::::aaaa::::::a p::::::::::::::::p  p::::::::::::::::p       y:::::y                                                                                                                                                     
+H:::::::H     H:::::::H a::::::::::aa:::ap::::::::::::::pp   p::::::::::::::pp       y:::::y                                                                                                                                                      
+HHHHHHHHH     HHHHHHHHH  aaaaaaaaaa  aaaap::::::pppppppp     p::::::pppppppp        y:::::y                                                                                                                                                       
+                                         p:::::p             p:::::p               y:::::y                                                                                                                                                        
+                                         p:::::p             p:::::p              y:::::y                                                                                                                                                         
+                                        p:::::::p           p:::::::p            y:::::y                                                                                                                                                          
+                                        p:::::::p           p:::::::p           y:::::y                                                                                                                                                           
+                                        p:::::::p           p:::::::p          yyyyyyy                                                                                                                                                            
+                                        ppppppppp           ppppppppp                                                                                                                                                                             
+                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                  
+               AAA               lllllll   iiii                                         hhhhhhh                                                                                                                                                   
+              A:::A              l:::::l  i::::i                                        h:::::h                                                                                                                                                   
+             A:::::A             l:::::l   iiii                                         h:::::h                                                                                                                                                   
+            A:::::::A            l:::::l                                                h:::::h                                                                                                                                                   
+           A:::::::::A            l::::l iiiiiiiyyyyyyy           yyyyyyyaaaaaaaaaaaaa   h::::h hhhhh   vvvvvvv           vvvvvvv eeeeeeeeeeee    rrrrr   rrrrrrrrr       ssssssssss     aaaaaaaaaaaaa  rrrrr   rrrrrrrrryyyyyyy           yyyyyyy
+          A:::::A:::::A           l::::l i:::::i y:::::y         y:::::y a::::::::::::a  h::::hh:::::hhh v:::::v         v:::::vee::::::::::::ee  r::::rrr:::::::::r    ss::::::::::s    a::::::::::::a r::::rrr:::::::::ry:::::y         y:::::y 
+         A:::::A A:::::A          l::::l  i::::i  y:::::y       y:::::y  aaaaaaaaa:::::a h::::::::::::::hhv:::::v       v:::::ve::::::eeeee:::::eer:::::::::::::::::r ss:::::::::::::s   aaaaaaaaa:::::ar:::::::::::::::::ry:::::y       y:::::y  
+        A:::::A   A:::::A         l::::l  i::::i   y:::::y     y:::::y            a::::a h:::::::hhh::::::hv:::::v     v:::::ve::::::e     e:::::err::::::rrrrr::::::rs::::::ssss:::::s           a::::arr::::::rrrrr::::::ry:::::y     y:::::y   
+       A:::::A     A:::::A        l::::l  i::::i    y:::::y   y:::::y      aaaaaaa:::::a h::::::h   h::::::hv:::::v   v:::::v e:::::::eeeee::::::e r:::::r     r:::::r s:::::s  ssssss     aaaaaaa:::::a r:::::r     r:::::r y:::::y   y:::::y    
+      A:::::AAAAAAAAA:::::A       l::::l  i::::i     y:::::y y:::::y     aa::::::::::::a h:::::h     h:::::h v:::::v v:::::v  e:::::::::::::::::e  r:::::r     rrrrrrr   s::::::s        aa::::::::::::a r:::::r     rrrrrrr  y:::::y y:::::y     
+     A:::::::::::::::::::::A      l::::l  i::::i      y:::::y:::::y     a::::aaaa::::::a h:::::h     h:::::h  v:::::v:::::v   e::::::eeeeeeeeeee   r:::::r                  s::::::s    a::::aaaa::::::a r:::::r               y:::::y:::::y      
+    A:::::AAAAAAAAAAAAA:::::A     l::::l  i::::i       y:::::::::y     a::::a    a:::::a h:::::h     h:::::h   v:::::::::v    e:::::::e            r:::::r            ssssss   s:::::s a::::a    a:::::a r:::::r                y:::::::::y       
+   A:::::A             A:::::A   l::::::li::::::i       y:::::::y      a::::a    a:::::a h:::::h     h:::::h    v:::::::v     e::::::::e           r:::::r            s:::::ssss::::::sa::::a    a:::::a r:::::r                 y:::::::y        
+  A:::::A               A:::::A  l::::::li::::::i        y:::::y       a:::::aaaa::::::a h:::::h     h:::::h     v:::::v       e::::::::eeeeeeee   r:::::r            s::::::::::::::s a:::::aaaa::::::a r:::::r                  y:::::y         
+ A:::::A                 A:::::A l::::::li::::::i       y:::::y         a::::::::::aa:::ah:::::h     h:::::h      v:::v         ee:::::::::::::e   r:::::r             s:::::::::::ss   a::::::::::aa:::ar:::::r                 y:::::y          
+AAAAAAA                   AAAAAAAlllllllliiiiiiii      y:::::y           aaaaaaaaaa  aaaahhhhhhh     hhhhhhh       vvv            eeeeeeeeeeeeee   rrrrrrr              sssssssssss      aaaaaaaaaa  aaaarrrrrrr                y:::::y           
+                                                      y:::::y                                                                                                                                                                  y:::::y            
+                                                     y:::::y                                                                                                                                                                  y:::::y             
+                                                    y:::::y                                                                                                                                                                  y:::::y              
+                                                   y:::::y                                                                                                                                                                  y:::::y               
+                                                  yyyyyyy                                                                                                                                                                  yyyyyyy                
+                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                              
+  </pre>
+  </div>
+</template>
+
+<style scoped lang="scss">
+  @import '@/styles/partials';
+
+  .avital {
+    width: 100%;
+    font-size: 10px;
+  }
+</style>
