@@ -6,21 +6,6 @@
       </div>
       <BaseAlert v-for="(alert, alertId, index) in alerts" :key="alertId" :text="alert.text" :color="alert.color" :style="{ top: `${index * 55 + 10}px` }"></BaseAlert>
     </div>
-    <audio ref="ambience">
-      <source src="./assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
-    </audio>
-    <BaseButton
-      spaced
-      color="primary"
-      iconName="play-box-outline"
-      iconSize="24px"
-      iconColor="success"
-      @click="startAmbience"
-      class="ambience-start"
-    >
-      Ambience, Please
-    </BaseButton>
-    <Avital class="avital" />
     <GameLoader v-if="isGameLoading" :players="players"></GameLoader>
     <v-dialog v-model="isDisplayCustomizePlayer" width="400" @click:outside="isDisplayCustomizePlayer = false">
       <PlayerCustomize @close="isDisplayCustomizePlayer = false"></PlayerCustomize>
@@ -39,7 +24,6 @@
   import GameLoader from '@/components/interface/GameLoader';
   import PlayerCustomize from '@/components/lobby/PlayerCustomize';
   import BaseButton from '@/components/common/BaseButton';
-  import Avital from '@/components/common/Avital';
 
   import { FIREBASE_USER_SIGNUP } from '@/constants'
 
@@ -49,7 +33,6 @@
       AppHeader,
       BaseAlert,
       BaseButton,
-      Avital,
       GameLoader,
       PlayerCustomize
     },
@@ -88,22 +71,6 @@
 
         this.$store.commit('setCurrentUser', currentUser || {});
         this.$store.commit('addAlert', { text: `You are now logged ${wasLoggedIn ? 'out' : 'in'}` });
-      },
-      startAmbience: function() {
-        const { ambience } = this.$refs;
-
-        if (ambience) {
-          ambience.play(); 
-          ambience.loop = true;
-        }
-      },
-      stopAmbience: function() {
-        const { ambience } = this.$refs;
-        
-        if (ambience) {
-          ambience.pause();
-          ambience.currentTime = 0;
-        }
       }
     }
   }
@@ -127,20 +94,6 @@
 
     .button-icon {
       margin-right: 0;
-    }
-
-    .ambience-start {
-      position: absolute;
-      top: $spacer * 2;
-      left: $spacer * 2;
-      z-index: 2000;
-    }
-
-    .avital {
-      position: absolute;
-      top: 5%;
-      left: 10%;
-      z-index: 10000;
     }
   }
 

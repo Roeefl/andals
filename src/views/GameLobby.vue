@@ -9,6 +9,7 @@
   import RoomSettings from '@/components/lobby/RoomSettings';
   import ChoiceDialog from '@/components/common/ChoiceDialog';
   import BaseButton from '@/components/common/BaseButton';
+  import Avital from '@/components/common/Avital';
 
   import SnowyTown from '@/components/decor/SnowyTown';
   import Snowflakes from '@/components/decor/Snowflakes';
@@ -22,7 +23,8 @@
       RoomSettings,
       BaseButton,
       SnowyTown,
-      Snowflakes
+      Snowflakes,
+      Avital
     },
     async created() {
       this.fetchRooms();
@@ -159,6 +161,22 @@
       },
       sendLobbyMessage: function({ channel, message }) {
         firebaseService.sendLobbyChatMessage(this.currentUser.nickname, channel, message);
+      },
+      startAmbience: function() {
+        const { ambience } = this.$refs;
+
+        if (ambience) {
+          ambience.play(); 
+          ambience.loop = true;
+        }
+      },
+      stopAmbience: function() {
+        const { ambience } = this.$refs;
+        
+        if (ambience) {
+          ambience.pause();
+          ambience.currentTime = 0;
+        }
       }
     }
   }
@@ -170,6 +188,21 @@
       <SnowyTown class="game-loader" />
       <Snowflakes :count="lobbySnowflakes" class="snowflakes" />
     </div>
+    <Avital class="avital" />
+    <BaseButton
+      spaced
+      color="primary"
+      iconName="play-box-outline"
+      iconSize="24px"
+      iconColor="success"
+      @click="startAmbience"
+      class="ambience-start"
+    >
+      Ambience, Please
+    </BaseButton>
+    <audio ref="ambience">
+      <source src="../assets/audio/snowstorm-ambience.mp3" type="audio/mpeg">
+    </audio>
   </main>
 </template>
 
@@ -254,5 +287,19 @@
       top: 0;
       left: 0;
     }
+  }
+
+  .avital {
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    z-index: 10000;
+  }
+
+  .ambience-start {
+    position: absolute;
+    top: $spacer * 2;
+    left: $spacer * 2;
+    z-index: 2000;
   }
 </style>
