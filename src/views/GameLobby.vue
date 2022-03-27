@@ -188,7 +188,7 @@
       <SnowyTown class="game-loader" />
       <Snowflakes :count="lobbySnowflakes" class="snowflakes" />
     </div>
-    <Avital class="avital" />
+    <iframe src="https://roeefl.github.io/" title="Moran Example Static Website in Github Pages" />
     <BaseButton
       spaced
       color="primary"
