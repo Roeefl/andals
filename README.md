@@ -1,2 +1,2 @@
 # andals
- andals.io | Got settlers of catan online
+ andals.io | Game of Thrones / Settlers of catan online
